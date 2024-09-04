@@ -22,13 +22,13 @@ import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 
-public class FRAMEGESTIONDEPILOTOS extends javax.swing.JFrame {
+public class FRAMEGESTIONPILOTOS extends javax.swing.JFrame {
 DefaultTableModel modeloPilotoListado = new DefaultTableModel();
     DefaultTableModel modeloPilotoEliminar = new DefaultTableModel();
     ArrayList<Piloto> listaPilotos = new ArrayList<>();
     
     
-    public FRAMEGESTIONDEPILOTOS() {
+    public FRAMEGESTIONPILOTOS() {
         initComponents();
 this.setTitle("GESTIÓN DE PILOTOS");
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -318,14 +318,12 @@ public void refrescarTablaEstadoOcultar() {
         txtFechaDeNacimientoPiloto.setDate(null);
         txtEstadoPiloto.setSelectedIndex(0);
     }
-
+            
+            
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jLocaleChooser1 = new com.toedter.components.JLocaleChooser();
-        jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
         pestañaEliminar = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -1612,12 +1610,37 @@ public void refrescarTablaEstadoOcultar() {
         refrescarTablaEstadoMostrar();
     }//GEN-LAST:event_estadoActualDePilotosActionPerformed
 
-
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FRAMEGESTIONPILOTOS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FRAMEGESTIONPILOTOS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FRAMEGESTIONPILOTOS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FRAMEGESTIONPILOTOS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
 
+        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FRAMEGESTIONDEPILOTOS().setVisible(true);
+                new FRAMEGESTIONPILOTOS().setVisible(true);
             }
         });
     }
@@ -1632,7 +1655,6 @@ public void refrescarTablaEstadoOcultar() {
     private javax.swing.JButton buscarPilotosEspecifico;
     private javax.swing.JButton buscarPilotosEspecifico3;
     private javax.swing.JButton estadoActualDePilotos;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -1658,8 +1680,6 @@ public void refrescarTablaEstadoOcultar() {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private com.toedter.components.JLocaleChooser jLocaleChooser1;
-    private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
