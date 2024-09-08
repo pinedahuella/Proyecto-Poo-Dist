@@ -180,7 +180,7 @@ public class GESTIONPILOTOS implements Serializable {
     public static void main(String[] args) {
         GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
 
-        String rutaArchivo = "C:\\Users\\joseg\\Downloads\\Datos.xlsx";
+        String rutaArchivo = "C:\\Users\\joseg\\Downloads\\PROYECTO CINDY\\Proyecto-Poo-Dist\\ProyectoPooDist\\PINEED.xlsx";
         List<Piloto> listaPilotos = gestionPilotos.leerPilotosDesdeExcel(rutaArchivo);
 
         for (Piloto piloto : listaPilotos) {

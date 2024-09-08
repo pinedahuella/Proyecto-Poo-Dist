@@ -55,7 +55,7 @@ this.setTitle("GESTIÓN DE PILOTOS");
 }
 
 public void cargarDatosDesdeExcel() {
-    String filePath = "C:\\Users\\joseg\\Downloads\\Datos.xlsx";
+    String filePath = "C:\\Users\\joseg\\Downloads\\PROYECTO CINDY\\Proyecto-Poo-Dist\\ProyectoPooDist\\PINEED.xlsx";
     try (FileInputStream file = new FileInputStream(new File(filePath))) {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         if (workbook.getNumberOfSheets() > 0) {
@@ -146,7 +146,7 @@ private void guardarDatosEnExcel() {
             row.createCell(8).setCellValue(piloto.getEstadoPiloto());
         }
 
-        try (FileOutputStream fos = new FileOutputStream("C:\\Users\\joseg\\Downloads\\Datos.xlsx")) {
+        try (FileOutputStream fos = new FileOutputStream("C:\\Users\\joseg\\Downloads\\PROYECTO CINDY\\Proyecto-Poo-Dist\\ProyectoPooDist\\PINEED.xlsx")) {
             workbook.write(fos);
         }
         JOptionPane.showMessageDialog(this, "Datos guardados en Excel exitosamente.");
