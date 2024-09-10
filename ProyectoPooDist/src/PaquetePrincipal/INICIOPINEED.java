@@ -12,11 +12,9 @@ import PaquetePrincipal.INICIOGESTIONPILOTOS;
  */
 public class INICIOPINEED extends javax.swing.JFrame {
 
-    /**
-     * Creates new form INICIOPINEED
-     */
     public INICIOPINEED() {
         initComponents();
+        
     }
 
     /**
@@ -296,7 +294,9 @@ public class INICIOPINEED extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGestionDeCreditosActionPerformed
 
     private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintalesActionPerformed
- 
+        FrameInventario abrir = new  FrameInventario();
+        abrir.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnInventarioDeQuintalesActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed

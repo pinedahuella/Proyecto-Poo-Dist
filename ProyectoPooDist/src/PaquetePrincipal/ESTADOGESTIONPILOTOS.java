@@ -35,7 +35,7 @@ this.setTitle("GESTIÓN DE PILOTOS");
 }
 
 public void cargarDatosDesdeExcel() {
-    String filePath = "C:\\Users\\joseg\\Downloads\\PROYECTO CINDY\\Proyecto-Poo-Dist\\ProyectoPooDist\\PINEED.xlsx";
+    String filePath = "excels/PINEED.xlsx";
     try (FileInputStream file = new FileInputStream(new File(filePath))) {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
@@ -88,7 +88,7 @@ public void cargarDatosDesdeExcel() {
     }
 
    private void guardarDatosEnExcel() {
-    String filePath = "C:\\Users\\joseg\\Downloads\\PROYECTO CINDY\\Proyecto-Poo-Dist\\ProyectoPooDist\\PINEED.xlsx";
+    String filePath = "excels/PINEED.xlsx";
     try {
         FileInputStream fileIn = new FileInputStream(new File(filePath));
         XSSFWorkbook workbook = new XSSFWorkbook(fileIn);

@@ -44,8 +44,8 @@ public class FrameInventario extends javax.swing.JFrame {
         
         //inciamos el gestion productos
         Tproductos = new gestionProductos();
-        
         Tproductos.setCargarInvetarioExcel();
+       
         
         //colocamos invisibles todos los paneles
         panelp1.setVisible(false);

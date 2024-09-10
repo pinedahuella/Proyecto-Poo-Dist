@@ -200,7 +200,7 @@ public List<Piloto> leerPilotosDesdeExcel(String rutaArchivo) {
     public static void main(String[] args) {
         GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
 
-        String rutaArchivo = "C:\\Users\\joseg\\Downloads\\PROYECTO CINDY\\Proyecto-Poo-Dist\\ProyectoPooDist\\PINEED.xlsx";
+        String rutaArchivo = "excels/PINEED.xlsx";
         List<Piloto> listaPilotos = gestionPilotos.leerPilotosDesdeExcel(rutaArchivo);
 
         for (Piloto piloto : listaPilotos) {
