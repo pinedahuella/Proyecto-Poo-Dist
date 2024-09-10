@@ -1,17 +1,16 @@
-
 package PaquetePrincipal;
 
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellType;
 
 public class GESTIONPILOTOS implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -21,10 +20,10 @@ public class GESTIONPILOTOS implements Serializable {
 
         private String nombrePiloto;
         private String apellidoPiloto;
-        private String numeroDeDpi;
+        private String numeroDeDpi; // Cambiado a int
         private String tipoLicencia;
         private String correoElectronicoPiloto;
-        private String numeroTelefonicoPiloto;
+        private int numeroTelefonicoPiloto; // Cambiado a int
         private String generoPiloto;
         private String fechaDeNacimiento;
         private String estadoPiloto;
@@ -32,16 +31,16 @@ public class GESTIONPILOTOS implements Serializable {
         public Piloto() {
             this.nombrePiloto = "";
             this.apellidoPiloto = "";
-            this.numeroDeDpi = "";
+            this.numeroDeDpi = ""; // Cambiado a 0
             this.tipoLicencia = "";
             this.correoElectronicoPiloto = "";
-            this.numeroTelefonicoPiloto = "";
+            this.numeroTelefonicoPiloto = 0; // Cambiado a 0
             this.generoPiloto = "";
             this.fechaDeNacimiento = "";
             this.estadoPiloto = "";
         }
 
-        public Piloto(String nombrePiloto, String apellidoPiloto, String numeroDeDpi, String tipoLicencia, String correoElectronicoPiloto, String numeroTelefonicoPiloto, String generoPiloto, String fechaDeNacimiento, String estadoPiloto) {
+        public Piloto(String nombrePiloto, String apellidoPiloto, String numeroDeDpi, String tipoLicencia, String correoElectronicoPiloto, int numeroTelefonicoPiloto, String generoPiloto, String fechaDeNacimiento, String estadoPiloto) {
             this.nombrePiloto = nombrePiloto;
             this.apellidoPiloto = apellidoPiloto;
             this.numeroDeDpi = numeroDeDpi;
@@ -95,11 +94,11 @@ public class GESTIONPILOTOS implements Serializable {
             this.correoElectronicoPiloto = correoElectronicoPiloto;
         }
 
-        public String getNumeroTelefonicoPiloto() {
+        public int getNumeroTelefonicoPiloto() {
             return numeroTelefonicoPiloto;
         }
 
-        public void setNumeroTelefonicoPiloto(String numeroTelefonicoPiloto) {
+        public void setNumeroTelefonicoPiloto(int numeroTelefonicoPiloto) {
             this.numeroTelefonicoPiloto = numeroTelefonicoPiloto;
         }
 
@@ -131,51 +130,72 @@ public class GESTIONPILOTOS implements Serializable {
         public String toString() {
             return "Piloto{" + "nombrePiloto='" + nombrePiloto + '\'' +
                     ", apellidoPiloto='" + apellidoPiloto + '\'' +
-                    ", numeroDeDpi='" + numeroDeDpi + '\'' +
+                    ", numeroDeDpi=" + numeroDeDpi + // Cambiado a int
                     ", tipoLicencia='" + tipoLicencia + '\'' +
                     ", correoElectronicoPiloto='" + correoElectronicoPiloto + '\'' +
-                    ", numeroTelefonicoPiloto='" + numeroTelefonicoPiloto + '\'' +
+                    ", numeroTelefonicoPiloto=" + numeroTelefonicoPiloto + // Cambiado a int
                     ", generoPiloto='" + generoPiloto + '\'' +
                     ", fechaDeNacimiento='" + fechaDeNacimiento + '\'' +
                     ", estadoPiloto='" + estadoPiloto + '\'' +
                     '}';
         }
     }
+public List<Piloto> leerPilotosDesdeExcel(String rutaArchivo) {
+    List<Piloto> listaPilotos = new ArrayList<>();
 
-    public List<Piloto> leerPilotosDesdeExcel(String rutaArchivo) {
-        List<Piloto> listaPilotos = new ArrayList<>();
+    try (FileInputStream file = new FileInputStream(new File(rutaArchivo));
+         Workbook workbook = new XSSFWorkbook(file)) {
 
-        try (FileInputStream file = new FileInputStream(new File(rutaArchivo));
-             Workbook workbook = new XSSFWorkbook(file)) {
+        Sheet sheet = workbook.getSheetAt(0);
+        Iterator<Row> rowIterator = sheet.iterator();
 
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.iterator();
+        if (rowIterator.hasNext()) {
+            rowIterator.next(); // Salta el encabezado
+        }
 
-            if (rowIterator.hasNext()) {
-                rowIterator.next(); // Salta el encabezado
-            }
-
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            try {
                 Piloto piloto = new Piloto();
                 piloto.setNombrePiloto(row.getCell(0).getStringCellValue());
                 piloto.setApellidoPiloto(row.getCell(1).getStringCellValue());
-                piloto.setNumeroDeDpi(row.getCell(2).getStringCellValue());
+
+                // Ahora DPI es tratado como String
+                if (row.getCell(2) != null && row.getCell(2).getCellType() == CellType.STRING) {
+                    piloto.setNumeroDeDpi(row.getCell(2).getStringCellValue());
+                } else {
+                    System.err.println("Error: La celda de DPI no es válida o está vacía.");
+                    continue; // O maneja el error como prefieras
+                }
+
                 piloto.setTipoLicencia(row.getCell(3).getStringCellValue());
                 piloto.setCorreoElectronicoPiloto(row.getCell(4).getStringCellValue());
-                piloto.setNumeroTelefonicoPiloto(row.getCell(5).getStringCellValue());
+
+                // Manejo del número telefónico sigue igual (es numérico)
+                if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.NUMERIC) {
+                    piloto.setNumeroTelefonicoPiloto((int) Math.round(row.getCell(5).getNumericCellValue()));
+                } else {
+                    System.err.println("Error: La celda de número telefónico no es válida o está vacía.");
+                    continue; // O maneja el error como prefieras
+                }
+
                 piloto.setGeneroPiloto(row.getCell(6).getStringCellValue());
                 piloto.setFechaDeNacimiento(row.getCell(7).getStringCellValue());
                 piloto.setEstadoPiloto(row.getCell(8).getStringCellValue());
 
                 listaPilotos.add(piloto);
+            } catch (Exception e) {
+                System.err.println("Error al leer fila: " + e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        return listaPilotos;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return listaPilotos;
+}
+
+
 
     public static void main(String[] args) {
         GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
