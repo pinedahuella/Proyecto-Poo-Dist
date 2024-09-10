@@ -45,6 +45,8 @@ public class FrameInventario extends javax.swing.JFrame {
         //inciamos el gestion productos
         Tproductos = new gestionProductos();
         
+        Tproductos.setCargarInvetarioExcel();
+        
         //colocamos invisibles todos los paneles
         panelp1.setVisible(false);
         panelp2.setVisible(false);
@@ -60,6 +62,15 @@ public class FrameInventario extends javax.swing.JFrame {
         //obetenemos el vector que tiene los productos
         if (Tproductos.getProductos() != null) {
             productosdeinvetario = Tproductos.getProductos();
+        }
+        
+        //llenamos los combo box con los quintales
+        
+        //con este for llenaremos la tabla con los elemetos del vector
+        for (Producto prod : productosdeinvetario) {
+            comboProductoM.addItem(prod.getNombre());
+            comoboProductoC2.addItem(prod.getNombre());
+
         }
         
         //cargamos el invetario en la tabla
@@ -80,7 +91,7 @@ public class FrameInventario extends javax.swing.JFrame {
         //con este for llenaremos la tabla con los elemetos del vector
         for (Producto prod : productosdeinvetario) {
             
-            modeloproductos.addRow(new Object[]{prod.getNombre(), prod.getExistencias(), prod.getProveedor(), prod.getPrecioCosto(), prod.getPrecioCosto()});
+            modeloproductos.addRow(new Object[]{prod.getNombre(), prod.getExistencias(), prod.getProveedor(), prod.getPrecioCosto(), prod.getPrecioFlete()});
 
         }
         
@@ -117,6 +128,7 @@ public class FrameInventario extends javax.swing.JFrame {
         panelB1 = new javax.swing.JPanel();
         PanelB2 = new javax.swing.JPanel();
         PanelB3 = new javax.swing.JPanel();
+        botonParaActualizar = new javax.swing.JPanel();
         PanelB4 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         panelp2 = new javax.swing.JPanel();
@@ -156,6 +168,7 @@ public class FrameInventario extends javax.swing.JFrame {
         panelp4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaInventario = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 102));
@@ -219,6 +232,24 @@ public class FrameInventario extends javax.swing.JFrame {
             .addGap(0, 55, Short.MAX_VALUE)
         );
 
+        botonParaActualizar.setBackground(new java.awt.Color(102, 102, 0));
+        botonParaActualizar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonParaActualizarMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout botonParaActualizarLayout = new javax.swing.GroupLayout(botonParaActualizar);
+        botonParaActualizar.setLayout(botonParaActualizarLayout);
+        botonParaActualizarLayout.setHorizontalGroup(
+            botonParaActualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 86, Short.MAX_VALUE)
+        );
+        botonParaActualizarLayout.setVerticalGroup(
+            botonParaActualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 36, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -230,7 +261,9 @@ public class FrameInventario extends javax.swing.JFrame {
                 .addComponent(PanelB2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelB3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(botonParaActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,6 +273,10 @@ public class FrameInventario extends javax.swing.JFrame {
                     .addComponent(panelB1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PanelB2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PanelB3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(botonParaActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         PanelB4.setBackground(new java.awt.Color(85, 150, 202));
@@ -614,6 +651,19 @@ public class FrameInventario extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jPanel5.setBackground(new java.awt.Color(6, 40, 86));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 11, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -623,7 +673,9 @@ public class FrameInventario extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(35, 35, 35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PanelB4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(panelp4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -641,6 +693,7 @@ public class FrameInventario extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(panelp4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -823,6 +876,14 @@ public class FrameInventario extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_panelExistenciasProductosMouseClicked
 
+    private void botonParaActualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonParaActualizarMouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para guardar todos los quintales actuales
+        Tproductos.getCargarInvetarioExcel();
+        System.out.println("se ha cargado correctamente");
+    }//GEN-LAST:event_botonParaActualizarMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -915,6 +976,7 @@ public class FrameInventario extends javax.swing.JFrame {
     private javax.swing.JPanel PanelB2;
     private javax.swing.JPanel PanelB3;
     private javax.swing.JPanel PanelB4;
+    private javax.swing.JPanel botonParaActualizar;
     private javax.swing.JComboBox<String> comboOperacion;
     private javax.swing.JComboBox<String> comboProductoM;
     private javax.swing.JComboBox<String> comoboProductoC2;
@@ -936,6 +998,7 @@ public class FrameInventario extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelAgregarProducto;
     private javax.swing.JPanel panelB1;
