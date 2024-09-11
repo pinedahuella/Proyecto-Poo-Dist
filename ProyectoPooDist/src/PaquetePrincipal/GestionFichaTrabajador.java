@@ -6,6 +6,14 @@ package PaquetePrincipal;
 
 import java.util.Vector;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import java.io.FileOutputStream;
+
 /**
  *
  * @author USUARIO
@@ -13,14 +21,16 @@ import java.util.Vector;
 public class GestionFichaTrabajador {
     
     public Vector<FichaTrabajador> trabajador = new Vector<>();
-    
+    private String excelFilePath;
     
     //constructores
-    GestionFichaTrabajador(){};
+    GestionFichaTrabajador(){ excelFilePath = "excels/trabajadores.xlsx";};
     
     
     GestionFichaTrabajador(Vector<FichaTrabajador> tra){
         this.trabajador = tra;
+        
+        excelFilePath = "excels/trabajadores.xlsx";
     };
     
     
@@ -81,6 +91,94 @@ public class GestionFichaTrabajador {
     
     //cargar el invetario de excel
     public void cargarTrabajadoresExcel(){
-        //falta implemetacion
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) { // Saltar la fila de encabezado
+                    continue;
+                }
+
+                String nombre = row.getCell(0).getStringCellValue();
+                String descripcion = row.getCell(1).getStringCellValue();
+                int semanasTrabajadas = (int) row.getCell(2).getNumericCellValue();
+                float sueldoSemanal = (float) row.getCell(3).getNumericCellValue();
+
+                Vector<String> entrada = new Vector<>();
+                Vector<Float> valorEntrada = new Vector<>();
+
+                // Leer entradas y valores de manera flexible
+                for (int i = 4; i < row.getLastCellNum(); i += 2) {
+                    Cell entradaCell = row.getCell(i);
+                    Cell valorEntradaCell = row.getCell(i + 1);
+
+                    if (entradaCell != null && entradaCell.getCellType() == CellType.STRING) {
+                        entrada.add(entradaCell.getStringCellValue());
+                    } else {
+                        break; // No más entradas
+                    }
+
+                    if (valorEntradaCell != null && valorEntradaCell.getCellType() == CellType.NUMERIC) {
+                        valorEntrada.add((float) valorEntradaCell.getNumericCellValue());
+                    } else {
+                        valorEntrada.add(0.0f); // Si el valor está vacío, agrega 0.0f
+                    }
+                }
+
+                FichaTrabajador newtrabajador = new FichaTrabajador(nombre, descripcion, sueldoSemanal, semanasTrabajadas, entrada, valorEntrada);
+                trabajador.add(newtrabajador);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    };
+    
+    //guardar el invetario de excel
+    public void guardarTrabajadoresExcel(){
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Trabajadores");
+
+            // Crear fila de encabezado
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Nombre");
+            headerRow.createCell(1).setCellValue("Descripción");
+            headerRow.createCell(2).setCellValue("Semanas Trabajadas");
+            headerRow.createCell(3).setCellValue("Sueldo Semanal");
+            headerRow.createCell(4).setCellValue("Entrada 1");
+            headerRow.createCell(5).setCellValue("Valor Entrada 1");
+            // Columnas dinámicas adicionales se añadirán en el loop
+
+            int rowNum = 1;
+
+            for (FichaTrabajador newtrabajador : trabajador) {
+                Row row = sheet.createRow(rowNum++);
+
+                row.createCell(0).setCellValue(newtrabajador.getNombre());
+                row.createCell(1).setCellValue(newtrabajador.getDescripcion());
+                row.createCell(2).setCellValue(newtrabajador.getSemanasDeTrabajo());
+                row.createCell(3).setCellValue(newtrabajador.getSalarioSemanal());
+
+                Vector<String> entradas = newtrabajador.getEntrada();
+                Vector<Float> valoresEntradas = newtrabajador.getValorEntrada();
+
+                int colNum = 4;
+
+                for (int i = 0; i < entradas.size(); i++) {
+                    row.createCell(colNum++).setCellValue(entradas.get(i));
+                    row.createCell(colNum++).setCellValue(valoresEntradas.get(i));
+                }
+            }
+
+            // Guardar el archivo
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     };
 }

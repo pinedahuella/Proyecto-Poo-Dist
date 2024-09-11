@@ -39,6 +39,8 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         //crearemos el objeto gtrabajadores
         gTrabajadores = new GestionFichaTrabajador();
         
+        gTrabajadores.cargarTrabajadoresExcel();
+        
         //definimos el indice actual en -1 debido aque no representa ningun indice de la tabla real
         indiceActual = -1;
         
@@ -98,6 +100,7 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaTrabajadores = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        botonguardarDatos = new javax.swing.JPanel();
         panelf1 = new javax.swing.JPanel();
         panelBoton1 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
@@ -185,6 +188,24 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
             .addGap(0, 93, Short.MAX_VALUE)
         );
 
+        botonguardarDatos.setBackground(new java.awt.Color(153, 153, 0));
+        botonguardarDatos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonguardarDatosMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout botonguardarDatosLayout = new javax.swing.GroupLayout(botonguardarDatos);
+        botonguardarDatos.setLayout(botonguardarDatosLayout);
+        botonguardarDatosLayout.setHorizontalGroup(
+            botonguardarDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        botonguardarDatosLayout.setVerticalGroup(
+            botonguardarDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 31, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -194,7 +215,8 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 187, Short.MAX_VALUE)
+                        .addComponent(botonguardarDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(16, 16, 16)))
                 .addContainerGap())
@@ -203,7 +225,9 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(botonguardarDatos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -877,6 +901,14 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_PanelBoton3MouseClicked
 
+    private void botonguardarDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonguardarDatosMouseClicked
+        // TODO add your handling code here:
+        
+        //funcion provisional para guardas datos en el excel
+        gTrabajadores.guardarTrabajadoresExcel();
+        System.out.println("se ha guardado correctamente");
+    }//GEN-LAST:event_botonguardarDatosMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -993,6 +1025,7 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     private javax.swing.JTextArea areaDescripcionModificada;
     private javax.swing.JTextArea areaDescripcionNo;
     private javax.swing.JTextArea areaDescripcionT;
+    private javax.swing.JPanel botonguardarDatos;
     private javax.swing.JComboBox<String> comboOperacionEntrada;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
