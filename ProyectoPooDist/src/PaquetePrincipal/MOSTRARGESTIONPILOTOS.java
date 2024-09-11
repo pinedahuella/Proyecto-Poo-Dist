@@ -1,167 +1,71 @@
-  
 package PaquetePrincipal;
 
-import java.io.*;
-import java.util.ArrayList;
-import javax.swing.JFrame; 
+import com.toedter.calendar.JDateChooser;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import PaquetePrincipal.GESTIONPILOTOS;
-import PaquetePrincipal.GESTIONPILOTOS.Piloto;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 
 
 public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
 
-   DefaultTableModel modeloPilotoListado = new DefaultTableModel();
-    ArrayList<Piloto> listaPilotos = new ArrayList<>();
-    
+ public GESTIONPILOTOS gestionPilotos;
+    public Vector<Piloto> listaPilotos = new Vector<>();
+    DefaultTableModel modeloPilotos = new DefaultTableModel(); // Nombre corregido
+    private int indiceActual;
+
     
     public MOSTRARGESTIONPILOTOS() {
       initComponents();
-        this.setTitle("GESTIÓN DE PILOTOS");
+      indiceActual = 0;
 
-    String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELEFONO", "GÉNERO", "AÑOS", "ESTADO"};
-    for (String columna : columnas) {
-        modeloPilotoListado.addColumn(columna);
+        // Iniciamos la gestión de pilotos
+        gestionPilotos = new GESTIONPILOTOS();
+        gestionPilotos.cargarPilotosDesdeExcel();
+
+        // Definimos las columnas de la tabla de pilotos
+        String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
+        modeloPilotos.setColumnIdentifiers(columnas);
+
+        // Obtenemos la lista de pilotos
+        if (gestionPilotos.getPilotos() != null) {
+            listaPilotos = gestionPilotos.getPilotos();
+        }
+
+        // Cargamos los pilotos en la tabla
+        tblRegistroPilotos.setModel(modeloPilotos);
+
+        cargarPilotosEnTabla(); // Llamada al método para cargar pilotos
     }
 
-    tblRegistroPilotos.setModel(modeloPilotoListado);
+    // Método para cargar los pilotos en la tabla
+    private void cargarPilotosEnTabla() {
+        // Vaciamos la tabla completamente
+        modeloPilotos.setRowCount(0);
 
-    cargarDatosDesdeExcel();  // Cargar datos desde Excel
-    refrescarTabla();          // Refrescar la tabla para mostrar los datos
-    
-    tblRegistroPilotos.setVisible(false); // Asegúrate de que la tabla sea visible
-}
-
-
-public void cargarDatosDesdeExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try (FileInputStream file = new FileInputStream(new File(filePath))) {
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
-
-        listaPilotos.clear(); // Limpiar la lista antes de cargar nuevos datos
-
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Saltar la primera fila (encabezados)
-
-            GESTIONPILOTOS.Piloto piloto = new GESTIONPILOTOS.Piloto(
-                getCellValueAsString(row.getCell(0)), // Nombre
-                getCellValueAsString(row.getCell(1)), // Apellido
-                getCellValueAsString(row.getCell(2)), // **DPI** ahora es String
-                getCellValueAsString(row.getCell(3)), // Tipo de licencia
-                getCellValueAsString(row.getCell(4)), // Correo electrónico
-                getCellValueAsInt(row.getCell(5)),    // Número telefónico
-                getCellValueAsString(row.getCell(6)), // Género
-                getCellValueAsString(row.getCell(7)), // Fecha de nacimiento
-                getCellValueAsString(row.getCell(8))  // Estado
-            );
-
-            listaPilotos.add(piloto); // Añadir piloto a la lista
+        // Llenamos la tabla con los elementos de la lista
+        for (Piloto piloto : listaPilotos) {
+            modeloPilotos.addRow(new Object[]{
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getCorreoElectronicoPiloto(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getGeneroPiloto(),
+                piloto.getFechaDeNacimiento(),
+                piloto.getEstadoPiloto()
+            });
         }
 
-        workbook.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    // Refrescar la tabla después de cargar datos
-    refrescarTabla();
-}
- private String getCellValueAsString(Cell cell) {
-        if (cell != null) {
-            if (cell.getCellType() == CellType.STRING) {
-                return cell.getStringCellValue();
-            } else if (cell.getCellType() == CellType.NUMERIC) {
-                return String.valueOf(cell.getNumericCellValue()); // Convierte a string
-            }
-        }
-        return ""; // Devuelve una cadena vacía si la celda es nula
+        tblRegistroPilotos.setVisible(false); // Hacer visible la tabla
     }
 
-    private int getCellValueAsInt(Cell cell) {
-        if (cell != null && cell.getCellType() == CellType.NUMERIC) {
-            return (int) Math.round(cell.getNumericCellValue());
-        } else {
-            System.err.println("Error: La celda no es válida o está vacía.");
-            return 0; // Maneja el error como prefieras
-        }
-    }
-
-   private void guardarDatosEnExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try {
-        FileInputStream fileIn = new FileInputStream(new File(filePath));
-        XSSFWorkbook workbook = new XSSFWorkbook(fileIn);
-        XSSFSheet sheet = workbook.getSheet("Pilotos");
-
-        if (sheet == null) {
-            sheet = workbook.createSheet("Pilotos");
-            // Crear encabezados
-            Row header = sheet.createRow(0);
-            String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELÉFONO", "GÉNERO", "AÑOS", "ESTADO"};
-            for (int i = 0; i < columnas.length; i++) {
-                header.createCell(i).setCellValue(columnas[i]);
-            }
-        }
-
-        // Elimina la hoja anterior y crea una nueva para evitar duplicados
-        int lastRowNum = sheet.getLastRowNum();
-        if (lastRowNum > 0) {
-            for (int i = 1; i <= lastRowNum; i++) {
-                sheet.removeRow(sheet.getRow(i));
-            }
-        }
-
-        // Guardar los datos de los pilotos
-        int rowIndex = 1; // Empieza después del encabezado
-        for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-            Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(piloto.getNombrePiloto());
-            row.createCell(1).setCellValue(piloto.getApellidoPiloto());
-            row.createCell(2).setCellValue(piloto.getNumeroDeDpi()); // **DPI** ahora es String
-            row.createCell(3).setCellValue(piloto.getTipoLicencia());
-            row.createCell(4).setCellValue(piloto.getCorreoElectronicoPiloto());
-            row.createCell(5).setCellValue(piloto.getNumeroTelefonicoPiloto());
-            row.createCell(6).setCellValue(piloto.getGeneroPiloto());
-            row.createCell(7).setCellValue(piloto.getFechaDeNacimiento());
-            row.createCell(8).setCellValue(piloto.getEstadoPiloto());
-        }
-
-        // Guardar archivo Excel
-        try (FileOutputStream fileOut = new FileOutputStream(new File(filePath))) {
-            workbook.write(fileOut);
-        }
-
-        workbook.close();
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar datos en Excel: " + e.getMessage());
-    }
-}
-   
-    
-   public void refrescarTabla() {
-    modeloPilotoListado.setRowCount(0); // Limpiar la tabla actual
-    for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-        Object[] fila = {
-            piloto.getNombrePiloto(),
-            piloto.getApellidoPiloto(),
-            piloto.getNumeroDeDpi(),
-            piloto.getTipoLicencia(),
-            piloto.getCorreoElectronicoPiloto(),
-            piloto.getNumeroTelefonicoPiloto(),
-            piloto.getGeneroPiloto(),
-            piloto.getFechaDeNacimiento(),
-            piloto.getEstadoPiloto()
-        };
-        modeloPilotoListado.addRow(fila); // Añadir cada fila al modelo
-    }
-    tblRegistroPilotos.setVisible(true); // Hacer visible la tabla
-}
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -196,6 +100,7 @@ public void cargarDatosDesdeExcel() {
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
@@ -480,14 +385,22 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
     // Obtener los valores ingresados
     String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
     String apellidoBuscado = txtApellidoPilotoBuscar.getText().trim();
-    String dpiBuscado = txtNumeroDeDpiPilotoBuscar.getText().trim(); // Cambiado a String
+
+    // Convertir el DPI ingresado a long
+    long dpiBuscado;
+    try {
+        dpiBuscado = Long.parseLong(txtNumeroDeDpiPilotoBuscar.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "El DPI debe ser un número válido.");
+        return;
+    }
 
     // Reiniciar el modelo de la tabla
-    modeloPilotoListado.setRowCount(0);
+    modeloPilotos.setRowCount(0);
     boolean hayCoincidencias = false;
 
     // Buscar coincidencias en la lista de pilotos
-    for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
+    for (Piloto piloto : listaPilotos) {
         boolean coincide = true;
 
         if (!nombreBuscado.isEmpty() && !piloto.getNombrePiloto().equalsIgnoreCase(nombreBuscado)) {
@@ -498,13 +411,14 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
             coincide = false;
         }
 
-        if (!dpiBuscado.isEmpty() && !piloto.getNumeroDeDpi().equals(dpiBuscado)) { // Comparar como String
+        // Comparar DPI como long
+        if (piloto.getNumeroDeDpi() != dpiBuscado) {
             coincide = false;
         }
 
         if (coincide) {
-            // Si hay coincidencias, agregarlas al modelo de la tabla
-            Object[] fila = {
+            // Si hay coincidencias, agregar las filas al modelo de la tabla
+            modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
                 piloto.getNumeroDeDpi(),
@@ -514,8 +428,7 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
                 piloto.getGeneroPiloto(),
                 piloto.getFechaDeNacimiento(),
                 piloto.getEstadoPiloto()
-            };
-            modeloPilotoListado.addRow(fila);
+            });
             hayCoincidencias = true;
         }
     }

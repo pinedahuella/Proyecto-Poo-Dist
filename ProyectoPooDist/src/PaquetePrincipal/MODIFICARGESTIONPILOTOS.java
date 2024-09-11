@@ -1,178 +1,59 @@
 package PaquetePrincipal;
 
-import java.io.*;
-import java.util.ArrayList;
-import javax.swing.JFrame; 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import PaquetePrincipal.GESTIONPILOTOS.Piloto;
 import com.toedter.calendar.JDateChooser;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.io.File;
-import java.io.IOException;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import com.toedter.calendar.JDateChooser;
+import java.text.ParseException;
+import javax.swing.JFrame; 
+import javax.swing.JOptionPane;
 
 
 public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
+    // Variables globales
+ public GESTIONPILOTOS gestionPilotos;
+    public Vector<Piloto> listaPilotos = new Vector<>();
+    DefaultTableModel modeloPilotos = new DefaultTableModel();
+    private int indiceActual;
 
-   DefaultTableModel modeloPilotoListado = new DefaultTableModel();
-    ArrayList<Piloto> listaPilotos = new ArrayList<>();
-    
-    
 
 public MODIFICARGESTIONPILOTOS() {
-    initComponents();
-    this.setTitle("GESTIÓN DE PILOTOS");
+     initComponents();
+        indiceActual = 0;
 
-    String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELEFONO", "GÉNERO", "AÑOS", "ESTADO"};
-    for (String columna : columnas) {
-        modeloPilotoListado.addColumn(columna);
+        // Iniciamos la gestión de pilotos
+        gestionPilotos = new GESTIONPILOTOS();
+        gestionPilotos.cargarPilotosDesdeExcel();
+
+        // Definimos las columnas de la tabla de pilotos
+        String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
+        modeloPilotos.setColumnIdentifiers(columnas);
+
+        // Obtenemos la lista de pilotos
+        if (gestionPilotos.getPilotos() != null) {
+            listaPilotos = gestionPilotos.getPilotos();
+        }
+
+        // Cargamos los pilotos en la tabla
+        tblRegistroPilotos.setModel(modeloPilotos);
+
+        cargarPilotosEnTabla(); // Llamada al método para cargar pilotos
     }
 
-    tblRegistroPilotos.setModel(modeloPilotoListado);
+    // Método para cargar los pilotos en la tabla
+    private void cargarPilotosEnTabla() {
+        // Vaciamos la tabla completamente
+        modeloPilotos.setRowCount(0);
 
-    cargarDatosDesdeExcel();  // Cargar datos desde Excel
-    refrescarTabla();          // Refrescar la tabla para mostrar los datos
-    
-    tblRegistroPilotos.setVisible(false); // Asegúrate de que la tabla sea visible
-}
-
-
-public void cargarDatosDesdeExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try (FileInputStream file = new FileInputStream(new File(filePath))) {
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
-
-        listaPilotos.clear(); // Limpiar la lista antes de cargar nuevos datos
-
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Saltar la primera fila (encabezados)
-
-            GESTIONPILOTOS.Piloto piloto = new GESTIONPILOTOS.Piloto(
-                getCellValueAsString(row.getCell(0)), // Nombre
-                getCellValueAsString(row.getCell(1)), // Apellido
-                getCellValueAsString(row.getCell(2)), // **DPI** ahora es String
-                getCellValueAsString(row.getCell(3)), // Tipo de licencia
-                getCellValueAsString(row.getCell(4)), // Correo electrónico
-                getCellValueAsInt(row.getCell(5)),    // Número telefónico
-                getCellValueAsString(row.getCell(6)), // Género
-                getCellValueAsString(row.getCell(7)), // Fecha de nacimiento
-                getCellValueAsString(row.getCell(8))  // Estado
-            );
-
-            listaPilotos.add(piloto); // Añadir piloto a la lista
-        }
-
-        workbook.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    // Refrescar la tabla después de cargar datos
-    refrescarTabla();
-}
- private String getCellValueAsString(Cell cell) {
-        if (cell != null) {
-            if (cell.getCellType() == CellType.STRING) {
-                return cell.getStringCellValue();
-            } else if (cell.getCellType() == CellType.NUMERIC) {
-                return String.valueOf(cell.getNumericCellValue()); // Convierte a string
-            }
-        }
-        return ""; // Devuelve una cadena vacía si la celda es nula
-    }
-
-    private int getCellValueAsInt(Cell cell) {
-        if (cell != null && cell.getCellType() == CellType.NUMERIC) {
-            return (int) Math.round(cell.getNumericCellValue());
-        } else {
-            System.err.println("Error: La celda no es válida o está vacía.");
-            return 0; // Maneja el error como prefieras
-        }
-    }
-
-   private void guardarDatosEnExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try {
-        FileInputStream fileIn = new FileInputStream(new File(filePath));
-        XSSFWorkbook workbook = new XSSFWorkbook(fileIn);
-        XSSFSheet sheet = workbook.getSheet("Pilotos");
-
-        if (sheet == null) {
-            sheet = workbook.createSheet("Pilotos");
-            // Crear encabezados
-            Row header = sheet.createRow(0);
-            String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELÉFONO", "GÉNERO", "AÑOS", "ESTADO"};
-            for (int i = 0; i < columnas.length; i++) {
-                header.createCell(i).setCellValue(columnas[i]);
-            }
-        }
-
-        // Elimina la hoja anterior y crea una nueva para evitar duplicados
-        int lastRowNum = sheet.getLastRowNum();
-        if (lastRowNum > 0) {
-            for (int i = 1; i <= lastRowNum; i++) {
-                sheet.removeRow(sheet.getRow(i));
-            }
-        }
-
-        // Guardar los datos de los pilotos
-        int rowIndex = 1; // Empieza después del encabezado
-        for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-            Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(piloto.getNombrePiloto());
-            row.createCell(1).setCellValue(piloto.getApellidoPiloto());
-            row.createCell(2).setCellValue(piloto.getNumeroDeDpi()); // **DPI** ahora es String
-            row.createCell(3).setCellValue(piloto.getTipoLicencia());
-            row.createCell(4).setCellValue(piloto.getCorreoElectronicoPiloto());
-            row.createCell(5).setCellValue(piloto.getNumeroTelefonicoPiloto());
-            row.createCell(6).setCellValue(piloto.getGeneroPiloto());
-            row.createCell(7).setCellValue(piloto.getFechaDeNacimiento());
-            row.createCell(8).setCellValue(piloto.getEstadoPiloto());
-        }
-
-        // Guardar archivo Excel
-        try (FileOutputStream fileOut = new FileOutputStream(new File(filePath))) {
-            workbook.write(fileOut);
-        }
-
-        workbook.close();
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar datos en Excel: " + e.getMessage());
-    }
-}
-   
-   
-   
-   public void refrescarTabla() {
-    modeloPilotoListado.setRowCount(0); // Limpiar la tabla actual
-    for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-        Object[] fila = {
-            piloto.getNombrePiloto(),
-            piloto.getApellidoPiloto(),
-            piloto.getNumeroDeDpi(),
-            piloto.getTipoLicencia(),
-            piloto.getCorreoElectronicoPiloto(),
-            piloto.getNumeroTelefonicoPiloto(),
-            piloto.getGeneroPiloto(),
-            piloto.getFechaDeNacimiento(),
-            piloto.getEstadoPiloto()
-        };
-        modeloPilotoListado.addRow(fila); // Añadir cada fila al modelo
-    }
-    tblRegistroPilotos.setVisible(true); // Hacer visible la tabla
-}
-    
-    
-        public void refrescarTablaOcultar() {
-        modeloPilotoListado.setRowCount(0);
-        for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-            Object[] fila = {
+        // Llenamos la tabla con los elementos de la lista
+        for (Piloto piloto : listaPilotos) {
+            modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
                 piloto.getNumeroDeDpi(),
@@ -182,13 +63,36 @@ public void cargarDatosDesdeExcel() {
                 piloto.getGeneroPiloto(),
                 piloto.getFechaDeNacimiento(),
                 piloto.getEstadoPiloto()
-            };
-            modeloPilotoListado.addRow(fila);
+            });
         }
-        tblRegistroPilotos.setVisible(false);
+
+        tblRegistroPilotos.setVisible(false); // Hacer visible la tabla
     }
-        
+
     
+    
+        private void cargarPilotosEnTablaGeneral() {
+        // Vaciamos la tabla completamente
+        modeloPilotos.setRowCount(0);
+
+        // Llenamos la tabla con los elementos de la lista
+        for (Piloto piloto : listaPilotos) {
+            modeloPilotos.addRow(new Object[]{
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getCorreoElectronicoPiloto(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getGeneroPiloto(),
+                piloto.getFechaDeNacimiento(),
+                piloto.getEstadoPiloto()
+            });
+        }
+
+        tblRegistroPilotos.setVisible(true); // Hacer visible la tabla
+    }
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -226,6 +130,8 @@ public void cargarDatosDesdeExcel() {
         btnBuscarPilotoSistema = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblRegistroPilotos = new javax.swing.JTable();
+        btnInsertarPilotosSistema = new javax.swing.JButton();
+        btnBuscarPilotoSistemaTodos = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         btnModificarPiloto1 = new javax.swing.JButton();
         btnAgregarPiloto1 = new javax.swing.JButton();
@@ -242,6 +148,7 @@ public void cargarDatosDesdeExcel() {
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
@@ -264,6 +171,12 @@ public void cargarDatosDesdeExcel() {
 
         jLabel14.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel14.setText("CORREO ELECTRONICO");
+
+        txtCorreoElectronicoPilotoModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCorreoElectronicoPilotoModificarActionPerformed(evt);
+            }
+        });
 
         jLabel15.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel15.setText("FECHA DE NACIMIENTO");
@@ -314,6 +227,12 @@ public void cargarDatosDesdeExcel() {
             }
         });
 
+        jScrollPane5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jScrollPane5MouseClicked(evt);
+            }
+        });
+
         tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -327,144 +246,176 @@ public void cargarDatosDesdeExcel() {
         ));
         jScrollPane5.setViewportView(tblRegistroPilotos);
 
+        btnInsertarPilotosSistema.setBackground(new java.awt.Color(0, 102, 255));
+        btnInsertarPilotosSistema.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnInsertarPilotosSistema.setForeground(new java.awt.Color(255, 255, 255));
+        btnInsertarPilotosSistema.setText("INSERTAR");
+        btnInsertarPilotosSistema.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnInsertarPilotosSistema.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertarPilotosSistemaActionPerformed(evt);
+            }
+        });
+
+        btnBuscarPilotoSistemaTodos.setBackground(new java.awt.Color(0, 102, 255));
+        btnBuscarPilotoSistemaTodos.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnBuscarPilotoSistemaTodos.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscarPilotoSistemaTodos.setText("TODOS");
+        btnBuscarPilotoSistemaTodos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnBuscarPilotoSistemaTodos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarPilotoSistemaTodosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtCorreoElectronicoPilotoModificar))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtNumeroDeDpiPilotoModificar))
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtNombrePilotoModificar)
-                                        .addComponent(txtApellidoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTipoDeLicenciaPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFechaDeNacimientoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel18))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtGeneroPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(txtNumeroTelefonicoPilotoModificar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnMoficarPilotSistema, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNumeroDeDpiPilotoBuscar))
+                                .addComponent(txtNumeroTelefonicoPilotoModificar)
+                                .addGap(220, 220, 220))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtTipoDeLicenciaPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtFechaDeNacimientoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(6, 6, 6)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNumeroDeDpiPilotoModificar)
+                                    .addComponent(txtCorreoElectronicoPilotoModificar))
+                                .addGap(44, 44, 44)
+                                .addComponent(btnMoficarPilotSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtNombrePilotoBuscar)
-                                    .addComponent(txtApellidoPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBuscarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtNombrePilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtApellidoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtGeneroPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane5)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtNumeroDeDpiPilotoBuscar))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtNombrePilotoBuscar)
+                                            .addComponent(txtApellidoPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(86, 86, 86)
+                                        .addComponent(btnBuscarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnBuscarPilotoSistemaTodos, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnInsertarPilotosSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                    .addGap(28, 28, 28)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE)
-                    .addContainerGap()))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtApellidoPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11)))
-                    .addComponent(btnBuscarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNumeroDeDpiPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel19))
+                            .addComponent(jLabel11))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtNumeroDeDpiPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel19))
+                        .addGap(50, 50, 50))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(btnBuscarPilotoSistema)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnBuscarPilotoSistemaTodos)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnInsertarPilotosSistema)
+                        .addGap(18, 18, 18)))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel16)
-                            .addComponent(txtGeneroPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addComponent(txtNumeroTelefonicoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel18))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnMoficarPilotSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtNombrePilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel10)
+                        .addComponent(txtApellidoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel16)
+                        .addComponent(txtGeneroPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(94, 94, 94)
+                        .addGap(80, 80, 80)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNombrePilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                            .addComponent(btnMoficarPilotSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel18)
+                                    .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel17)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtNumeroTelefonicoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtApellidoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNumeroDeDpiPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel14)
-                            .addComponent(txtCorreoElectronicoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtTipoDeLicenciaPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtFechaDeNacimientoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15))
-                        .addGap(0, 7, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(129, 129, 129)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(226, Short.MAX_VALUE)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtTipoDeLicenciaPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel13)
+                                .addComponent(jLabel12))
+                            .addComponent(txtNumeroDeDpiPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtFechaDeNacimientoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel15)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtCorreoElectronicoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnModificarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
@@ -603,7 +554,7 @@ public void cargarDatosDesdeExcel() {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
+                    .addComponent(jTextField5)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(151, Short.MAX_VALUE))
         );
@@ -652,16 +603,12 @@ public void cargarDatosDesdeExcel() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMoficarPilotSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoficarPilotSistemaActionPerformed
-    int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
+int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
 
     if (filaSeleccionada < 0) {
-        // Si no hay fila seleccionada, mostrar mensaje
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto para modificar.");
-        return; // Salir del método
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto de la tabla para modificar.");
+        return;
     }
-
-    // Obtener el piloto correspondiente de la lista utilizando el índice de la fila seleccionada
-    Piloto pilotoSeleccionado = listaPilotos.get(filaSeleccionada);
 
     // Obtener los nuevos datos del formulario
     String nuevoNombre = txtNombrePilotoModificar.getText().trim();
@@ -672,62 +619,93 @@ public void cargarDatosDesdeExcel() {
     JDateChooser dateChooser = txtFechaDeNacimientoPilotoModificar;
     Date fechaNacimientoDate = dateChooser.getDate();
 
-    if (fechaNacimientoDate == null) {
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
-        return;
+    // Validar si la fecha de nacimiento es nula
+    String fechaDeNacimiento = null;
+    if (fechaNacimientoDate != null) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        fechaDeNacimiento = sdf.format(fechaNacimientoDate);
     }
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-    String fechaDeNacimiento = sdf.format(fechaNacimientoDate);
     String nuevoEstado = txtEstadoPilotoModificar.getSelectedItem().toString().trim();
 
-    // Validación de campos
-    if (nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || 
-        nuevoTipoLicencia.isEmpty() || nuevoCorreo.isEmpty() ||
-        nuevoGenero.isEmpty() || nuevoEstado.isEmpty() ||
-        txtNumeroDeDpiPilotoModificar.getText().trim().isEmpty() || 
-        txtNumeroTelefonicoPilotoModificar.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, llena todos los campos antes de continuar.");
-        return;
-    }
-
-    // Validar DPI como String y número telefónico como int
-    String nuevoDPI = txtNumeroDeDpiPilotoModificar.getText().trim();
+    // Obtener DPI y número telefónico
+    long nuevoDPI;
     int nuevoTelefono;
-    
     try {
+        nuevoDPI = Long.parseLong(txtNumeroDeDpiPilotoModificar.getText().trim());
         nuevoTelefono = Integer.parseInt(txtNumeroTelefonicoPilotoModificar.getText().trim());
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "El número telefónico debe ser un valor numérico.");
+        JOptionPane.showMessageDialog(this, "El DPI y el número telefónico deben ser números válidos.");
         return;
     }
 
-    // Verificar si el nuevo DPI ya existe (exceptuando el piloto que se está modificando)
-    for (Piloto pilotoExistente : listaPilotos) {
-        if (pilotoExistente.getNumeroDeDpi().equals(nuevoDPI) && pilotoExistente != pilotoSeleccionado) {
-            JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
-            return;
-        }
+    // Validar DPI y número de teléfono
+    if (String.valueOf(nuevoDPI).length() != 13) {
+        JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
+        return;
     }
 
-    // Actualizar los datos del piloto
-    pilotoSeleccionado.setNombrePiloto(nuevoNombre);
-    pilotoSeleccionado.setApellidoPiloto(nuevoApellido);
-    pilotoSeleccionado.setNumeroDeDpi(nuevoDPI); // Se mantiene como String
-    pilotoSeleccionado.setTipoLicencia(nuevoTipoLicencia);
-    pilotoSeleccionado.setCorreoElectronicoPiloto(nuevoCorreo);
-    pilotoSeleccionado.setNumeroTelefonicoPiloto(nuevoTelefono); // Se mantiene como int
-    pilotoSeleccionado.setGeneroPiloto(nuevoGenero);
-    pilotoSeleccionado.setFechaDeNacimiento(fechaDeNacimiento);
-    pilotoSeleccionado.setEstadoPiloto(nuevoEstado);
+    if (String.valueOf(nuevoTelefono).length() != 8) {
+        JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
+        return;
+    }
 
-    // Guardar los cambios en Excel
-    guardarDatosEnExcel();
+    
+            // Validar que el correo termine en @gmail.com
+        if (!nuevoCorreo.endsWith("@gmail.com")) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
+            return;
+        }
+        
+    
+     // Verificar si el piloto ya existe (excluyendo el piloto seleccionado)
+for (int i = 0; i < listaPilotos.size(); i++) {
+    Piloto pilotoExistente = listaPilotos.get(i);
 
-    // Refrescar y ocultar la tabla
-    refrescarTablaOcultar();
+    // Omitir la verificación de duplicados para el piloto seleccionado
+    if (i == filaSeleccionada) {
+        continue;
+    }
 
-    JOptionPane.showMessageDialog(this, "Datos del piloto modificados exitosamente.");
+    if (pilotoExistente.getNumeroDeDpi() == nuevoDPI) { // Comparar como long
+        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
+        return;
+    }
+    if (pilotoExistente.getNumeroTelefonicoPiloto() == nuevoTelefono) { // Comparar como int
+        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
+        return;
+    }
+    if (pilotoExistente.getCorreoElectronicoPiloto().equals(nuevoCorreo)) {
+        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
+        return;
+    }
+}
+        
+        
+    // Actualizar los datos del piloto seleccionado
+    Piloto pilotoAActualizar = listaPilotos.get(filaSeleccionada);
+    pilotoAActualizar.setNombrePiloto(nuevoNombre);
+    pilotoAActualizar.setApellidoPiloto(nuevoApellido);
+    pilotoAActualizar.setTipoLicencia(nuevoTipoLicencia);
+    pilotoAActualizar.setCorreoElectronicoPiloto(nuevoCorreo);
+    pilotoAActualizar.setNumeroTelefonicoPiloto(nuevoTelefono);
+    pilotoAActualizar.setGeneroPiloto(nuevoGenero);
+    if (fechaDeNacimiento != null) {
+        pilotoAActualizar.setFechaDeNacimiento(fechaDeNacimiento);
+    }
+    pilotoAActualizar.setEstadoPiloto(nuevoEstado);
+
+    // Actualizar la tabla
+    cargarPilotosEnTabla();
+
+    // Guardar los cambios en el archivo Excel
+    try {
+        gestionPilotos.setPilotos(listaPilotos); 
+        gestionPilotos.guardarPilotosEnExcel();
+        JOptionPane.showMessageDialog(this, "Datos del piloto modificados exitosamente.");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al guardar los datos en Excel: " + e.getMessage());
+    }
 
     // Limpiar campos de entrada
     txtNombrePilotoModificar.setText("");
@@ -742,7 +720,7 @@ public void cargarDatosDesdeExcel() {
     }//GEN-LAST:event_btnMoficarPilotSistemaActionPerformed
 
     private void btnBuscarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPilotoSistemaActionPerformed
-   if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
+if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         txtApellidoPilotoBuscar.getText().trim().isEmpty() ||
         txtNumeroDeDpiPilotoBuscar.getText().trim().isEmpty()) {
 
@@ -753,14 +731,22 @@ public void cargarDatosDesdeExcel() {
     // Obtener los valores ingresados
     String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
     String apellidoBuscado = txtApellidoPilotoBuscar.getText().trim();
-    String dpiBuscado = txtNumeroDeDpiPilotoBuscar.getText().trim(); // Cambiado a String
+
+    // Convertir el DPI ingresado a long
+    long dpiBuscado;
+    try {
+        dpiBuscado = Long.parseLong(txtNumeroDeDpiPilotoBuscar.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "El DPI debe ser un número válido.");
+        return;
+    }
 
     // Reiniciar el modelo de la tabla
-    modeloPilotoListado.setRowCount(0);
+    modeloPilotos.setRowCount(0);
     boolean hayCoincidencias = false;
 
     // Buscar coincidencias en la lista de pilotos
-    for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
+    for (Piloto piloto : listaPilotos) {
         boolean coincide = true;
 
         if (!nombreBuscado.isEmpty() && !piloto.getNombrePiloto().equalsIgnoreCase(nombreBuscado)) {
@@ -771,13 +757,14 @@ public void cargarDatosDesdeExcel() {
             coincide = false;
         }
 
-        if (!dpiBuscado.isEmpty() && !piloto.getNumeroDeDpi().equals(dpiBuscado)) { // Comparar como String
+        // Comparar DPI como long
+        if (piloto.getNumeroDeDpi() != dpiBuscado) {
             coincide = false;
         }
 
         if (coincide) {
-            // Si hay coincidencias, agregarlas al modelo de la tabla
-            Object[] fila = {
+            // Si hay coincidencias, agregar las filas al modelo de la tabla
+            modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
                 piloto.getNumeroDeDpi(),
@@ -787,8 +774,7 @@ public void cargarDatosDesdeExcel() {
                 piloto.getGeneroPiloto(),
                 piloto.getFechaDeNacimiento(),
                 piloto.getEstadoPiloto()
-            };
-            modeloPilotoListado.addRow(fila);
+            });
             hayCoincidencias = true;
         }
     }
@@ -855,6 +841,59 @@ public void cargarDatosDesdeExcel() {
         this.setVisible(false);
     }//GEN-LAST:event_btnEstadoPiloto3ActionPerformed
 
+    private void btnInsertarPilotosSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarPilotosSistemaActionPerformed
+ int selectedRow = tblRegistroPilotos.getSelectedRow();
+    
+    if (selectedRow != -1) {
+        // Obtiene los datos de la fila seleccionada
+        String nombre = tblRegistroPilotos.getValueAt(selectedRow, 0).toString();
+        String apellido = tblRegistroPilotos.getValueAt(selectedRow, 1).toString();
+        String dpi = tblRegistroPilotos.getValueAt(selectedRow, 2).toString();
+        String tipoLicencia = tblRegistroPilotos.getValueAt(selectedRow, 3).toString();
+        String correo = tblRegistroPilotos.getValueAt(selectedRow, 4).toString();
+        String telefono = tblRegistroPilotos.getValueAt(selectedRow, 5).toString();
+        String genero = tblRegistroPilotos.getValueAt(selectedRow, 6).toString();
+        String fechaNacimientoStr = tblRegistroPilotos.getValueAt(selectedRow, 7).toString();
+        String estado = tblRegistroPilotos.getValueAt(selectedRow, 8).toString();
+        
+        // Convierte el String de fecha a Date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Asegúrate de que el formato coincida con el formato de la tabla
+        Date fechaNacimiento = null;
+        try {
+            fechaNacimiento = dateFormat.parse(fechaNacimientoStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al convertir la fecha de nacimiento. Asegúrate de que el formato sea correcto.");
+            return;
+        }
+        
+        // Transfiere los datos a los campos correspondientes
+        txtNombrePilotoModificar.setText(nombre);
+        txtApellidoPilotoModificar.setText(apellido);
+        txtNumeroDeDpiPilotoModificar.setText(dpi);
+        txtTipoDeLicenciaPilotoModificar.setSelectedItem(tipoLicencia);
+        txtCorreoElectronicoPilotoModificar.setText(correo);
+        txtNumeroTelefonicoPilotoModificar.setText(telefono);
+        txtGeneroPilotoModificar.setSelectedItem(genero);
+        txtFechaDeNacimientoPilotoModificar.setDate(fechaNacimiento);
+        txtEstadoPilotoModificar.setSelectedItem(estado);
+    } else {
+        JOptionPane.showMessageDialog(null, "Por favor, seleccione un piloto de la tabla para insertar.");
+    }
+    }//GEN-LAST:event_btnInsertarPilotosSistemaActionPerformed
+
+    private void jScrollPane5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane5MouseClicked
+
+    }//GEN-LAST:event_jScrollPane5MouseClicked
+
+    private void btnBuscarPilotoSistemaTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPilotoSistemaTodosActionPerformed
+    cargarPilotosEnTablaGeneral();
+    }//GEN-LAST:event_btnBuscarPilotoSistemaTodosActionPerformed
+
+    private void txtCorreoElectronicoPilotoModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCorreoElectronicoPilotoModificarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCorreoElectronicoPilotoModificarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -893,9 +932,11 @@ public void cargarDatosDesdeExcel() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarPiloto1;
     private javax.swing.JButton btnBuscarPilotoSistema;
+    private javax.swing.JButton btnBuscarPilotoSistemaTodos;
     private javax.swing.JButton btnEliminarPiloto1;
     private javax.swing.JButton btnEstadoPiloto3;
     private javax.swing.JButton btnInicioPiloto1;
+    private javax.swing.JButton btnInsertarPilotosSistema;
     private javax.swing.JButton btnListaPiloto1;
     private javax.swing.JButton btnModificarPiloto1;
     private javax.swing.JButton btnMoficarPilotSistema;

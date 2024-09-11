@@ -1,167 +1,77 @@
 package PaquetePrincipal;
 
-import java.io.*;
-import java.util.ArrayList;
+import com.toedter.calendar.JDateChooser;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import com.toedter.calendar.JDateChooser;
+import java.text.ParseException;
 import javax.swing.JFrame; 
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import PaquetePrincipal.GESTIONPILOTOS;
-import PaquetePrincipal.GESTIONPILOTOS.Piloto;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class ESTADOGESTIONPILOTOS extends javax.swing.JFrame {
- DefaultTableModel modeloPilotoListado = new DefaultTableModel();
-    ArrayList<Piloto> listaPilotos = new ArrayList<>();
+    // Variables globales
+ public GESTIONPILOTOS gestionPilotos;
+    public Vector<Piloto> listaPilotos = new Vector<>();
+    DefaultTableModel modeloPilotos = new DefaultTableModel();
+    private int indiceActual;
+
+
+public ESTADOGESTIONPILOTOS() {
+     initComponents();
+        indiceActual = 0;
+
+        // Iniciamos la gestión de pilotos
+        gestionPilotos = new GESTIONPILOTOS();
+        gestionPilotos.cargarPilotosDesdeExcel();
+
+        // Definimos las columnas de la tabla de pilotos
+        String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
+        modeloPilotos.setColumnIdentifiers(columnas);
+
+        // Obtenemos la lista de pilotos
+        if (gestionPilotos.getPilotos() != null) {
+            listaPilotos = gestionPilotos.getPilotos();
+        }
+
+        // Cargamos los pilotos en la tabla
+        tblRegistroPilotos.setModel(modeloPilotos);
+
+        cargarPilotosEnTabla(); // Llamada al método para cargar pilotos
+    }
+
+    // Método para cargar los pilotos en la tabla
+    private void cargarPilotosEnTabla() {
+        // Vaciamos la tabla completamente
+        modeloPilotos.setRowCount(0);
+
+        // Llenamos la tabla con los elementos de la lista
+        for (Piloto piloto : listaPilotos) {
+            modeloPilotos.addRow(new Object[]{
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getCorreoElectronicoPiloto(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getGeneroPiloto(),
+                piloto.getFechaDeNacimiento(),
+                piloto.getEstadoPiloto()
+            });
+        }
+
+        tblRegistroPilotos.setVisible(true); // Hacer visible la tabla
+    }
+
     
     
-    public ESTADOGESTIONPILOTOS() {
-        initComponents();
-this.setTitle("GESTIÓN DE PILOTOS");
-
-    String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELEFONO", "GÉNERO", "AÑOS", "ESTADO"};
-    for (String columna : columnas) {
-        modeloPilotoListado.addColumn(columna);
-    }
-
-    tblRegistroPilotos.setModel(modeloPilotoListado);
-
-    cargarDatosDesdeExcel();  // Cargar datos desde Excel
-    refrescarTabla();          // Refrescar la tabla para mostrar los datos
-    
-    tblRegistroPilotos.setVisible(true); // Asegúrate de que la tabla sea visible
-}
-
-public void cargarDatosDesdeExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try (FileInputStream file = new FileInputStream(new File(filePath))) {
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
-
-        listaPilotos.clear(); // Limpiar la lista antes de cargar nuevos datos
-
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Saltar la primera fila (encabezados)
-
-            GESTIONPILOTOS.Piloto piloto = new GESTIONPILOTOS.Piloto(
-                getCellValueAsString(row.getCell(0)), // Nombre
-                getCellValueAsString(row.getCell(1)), // Apellido
-                getCellValueAsString(row.getCell(2)), // **DPI** ahora es String
-                getCellValueAsString(row.getCell(3)), // Tipo de licencia
-                getCellValueAsString(row.getCell(4)), // Correo electrónico
-                getCellValueAsInt(row.getCell(5)),    // Número telefónico
-                getCellValueAsString(row.getCell(6)), // Género
-                getCellValueAsString(row.getCell(7)), // Fecha de nacimiento
-                getCellValueAsString(row.getCell(8))  // Estado
-            );
-
-            listaPilotos.add(piloto); // Añadir piloto a la lista
-        }
-
-        workbook.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    // Refrescar la tabla después de cargar datos
-    refrescarTabla();
-}
- private String getCellValueAsString(Cell cell) {
-        if (cell != null) {
-            if (cell.getCellType() == CellType.STRING) {
-                return cell.getStringCellValue();
-            } else if (cell.getCellType() == CellType.NUMERIC) {
-                return String.valueOf(cell.getNumericCellValue()); // Convierte a string
-            }
-        }
-        return ""; // Devuelve una cadena vacía si la celda es nula
-    }
-
-    private int getCellValueAsInt(Cell cell) {
-        if (cell != null && cell.getCellType() == CellType.NUMERIC) {
-            return (int) Math.round(cell.getNumericCellValue());
-        } else {
-            System.err.println("Error: La celda no es válida o está vacía.");
-            return 0; // Maneja el error como prefieras
-        }
-    }
-
-   private void guardarDatosEnExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try {
-        FileInputStream fileIn = new FileInputStream(new File(filePath));
-        XSSFWorkbook workbook = new XSSFWorkbook(fileIn);
-        XSSFSheet sheet = workbook.getSheet("Pilotos");
-
-        if (sheet == null) {
-            sheet = workbook.createSheet("Pilotos");
-            // Crear encabezados
-            Row header = sheet.createRow(0);
-            String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELÉFONO", "GÉNERO", "AÑOS", "ESTADO"};
-            for (int i = 0; i < columnas.length; i++) {
-                header.createCell(i).setCellValue(columnas[i]);
-            }
-        }
-
-        // Elimina la hoja anterior y crea una nueva para evitar duplicados
-        int lastRowNum = sheet.getLastRowNum();
-        if (lastRowNum > 0) {
-            for (int i = 1; i <= lastRowNum; i++) {
-                sheet.removeRow(sheet.getRow(i));
-            }
-        }
-
-        // Guardar los datos de los pilotos
-        int rowIndex = 1; // Empieza después del encabezado
-        for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-            Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(piloto.getNombrePiloto());
-            row.createCell(1).setCellValue(piloto.getApellidoPiloto());
-            row.createCell(2).setCellValue(piloto.getNumeroDeDpi()); // **DPI** ahora es String
-            row.createCell(3).setCellValue(piloto.getTipoLicencia());
-            row.createCell(4).setCellValue(piloto.getCorreoElectronicoPiloto());
-            row.createCell(5).setCellValue(piloto.getNumeroTelefonicoPiloto());
-            row.createCell(6).setCellValue(piloto.getGeneroPiloto());
-            row.createCell(7).setCellValue(piloto.getFechaDeNacimiento());
-            row.createCell(8).setCellValue(piloto.getEstadoPiloto());
-        }
-
-        // Guardar archivo Excel
-        try (FileOutputStream fileOut = new FileOutputStream(new File(filePath))) {
-            workbook.write(fileOut);
-        }
-
-        workbook.close();
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar datos en Excel: " + e.getMessage());
-    }
-}
-   
-   
-   
-   
-   public void refrescarTabla() {
-    modeloPilotoListado.setRowCount(0); // Limpiar la tabla actual
-    for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-        Object[] fila = {
-            piloto.getNombrePiloto(),
-            piloto.getApellidoPiloto(),
-            piloto.getNumeroDeDpi(),
-            piloto.getTipoLicencia(),
-            piloto.getCorreoElectronicoPiloto(),
-            piloto.getNumeroTelefonicoPiloto(),
-            piloto.getGeneroPiloto(),
-            piloto.getFechaDeNacimiento(),
-            piloto.getEstadoPiloto()
-        };
-        modeloPilotoListado.addRow(fila); // Añadir cada fila al modelo
-    }
-    tblRegistroPilotos.setVisible(true); // Hacer visible la tabla
-}
-    
-   
-
+        
         
 
     @SuppressWarnings("unchecked")
@@ -185,7 +95,7 @@ public void cargarDatosDesdeExcel() {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRegistroPilotos = new javax.swing.JTable();
         jLabel18 = new javax.swing.JLabel();
-        txtEstadoPiloto = new javax.swing.JComboBox<>();
+        txtEstadoPilotoModificar = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -320,6 +230,7 @@ public void cargarDatosDesdeExcel() {
                 .addGap(25, 25, 25))
         );
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
@@ -353,7 +264,7 @@ public void cargarDatosDesdeExcel() {
         jLabel18.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel18.setText("ESTADO DEL PILOTO");
 
-        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEUTRO", "ENFERMO", "EN CASA", "EN VACACIONES", "EN VIAJE" }));
+        txtEstadoPilotoModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEUTRO", "ENFERMO", "EN CASA", "EN VACACIONES", "EN VIAJE" }));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -365,7 +276,7 @@ public void cargarDatosDesdeExcel() {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel18)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 805, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnActualizarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -378,7 +289,7 @@ public void cargarDatosDesdeExcel() {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
                 .addGap(40, 40, 40)
                 .addComponent(btnActualizarPilotoSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
@@ -444,43 +355,33 @@ public void cargarDatosDesdeExcel() {
 
     private void btnActualizarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarPilotoSistemaActionPerformed
  int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
-    if (filaSeleccionada == -1) {
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto de la tabla.");
+
+    if (filaSeleccionada < 0) {
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto de la tabla para modificar.");
         return;
     }
 
-    String nombre = tblRegistroPilotos.getValueAt(filaSeleccionada, 0).toString();
-    String apellido = tblRegistroPilotos.getValueAt(filaSeleccionada, 1).toString();
-    String dpi; // Cambiado a String
+    // Obtener el nuevo estado del formulario
+    String nuevoEstado = txtEstadoPilotoModificar.getSelectedItem().toString().trim();
+
+    // Actualizar únicamente el estado del piloto seleccionado
+    Piloto pilotoAActualizar = listaPilotos.get(filaSeleccionada);
+    pilotoAActualizar.setEstadoPiloto(nuevoEstado);
+
+    // Actualizar la tabla
+    cargarPilotosEnTabla();
+
+    // Guardar los cambios en el archivo Excel
     try {
-        dpi = tblRegistroPilotos.getValueAt(filaSeleccionada, 2).toString();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al obtener el DPI.");
-        return;
-    }
-
-    String nuevoEstado = txtEstadoPiloto.getSelectedItem().toString().trim();
-
-    Piloto pilotoEncontrado = null;
-    for (Piloto piloto : listaPilotos) {
-        if (piloto.getNombrePiloto().equalsIgnoreCase(nombre) &&
-            piloto.getApellidoPiloto().equalsIgnoreCase(apellido) &&
-            piloto.getNumeroDeDpi().equals(dpi)) { // Cambiado a comparación de String
-            pilotoEncontrado = piloto;
-            break;
-        }
-    }
-
-    if (pilotoEncontrado != null) {
-        pilotoEncontrado.setEstadoPiloto(nuevoEstado);
-
-        refrescarTabla();
-        guardarDatosEnExcel();
-
+        gestionPilotos.setPilotos(listaPilotos); 
+        gestionPilotos.guardarPilotosEnExcel();
         JOptionPane.showMessageDialog(this, "Estado del piloto modificado exitosamente.");
-    } else {
-        JOptionPane.showMessageDialog(this, "No se encontró un piloto con esos datos.");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al guardar los datos en Excel: " + e.getMessage());
     }
+
+    // Limpiar el campo de entrada del estado
+    txtEstadoPilotoModificar.setSelectedIndex(0);
     }//GEN-LAST:event_btnActualizarPilotoSistemaActionPerformed
 
     private void btnSalirPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPilotoActionPerformed
@@ -584,6 +485,6 @@ public void cargarDatosDesdeExcel() {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTable tblRegistroPilotos;
-    private javax.swing.JComboBox<String> txtEstadoPiloto;
+    private javax.swing.JComboBox<String> txtEstadoPilotoModificar;
     // End of variables declaration//GEN-END:variables
 }

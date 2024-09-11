@@ -1,154 +1,84 @@
-
 package PaquetePrincipal;
 
-import java.io.*;
-import java.util.ArrayList;
-import javax.swing.JFrame; 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import PaquetePrincipal.GESTIONPILOTOS.Piloto;
 import com.toedter.calendar.JDateChooser;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.io.File;
-import java.io.IOException;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import com.toedter.calendar.JDateChooser;
+
+
+import javax.swing.JFrame; 
+import javax.swing.JOptionPane;
 
 
 public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
 
-    DefaultTableModel modeloPilotoListado = new DefaultTableModel();
-    ArrayList<GESTIONPILOTOS.Piloto> listaPilotos = new ArrayList<>();
+    public GESTIONPILOTOS gestionPilotos;
+    public Vector<Piloto> listaPilotos = new Vector<>();
+    DefaultTableModel modeloPilotos = new DefaultTableModel();
+    private int indiceActual;
 
     public AGREGARGESTIONPILOTOS() {
         initComponents();
-        this.setTitle("GESTIÓN DE PILOTOS");
+        indiceActual = 0;
 
-        String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELEFONO", "GÉNERO", "AÑOS", "ESTADO"};
-        for (String columna : columnas) {
-            modeloPilotoListado.addColumn(columna);
-        }
-        cargarDatosDesdeExcel();  // Cargar datos desde Excel
-    }
+        // Iniciamos la gestión de pilotos
+        gestionPilotos = new GESTIONPILOTOS();
+        gestionPilotos.cargarPilotosDesdeExcel();
 
-public void cargarDatosDesdeExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try (FileInputStream file = new FileInputStream(new File(filePath))) {
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
+        // Definimos las columnas de la tabla de pilotos
+        String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
+        modeloPilotos.setColumnIdentifiers(columnas);
 
-        listaPilotos.clear(); // Limpiar la lista antes de cargar nuevos datos
-
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Saltar la primera fila (encabezados)
-
-            GESTIONPILOTOS.Piloto piloto = new GESTIONPILOTOS.Piloto(
-                getCellValueAsString(row.getCell(0)), // Nombre
-                getCellValueAsString(row.getCell(1)), // Apellido
-                getCellValueAsString(row.getCell(2)), // **DPI** ahora es String
-                getCellValueAsString(row.getCell(3)), // Tipo de licencia
-                getCellValueAsString(row.getCell(4)), // Correo electrónico
-                getCellValueAsInt(row.getCell(5)),    // Número telefónico
-                getCellValueAsString(row.getCell(6)), // Género
-                getCellValueAsString(row.getCell(7)), // Fecha de nacimiento
-                getCellValueAsString(row.getCell(8))  // Estado
-            );
-
-            listaPilotos.add(piloto); // Añadir piloto a la lista
+        // Obtenemos el vector que tiene los pilotos
+        if (gestionPilotos.getPilotos() != null) {
+            listaPilotos = gestionPilotos.getPilotos();
         }
 
-        workbook.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-    private String getCellValueAsString(Cell cell) {
-        if (cell != null) {
-            if (cell.getCellType() == CellType.STRING) {
-                return cell.getStringCellValue();
-            } else if (cell.getCellType() == CellType.NUMERIC) {
-                return String.valueOf(cell.getNumericCellValue()); // Convierte a string
-            }
-        }
-        return ""; // Devuelve una cadena vacía si la celda es nula
+        // Cargamos los pilotos en la tabla
+        cargarPilotosEnTabla();
     }
 
-    private int getCellValueAsInt(Cell cell) {
-        if (cell != null && cell.getCellType() == CellType.NUMERIC) {
-            return (int) Math.round(cell.getNumericCellValue());
-        } else {
-            System.err.println("Error: La celda no es válida o está vacía.");
-            return 0; // Maneja el error como prefieras
+    private void cargarPilotosEnTabla() {
+        // Vaciamos la tabla completamente
+        modeloPilotos.setRowCount(0);
+
+        // Llenamos la tabla con los elementos del vector
+        for (Piloto piloto : listaPilotos) {
+            modeloPilotos.addRow(new Object[]{
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getCorreoElectronicoPiloto(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getGeneroPiloto(),
+                piloto.getFechaDeNacimiento(),
+                piloto.getEstadoPiloto()
+            });
         }
     }
 
-   private void guardarDatosEnExcel() {
-    String filePath = "excels/PINEED.xlsx";
-    try {
-        FileInputStream fileIn = new FileInputStream(new File(filePath));
-        XSSFWorkbook workbook = new XSSFWorkbook(fileIn);
-        XSSFSheet sheet = workbook.getSheet("Pilotos");
-
-        if (sheet == null) {
-            sheet = workbook.createSheet("Pilotos");
-            // Crear encabezados
-            Row header = sheet.createRow(0);
-            String[] columnas = {"NOMBRE", "APELLIDO", "DPI", "LICENCIA", "CORREO", "TELÉFONO", "GÉNERO", "AÑOS", "ESTADO"};
-            for (int i = 0; i < columnas.length; i++) {
-                header.createCell(i).setCellValue(columnas[i]);
-            }
-        }
-
-        // Elimina la hoja anterior y crea una nueva para evitar duplicados
-        int lastRowNum = sheet.getLastRowNum();
-        if (lastRowNum > 0) {
-            for (int i = 1; i <= lastRowNum; i++) {
-                sheet.removeRow(sheet.getRow(i));
-            }
-        }
-
-        // Guardar los datos de los pilotos
-        int rowIndex = 1; // Empieza después del encabezado
-        for (GESTIONPILOTOS.Piloto piloto : listaPilotos) {
-            Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(piloto.getNombrePiloto());
-            row.createCell(1).setCellValue(piloto.getApellidoPiloto());
-            row.createCell(2).setCellValue(piloto.getNumeroDeDpi()); // **DPI** ahora es String
-            row.createCell(3).setCellValue(piloto.getTipoLicencia());
-            row.createCell(4).setCellValue(piloto.getCorreoElectronicoPiloto());
-            row.createCell(5).setCellValue(piloto.getNumeroTelefonicoPiloto());
-            row.createCell(6).setCellValue(piloto.getGeneroPiloto());
-            row.createCell(7).setCellValue(piloto.getFechaDeNacimiento());
-            row.createCell(8).setCellValue(piloto.getEstadoPiloto());
-        }
-
-        // Guardar archivo Excel
-        try (FileOutputStream fileOut = new FileOutputStream(new File(filePath))) {
-            workbook.write(fileOut);
-        }
-
-        workbook.close();
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar datos en Excel: " + e.getMessage());
-    }
-}
-
-    // Método para limpiar los campos del formulario
+    
     private void limpiarCampos() {
-        txtNombrePiloto.setText("");
-        txtApellidoPiloto.setText("");
-        txtNumeroDeDpiPiloto.setText("");
-        txtCorreoElectronicoPiloto.setText("");
-        txtNumeroTelefonicoPiloto.setText("");
-        txtGeneroPiloto.setSelectedIndex(0);
-        txtTipoDeLicenciaPiloto.setSelectedIndex(0);
-        txtFechaDeNacimientoPiloto.setCalendar(null);
-        txtEstadoPiloto.setSelectedIndex(0);
-    }
-
+    txtNombrePiloto.setText("");
+    txtApellidoPiloto.setText("");
+    txtNumeroDeDpiPiloto.setText("");
+    txtTipoDeLicenciaPiloto.setSelectedIndex(0); // Restablecer al primer valor
+    txtCorreoElectronicoPiloto.setText("");
+    txtNumeroTelefonicoPiloto.setText("");
+    txtGeneroPiloto.setSelectedIndex(0); // Restablecer al primer valor
+    txtFechaDeNacimientoPiloto.setDate(null); // Limpiar la fecha seleccionada
+    txtEstadoPiloto.setSelectedIndex(0); // Restablecer al primer valor
+}
+    
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -192,6 +122,7 @@ public void cargarDatosDesdeExcel() {
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
@@ -527,78 +458,82 @@ public void cargarDatosDesdeExcel() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoSistemaActionPerformed
-    try {
+ try {
         // Capturar y validar campos de texto
         String nombrePiloto = txtNombrePiloto.getText().trim();
         String apellidoPiloto = txtApellidoPiloto.getText().trim();
-        String numeroDeDpiStr = txtNumeroDeDpiPiloto.getText().trim();
+        long numeroDeDpi = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim()); // Convertir a long
         String tipoLicencia = txtTipoDeLicenciaPiloto.getSelectedItem().toString().trim();
         String correoElectronicoPiloto = txtCorreoElectronicoPiloto.getText().trim();
-        String numeroTelefonicoStr = txtNumeroTelefonicoPiloto.getText().trim();
+        int numeroTelefonico = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim()); // Convertir a int
         String generoPiloto = txtGeneroPiloto.getSelectedItem().toString().trim();
 
         // Validación de fecha de nacimiento
-        JDateChooser dateChooser = txtFechaDeNacimientoPiloto;
-        Date fechaNacimientoDate = dateChooser.getDate();
+        Date fechaNacimientoDate = txtFechaDeNacimientoPiloto.getDate();
         if (fechaNacimientoDate == null) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
             return;
         }
-        
-        // Validar que el correo termine en @gmail.com
-if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
-    JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
-    return;
-}
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        // Validar que el correo termine en @gmail.com
+        if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDeNacimiento = sdf.format(fechaNacimientoDate);
         String estadoPiloto = txtEstadoPiloto.getSelectedItem().toString().trim();
 
         // Validar que no haya campos vacíos
-        if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || numeroDeDpiStr.isEmpty() || tipoLicencia.isEmpty() ||
-            correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty() || numeroTelefonicoStr.isEmpty()) {
+        if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || tipoLicencia.isEmpty() ||
+            correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
             return;
         }
 
-        // Validar DPI y número telefónico como numéricos
-        if (!numeroDeDpiStr.matches("\\d{13}")) { // Verificar que el DPI tenga 13 dígitos
+        // Validar DPI y número telefónico
+        if (String.valueOf(numeroDeDpi).length() != 13) { // Verificar que el DPI tenga 13 dígitos
             JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
             return;
         }
 
-        if (!numeroTelefonicoStr.matches("\\d{8}")) { // Verificar que el número telefónico tenga 8 dígitos
+        if (String.valueOf(numeroTelefonico).length() != 8) { // Verificar que el número telefónico tenga 8 dígitos
             JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
             return;
         }
 
-        // Verificar si el piloto ya existe (comparando DPI y número telefónico como String)
+        // Verificar si el piloto ya existe
         for (Piloto pilotoExistente : listaPilotos) {
-            if (pilotoExistente.getNumeroDeDpi().equals(numeroDeDpiStr)) { // Comparar como String
+            if (pilotoExistente.getNumeroDeDpi() == numeroDeDpi) { // Comparar como long
                 JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
                 return;
             }
-            if (pilotoExistente.getNumeroTelefonicoPiloto() == Integer.parseInt(numeroTelefonicoStr)) {
+            if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonico) { // Comparar como int
                 JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
                 return;
             }
-            
-               if (pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
-        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
-        return;
-    }
+            if (pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
+                return;
+            }
         }
 
-        // Crear nuevo piloto y agregar a la lista
-        Piloto piloto = new Piloto(nombrePiloto, apellidoPiloto, numeroDeDpiStr, tipoLicencia, correoElectronicoPiloto,
-            Integer.parseInt(numeroTelefonicoStr), generoPiloto, fechaDeNacimiento, estadoPiloto);
-        listaPilotos.add(piloto);
+// Crear nuevo piloto y agregar a la lista
+        Piloto piloto = new Piloto(nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia, correoElectronicoPiloto,
+    numeroTelefonico, generoPiloto, fechaDeNacimiento, estadoPiloto);
+            listaPilotos.add(piloto);
+            JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.");
 
-        // Guardar en Excel y actualizar la tabla
-        guardarDatosEnExcel();
-        limpiarCampos();
-        JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.");
+// Limpiar los campos después de agregar el piloto
+            limpiarCampos();
+
+// Actualizar la tabla con el nuevo piloto
+cargarPilotosEnTabla();     
+
+        // Guardar los cambios en el archivo Excel
+        gestionPilotos.setPilotos(listaPilotos); // Asegúrate de que gestionPilotos use la lista actualizada
+        gestionPilotos.guardarPilotosEnExcel(); // Guardar los datos en el archivo Excel
 
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
