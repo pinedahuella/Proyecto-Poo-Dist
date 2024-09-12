@@ -48,6 +48,7 @@ public class INICIOPINEED extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
@@ -282,7 +283,9 @@ public class INICIOPINEED extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGestionDePedidosActionPerformed
 
     private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadoresActionPerformed
-
+FramePlanillaSemanal abrir = new  FramePlanillaSemanal();
+        abrir.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnPlanillaDeTrabajadoresActionPerformed
 
     private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientesActionPerformed
@@ -316,7 +319,9 @@ LOGINPINEED abrir = new  LOGINPINEED();
     }//GEN-LAST:event_btnGestionDePilotosActionPerformed
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamionesActionPerformed
-        // TODO add your handling code here:
+    INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES();
+        abrir.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnGestionDeCamionesActionPerformed
 
     private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuariosActionPerformed

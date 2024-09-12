@@ -37,6 +37,7 @@ public class INICIOPINEEDINICIAL extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));

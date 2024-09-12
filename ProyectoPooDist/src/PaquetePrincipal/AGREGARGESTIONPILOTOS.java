@@ -585,7 +585,7 @@ cargarPilotosEnTabla();
     }//GEN-LAST:event_btnSalirPilotoActionPerformed
 
     private void btnEstadoPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoPilotoActionPerformed
-        ESTADOGESTIONPILOTOS abrir = new ESTADOGESTIONPILOTOS();
+        GARAGEGESTIONCAMIONES abrir = new GARAGEGESTIONCAMIONES();
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnEstadoPilotoActionPerformed
