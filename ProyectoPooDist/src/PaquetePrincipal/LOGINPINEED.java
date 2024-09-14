@@ -21,7 +21,7 @@ public class LOGINPINEED extends javax.swing.JFrame {
         jLabel35 = new javax.swing.JLabel();
         btnIngresarPineed = new javax.swing.JButton();
         jLabel34 = new javax.swing.JLabel();
-        txtContraseñaUsuario = new javax.swing.JPasswordField();
+        txtContrasenaUsuario = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
         txtNombreUsuario = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -47,10 +47,10 @@ public class LOGINPINEED extends javax.swing.JFrame {
         jLabel34.setFont(new java.awt.Font("Segoe UI Emoji", 1, 14)); // NOI18N
         jLabel34.setText("USUARIO");
         getContentPane().add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 480, 70, -1));
-        getContentPane().add(txtContraseñaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 520, 310, 30));
+        getContentPane().add(txtContrasenaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 520, 310, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/Imagen_de_WhatsApp_2024-09-09_a_las_09.35.27_baedf375-removebg-preview.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, -40, 690, 510));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, -30, 690, 510));
         getContentPane().add(txtNombreUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 470, 310, 30));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/azul.jpg"))); // NOI18N
@@ -60,8 +60,14 @@ public class LOGINPINEED extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
+<<<<<<< HEAD
 String nombreUsuario = txtNombreUsuario.getText();
         String contraseña = new String(txtContraseñaUsuario.getPassword());
+=======
+
+        String nombreUsuario = txtNombreUsuario.getText();
+        String contraseña = new String(txtContrasenaUsuario.getPassword());
+>>>>>>> 8f45bced62433f4e62290a05f01e433d2cac7582
 
         Usuarios usuario = buscarUsuario(nombreUsuario);
 
@@ -163,7 +169,7 @@ String nombreUsuario = txtNombreUsuario.getText();
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
-    private javax.swing.JPasswordField txtContraseñaUsuario;
+    private javax.swing.JPasswordField txtContrasenaUsuario;
     private javax.swing.JTextField txtNombreUsuario;
     // End of variables declaration//GEN-END:variables
 }
