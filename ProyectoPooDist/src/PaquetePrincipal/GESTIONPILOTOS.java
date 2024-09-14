@@ -17,32 +17,32 @@ public class GESTIONPILOTOS {
     
     private String excelFilePath;
 
-    // Constructor por defecto
+
     public GESTIONPILOTOS() {
         excelFilePath = "excels/PINEED.xlsx";
     }
 
-    // Constructor con Vector de Pilotos
+
     public GESTIONPILOTOS(Vector<Piloto> pil) {
         this.pilotos = pil;
         excelFilePath = "excels/PINEED.xlsx";
     }
 
-    // Métodos setters y getters
-    public void setPilotos(Vector<Piloto> pil) {
-        this.pilotos = pil;
+
+    public void setPilotos(Vector<Piloto> piloto) {
+        this.pilotos = piloto;
     }
 
     public Vector<Piloto> getPilotos() {
         return this.pilotos;
     }
 
-    // Función para agregar un piloto al vector
+
     public void setUnPiloto(Piloto piloto) {
         this.pilotos.add(piloto);
     }
 
-    // Función para actualizar los datos de un piloto
+
     public void actualizarPiloto(int indice, String nombrePiloto, String apellidoPiloto, long numeroDeDpi,
                                  String tipoLicencia, String correoElectronicoPiloto, int numeroTelefonicoPiloto,
                                  String generoPiloto, String fechaDeNacimiento, String estadoPiloto) {
@@ -65,11 +65,11 @@ public void cargarPilotosDesdeExcel() {
         Sheet sheet = workbook.getSheetAt(0);
 
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) { // Saltar la fila de encabezado
+            if (row.getRowNum() == 0) {
                 continue;
             }
 
-            // Leer las celdas con el tipo correcto
+ 
             String nombrePiloto = getStringCellValue(row.getCell(0));
             String apellidoPiloto = getStringCellValue(row.getCell(1));
             long numeroDeDpi = getNumericCellValue(row.getCell(2));
@@ -90,17 +90,15 @@ public void cargarPilotosDesdeExcel() {
             }else{
                 
                 int newfechaDeNacimiento = Integer.parseInt(newnewfechaDeNacimiento.split("\\.")[0]);
-                
-                    /////////////////
-                         // La fecha base de Excel es el 1 de enero de 1900
+
                 LocalDate excelStartDate = LocalDate.of(1900, 1, 1);
 
-                    // Excel tiene un error, cuenta el 29 de febrero de 1900, que no existió (año no bisiesto)
+
                 if (newfechaDeNacimiento > 59) {
-                        // Ajuste para corregir este error
+         
                         newfechaDeNacimiento--;
                 }
-                ///////////////////    
+ 
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -153,14 +151,12 @@ private long getNumericCellValue(Cell cell) {
     }
 }
 
-    // Función para sobrescribir el archivo Excel con los datos actuales
     public void guardarPilotosEnExcel() {
         try (Workbook workbook = new XSSFWorkbook();
              FileOutputStream fos = new FileOutputStream(excelFilePath)) {
 
             Sheet sheet = workbook.createSheet("Pilotos");
 
-            // Crear fila de encabezado
             Row headerRow = sheet.createRow(0);
             headerRow.createCell(0).setCellValue("Nombre Piloto");
             headerRow.createCell(1).setCellValue("Apellido Piloto");
@@ -172,7 +168,6 @@ private long getNumericCellValue(Cell cell) {
             headerRow.createCell(7).setCellValue("Fecha de Nacimiento");
             headerRow.createCell(8).setCellValue("Estado");
 
-            // Rellenar filas con datos del vector
             int rowCount = 1;
             for (Piloto piloto : pilotos) {
                 Row row = sheet.createRow(rowCount++);

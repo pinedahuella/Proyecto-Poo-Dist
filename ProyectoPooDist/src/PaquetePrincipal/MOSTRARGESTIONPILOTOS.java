@@ -16,7 +16,7 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
 
  public GESTIONPILOTOS gestionPilotos;
     public Vector<Piloto> listaPilotos = new Vector<>();
-    DefaultTableModel modeloPilotos = new DefaultTableModel(); // Nombre corregido
+    DefaultTableModel modeloPilotos = new DefaultTableModel();
     private int indiceActual;
 
     
@@ -24,31 +24,31 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
       initComponents();
       indiceActual = 0;
 
-        // Iniciamos la gestión de pilotos
+  
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
 
-        // Definimos las columnas de la tabla de pilotos
+
         String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
         modeloPilotos.setColumnIdentifiers(columnas);
 
-        // Obtenemos la lista de pilotos
+
         if (gestionPilotos.getPilotos() != null) {
             listaPilotos = gestionPilotos.getPilotos();
         }
 
-        // Cargamos los pilotos en la tabla
+ 
         tblRegistroPilotos.setModel(modeloPilotos);
 
-        cargarPilotosEnTabla(); // Llamada al método para cargar pilotos
+        cargarPilotosEnTabla();
     }
 
-    // Método para cargar los pilotos en la tabla
+
     private void cargarPilotosEnTabla() {
-        // Vaciamos la tabla completamente
+
         modeloPilotos.setRowCount(0);
 
-        // Llenamos la tabla con los elementos de la lista
+
         for (Piloto piloto : listaPilotos) {
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
@@ -63,7 +63,7 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
             });
         }
 
-        tblRegistroPilotos.setVisible(false); // Hacer visible la tabla
+        tblRegistroPilotos.setVisible(false);
     }
 
 
@@ -85,14 +85,14 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
         tblRegistroPilotos = new javax.swing.JTable();
         btnBuscarPilotoSistema = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
-        btnModificarPiloto1 = new javax.swing.JButton();
-        btnAgregarPiloto1 = new javax.swing.JButton();
-        btnEliminarPiloto1 = new javax.swing.JButton();
-        btnMostrarPiloto1 = new javax.swing.JButton();
-        btnListaPiloto1 = new javax.swing.JButton();
-        btnInicioPiloto1 = new javax.swing.JButton();
-        btnSalirPiloto1 = new javax.swing.JButton();
-        btnEstadoPiloto3 = new javax.swing.JButton();
+        btnModificarPiloto = new javax.swing.JButton();
+        btnAgregarPiloto = new javax.swing.JButton();
+        btnEliminarPiloto = new javax.swing.JButton();
+        btnMostrarPiloto = new javax.swing.JButton();
+        btnListaPiloto = new javax.swing.JButton();
+        btnInicioPiloto = new javax.swing.JButton();
+        btnSalirPiloto = new javax.swing.JButton();
+        btnEstadoPiloto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -189,91 +189,91 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
                 .addContainerGap(72, Short.MAX_VALUE))
         );
 
-        btnModificarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnModificarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnModificarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnModificarPiloto1.setText("MODIFICAR");
-        btnModificarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnModificarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnModificarPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnModificarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnModificarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnModificarPiloto.setText("MODIFICAR");
+        btnModificarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnModificarPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarPiloto1ActionPerformed(evt);
+                btnModificarPilotoActionPerformed(evt);
             }
         });
 
-        btnAgregarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnAgregarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnAgregarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnAgregarPiloto1.setText("AGREGAR");
-        btnAgregarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnAgregarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnAgregarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnAgregarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnAgregarPiloto.setText("AGREGAR");
+        btnAgregarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnAgregarPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarPiloto1ActionPerformed(evt);
+                btnAgregarPilotoActionPerformed(evt);
             }
         });
 
-        btnEliminarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnEliminarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnEliminarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnEliminarPiloto1.setText("ELIMINAR");
-        btnEliminarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnEliminarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminarPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnEliminarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnEliminarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminarPiloto.setText("ELIMINAR");
+        btnEliminarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnEliminarPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarPiloto1ActionPerformed(evt);
+                btnEliminarPilotoActionPerformed(evt);
             }
         });
 
-        btnMostrarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnMostrarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnMostrarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnMostrarPiloto1.setText("MOSTRAR");
-        btnMostrarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnMostrarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrarPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnMostrarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnMostrarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnMostrarPiloto.setText("MOSTRAR");
+        btnMostrarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnMostrarPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarPiloto1ActionPerformed(evt);
+                btnMostrarPilotoActionPerformed(evt);
             }
         });
 
-        btnListaPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnListaPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnListaPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnListaPiloto1.setText("LISTA");
-        btnListaPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnListaPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnListaPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnListaPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnListaPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnListaPiloto.setText("LISTA");
+        btnListaPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnListaPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListaPiloto1ActionPerformed(evt);
+                btnListaPilotoActionPerformed(evt);
             }
         });
 
-        btnInicioPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnInicioPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnInicioPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnInicioPiloto1.setText("INICIO");
-        btnInicioPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnInicioPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnInicioPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnInicioPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnInicioPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnInicioPiloto.setText("INICIO");
+        btnInicioPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnInicioPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInicioPiloto1ActionPerformed(evt);
+                btnInicioPilotoActionPerformed(evt);
             }
         });
 
-        btnSalirPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnSalirPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnSalirPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnSalirPiloto1.setText("SALIR");
-        btnSalirPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnSalirPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalirPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnSalirPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnSalirPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnSalirPiloto.setText("SALIR");
+        btnSalirPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnSalirPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirPiloto1ActionPerformed(evt);
+                btnSalirPilotoActionPerformed(evt);
             }
         });
 
-        btnEstadoPiloto3.setBackground(new java.awt.Color(0, 102, 102));
-        btnEstadoPiloto3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnEstadoPiloto3.setForeground(new java.awt.Color(255, 255, 255));
-        btnEstadoPiloto3.setText("ESTADO");
-        btnEstadoPiloto3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnEstadoPiloto3.addActionListener(new java.awt.event.ActionListener() {
+        btnEstadoPiloto.setBackground(new java.awt.Color(0, 102, 102));
+        btnEstadoPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnEstadoPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        btnEstadoPiloto.setText("ESTADO");
+        btnEstadoPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnEstadoPiloto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEstadoPiloto3ActionPerformed(evt);
+                btnEstadoPilotoActionPerformed(evt);
             }
         });
 
@@ -284,35 +284,35 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnEstadoPiloto3, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalirPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInicioPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAgregarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnListaPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnMostrarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSalirPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInicioPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAgregarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnListaPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMostrarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEliminarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(28, Short.MAX_VALUE)
-                .addComponent(btnInicioPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnInicioPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAgregarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAgregarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEliminarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEliminarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnModificarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnModificarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnMostrarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnMostrarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnListaPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnListaPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEstadoPiloto3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSalirPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSalirPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
         );
 
@@ -382,11 +382,11 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         return;
     }
 
-    // Obtener los valores ingresados
+
     String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
     String apellidoBuscado = txtApellidoPilotoBuscar.getText().trim();
 
-    // Convertir el DPI ingresado a long
+
     long dpiBuscado;
     try {
         dpiBuscado = Long.parseLong(txtNumeroDeDpiPilotoBuscar.getText().trim());
@@ -395,11 +395,11 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         return;
     }
 
-    // Reiniciar el modelo de la tabla
+
     modeloPilotos.setRowCount(0);
     boolean hayCoincidencias = false;
 
-    // Buscar coincidencias en la lista de pilotos
+
     for (Piloto piloto : listaPilotos) {
         boolean coincide = true;
 
@@ -411,13 +411,13 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
             coincide = false;
         }
 
-        // Comparar DPI como long
+ 
         if (piloto.getNumeroDeDpi() != dpiBuscado) {
             coincide = false;
         }
 
         if (coincide) {
-            // Si hay coincidencias, agregar las filas al modelo de la tabla
+          
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
@@ -433,7 +433,7 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         }
     }
 
-    // Mostrar u ocultar la tabla según si hay coincidencias
+   
     if (hayCoincidencias) {
         tblRegistroPilotos.setVisible(true);
     } else {
@@ -441,59 +441,59 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
     }
 
-    // Limpiar los campos de búsqueda
+
     txtNombrePilotoBuscar.setText("");
     txtApellidoPilotoBuscar.setText("");
     txtNumeroDeDpiPilotoBuscar.setText("");
     }//GEN-LAST:event_btnBuscarPilotoSistemaActionPerformed
 
-    private void btnModificarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPiloto1ActionPerformed
+    private void btnModificarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPilotoActionPerformed
         MODIFICARGESTIONPILOTOS abrir = new   MODIFICARGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnModificarPiloto1ActionPerformed
+    }//GEN-LAST:event_btnModificarPilotoActionPerformed
 
-    private void btnAgregarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPiloto1ActionPerformed
+    private void btnAgregarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoActionPerformed
         AGREGARGESTIONPILOTOS abrir = new  AGREGARGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnAgregarPiloto1ActionPerformed
+    }//GEN-LAST:event_btnAgregarPilotoActionPerformed
 
-    private void btnEliminarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPiloto1ActionPerformed
+    private void btnEliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPilotoActionPerformed
         ELIMINARGESTIONPILOTOS abrir = new  ELIMINARGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnEliminarPiloto1ActionPerformed
+    }//GEN-LAST:event_btnEliminarPilotoActionPerformed
 
-    private void btnMostrarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPiloto1ActionPerformed
+    private void btnMostrarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPilotoActionPerformed
         MOSTRARGESTIONPILOTOS abrir = new   MOSTRARGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnMostrarPiloto1ActionPerformed
+    }//GEN-LAST:event_btnMostrarPilotoActionPerformed
 
-    private void btnListaPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListaPiloto1ActionPerformed
+    private void btnListaPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListaPilotoActionPerformed
         LISTAGESTIONPILOTOS abrir = new   LISTAGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnListaPiloto1ActionPerformed
+    }//GEN-LAST:event_btnListaPilotoActionPerformed
 
-    private void btnInicioPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioPiloto1ActionPerformed
+    private void btnInicioPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioPilotoActionPerformed
         INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnInicioPiloto1ActionPerformed
+    }//GEN-LAST:event_btnInicioPilotoActionPerformed
 
-    private void btnSalirPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPiloto1ActionPerformed
+    private void btnSalirPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPilotoActionPerformed
         INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnSalirPiloto1ActionPerformed
+    }//GEN-LAST:event_btnSalirPilotoActionPerformed
 
-    private void btnEstadoPiloto3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoPiloto3ActionPerformed
+    private void btnEstadoPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoPilotoActionPerformed
         ESTADOGESTIONPILOTOS abrir = new ESTADOGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnEstadoPiloto3ActionPerformed
+    }//GEN-LAST:event_btnEstadoPilotoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -531,15 +531,15 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarPiloto1;
+    private javax.swing.JButton btnAgregarPiloto;
     private javax.swing.JButton btnBuscarPilotoSistema;
-    private javax.swing.JButton btnEliminarPiloto1;
-    private javax.swing.JButton btnEstadoPiloto3;
-    private javax.swing.JButton btnInicioPiloto1;
-    private javax.swing.JButton btnListaPiloto1;
-    private javax.swing.JButton btnModificarPiloto1;
-    private javax.swing.JButton btnMostrarPiloto1;
-    private javax.swing.JButton btnSalirPiloto1;
+    private javax.swing.JButton btnEliminarPiloto;
+    private javax.swing.JButton btnEstadoPiloto;
+    private javax.swing.JButton btnInicioPiloto;
+    private javax.swing.JButton btnListaPiloto;
+    private javax.swing.JButton btnModificarPiloto;
+    private javax.swing.JButton btnMostrarPiloto;
+    private javax.swing.JButton btnSalirPiloto;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;

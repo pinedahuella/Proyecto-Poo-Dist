@@ -27,28 +27,28 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         initComponents();
         indiceActual = 0;
 
-        // Iniciamos la gestión de pilotos
+ 
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
 
-        // Definimos las columnas de la tabla de pilotos
+
         String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
         modeloPilotos.setColumnIdentifiers(columnas);
 
-        // Obtenemos el vector que tiene los pilotos
+  
         if (gestionPilotos.getPilotos() != null) {
             listaPilotos = gestionPilotos.getPilotos();
         }
 
-        // Cargamos los pilotos en la tabla
+
         cargarPilotosEnTabla();
     }
 
     private void cargarPilotosEnTabla() {
-        // Vaciamos la tabla completamente
+
         modeloPilotos.setRowCount(0);
 
-        // Llenamos la tabla con los elementos del vector
+
         for (Piloto piloto : listaPilotos) {
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
@@ -69,12 +69,12 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
     txtNombrePiloto.setText("");
     txtApellidoPiloto.setText("");
     txtNumeroDeDpiPiloto.setText("");
-    txtTipoDeLicenciaPiloto.setSelectedIndex(0); // Restablecer al primer valor
+    txtTipoDeLicenciaPiloto.setSelectedIndex(0); 
     txtCorreoElectronicoPiloto.setText("");
     txtNumeroTelefonicoPiloto.setText("");
-    txtGeneroPiloto.setSelectedIndex(0); // Restablecer al primer valor
-    txtFechaDeNacimientoPiloto.setDate(null); // Limpiar la fecha seleccionada
-    txtEstadoPiloto.setSelectedIndex(0); // Restablecer al primer valor
+    txtGeneroPiloto.setSelectedIndex(0);
+    txtFechaDeNacimientoPiloto.setDate(null);
+    txtEstadoPiloto.setSelectedIndex(0);
 }
     
     
@@ -459,23 +459,23 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
 
     private void btnAgregarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoSistemaActionPerformed
  try {
-        // Capturar y validar campos de texto
+        
         String nombrePiloto = txtNombrePiloto.getText().trim();
         String apellidoPiloto = txtApellidoPiloto.getText().trim();
-        long numeroDeDpi = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim()); // Convertir a long
+        long numeroDeDpi = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim()); 
         String tipoLicencia = txtTipoDeLicenciaPiloto.getSelectedItem().toString().trim();
         String correoElectronicoPiloto = txtCorreoElectronicoPiloto.getText().trim();
-        int numeroTelefonico = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim()); // Convertir a int
+        int numeroTelefonico = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim()); 
         String generoPiloto = txtGeneroPiloto.getSelectedItem().toString().trim();
 
-        // Validación de fecha de nacimiento
+     
         Date fechaNacimientoDate = txtFechaDeNacimientoPiloto.getDate();
         if (fechaNacimientoDate == null) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
             return;
         }
 
-        // Validar que el correo termine en @gmail.com
+     
         if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
             JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
             return;
@@ -485,31 +485,31 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         String fechaDeNacimiento = sdf.format(fechaNacimientoDate);
         String estadoPiloto = txtEstadoPiloto.getSelectedItem().toString().trim();
 
-        // Validar que no haya campos vacíos
+     
         if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || tipoLicencia.isEmpty() ||
             correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
             return;
         }
 
-        // Validar DPI y número telefónico
-        if (String.valueOf(numeroDeDpi).length() != 13) { // Verificar que el DPI tenga 13 dígitos
+    
+        if (String.valueOf(numeroDeDpi).length() != 13) { 
             JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
             return;
         }
 
-        if (String.valueOf(numeroTelefonico).length() != 8) { // Verificar que el número telefónico tenga 8 dígitos
+        if (String.valueOf(numeroTelefonico).length() != 8) { 
             JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
             return;
         }
 
-        // Verificar si el piloto ya existe
+   
         for (Piloto pilotoExistente : listaPilotos) {
-            if (pilotoExistente.getNumeroDeDpi() == numeroDeDpi) { // Comparar como long
+            if (pilotoExistente.getNumeroDeDpi() == numeroDeDpi) {
                 JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
                 return;
             }
-            if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonico) { // Comparar como int
+            if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonico) { 
                 JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
                 return;
             }
@@ -519,21 +519,21 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
             }
         }
 
-// Crear nuevo piloto y agregar a la lista
+
         Piloto piloto = new Piloto(nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia, correoElectronicoPiloto,
     numeroTelefonico, generoPiloto, fechaDeNacimiento, estadoPiloto);
             listaPilotos.add(piloto);
             JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.");
 
-// Limpiar los campos después de agregar el piloto
+
             limpiarCampos();
 
-// Actualizar la tabla con el nuevo piloto
+
 cargarPilotosEnTabla();     
 
-        // Guardar los cambios en el archivo Excel
-        gestionPilotos.setPilotos(listaPilotos); // Asegúrate de que gestionPilotos use la lista actualizada
-        gestionPilotos.guardarPilotosEnExcel(); // Guardar los datos en el archivo Excel
+  
+        gestionPilotos.setPilotos(listaPilotos);
+        gestionPilotos.guardarPilotosEnExcel();
 
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());

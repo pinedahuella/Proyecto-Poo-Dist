@@ -1,61 +1,71 @@
 package PaquetePrincipal;
 
 import com.toedter.calendar.JDateChooser;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import com.toedter.calendar.JDateChooser;
+
+
+import javax.swing.JFrame; 
+import javax.swing.JOptionPane;
+
+
 
 public class LISTAGESTIONCAMIONES extends JFrame {
-    private GESTIONCAMIONES gestionCamiones;
-    private Vector<Camiones> listaCamiones;
-    private DefaultTableModel modeloCamiones;
+    public GESTIONCAMIONES gestionCamiones;
+    public Vector<Camiones> listaCamiones = new Vector<>();
+    DefaultTableModel modeloCamiones = new DefaultTableModel();
     private int indiceActual;
     
     public LISTAGESTIONCAMIONES() {
-        initComponents(); // Inicializa la interfaz gráfica
-        indiceActual = 0;
+    initComponents();
+    indiceActual = 0;
 
-        // Iniciamos la gestión de camiones
-        gestionCamiones = new GESTIONCAMIONES();
-        gestionCamiones.cargarCamionesDesdeExcel(); // Carga los datos desde el archivo Excel
 
-        // Definimos las columnas de la tabla de camiones
-        String[] columnas = {"Placas", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación", "Modelo", "Marca", "Costos"};
-        modeloCamiones = new DefaultTableModel();
-        modeloCamiones.setColumnIdentifiers(columnas);
+    gestionCamiones = new GESTIONCAMIONES();
+    gestionCamiones.cargarCamionesDesdeExcel();
 
-        // Verificamos si hay camiones y los cargamos
+
+    String[] columnas = {"Placas", "Marca", "Modelo", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación"};
+    modeloCamiones.setColumnIdentifiers(columnas);
+
+    if (gestionCamiones.getCamiones() != null) {
         listaCamiones = gestionCamiones.getCamiones();
-        if (listaCamiones != null) {
-            // Cargamos los camiones en la tabla
-            tblRegistroCamiones.setModel(modeloCamiones);
-            cargarCamionesEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se encontraron camiones en la lista.");
-        }
+        System.out.println("Camiones cargados correctamente: " + listaCamiones.size());
+    } else {
+        System.out.println("Error: No se pudieron cargar los camiones.");
     }
+    tblRegistroCamiones.setModel(modeloCamiones);
 
-    private void cargarCamionesEnTabla() {
-        // Vaciamos la tabla completamente
-        modeloCamiones.setRowCount(0);
+    cargarCamionesTabla();
+}
 
-        // Llenamos la tabla con los elementos del vector
-        for (Camiones camion : listaCamiones) {
-            modeloCamiones.addRow(new Object[]{
-                camion.getPlacas(),
-                camion.getEstado(),
-                camion.getTipoCombustible(),
-                camion.getKilometraje(),
-                camion.getCapacidadCarga(),
-                camion.getAñoFabricacion(),
-                camion.getModelo(),
-                camion.getMarca(),
-                camion.getCostos()
-            });
-        }
-        tblRegistroCamiones.setVisible(true); // Asegúrate de que la tabla esté visible
+private void cargarCamionesTabla() {
+ 
+    modeloCamiones.setRowCount(0);
+
+
+    for (Camiones camiones : listaCamiones) {
+        modeloCamiones.addRow(new Object[]{
+            camiones.getPlacas(),
+            camiones.getModelo(),
+            camiones.getMarca(),
+            camiones.getEstado(),
+            camiones.getTipoCombustible(),
+            camiones.getKilometraje(),
+            camiones.getCapacidadCarga(),
+            camiones.getAñoFabricacion(),
+        });
     }
-
+    tblRegistroCamiones.setVisible(true);
+    System.out.println("Camiones mostrados en la tabla: " + modeloCamiones.getRowCount());
+}
     
     
     @SuppressWarnings("unchecked")

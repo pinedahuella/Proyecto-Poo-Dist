@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 
 
 public class ESTADOGESTIONPILOTOS extends javax.swing.JFrame {
-    // Variables globales
+
  public GESTIONPILOTOS gestionPilotos;
     public Vector<Piloto> listaPilotos = new Vector<>();
     DefaultTableModel modeloPilotos = new DefaultTableModel();
@@ -27,31 +27,31 @@ public ESTADOGESTIONPILOTOS() {
      initComponents();
         indiceActual = 0;
 
-        // Iniciamos la gestión de pilotos
+
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
 
-        // Definimos las columnas de la tabla de pilotos
+
         String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
         modeloPilotos.setColumnIdentifiers(columnas);
 
-        // Obtenemos la lista de pilotos
+
         if (gestionPilotos.getPilotos() != null) {
             listaPilotos = gestionPilotos.getPilotos();
         }
 
-        // Cargamos los pilotos en la tabla
+ 
         tblRegistroPilotos.setModel(modeloPilotos);
 
-        cargarPilotosEnTabla(); // Llamada al método para cargar pilotos
+        cargarPilotosEnTabla(); 
     }
 
-    // Método para cargar los pilotos en la tabla
+
     private void cargarPilotosEnTabla() {
-        // Vaciamos la tabla completamente
+ 
         modeloPilotos.setRowCount(0);
 
-        // Llenamos la tabla con los elementos de la lista
+
         for (Piloto piloto : listaPilotos) {
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
@@ -96,6 +96,13 @@ public ESTADOGESTIONPILOTOS() {
         tblRegistroPilotos = new javax.swing.JTable();
         jLabel18 = new javax.swing.JLabel();
         txtEstadoPilotoModificar = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+        txtNombrePilotoBuscar = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        txtApellidoPilotoBuscar = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        txtNumeroDeDpiPilotoBuscar = new javax.swing.JTextField();
+        btnBuscarPilotoSistema = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -266,34 +273,85 @@ public ESTADOGESTIONPILOTOS() {
 
         txtEstadoPilotoModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEUTRO", "ENFERMO", "EN CASA", "EN VACACIONES", "EN VIAJE" }));
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel4.setText("NOMBRE");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel11.setText("APELLIDO");
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel19.setText("NUMERO DE DPI");
+
+        btnBuscarPilotoSistema.setBackground(new java.awt.Color(0, 102, 255));
+        btnBuscarPilotoSistema.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnBuscarPilotoSistema.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscarPilotoSistema.setText("BUSCAR");
+        btnBuscarPilotoSistema.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnBuscarPilotoSistema.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarPilotoSistemaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 805, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnActualizarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10))
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnActualizarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtNumeroDeDpiPilotoBuscar))
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtNombrePilotoBuscar)
+                                        .addComponent(txtApellidoPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBuscarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 879, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(33, 33, 33))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(btnBuscarPilotoSistema))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtApellidoPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNumeroDeDpiPilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEstadoPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
-                .addGap(40, 40, 40)
+                .addGap(38, 38, 38)
                 .addComponent(btnActualizarPilotoSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
-                .addGap(17, 17, 17))
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -319,7 +377,7 @@ public ESTADOGESTIONPILOTOS() {
                         .addGap(18, 18, 18)
                         .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(56, Short.MAX_VALUE)
+                        .addContainerGap(58, Short.MAX_VALUE)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(38, 38, 38))
         );
@@ -361,17 +419,17 @@ public ESTADOGESTIONPILOTOS() {
         return;
     }
 
-    // Obtener el nuevo estado del formulario
+ 
     String nuevoEstado = txtEstadoPilotoModificar.getSelectedItem().toString().trim();
 
-    // Actualizar únicamente el estado del piloto seleccionado
+
     Piloto pilotoAActualizar = listaPilotos.get(filaSeleccionada);
     pilotoAActualizar.setEstadoPiloto(nuevoEstado);
 
-    // Actualizar la tabla
+
     cargarPilotosEnTabla();
 
-    // Guardar los cambios en el archivo Excel
+  
     try {
         gestionPilotos.setPilotos(listaPilotos); 
         gestionPilotos.guardarPilotosEnExcel();
@@ -380,7 +438,7 @@ public ESTADOGESTIONPILOTOS() {
         JOptionPane.showMessageDialog(this, "Error al guardar los datos en Excel: " + e.getMessage());
     }
 
-    // Limpiar el campo de entrada del estado
+ 
     txtEstadoPilotoModificar.setSelectedIndex(0);
     }//GEN-LAST:event_btnActualizarPilotoSistemaActionPerformed
 
@@ -432,6 +490,80 @@ public ESTADOGESTIONPILOTOS() {
         this.setVisible(false);
     }//GEN-LAST:event_btnEstadoPilotoActionPerformed
 
+    private void btnBuscarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPilotoSistemaActionPerformed
+        if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
+            txtApellidoPilotoBuscar.getText().trim().isEmpty() ||
+            txtNumeroDeDpiPilotoBuscar.getText().trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
+            return;
+        }
+
+      
+        String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
+        String apellidoBuscado = txtApellidoPilotoBuscar.getText().trim();
+
+ 
+        long dpiBuscado;
+        try {
+            dpiBuscado = Long.parseLong(txtNumeroDeDpiPilotoBuscar.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El DPI debe ser un número válido.");
+            return;
+        }
+
+     
+        modeloPilotos.setRowCount(0);
+        boolean hayCoincidencias = false;
+
+   
+        for (Piloto piloto : listaPilotos) {
+            boolean coincide = true;
+
+            if (!nombreBuscado.isEmpty() && !piloto.getNombrePiloto().equalsIgnoreCase(nombreBuscado)) {
+                coincide = false;
+            }
+
+            if (!apellidoBuscado.isEmpty() && !piloto.getApellidoPiloto().equalsIgnoreCase(apellidoBuscado)) {
+                coincide = false;
+            }
+
+          
+            if (piloto.getNumeroDeDpi() != dpiBuscado) {
+                coincide = false;
+            }
+
+            if (coincide) {
+        
+                modeloPilotos.addRow(new Object[]{
+                    piloto.getNombrePiloto(),
+                    piloto.getApellidoPiloto(),
+                    piloto.getNumeroDeDpi(),
+                    piloto.getTipoLicencia(),
+                    piloto.getCorreoElectronicoPiloto(),
+                    piloto.getNumeroTelefonicoPiloto(),
+                    piloto.getGeneroPiloto(),
+                    piloto.getFechaDeNacimiento(),
+                    piloto.getEstadoPiloto()
+                });
+                hayCoincidencias = true;
+            }
+        }
+
+
+        if (hayCoincidencias) {
+            tblRegistroPilotos.setVisible(true);
+        } else {
+            tblRegistroPilotos.setVisible(false);
+            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        }
+
+
+        txtNombrePilotoBuscar.setText("");
+        txtApellidoPilotoBuscar.setText("");
+        txtNumeroDeDpiPilotoBuscar.setText("");
+    }//GEN-LAST:event_btnBuscarPilotoSistemaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -470,6 +602,7 @@ public ESTADOGESTIONPILOTOS() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizarPilotoSistema;
     private javax.swing.JButton btnAgregarPiloto;
+    private javax.swing.JButton btnBuscarPilotoSistema;
     private javax.swing.JButton btnEliminarPiloto;
     private javax.swing.JButton btnEstadoPiloto;
     private javax.swing.JButton btnInicioPiloto;
@@ -477,7 +610,10 @@ public ESTADOGESTIONPILOTOS() {
     private javax.swing.JButton btnModificarPiloto;
     private javax.swing.JButton btnMostrarPiloto;
     private javax.swing.JButton btnSalirPiloto;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -485,6 +621,9 @@ public ESTADOGESTIONPILOTOS() {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTable tblRegistroPilotos;
+    private javax.swing.JTextField txtApellidoPilotoBuscar;
     private javax.swing.JComboBox<String> txtEstadoPilotoModificar;
+    private javax.swing.JTextField txtNombrePilotoBuscar;
+    private javax.swing.JTextField txtNumeroDeDpiPilotoBuscar;
     // End of variables declaration//GEN-END:variables
 }

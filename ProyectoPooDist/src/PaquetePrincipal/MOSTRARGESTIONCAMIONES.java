@@ -11,41 +11,40 @@ import java.util.regex.Pattern;
 
 
 public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
-private GESTIONCAMIONES gestionCamiones;
-    private Vector<Camiones> listaCamiones;
-    private DefaultTableModel modeloCamiones;
+public GESTIONCAMIONES gestionCamiones;
+    public Vector<Camiones> listaCamiones = new Vector<>();
+    DefaultTableModel modeloCamiones = new DefaultTableModel();
     private int indiceActual;
     
     
     public MOSTRARGESTIONCAMIONES() {
-        initComponents(); // Inicializa la interfaz gráfica
+       initComponents();
         indiceActual = 0;
 
-        // Iniciamos la gestión de camiones
-        gestionCamiones = new GESTIONCAMIONES();
-        gestionCamiones.cargarCamionesDesdeExcel(); // Carga los datos desde el archivo Excel
 
-        // Definimos las columnas de la tabla de camiones
-        String[] columnas = {"Placas", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación", "Modelo", "Marca", "Costos"};
-        modeloCamiones = new DefaultTableModel();
+        gestionCamiones = new GESTIONCAMIONES();
+        gestionCamiones.cargarCamionesDesdeExcel();
+
+
+        String[] columnas = {"Placas", "Marca", "Modelo", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación"};
         modeloCamiones.setColumnIdentifiers(columnas);
 
-        // Verificamos si hay camiones y los cargamos
-        listaCamiones = gestionCamiones.getCamiones();
-        if (listaCamiones != null) {
-            // Cargamos los camiones en la tabla
-            cargarCamionesEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se encontraron camiones en la lista.");
+ 
+  if (gestionCamiones.getCamiones() != null) {
+            listaCamiones = gestionCamiones.getCamiones();
         }
+tblRegistroCamiones.setModel(modeloCamiones);
+
+        cargarCamionesTabla();
+    
     }
     
     
-    private void cargarCamionesEnTabla() {
-        // Vaciamos la tabla completamente
+    private void cargarCamionesTabla() {
+
         modeloCamiones.setRowCount(0);
 
-        // Llenamos la tabla con los elementos del vector
+
         for (Camiones camiones : listaCamiones) {
             modeloCamiones.addRow(new Object[]{
                 camiones.getPlacas(),
@@ -55,8 +54,7 @@ private GESTIONCAMIONES gestionCamiones;
                 camiones.getCapacidadCarga(),
                 camiones.getAñoFabricacion(),
                 camiones.getModelo(),
-                camiones.getMarca(),
-                camiones.getCostos()
+                camiones.getMarca()
             });
         }
         tblRegistroCamiones.setVisible(false);
@@ -381,16 +379,16 @@ private GESTIONCAMIONES gestionCamiones;
         return;
     }
 
-    // Obtener los valores ingresados
+
     String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
     String modeloBuscado = txtModeloCamionBuscar.getText().trim();
     String placaBuscada = txtPlacaCamionBuscar.getText().trim();
 
-    // Reiniciar el modelo de la tabla
+
     modeloCamiones.setRowCount(0);
     boolean hayCoincidencias = false;
 
-    // Buscar coincidencias en la lista de camiones
+
     for (Camiones camion : listaCamiones) {
         boolean coincide = true;
 
@@ -407,7 +405,7 @@ private GESTIONCAMIONES gestionCamiones;
         }
 
         if (coincide) {
-            // Si hay coincidencias, agregar las filas al modelo de la tabla
+
             modeloCamiones.addRow(new Object[]{
                 camion.getPlacas(),
                 camion.getEstado(),
@@ -417,13 +415,12 @@ private GESTIONCAMIONES gestionCamiones;
                 camion.getAñoFabricacion(),
                 camion.getModelo(),
                 camion.getMarca(),
-                camion.getCostos()
             });
             hayCoincidencias = true;
         }
     }
 
-    // Mostrar u ocultar la tabla según si hay coincidencias
+
     if (hayCoincidencias) {
         tblRegistroCamiones.setVisible(true);
     } else {
@@ -431,7 +428,7 @@ private GESTIONCAMIONES gestionCamiones;
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
     }
 
-    // Limpiar los campos de búsqueda
+
     txtMarcaCamionBuscar.setText("");
     txtModeloCamionBuscar.setText("");
     txtPlacaCamionBuscar.setText("");

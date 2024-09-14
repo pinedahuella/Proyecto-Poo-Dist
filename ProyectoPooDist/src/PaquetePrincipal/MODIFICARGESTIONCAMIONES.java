@@ -1,62 +1,73 @@
 package PaquetePrincipal;
 
 import com.toedter.calendar.JDateChooser;
-import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import com.toedter.calendar.JDateChooser;
+import java.text.ParseException;
+import javax.swing.JFrame; 
+import javax.swing.JOptionPane;
 import java.util.regex.Pattern;
 
+
+
 public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
-private GESTIONCAMIONES gestionCamiones;
-    private Vector<Camiones> listaCamiones;
-    private DefaultTableModel modeloCamiones;
+public GESTIONCAMIONES gestionCamiones;
+    public Vector<Camiones> listaCamiones = new Vector<>();
+    DefaultTableModel modeloCamiones = new DefaultTableModel();
     private int indiceActual;
     
-    
     public MODIFICARGESTIONCAMIONES() {
-initComponents(); // Inicializa la interfaz gráfica
-        indiceActual = 0;
+    initComponents();
+       indiceActual = 0;
 
-        // Iniciamos la gestión de camiones
+
         gestionCamiones = new GESTIONCAMIONES();
-        gestionCamiones.cargarCamionesDesdeExcel(); // Carga los datos desde el archivo Excel
+        gestionCamiones.cargarCamionesDesdeExcel();
 
-        // Definimos las columnas de la tabla de camiones
-        String[] columnas = {"Placas", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación", "Modelo", "Marca", "Costos"};
-        modeloCamiones = new DefaultTableModel();
+
+        String[] columnas = {"Placas", "Marca", "Modelo", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación"};
         modeloCamiones.setColumnIdentifiers(columnas);
 
-        // Verificamos si hay camiones y los cargamos
-        listaCamiones = gestionCamiones.getCamiones();
-        if (listaCamiones != null) {
-            // Cargamos los camiones en la tabla
-            cargarCamionesEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se encontraron camiones en la lista.");
+ 
+  if (gestionCamiones.getCamiones() != null) {
+            listaCamiones = gestionCamiones.getCamiones();
         }
+tblRegistroCamiones.setModel(modeloCamiones);
+
+        cargarCamionesTabla();
     }
     
     
 
-    private void cargarCamionesEnTabla() {
-        // Vaciamos la tabla completamente
+    private void cargarCamionesTabla() {
+
         modeloCamiones.setRowCount(0);
 
-        // Llenamos la tabla con los elementos del vector
         for (Camiones camiones : listaCamiones) {
             modeloCamiones.addRow(new Object[]{
                 camiones.getPlacas(),
-                camiones.getEstado(),
-                camiones.getTipoCombustible(),
-                camiones.getKilometraje(),
-                camiones.getCapacidadCarga(),
-                camiones.getAñoFabricacion(),
-                camiones.getModelo(),
-                camiones.getMarca(),
-                camiones.getCostos()
+        camiones.getModelo(),
+        camiones.getMarca(),
+        camiones.getEstado(),
+        camiones.getTipoCombustible(),
+        camiones.getKilometraje(),
+        camiones.getCapacidadCarga(),
+        camiones.getAñoFabricacion(),
+        camiones.getCostoReparacion(),
+        camiones.getCostoGalon(),
+        camiones.getGalones(),
+        camiones.getCostoMantenimiento(),
+        camiones.getGastoNoEspecificado(),
+        camiones.getDescripcionDelGasto(),
+        camiones.getTiempoEnReparacion(),
+        camiones.getFechaDeMantenimiento()
             });
         }
         tblRegistroCamiones.setVisible(false);
@@ -64,21 +75,26 @@ initComponents(); // Inicializa la interfaz gráfica
 
     
      private void  cargarPilotosEnTablaGeneral() {
-        // Vaciamos la tabla completamente
         modeloCamiones.setRowCount(0);
 
-        // Llenamos la tabla con los elementos del vector
         for (Camiones camiones : listaCamiones) {
             modeloCamiones.addRow(new Object[]{
                 camiones.getPlacas(),
-                camiones.getEstado(),
-                camiones.getTipoCombustible(),
-                camiones.getKilometraje(),
-                camiones.getCapacidadCarga(),
-                camiones.getAñoFabricacion(),
-                camiones.getModelo(),
-                camiones.getMarca(),
-                camiones.getCostos()
+        camiones.getModelo(),
+        camiones.getMarca(),
+        camiones.getEstado(),
+        camiones.getTipoCombustible(),
+        camiones.getKilometraje(),
+        camiones.getCapacidadCarga(),
+        camiones.getAñoFabricacion(),
+        camiones.getCostoReparacion(),
+        camiones.getCostoGalon(),
+        camiones.getGalones(),
+        camiones.getCostoMantenimiento(),
+        camiones.getGastoNoEspecificado(),
+        camiones.getDescripcionDelGasto(),
+        camiones.getTiempoEnReparacion(),
+        camiones.getFechaDeMantenimiento()
             });
         }
         tblRegistroCamiones  .setVisible(true);
@@ -88,29 +104,25 @@ initComponents(); // Inicializa la interfaz gráfica
      
     private void limpiarCampos() {
         txtPlacaCamionesModificar.setText("");
-        txtEstadoCamionModificar.setSelectedIndex(0); // Restablecer al primer valor
-        txtTipoCombustibleCamionModificar.setSelectedIndex(0); // Restablecer al primer valor
+        txtEstadoCamionModificar.setSelectedIndex(0);
+        txtTipoCombustibleCamionModificar.setSelectedIndex(0);
         txtKilometrajeCamionModificar.setText("");
         txtCapacidadDeCargaCamionModificar.setText("");
-        txtAñoDeFabricacionCamionModificar.setDate(null); // Limpiar la fecha seleccionada
+        txtAñoDeFabricacionCamionModificar.setDate(null);
         txtModeloCamionModificar.setText("");
         txtMarcaCamionModificar.setText("");
-        txtCostoCamionModificar.setText("");
     }
 
     private boolean validarPlacas(String placas) {
-        // Validar que la placa contenga al menos una letra y un número
         String regex = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+$";
         return Pattern.matches(regex, placas);
     }
 
     private boolean validarKilometraje(double kilometraje) {
-        // Validar que el kilometraje sea positivo y realista (0 - 1,000,000 km)
         return (kilometraje >= 0 && kilometraje <= 1000000);
     }
 
     private boolean validarCapacidadCarga(double capacidadCarga) {
-        // Validar que la capacidad de carga sea positiva y realista (100 - 30000 kg)
         return (capacidadCarga >= 100 && capacidadCarga <= 30000);
     }
     
@@ -131,8 +143,6 @@ initComponents(); // Inicializa la interfaz gráfica
         jLabel12 = new javax.swing.JLabel();
         txtCapacidadDeCargaCamionModificar = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        txtCostoCamionModificar = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         txtAñoDeFabricacionCamionModificar = new com.toedter.calendar.JDateChooser();
         jLabel16 = new javax.swing.JLabel();
@@ -188,15 +198,6 @@ initComponents(); // Inicializa la interfaz gráfica
 
         jLabel13.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel13.setText("KILOMETRAJE");
-
-        jLabel14.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel14.setText("COSTO");
-
-        txtCostoCamionModificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCostoCamionModificarActionPerformed(evt);
-            }
-        });
 
         jLabel15.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel15.setText("AÑO DE FABRICACION");
@@ -350,17 +351,16 @@ initComponents(); // Inicializa la interfaz gráfica
                                         .addGap(0, 0, Short.MAX_VALUE)
                                         .addComponent(btnMoficarCamionSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtCostoCamionModificar))
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtPlacaCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtAñoDeFabricacionCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(txtPlacaCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(txtAñoDeFabricacionCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))))
                         .addGap(0, 7, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
@@ -427,9 +427,7 @@ initComponents(); // Inicializa la interfaz gráfica
                         .addGap(5, 5, 5)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(txtCapacidadDeCargaCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel14)
-                            .addComponent(txtCostoCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtCapacidadDeCargaCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(btnMoficarCamionSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -619,10 +617,6 @@ initComponents(); // Inicializa la interfaz gráfica
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCostoCamionModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoCamionModificarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCostoCamionModificarActionPerformed
-
     private void btnMoficarCamionSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoficarCamionSistemaActionPerformed
 int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
 
@@ -631,24 +625,22 @@ int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
         return;
     }
 
-    // Obtener los nuevos datos del formulario
+
     String nuevaPlaca = txtPlacaCamionesModificar.getText().trim();
     String nuevoEstado = txtEstadoCamionModificar.getSelectedItem().toString().trim();
     String nuevoTipoCombustible = txtTipoCombustibleCamionModificar.getSelectedItem().toString().trim();
     double nuevoKilometraje;
     double nuevaCapacidadCarga;
-    String nuevoAñoFabricacion; // Se mantiene como String
+    String nuevoAñoFabricacion;
     String nuevoModelo = txtModeloCamionModificar.getText().trim();
     String nuevaMarca = txtMarcaCamionModificar.getText().trim();
-    double nuevoCosto;
 
-    // Validar y parsear los campos numéricos
+
     try {
         nuevoKilometraje = Double.parseDouble(txtKilometrajeCamionModificar.getText().trim());
         nuevaCapacidadCarga = Double.parseDouble(txtCapacidadDeCargaCamionModificar.getText().trim());
-        nuevoCosto = Double.parseDouble(txtCostoCamionModificar.getText().trim());
         
-        // Obtener el año de fabricación como String
+
         nuevoAñoFabricacion = new SimpleDateFormat("yyyy").format(txtAñoDeFabricacionCamionModificar.getDate());
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Por favor, asegúrate de que el kilometraje, la capacidad de carga y el costo sean números válidos.");
@@ -658,7 +650,7 @@ int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
         return;
     }
 
-    // Validar los datos
+
     if (!validarPlacas(nuevaPlaca)) {
         JOptionPane.showMessageDialog(this, "Las placas deben contener al menos una letra y un número.");
         return;
@@ -674,31 +666,28 @@ int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
         return;
     }
 
-    // Actualizar los datos del camión seleccionado
+
     Camiones camionAActualizar = listaCamiones.get(filaSeleccionada);
     camionAActualizar.setPlacas(nuevaPlaca);
     camionAActualizar.setEstado(nuevoEstado);
     camionAActualizar.setTipoCombustible(nuevoTipoCombustible);
     camionAActualizar.setKilometraje(nuevoKilometraje);
     camionAActualizar.setCapacidadCarga(nuevaCapacidadCarga);
-    camionAActualizar.setAñoFabricacion(nuevoAñoFabricacion); // Se establece como String
+    camionAActualizar.setAñoFabricacion(nuevoAñoFabricacion);
     camionAActualizar.setModelo(nuevoModelo);
     camionAActualizar.setMarca(nuevaMarca);
-    camionAActualizar.setCostos(nuevoCosto);
 
-    // Actualizar la tabla
-    cargarCamionesEnTabla();
 
-    // Guardar los cambios en el archivo Excel
+    cargarCamionesTabla();
+
     try {
         gestionCamiones.setCamiones(listaCamiones);
-        gestionCamiones.guardarCamionesEnExcel();
+        gestionCamiones.guardarCamionesEnExcel() ;
         JOptionPane.showMessageDialog(this, "Datos del camión modificados exitosamente.");
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al guardar los datos en Excel: " + e.getMessage());
     }
 
-    // Limpiar campos de entrada
     limpiarCampos();
     }//GEN-LAST:event_btnMoficarCamionSistemaActionPerformed
 
@@ -711,16 +700,16 @@ if (txtMarcaCamionBuscar.getText().trim().isEmpty() ||
         return;
     }
 
-    // Obtener los valores ingresados
+
     String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
     String modeloBuscado = txtModeloCamionBuscar.getText().trim();
     String placaBuscada = txtPlacaCamionBuscar.getText().trim();
 
-    // Reiniciar el modelo de la tabla
+
     modeloCamiones.setRowCount(0);
     boolean hayCoincidencias = false;
 
-    // Buscar coincidencias en la lista de camiones
+
     for (Camiones camion : listaCamiones) {
         boolean coincide = true;
 
@@ -737,7 +726,7 @@ if (txtMarcaCamionBuscar.getText().trim().isEmpty() ||
         }
 
         if (coincide) {
-            // Si hay coincidencias, agregar las filas al modelo de la tabla
+
             modeloCamiones.addRow(new Object[]{
                 camion.getPlacas(),
                 camion.getEstado(),
@@ -746,14 +735,13 @@ if (txtMarcaCamionBuscar.getText().trim().isEmpty() ||
                 camion.getCapacidadCarga(),
                 camion.getAñoFabricacion(),
                 camion.getModelo(),
-                camion.getMarca(),
-                camion.getCostos()
+                camion.getMarca()
             });
             hayCoincidencias = true;
         }
     }
 
-    // Mostrar u ocultar la tabla según si hay coincidencias
+
     if (hayCoincidencias) {
         tblRegistroCamiones.setVisible(true);
     } else {
@@ -761,7 +749,7 @@ if (txtMarcaCamionBuscar.getText().trim().isEmpty() ||
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
     }
 
-    // Limpiar los campos de búsqueda
+
     txtMarcaCamionBuscar.setText("");
     txtModeloCamionBuscar.setText("");
     txtPlacaCamionBuscar.setText("");
@@ -773,65 +761,39 @@ if (txtMarcaCamionBuscar.getText().trim().isEmpty() ||
 
     private void btnInsertarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarCamionesSistemaActionPerformed
 int selectedRow = tblRegistroCamiones.getSelectedRow();
-
+    
     if (selectedRow != -1) {
-        // Obtiene los datos de la fila seleccionada
-        String placa = tblRegistroCamiones.getValueAt(selectedRow, 0).toString();
-        String estado = tblRegistroCamiones.getValueAt(selectedRow, 1).toString();
-        String tipoCombustible = tblRegistroCamiones.getValueAt(selectedRow, 2).toString();
-        String kilometrajeStr = tblRegistroCamiones.getValueAt(selectedRow, 3).toString();
-        String capacidadCargaStr = tblRegistroCamiones.getValueAt(selectedRow, 4).toString();
-        String añoFabricacion = tblRegistroCamiones.getValueAt(selectedRow, 5).toString();
-        String modelo = tblRegistroCamiones.getValueAt(selectedRow, 6).toString();
-        String marca = tblRegistroCamiones.getValueAt(selectedRow, 7).toString();
-        String costosStr = tblRegistroCamiones.getValueAt(selectedRow, 8).toString();
 
-        // Transfiere los datos a los campos correspondientes
+        String placa = tblRegistroCamiones.getValueAt(selectedRow, 0).toString();
+        String modelo = tblRegistroCamiones.getValueAt(selectedRow, 1).toString();
+        String marca = tblRegistroCamiones.getValueAt(selectedRow, 2).toString();
+        String estado = tblRegistroCamiones.getValueAt(selectedRow, 3).toString();
+        String tipoCombustible = tblRegistroCamiones.getValueAt(selectedRow, 4).toString();
+        String kilometraje = tblRegistroCamiones.getValueAt(selectedRow, 5).toString();
+        String capacidadCarga = tblRegistroCamiones.getValueAt(selectedRow, 6).toString();
+        String añoFabricacionStr = tblRegistroCamiones.getValueAt(selectedRow, 7).toString();
+        
+        
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Asegúrate de que el formato coincida con el formato de la tabla
+        Date añoFabricacion = null;
+        try {
+            añoFabricacion = dateFormat.parse(añoFabricacionStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al convertir la fecha de fabricación. Asegúrate de que el formato sea correcto.");
+            return;
+        }
+        
+
         txtPlacaCamionesModificar.setText(placa);
         txtEstadoCamionModificar.setSelectedItem(estado);
         txtTipoCombustibleCamionModificar.setSelectedItem(tipoCombustible);
-        
-        // Convertir a números
-        try {
-            double kilometraje = Double.parseDouble(kilometrajeStr);
-            txtKilometrajeCamionModificar.setText(String.valueOf(kilometraje));
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error al convertir el kilometraje. Asegúrate de que sea un número válido.");
-            return;
-        }
-
-        try {
-            double capacidadCarga = Double.parseDouble(capacidadCargaStr);
-            txtCapacidadDeCargaCamionModificar.setText(String.valueOf(capacidadCarga));
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error al convertir la capacidad de carga. Asegúrate de que sea un número válido.");
-            return;
-        }
-
-        // Manejo del año de fabricación
-        try {
-            int año = Integer.parseInt(añoFabricacion);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(año, Calendar.JANUARY, 1); // Establecer el 1 de enero del año
-            txtAñoDeFabricacionCamionModificar.setDate(calendar.getTime());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error al convertir el año de fabricación. Asegúrate de que sea un número válido.");
-            return;
-        }
-
+        txtKilometrajeCamionModificar.setText(kilometraje);
+        txtCapacidadDeCargaCamionModificar.setText(capacidadCarga);
+        txtAñoDeFabricacionCamionModificar.setDate(añoFabricacion);
         txtModeloCamionModificar.setText(modelo);
         txtMarcaCamionModificar.setText(marca);
-
-        try {
-            double costos = Double.parseDouble(costosStr);
-            txtCostoCamionModificar.setText(String.valueOf(costos));
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error al convertir el costo. Asegúrate de que sea un número válido.");
-            return;
-        }
-
-        // Limpia los campos después de la inserción
-        limpiarCampos();
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione un camión de la tabla para insertar.");
     }
@@ -890,7 +852,7 @@ int selectedRow = tblRegistroCamiones.getSelectedRow();
     }//GEN-LAST:event_btnGarageCamionActionPerformed
 
     private void txtEstadoCamionModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionModificarActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_txtEstadoCamionModificarActionPerformed
 
     /**
@@ -945,7 +907,6 @@ int selectedRow = tblRegistroCamiones.getSelectedRow();
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -962,7 +923,6 @@ int selectedRow = tblRegistroCamiones.getSelectedRow();
     private javax.swing.JTable tblRegistroCamiones;
     private com.toedter.calendar.JDateChooser txtAñoDeFabricacionCamionModificar;
     private javax.swing.JTextField txtCapacidadDeCargaCamionModificar;
-    private javax.swing.JTextField txtCostoCamionModificar;
     private javax.swing.JComboBox<String> txtEstadoCamionModificar;
     private javax.swing.JTextField txtKilometrajeCamionModificar;
     private javax.swing.JTextField txtMarcaCamionBuscar;

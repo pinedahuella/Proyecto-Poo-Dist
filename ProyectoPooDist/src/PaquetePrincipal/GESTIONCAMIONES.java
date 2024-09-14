@@ -3,87 +3,132 @@ package PaquetePrincipal;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
 public class GESTIONCAMIONES {
-    private Vector<Camiones> camiones;
-    private final String excelFilePath;
+
+    private Vector<Camiones> camiones = new Vector<>();
+    private String excelFilePath;
+
 
     public GESTIONCAMIONES() {
-        this.camiones = new Vector<>();
-        this.excelFilePath = "excels/CAMIONES.xlsx";
-        cargarCamionesDesdeExcel(); // Cargar camiones al inicializar
+        excelFilePath = "excels/CAMIONES.xlsx";
     }
+
 
     public GESTIONCAMIONES(Vector<Camiones> camiones) {
-        this.camiones = (camiones != null) ? camiones : new Vector<>();
-        this.excelFilePath = "excels/CAMIONES.xlsx";
-        cargarCamionesDesdeExcel(); // Cargar camiones al inicializar
+        this.camiones = camiones;
+        excelFilePath = "excels/CAMIONES.xlsx";
     }
 
+
     public void setCamiones(Vector<Camiones> camiones) {
-        this.camiones = (camiones != null) ? camiones : new Vector<>();
+        this.camiones = camiones;
     }
 
     public Vector<Camiones> getCamiones() {
         return this.camiones;
     }
 
-    public void setUnCamion(Camiones camion) {
-        if (camion != null) {
-            this.camiones.add(camion);
-        }
+
+    public void setUnCamiones(Camiones camiones) {
+        this.camiones.add(camiones);
     }
 
-    public void actualizarCamion(int indice, String placas, String estado, String tipoCombustible,
-                                  double kilometraje, double capacidadCarga, String añoFabricacion,
-                                  String modelo, String marca, double costos) {
-        if (indice >= 0 && indice < camiones.size()) {
-            Camiones camion = this.camiones.get(indice);
-            camion.setPlacas(placas);
-            camion.setEstado(estado);
-            camion.setTipoCombustible(tipoCombustible);
-            camion.setKilometraje(kilometraje);
-            camion.setCapacidadCarga(capacidadCarga);
-            camion.setAñoFabricacion(añoFabricacion);
-            camion.setModelo(modelo);
-            camion.setMarca(marca);
-            camion.setCostos(costos);
-        } else {
-            JOptionPane.showMessageDialog(null, "Índice de camión inválido.");
-        }
+    public void actualizarCamion(int indice, String placas, String modelo, String marca, String estado, 
+                                  String tipoCombustible, double kilometraje, double capacidadCarga, 
+                                  String añoFabricacion, double costoReparacion, double costoGalon, 
+                                  double galones, double costoMantenimiento, double gastoNoEspecificado, 
+                                  String descripcionDelGasto, String tiempoEnReparacion, String fechaDeMantenimiento,double total, double costoTotalCombustible) {
+        Camiones camiones = this.camiones.get(indice);
+        camiones.setPlacas(placas);
+        camiones.setModelo(modelo);
+        camiones.setMarca(marca);
+        camiones.setEstado(estado);
+        camiones.setTipoCombustible(tipoCombustible);
+        camiones.setKilometraje(kilometraje);
+        camiones.setCapacidadCarga(capacidadCarga);
+        camiones.setAñoFabricacion(añoFabricacion);
+        camiones.setCostoReparacion(costoReparacion);
+        camiones.setCostoGalon(costoGalon);
+        camiones.setGalones(galones);
+        camiones.setCostoMantenimiento(costoMantenimiento);
+        camiones.setGastoNoEspecificado(gastoNoEspecificado);
+        camiones.setDescripcionDelGasto(descripcionDelGasto);
+        camiones.setTiempoEnReparacion(tiempoEnReparacion);
+        camiones.setFechaDeMantenimiento(fechaDeMantenimiento);
+        camiones.setTotal(total);
+        camiones.setCostoTotalCombustible(costoTotalCombustible);
+
     }
 
     public void cargarCamionesDesdeExcel() {
-        try {
-            FileInputStream file = new FileInputStream(excelFilePath); // Usa excelFilePath
-            Workbook workbook = WorkbookFactory.create(file);
-            Sheet sheet = workbook.getSheetAt(0); // Selecciona la hoja correcta
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
 
-            camiones = new Vector<>(); // Reinicia la lista
+            Sheet sheet = workbook.getSheetAt(0);
 
             for (Row row : sheet) {
-                Camiones camion = new Camiones();
-                // Asigna los valores a los atributos del objeto Camiones
-                camion.setPlacas(getStringCellValue(row.getCell(0)));
-                camion.setEstado(getStringCellValue(row.getCell(1)));
-                camion.setTipoCombustible(getStringCellValue(row.getCell(2)));
-                camion.setKilometraje(getNumericCellValue(row.getCell(3)));
-                camion.setCapacidadCarga(getNumericCellValue(row.getCell(4)));
-                camion.setAñoFabricacion(getStringCellValue(row.getCell(5)));
-                camion.setModelo(getStringCellValue(row.getCell(6)));
-                camion.setMarca(getStringCellValue(row.getCell(7)));
-                camion.setCostos(getNumericCellValue(row.getCell(8)));
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
 
-                camiones.add(camion); // Añade el camion a la lista
+
+                String placas = getStringCellValue(row.getCell(0));
+                String modelo = getStringCellValue(row.getCell(1));
+                String marca = getStringCellValue(row.getCell(2));
+                String estado = getStringCellValue(row.getCell(3));
+                String tipoCombustible = getStringCellValue(row.getCell(4));
+                double kilometraje = getNumericCellValue(row.getCell(5));
+                double capacidadCarga = getNumericCellValue(row.getCell(6));
+                String nuevoAñoFabricacion = getStringCellValue(row.getCell(7));
+
+
+                double costoReparacion = getNumericCellValue(row.getCell(8));
+                double costoGalon = getNumericCellValue(row.getCell(9));
+                double galones = getNumericCellValue(row.getCell(10));
+                double costoMantenimiento = getNumericCellValue(row.getCell(11));
+                double gastoNoEspecificado = getNumericCellValue(row.getCell(12));
+                String descripcionDelGasto = getStringCellValue(row.getCell(13));
+                String tiempoEnReparacion = getStringCellValue(row.getCell(14));
+                String nuevaFechaMantenimiento = getStringCellValue(row.getCell(15));
+                double total = getNumericCellValue(row.getCell(16));
+                double costoTotalCombustible = getNumericCellValue(row.getCell(17));
+
+
+                String añoFabricacion = procesarFecha(nuevoAñoFabricacion);
+
+                String fechaDeMantenimiento = procesarFecha(nuevaFechaMantenimiento);
+
+                 Camiones camiones = new Camiones(placas, estado, tipoCombustible, kilometraje, capacidadCarga, 
+                                                  añoFabricacion, modelo, marca, costoReparacion, costoGalon, 
+                                                  galones, costoMantenimiento, gastoNoEspecificado, 
+                                                  descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento, total);
+                camiones.setCostoTotalCombustible(costoTotalCombustible);
+                this.camiones.add(camiones);
             }
-            workbook.close();
-        } catch (Exception e) {
-            e.printStackTrace(); // Muestra el error en la consola para depuración
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String procesarFecha(String fecha) {
+        if (fecha == null || fecha.isEmpty()) {
+            return "";
+        }
+        try {
+            double fechaExcel = Double.parseDouble(fecha);
+            LocalDate localDate = LocalDate.of(1900, 1, 1).plusDays((long) fechaExcel - 2);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return localDate.format(formatter);
+        } catch (NumberFormatException e) {
+            return fecha;
         }
     }
 
@@ -91,51 +136,88 @@ public class GESTIONCAMIONES {
         if (cell == null) {
             return "";
         }
-        return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            default:
+                return "";
+        }
     }
 
     private double getNumericCellValue(Cell cell) {
         if (cell == null) {
-            return 0;
+            return 0.0;
         }
-        return cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0;
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                return cell.getNumericCellValue();
+            case STRING:
+                try {
+                    return Double.parseDouble(cell.getStringCellValue());
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            default:
+                return 0.0;
+        }
     }
 
-    public void guardarCamionesEnExcel() {
+public void guardarCamionesEnExcel() {
         try (Workbook workbook = new XSSFWorkbook();
              FileOutputStream fos = new FileOutputStream(excelFilePath)) {
 
             Sheet sheet = workbook.createSheet("Camiones");
 
-            // Crear fila de encabezado
+  
             Row headerRow = sheet.createRow(0);
             headerRow.createCell(0).setCellValue("Placas");
-            headerRow.createCell(1).setCellValue("Estado");
-            headerRow.createCell(2).setCellValue("Tipo de Combustible");
-            headerRow.createCell(3).setCellValue("Kilometraje");
-            headerRow.createCell(4).setCellValue("Capacidad de Carga");
-            headerRow.createCell(5).setCellValue("Año de Fabricación");
-            headerRow.createCell(6).setCellValue("Modelo");
-            headerRow.createCell(7).setCellValue("Marca");
-            headerRow.createCell(8).setCellValue("Costos");
+            headerRow.createCell(1).setCellValue("Modelo");
+            headerRow.createCell(2).setCellValue("Marca");
+            headerRow.createCell(3).setCellValue("Estado");
+            headerRow.createCell(4).setCellValue("Tipo de Combustible");
+            headerRow.createCell(5).setCellValue("Kilometraje");
+            headerRow.createCell(6).setCellValue("Capacidad de Carga");
+            headerRow.createCell(7).setCellValue("Año de Fabricación");
+            headerRow.createCell(8).setCellValue("Costo Reparación");
+            headerRow.createCell(9).setCellValue("Costo Galón");
+            headerRow.createCell(10).setCellValue("Galones");
+            headerRow.createCell(11).setCellValue("Costo Mantenimiento");
+            headerRow.createCell(12).setCellValue("Gasto No Especificado");
+            headerRow.createCell(13).setCellValue("Descripción del Gasto");
+            headerRow.createCell(14).setCellValue("Tiempo en Reparación");
+            headerRow.createCell(15).setCellValue("Fecha de Mantenimiento");
+            headerRow.createCell(16).setCellValue("Total Invertido");
 
             int rowCount = 1;
-            for (Camiones camion : camiones) {
+            for (Camiones camiones : camiones) {
                 Row row = sheet.createRow(rowCount++);
-                row.createCell(0).setCellValue(camion.getPlacas());
-                row.createCell(1).setCellValue(camion.getEstado());
-                row.createCell(2).setCellValue(camion.getTipoCombustible());
-                row.createCell(3).setCellValue(camion.getKilometraje());
-                row.createCell(4).setCellValue(camion.getCapacidadCarga());
-                row.createCell(5).setCellValue(camion.getAñoFabricacion());
-                row.createCell(6).setCellValue(camion.getModelo());
-                row.createCell(7).setCellValue(camion.getMarca());
-                row.createCell(8).setCellValue(camion.getCostos());
+                row.createCell(0).setCellValue(camiones.getPlacas());
+                row.createCell(1).setCellValue(camiones.getModelo());
+                row.createCell(2).setCellValue(camiones.getMarca());
+                row.createCell(3).setCellValue(camiones.getEstado());
+                row.createCell(4).setCellValue(camiones.getTipoCombustible());
+                row.createCell(5).setCellValue(camiones.getKilometraje());
+                row.createCell(6).setCellValue(camiones.getCapacidadCarga());
+                row.createCell(7).setCellValue(camiones.getAñoFabricacion());
+                row.createCell(8).setCellValue(camiones.getCostoReparacion());
+                row.createCell(9).setCellValue(camiones.getCostoGalon());
+                row.createCell(10).setCellValue(camiones.getGalones());
+                row.createCell(11).setCellValue(camiones.getCostoMantenimiento());
+                row.createCell(12).setCellValue(camiones.getGastoNoEspecificado());
+                row.createCell(13).setCellValue(camiones.getDescripcionDelGasto());
+                row.createCell(14).setCellValue(camiones.getTiempoEnReparacion());
+                row.createCell(15).setCellValue(camiones.getFechaDeMantenimiento());
+                row.createCell(16).setCellValue(camiones.getTotal());
+                headerRow.createCell(17).setCellValue("Costo Total Combustible");
+
             }
 
             workbook.write(fos);
+
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error al guardar camiones en Excel: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

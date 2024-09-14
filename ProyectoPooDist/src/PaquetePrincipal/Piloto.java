@@ -1,10 +1,5 @@
 package PaquetePrincipal;
 
-
-
-
-
-
 public class Piloto {
 
     private String nombrePiloto;
@@ -17,10 +12,10 @@ public class Piloto {
     private String fechaDeNacimiento;
     private String estadoPiloto;
 
-    // Constructor por defecto
+
     public Piloto() {}
 
-    // Constructor con parámetros
+
     public Piloto(String nombrePiloto, String apellidoPiloto, long numeroDeDpi, String tipoLicencia,
                   String correoElectronicoPiloto, int numeroTelefonicoPiloto, String generoPiloto,
                   String fechaDeNacimiento, String estadoPiloto) {
@@ -35,7 +30,7 @@ public class Piloto {
         this.estadoPiloto = estadoPiloto;
     }
 
-    // Métodos setters
+
     public void setNombrePiloto(String nombrePiloto) {
         this.nombrePiloto = nombrePiloto;
     }
@@ -72,7 +67,7 @@ public class Piloto {
         this.estadoPiloto = estadoPiloto;
     }
 
-    // Métodos getters
+
     public String getNombrePiloto() {
         return this.nombrePiloto;
     }

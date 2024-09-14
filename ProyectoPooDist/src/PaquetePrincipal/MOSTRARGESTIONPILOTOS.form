@@ -273,14 +273,14 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="btnEstadoPiloto3" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnSalirPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnInicioPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnAgregarPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnListaPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnMostrarPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnEliminarPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
-                              <Component id="btnModificarPiloto1" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnEstadoPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnSalirPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnInicioPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnAgregarPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnListaPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnMostrarPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnEliminarPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
+                              <Component id="btnModificarPiloto" alignment="1" min="-2" pref="149" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="24" max="32767" attributes="0"/>
                       </Group>
@@ -290,28 +290,28 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="28" max="32767" attributes="0"/>
-                          <Component id="btnInicioPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnInicioPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnAgregarPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnAgregarPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnEliminarPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnEliminarPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnModificarPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnModificarPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnMostrarPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnMostrarPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnListaPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnListaPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnEstadoPiloto3" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnEstadoPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnSalirPiloto1" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="btnSalirPiloto" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="btnModificarPiloto1">
+                <Component class="javax.swing.JButton" name="btnModificarPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -332,10 +332,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModificarPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModificarPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnAgregarPiloto1">
+                <Component class="javax.swing.JButton" name="btnAgregarPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -356,10 +356,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgregarPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgregarPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnEliminarPiloto1">
+                <Component class="javax.swing.JButton" name="btnEliminarPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -380,10 +380,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEliminarPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEliminarPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnMostrarPiloto1">
+                <Component class="javax.swing.JButton" name="btnMostrarPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -404,10 +404,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMostrarPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMostrarPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnListaPiloto1">
+                <Component class="javax.swing.JButton" name="btnListaPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -428,10 +428,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnListaPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnListaPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnInicioPiloto1">
+                <Component class="javax.swing.JButton" name="btnInicioPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -452,10 +452,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInicioPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInicioPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnSalirPiloto1">
+                <Component class="javax.swing.JButton" name="btnSalirPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -476,10 +476,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalirPiloto1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalirPilotoActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnEstadoPiloto3">
+                <Component class="javax.swing.JButton" name="btnEstadoPiloto">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="0" type="rgb"/>
@@ -500,7 +500,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEstadoPiloto3ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEstadoPilotoActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

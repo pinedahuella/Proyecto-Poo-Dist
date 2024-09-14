@@ -13,42 +13,42 @@ import javax.swing.JFrame;
 
 public class ELIMINARGESTIONPILOTOS extends javax.swing.JFrame {
 
-    // Variables globales
+
     public GESTIONPILOTOS gestionPilotos;
     public Vector<Piloto> listaPilotos = new Vector<>();
-    DefaultTableModel modeloPilotos = new DefaultTableModel(); // Nombre corregido
+    DefaultTableModel modeloPilotos = new DefaultTableModel(); 
     private int indiceActual;
 
-    // Constructor
+
     public ELIMINARGESTIONPILOTOS() {
         initComponents();
         indiceActual = 0;
 
-        // Iniciamos la gestión de pilotos
+
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
 
-        // Definimos las columnas de la tabla de pilotos
+
         String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
         modeloPilotos.setColumnIdentifiers(columnas);
 
-        // Obtenemos la lista de pilotos
+
         if (gestionPilotos.getPilotos() != null) {
             listaPilotos = gestionPilotos.getPilotos();
         }
 
-        // Cargamos los pilotos en la tabla
+
         tblRegistroPilotos.setModel(modeloPilotos);
 
-        cargarPilotosEnTabla(); // Llamada al método para cargar pilotos
+        cargarPilotosEnTabla();
     }
 
-    // Método para cargar los pilotos en la tabla
+  
     private void cargarPilotosEnTabla() {
-        // Vaciamos la tabla completamente
+
         modeloPilotos.setRowCount(0);
 
-        // Llenamos la tabla con los elementos de la lista
+   
         for (Piloto piloto : listaPilotos) {
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
@@ -63,7 +63,7 @@ public class ELIMINARGESTIONPILOTOS extends javax.swing.JFrame {
             });
         }
 
-        tblRegistroPilotos.setVisible(true); // Hacer visible la tabla
+        tblRegistroPilotos.setVisible(true);
     }
 
     
@@ -399,45 +399,44 @@ public class ELIMINARGESTIONPILOTOS extends javax.swing.JFrame {
     private void btnEliminarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPilotoSistemaActionPerformed
 int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
 
-    // Verificar si hay una fila seleccionada
-    if (filaSeleccionada >= 0) {
-        // Obtener el número de DPI del piloto seleccionado en la tabla como long
-        long dpiSeleccionado = (long) tblRegistroPilotos.getValueAt(filaSeleccionada, 2); // El índice 2 corresponde a la columna DPI en tu tabla
 
-        // Mostrar un cuadro de confirmación antes de eliminar
+    if (filaSeleccionada >= 0) {
+
+        long dpiSeleccionado = (long) tblRegistroPilotos.getValueAt(filaSeleccionada, 2); 
+
         int confirm = JOptionPane.showConfirmDialog(this, 
             "¿Estás seguro de que deseas borrar este piloto?", 
             "Confirmar eliminación", 
             JOptionPane.YES_NO_OPTION);
 
-        // Si el usuario confirma la eliminación
+ 
         if (confirm == JOptionPane.YES_OPTION) {
-            // Buscar y eliminar el piloto de la lista basado en el DPI
+ 
             Piloto pilotoAEliminar = null;
             for (Piloto piloto : listaPilotos) {
-                if (piloto.getNumeroDeDpi() == dpiSeleccionado) { // Comparación de long
+                if (piloto.getNumeroDeDpi() == dpiSeleccionado) {
                     pilotoAEliminar = piloto;
                     break;
                 }
             }
 
-            // Eliminar el piloto encontrado
+    
             if (pilotoAEliminar != null) {
                 listaPilotos.remove(pilotoAEliminar);
 
-                // Refrescar la tabla para reflejar los cambios
+               
                 cargarPilotosEnTabla();
 
-                // Guardar los cambios en el archivo Excel después de eliminar el piloto
-                gestionPilotos.setPilotos(listaPilotos); // Actualizar la lista en la clase de gestión
-                gestionPilotos.guardarPilotosEnExcel();  // Guardar los datos actualizados en el archivo Excel
+                
+                gestionPilotos.setPilotos(listaPilotos);
+                gestionPilotos.guardarPilotosEnExcel();
 
-                // Mostrar un mensaje de confirmación
+
                 JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
             }
         }
     } else {
-        // Si no se ha seleccionado ninguna fila, mostrar un mensaje de advertencia
+
         JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto para eliminar.");
     }
     }//GEN-LAST:event_btnEliminarPilotoSistemaActionPerformed
@@ -451,11 +450,11 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         return;
     }
 
-    // Obtener los valores ingresados
+
     String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
     String apellidoBuscado = txtApellidoPilotoBuscar.getText().trim();
 
-    // Convertir el DPI ingresado a long
+
     long dpiBuscado;
     try {
         dpiBuscado = Long.parseLong(txtNumeroDeDpiPilotoBuscar.getText().trim());
@@ -464,11 +463,11 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         return;
     }
 
-    // Reiniciar el modelo de la tabla
+
     modeloPilotos.setRowCount(0);
     boolean hayCoincidencias = false;
 
-    // Buscar coincidencias en la lista de pilotos
+
     for (Piloto piloto : listaPilotos) {
         boolean coincide = true;
 
@@ -480,13 +479,13 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
             coincide = false;
         }
 
-        // Comparar DPI como long
+
         if (piloto.getNumeroDeDpi() != dpiBuscado) {
             coincide = false;
         }
 
         if (coincide) {
-            // Si hay coincidencias, agregar las filas al modelo de la tabla
+
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
@@ -502,7 +501,7 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         }
     }
 
-    // Mostrar u ocultar la tabla según si hay coincidencias
+
     if (hayCoincidencias) {
         tblRegistroPilotos.setVisible(true);
     } else {
@@ -510,7 +509,7 @@ if (txtNombrePilotoBuscar.getText().trim().isEmpty() ||
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
     }
 
-    // Limpiar los campos de búsqueda
+
     txtNombrePilotoBuscar.setText("");
     txtApellidoPilotoBuscar.setText("");
     txtNumeroDeDpiPilotoBuscar.setText("");

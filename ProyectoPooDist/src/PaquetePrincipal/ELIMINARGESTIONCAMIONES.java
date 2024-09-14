@@ -1,67 +1,72 @@
 package PaquetePrincipal;
 
-import PaquetePrincipal.Camiones;
-import PaquetePrincipal.GESTIONCAMIONES;
 import com.toedter.calendar.JDateChooser;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+
 import java.util.regex.Pattern;
 
-
 public class ELIMINARGESTIONCAMIONES extends javax.swing.JFrame {
- private GESTIONCAMIONES gestionCamiones;
-    private Vector<Camiones> listaCamiones;
-    private DefaultTableModel modeloCamiones;
+    public GESTIONCAMIONES gestionCamiones;
+    public Vector<Camiones> listaCamiones = new Vector<>();
+    DefaultTableModel modeloCamiones = new DefaultTableModel();
     private int indiceActual;
 
     public ELIMINARGESTIONCAMIONES() {
-initComponents(); // Inicializa la interfaz gráfica
+        initComponents();
         indiceActual = 0;
 
-        // Iniciamos la gestión de camiones
-        gestionCamiones = new GESTIONCAMIONES();
-        gestionCamiones.cargarCamionesDesdeExcel(); // Carga los datos desde el archivo Excel
 
-        // Definimos las columnas de la tabla de camiones
-        String[] columnas = {"Placas", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación", "Modelo", "Marca", "Costos"};
-        modeloCamiones = new DefaultTableModel();
+        gestionCamiones = new GESTIONCAMIONES();
+        gestionCamiones.cargarCamionesDesdeExcel();
+
+ 
+        String[] columnas = {"Placas", "Marca", "Modelo", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga", "Año de Fabricación"};
         modeloCamiones.setColumnIdentifiers(columnas);
 
-        // Verificamos si hay camiones y los cargamos
-        listaCamiones = gestionCamiones.getCamiones();
-        if (listaCamiones != null) {
-            // Cargamos los camiones en la tabla
-            tblRegistroCamiones.setModel(modeloCamiones);
-            cargarCamionesEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se encontraron camiones en la lista.");
+ 
+  if (gestionCamiones.getCamiones() != null) {
+            listaCamiones = gestionCamiones.getCamiones();
         }
+tblRegistroCamiones.setModel(modeloCamiones);
+ 
+        cargarCamionesTabla();
     }
 
-    private void cargarCamionesEnTabla() {
-        // Vaciamos la tabla completamente
-        modeloCamiones.setRowCount(0);
 
-        // Llenamos la tabla con los elementos del vector
-        for (Camiones camiones : listaCamiones) {
-            modeloCamiones.addRow(new Object[]{
-                camiones.getPlacas(),
-                camiones.getEstado(),
-                camiones.getTipoCombustible(),
-                camiones.getKilometraje(),
-                camiones.getCapacidadCarga(),
-                camiones.getAñoFabricacion(),
-                camiones.getModelo(),
-                camiones.getMarca(),
-                camiones.getCostos()
-            });
-        }
-          tblRegistroCamiones.setVisible(true);
+
+private void cargarCamionesTabla() {
+    modeloCamiones.setRowCount(0);
+    for (Camiones camion : listaCamiones) {
+        modeloCamiones.addRow(new Object[]{
+            camion.getPlacas(),
+            camion.getModelo(),
+            camion.getMarca(),
+            camion.getEstado(),
+            camion.getTipoCombustible(),
+            camion.getKilometraje(),
+            camion.getCapacidadCarga(),
+            camion.getAñoFabricacion(),
+            camion.getCostoReparacion(),
+            camion.getCostoGalon(),
+            camion.getGalones(),
+            camion.getCostoMantenimiento(),
+            camion.getGastoNoEspecificado(),
+            camion.getDescripcionDelGasto(),
+            camion.getTiempoEnReparacion(),
+            camion.getFechaDeMantenimiento(),
+            camion.getTotal()
+        });
     }
-
+    tblRegistroCamiones.setVisible(true);
+}
  
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -389,114 +394,119 @@ initComponents(); // Inicializa la interfaz gráfica
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEliminarCamionSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarCamionSistemaActionPerformed
-        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
 
-    // Verificar si hay una fila seleccionada
+
     if (filaSeleccionada >= 0) {
-        // Obtener el número de placa del camión seleccionado en la tabla
+  
         String placaSeleccionada = (String) tblRegistroCamiones.getValueAt(filaSeleccionada, 0); // El índice 0 corresponde a la columna Placa en tu tabla
 
-        // Mostrar un cuadro de confirmación antes de eliminar
+ 
         int confirm = JOptionPane.showConfirmDialog(this,
             "¿Estás seguro de que deseas borrar este camión?",
             "Confirmar eliminación",
             JOptionPane.YES_NO_OPTION);
 
-        // Si el usuario confirma la eliminación
+
         if (confirm == JOptionPane.YES_OPTION) {
-            // Buscar y eliminar el camión de la lista basado en la placa
+
             Camiones camionAEliminar = null;
             for (Camiones camion : listaCamiones) {
-                if (camion.getPlacas().equals(placaSeleccionada)) { // Comparación de String
+                if (camion.getPlacas().equals(placaSeleccionada)) { 
                     camionAEliminar = camion;
                     break;
                 }
             }
 
-            // Eliminar el camión encontrado
+
             if (camionAEliminar != null) {
                 listaCamiones.remove(camionAEliminar);
 
-                // Refrescar la tabla para reflejar los cambios
-                cargarCamionesEnTabla();
 
-                // Guardar los cambios en el archivo Excel después de eliminar el camión
-                gestionCamiones.setCamiones(listaCamiones); // Actualizar la lista en la clase de gestión
-                gestionCamiones.guardarCamionesEnExcel();  // Guardar los datos actualizados en el archivo Excel
+                cargarCamionesTabla();
 
-                // Mostrar un mensaje de confirmación
+              
+                gestionCamiones.setCamiones(listaCamiones); 
+                gestionCamiones.guardarCamionesEnExcel();
+
+         
                 JOptionPane.showMessageDialog(this, "Camión eliminado correctamente.");
             }
         }
     } else {
-        // Si no se ha seleccionado ninguna fila, mostrar un mensaje de advertencia
+
         JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para eliminar.");
     }
     }//GEN-LAST:event_btnEliminarCamionSistemaActionPerformed
 
     private void btnBuscarCamionSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCamionSistemaActionPerformed
-      if (txtMarcaCamionBuscar.getText().trim().isEmpty() ||
-        txtModeloCamionBuscar.getText().trim().isEmpty() ||
+     if (txtMarcaCamionBuscar.getText().trim().isEmpty() &&
+        txtModeloCamionBuscar.getText().trim().isEmpty() &&
         txtPlacaCamionBuscar.getText().trim().isEmpty()) {
-
-        JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
+        
+        JOptionPane.showMessageDialog(this, "Por favor, completa al menos un campo de búsqueda.");
         return;
     }
 
-    // Obtener los valores ingresados
+
     String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
     String modeloBuscado = txtModeloCamionBuscar.getText().trim();
-
-    // Obtener la placa ingresada
     String placaBuscada = txtPlacaCamionBuscar.getText().trim();
 
-    // Reiniciar el modelo de la tabla
+
     modeloCamiones.setRowCount(0);
     boolean hayCoincidencias = false;
 
-    // Buscar coincidencias en la lista de camiones
+
     for (Camiones camion : listaCamiones) {
         boolean coincide = true;
 
+  
         if (!marcaBuscada.isEmpty() && !camion.getMarca().equalsIgnoreCase(marcaBuscada)) {
             coincide = false;
         }
+
 
         if (!modeloBuscado.isEmpty() && !camion.getModelo().equalsIgnoreCase(modeloBuscado)) {
             coincide = false;
         }
 
-        // Comparar placa como String
-        if (!camion.getPlacas().equals(placaBuscada)) {
+    
+        if (!placaBuscada.isEmpty() && !camion.getPlacas().equalsIgnoreCase(placaBuscada)) {
             coincide = false;
         }
 
+
         if (coincide) {
-            // Si hay coincidencias, agregar las filas al modelo de la tabla
             modeloCamiones.addRow(new Object[]{
                 camion.getPlacas(),
+                camion.getMarca(),
+                camion.getModelo(),
                 camion.getEstado(),
                 camion.getTipoCombustible(),
                 camion.getKilometraje(),
                 camion.getCapacidadCarga(),
                 camion.getAñoFabricacion(),
-                camion.getModelo(),
-                camion.getMarca(),
-                camion.getCostos()
+                camion.getCostoReparacion(),
+                camion.getCostoGalon(),
+                camion.getGalones(),
+                camion.getCostoMantenimiento(),
+                camion.getGastoNoEspecificado(),
+                camion.getDescripcionDelGasto(),
+                camion.getTiempoEnReparacion(),
+                camion.getFechaDeMantenimiento()
             });
             hayCoincidencias = true;
         }
     }
 
-    // Mostrar u ocultar la tabla según si hay coincidencias
-    if (hayCoincidencias) {
-        tblRegistroCamiones.setVisible(true);
-    } else {
-        tblRegistroCamiones.setVisible(false);
+ 
+    tblRegistroCamiones.setVisible(hayCoincidencias);
+    if (!hayCoincidencias) {
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
     }
 
-    // Limpiar los campos de búsqueda
+
     txtMarcaCamionBuscar.setText("");
     txtModeloCamionBuscar.setText("");
     txtPlacaCamionBuscar.setText("");
