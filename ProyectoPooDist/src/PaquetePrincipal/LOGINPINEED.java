@@ -14,85 +14,73 @@ public class LOGINPINEED extends javax.swing.JFrame {
         intentosFallidos = new HashMap<>();
     }
     
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel35 = new javax.swing.JLabel();
-        btnIngresarPineed = new javax.swing.JButton();
-        jLabel34 = new javax.swing.JLabel();
-        txtContrasenaUsuario = new javax.swing.JPasswordField();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         txtNombreUsuario = new javax.swing.JTextField();
+        txtContraseñaUsuario = new javax.swing.JPasswordField();
+        btnIngresarPineed = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel35.setFont(new java.awt.Font("Segoe UI Emoji", 1, 14)); // NOI18N
-        jLabel35.setText("CONTRASEÑA");
-        getContentPane().add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 530, 100, -1));
+        jLabel11.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel11.setText("CONTRASEÑA");
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 500, -1, 20));
 
-        btnIngresarPineed.setBackground(new java.awt.Color(153, 255, 204));
-        btnIngresarPineed.setFont(new java.awt.Font("Lucida Console", 1, 18)); // NOI18N
-        btnIngresarPineed.setText("INGRESAR");
-        btnIngresarPineed.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153), 2));
+        jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel4.setText("USUARIO");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 450, 60, -1));
+        getContentPane().add(txtNombreUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 440, 210, -1));
+        getContentPane().add(txtContraseñaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 490, 210, -1));
+
+        btnIngresarPineed.setBackground(new java.awt.Color(0, 102, 255));
+        btnIngresarPineed.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnIngresarPineed.setForeground(new java.awt.Color(255, 255, 255));
+        btnIngresarPineed.setText("Ingresar");
+        btnIngresarPineed.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
         btnIngresarPineed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIngresarPineedActionPerformed(evt);
             }
         });
-        getContentPane().add(btnIngresarPineed, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 520, 170, 70));
+        getContentPane().add(btnIngresarPineed, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 500, 100, 50));
 
-        jLabel34.setFont(new java.awt.Font("Segoe UI Emoji", 1, 14)); // NOI18N
-        jLabel34.setText("USUARIO");
-        getContentPane().add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 480, 70, -1));
-        getContentPane().add(txtContrasenaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 520, 310, 30));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/Imagen_de_WhatsApp_2024-09-09_a_las_09.35.27_baedf375-removebg-preview.png"))); // NOI18N
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, 640, 370));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/Imagen_de_WhatsApp_2024-09-09_a_las_09.35.27_baedf375-removebg-preview.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, -30, 690, 510));
-        getContentPane().add(txtNombreUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 470, 310, 30));
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/azul.jpg"))); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 630));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/azul.jpg"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1020, 580));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
-<<<<<<< HEAD
 String nombreUsuario = txtNombreUsuario.getText();
         String contraseña = new String(txtContraseñaUsuario.getPassword());
-=======
-
-        String nombreUsuario = txtNombreUsuario.getText();
-        String contraseña = new String(txtContrasenaUsuario.getPassword());
->>>>>>> 8f45bced62433f4e62290a05f01e433d2cac7582
-
         Usuarios usuario = buscarUsuario(nombreUsuario);
-
         if (usuario == null) {
             mostrarMensajeError("Usuario no encontrado.");
             return;
         }
-
         if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
             mostrarMensajeError("Usuario bloqueado. Contacte al administrador.");
             return;
         }
-
         if (contraseña.equals(usuario.getContrasenaUsuario())) {
-      
             INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL();
             abrir.setVisible(true);
             this.setVisible(false);
-    
             intentosFallidos.remove(nombreUsuario);
         } else {
-      
             int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
             intentosFallidos.put(nombreUsuario, intentos);
-
             if (intentos >= 3) {
                 if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
                     mostrarMensajeError("Ha superado los intentos. El programa se cerrará.");
@@ -107,6 +95,7 @@ String nombreUsuario = txtNombreUsuario.getText();
         }
     }//GEN-LAST:event_btnIngresarPineedActionPerformed
 
+    
      private Usuarios buscarUsuario(String nombreUsuario) {
         for (Usuarios u : gestionUsuarios.getUsuarios()) {
             if (u.getNombreUsuario().equals(nombreUsuario)) {
@@ -127,7 +116,8 @@ String nombreUsuario = txtNombreUsuario.getText();
         javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
     }
 
-
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -166,10 +156,10 @@ String nombreUsuario = txtNombreUsuario.getText();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresarPineed;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
-    private javax.swing.JPasswordField txtContrasenaUsuario;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPasswordField txtContraseñaUsuario;
     private javax.swing.JTextField txtNombreUsuario;
     // End of variables declaration//GEN-END:variables
 }
