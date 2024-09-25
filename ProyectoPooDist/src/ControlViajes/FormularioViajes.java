@@ -17,9 +17,13 @@ import PaquetePrincipal.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+
+
+
 import java.util.Calendar;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.IDateEvaluator;
+import java.awt.Color;
 /**
  *
  * @author USUARIO
@@ -51,6 +55,12 @@ public class FormularioViajes extends javax.swing.JFrame {
     //indice que nos ayudara en el calendario
     int indice;
     
+    //nos ayudara a mostrar los datos a modificar
+    int indiceActual;
+    
+    //nos ayudara a repintar la fechas del calendario
+    Date fechaActual;
+    
     /**
      * Creates new form FormularioViajes
      */
@@ -59,6 +69,9 @@ public class FormularioViajes extends javax.swing.JFrame {
         
         //iniciamos el indice a 0;
         indice = 0;
+        
+        //iniciamos el indiceActual a -1
+        indiceActual = -1;
         
         //creamos los objetos de gestion
         gescalendario = new GestionCalendario();
@@ -82,11 +95,10 @@ public class FormularioViajes extends javax.swing.JFrame {
         
         
         //inicamos los vectores
-        if (gescalendario.getFechasDeCalendario() != null) {
-            FechaTablaNew = gescalendario.getFechasDeCalendario();
-            
-            System.out.println("se ha cargado ");
-        }
+        
+        FechaTablaNew = gescalendario.getFechasDeCalendario(); 
+        System.out.println("se ha cargado ");
+        
         
         //inicializamos las tablas con los elementos del inventario
         if (gesproductos.getProductos() != null) {
@@ -122,7 +134,8 @@ public class FormularioViajes extends javax.swing.JFrame {
         //hacemos que el calendario se cargue
         CalendarioGeneral.getDayChooser().addDateEvaluator(marcador);
         ActualizarCalendario();
-                
+            
+        iniciarBucleEnHilo(); 
     }
     
     //creamos la funcion para señalar los dias de viajes en el calendario 
@@ -134,11 +147,59 @@ public class FormularioViajes extends javax.swing.JFrame {
             
             fechasCarga.add(fC);
             fechasDescarga.add(fD);
-        
-            System.out.println("fecha");
+                 
+            colorearFecha(fC, Color.green);
+            colorearFecha(fD, Color.red);
         }
         
         CalendarioGeneral.getDayChooser().repaint();
+    };
+    
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void colorearFecha(Date fecha, Color color) {
+        aplicarColorAFecha(fecha, color);
+    }
+    
+    private void aplicarColorAFecha(Date fecha, Color color) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fecha);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+
+        Calendar calActual = CalendarioGeneral.getCalendar();
+        if (calActual.get(Calendar.MONTH) == month && calActual.get(Calendar.YEAR) == year) {
+            Calendar tempCal = (Calendar) calActual.clone();
+            tempCal.set(Calendar.DAY_OF_MONTH, 1);
+            int firstDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
+
+            // Corregimos el cálculo del índice
+            int index = (day+6) + (firstDayOfWeek - Calendar.SUNDAY);
+
+            if (index >= 0 && index < CalendarioGeneral.getDayChooser().getDayPanel().getComponents().length) {
+                JComponent component = (JComponent) CalendarioGeneral.getDayChooser().getDayPanel().getComponents()[index];
+                component.setBackground(color);
+                component.setOpaque(true);
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    public void ActualizarComboListaPedidos(){
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        comboPedidosLista.removeAllItems();
+        
+        
+        for (int i = 0; i < FechaTablaNew.size(); i++) {
+            Date fC = FechaTablaNew.get(i).getFechaC();
+            Date fD = FechaTablaNew.get(i).getFechaD();
+            int conteo = i + 1;
+            comboPedidosLista.addItem( conteo + ". " + formato.format(fC) + " - " + formato.format(fD) );
+        }
+        
     };
     
     //esta funcion sirve para actualizar las cantidades de la tabla B a 0, despues de darle al boton agregar
@@ -153,7 +214,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     //funcion para poder actualizar la tabla de productos A
     private void ActualizarTablaA(){
         
-        if (indice > -1) {
+        if (indiceActual > -1) {
             //primero vaciaremos la tabla totalmente
         modeloProductosA.setRowCount(0);
         
@@ -164,9 +225,9 @@ public class FormularioViajes extends javax.swing.JFrame {
             int numeroDeCantidades = 0;
             
             //un for para para recorrer el vector de indices y modificar las existencias
-            for (int j = 0; j < FechaTablaNew.get(indice).getIndiceProductos().size(); j++) {
-                if (i == FechaTablaNew.get(indice).getIndiceProductos().get(j)) {
-                    numeroDeCantidades = FechaTablaNew.get(indice).getIndiceCantidad().get(j);
+            for (int j = 0; j < FechaTablaNew.get(indiceActual).getIndiceProductos().size(); j++) {
+                if (i == FechaTablaNew.get(indiceActual).getIndiceProductos().get(j)) {
+                    numeroDeCantidades = FechaTablaNew.get(indiceActual).getIndiceCantidad().get(j);
                 }
             }
                         
@@ -191,6 +252,8 @@ public class FormularioViajes extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        comboPedidosLista = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -198,7 +261,7 @@ public class FormularioViajes extends javax.swing.JFrame {
         comoboCamionesA = new javax.swing.JComboBox<>();
         comboPilotosA = new javax.swing.JComboBox<>();
         fechaCargaA = new com.toedter.calendar.JDateChooser();
-        jDateChooser4 = new com.toedter.calendar.JDateChooser();
+        fechaDescargaA = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaProductosA = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
@@ -237,8 +300,11 @@ public class FormularioViajes extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(180, 150, 111));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Detalles del Viaje");
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel13.setText("Que viaje desea ver:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -246,15 +312,25 @@ public class FormularioViajes extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboPedidosLista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel1)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboPedidosLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap())
         );
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -299,7 +375,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jDateChooser4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(fechaDescargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
@@ -319,7 +395,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 15, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -341,7 +417,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(fechaDescargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -708,8 +784,19 @@ public class FormularioViajes extends javax.swing.JFrame {
                 //actualizamos el calendario 
                 ActualizarCalendario();
                 
+                //actualizamos el combo box
+                ActualizarComboListaPedidos();
+                
                 //reiniciamos todos los elemento necesario
                 ActualizarTablaB();
+                
+                //preguntamos si el indice anterior es superior de -1
+                 if (indiceActual > -1) {
+                    
+                    //pintamos la fecha seleccionada en azul
+                    colorearFecha(FechaTablaNew.get(0).getFechaC(), Color.blue);
+                    colorearFecha(FechaTablaNew.get(0).getFechaD(), Color.blue);
+                 }
                 
                 comboPilotosB.setSelectedIndex(0);
                 comboCamionesB.setSelectedIndex(0);
@@ -721,6 +808,111 @@ public class FormularioViajes extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jPanel12MouseClicked
 
+    private void iniciarBucleEnHilo() {
+        //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
+        Thread hiloBucle = new Thread(() -> {
+            
+         while (true) {
+             
+            //leemos el indice seleccionado por el combo box
+            
+            int indiceSeleccionado = comboPedidosLista.getSelectedIndex();
+            
+            //pregutamos si el indice seleccionado es el actual
+            if (indiceSeleccionado != indiceActual) {
+                
+                //preguntamos si el indice anterior es superior de -1
+                 if (indiceActual > -1) {
+                    //creamos un indice antiguo que nos ahorrara una cuantas iteraciones a la hora de pintar la fechas
+                    int indiceAntiguo = indiceActual;
+                    
+                    //volvemos a colores las fechas antiguas al color correspondiente 
+                    colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaC(), Color.green);
+                    colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaD(), Color.red);
+                 }
+                
+                //hacemos que el indice actual sea igual al seleccionado 
+                indiceActual = indiceSeleccionado;
+                
+                //ahora hacemos que cada cada elemento se iguale a la fecha seleccionada
+                
+                //igualamos las fechas
+                fechaCargaA.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaC());    
+                fechaDescargaA.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaD());
+                
+                //igualamos el combo box de pilotos y camiones
+                comboPilotosA.setSelectedIndex(FechaTablaNew.get(indiceSeleccionado).getIndicePiloto());
+                comoboCamionesA.setSelectedIndex(FechaTablaNew.get(indiceSeleccionado).getIndiceCamion());
+                
+                //actualizamos el combo si es un venta o compra
+                if (FechaTablaNew.get(indiceSeleccionado).getCompra() ==  true) {
+                    ComboTViajeA.setSelectedIndex(0);
+                }else{
+                    ComboTViajeA.setSelectedIndex(1);
+                }
+                
+                //colocamos las fechas seleccionadas en azul, para ver que son la fecha seleccionada
+                colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), Color.blue);
+                colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), Color.blue);
+                
+                
+                //actualizamos la tabla
+                 ActualizarTablaA();
+            }
+            
+            //nos ayudara a repintar todas las fechas encesarias
+            Date fechaSeleccionada = CalendarioGeneral.getDate();
+            
+            //preguntamos si hemos seleccionado una nueva fecha
+             if (!fechaSeleccionada.equals(fechaActual)) {
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                 fechaActual = fechaSeleccionada;
+                 System.out.println("" + formato.format(fechaActual));
+                 
+                 
+                 //repintamos el calendario ora vez
+                 ActualizarCalendario();
+                 
+                 //recoremos el vector de fecha tabla para encontrar la fecha selecionada
+                 for (int i = 0; i < FechaTablaNew.size(); i++) {
+                     System.out.println("" + formato.format(fechaActual));
+                     System.out.println("" + formato.format(FechaTablaNew.get(i).getFechaC()));
+                     
+                     Date fC = FechaTablaNew.get(i).getFechaC();
+                     Date fD = FechaTablaNew.get(i).getFechaD();
+                     
+                    //preguntamos si ambas fechas son iguales
+                     if (formato.format(fechaActual).equals(formato.format(fC)) || formato.format(fechaActual).equals(formato.format(fD))) {
+                          //igualamos el indice a la fecha
+                         comboPedidosLista.setSelectedIndex(i);
+                     }
+                 }
+                 
+                 //pintamos la fecha seleccionada
+                 if (indiceSeleccionado == indiceActual && indiceActual > -1) {
+                    //colocamos las fechas seleccionadas en azul, para ver que son la fecha seleccionada
+                    colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), Color.blue);
+                    colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), Color.blue); 
+                 }
+                 
+                 
+             }
+            
+            //limita los recursos del bucle
+            try {
+                    // Pausa el hilo por 100ms para reducir el consumo de recursos
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                 e.printStackTrace();
+                }
+            }
+        });
+
+        // Iniciar el hilo
+        hiloBucle.start();
+
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -760,6 +952,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     private com.toedter.calendar.JCalendar CalendarioGeneral;
     private javax.swing.JComboBox<String> ComboTViajeA;
     private javax.swing.JComboBox<String> comboCamionesB;
+    private javax.swing.JComboBox<String> comboPedidosLista;
     private javax.swing.JComboBox<String> comboPilotosA;
     private javax.swing.JComboBox<String> comboPilotosB;
     private javax.swing.JComboBox<String> comboTViajeB;
@@ -767,11 +960,12 @@ public class FormularioViajes extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser fechaBCarga;
     private com.toedter.calendar.JDateChooser fechaBDescarga;
     private com.toedter.calendar.JDateChooser fechaCargaA;
-    private com.toedter.calendar.JDateChooser jDateChooser4;
+    private com.toedter.calendar.JDateChooser fechaDescargaA;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
