@@ -61,6 +61,10 @@ public class FormularioViajes extends javax.swing.JFrame {
     //nos ayudara a repintar la fechas del calendario
     Date fechaActual;
     
+    
+    //nos ayudara para ver el indice de elementos iguales
+    int indiceFechasIgualesActuales;
+
     /**
      * Creates new form FormularioViajes
      */
@@ -254,6 +258,8 @@ public class FormularioViajes extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         comboPedidosLista = new javax.swing.JComboBox<>();
         jLabel13 = new javax.swing.JLabel();
+        textoFechasIguales = new javax.swing.JLabel();
+        comboMasDeFecha = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -306,30 +312,43 @@ public class FormularioViajes extends javax.swing.JFrame {
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel13.setText("Que viaje desea ver:");
 
+        textoFechasIguales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        textoFechasIguales.setText("Fechas Iguales");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(textoFechasIguales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(comboMasDeFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboPedidosLista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(comboPedidosLista, 0, 184, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel13)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel13)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboPedidosLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(textoFechasIguales)
+                    .addComponent(comboMasDeFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -395,7 +414,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 15, Short.MAX_VALUE)))
+                        .addGap(0, 32, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -452,7 +471,7 @@ public class FormularioViajes extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -652,7 +671,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboPilotosB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(comboCamionesB, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -660,7 +679,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                         .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(comboTViajeB, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -851,6 +870,7 @@ public class FormularioViajes extends javax.swing.JFrame {
                     ComboTViajeA.setSelectedIndex(1);
                 }
                 
+                
                 //colocamos las fechas seleccionadas en azul, para ver que son la fecha seleccionada
                 colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), Color.blue);
                 colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), Color.blue);
@@ -863,6 +883,9 @@ public class FormularioViajes extends javax.swing.JFrame {
             //nos ayudara a repintar todas las fechas encesarias
             Date fechaSeleccionada = CalendarioGeneral.getDate();
             
+            //creamos un bool que nos permita permita saber si existen más elementos
+            boolean masfechas = false;
+            
             //preguntamos si hemos seleccionado una nueva fecha
              if (!fechaSeleccionada.equals(fechaActual)) {
                 SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -873,19 +896,50 @@ public class FormularioViajes extends javax.swing.JFrame {
                  //repintamos el calendario ora vez
                  ActualizarCalendario();
                  
+                 
+                 //creamos un bool para ver las fechas similares
+                 boolean primeraFechaEncontrada = false;
+                 
+                 
+                 //vaciamos todo el combo box
+                 comboMasDeFecha.removeAllItems();
+                 
                  //recoremos el vector de fecha tabla para encontrar la fecha selecionada
                  for (int i = 0; i < FechaTablaNew.size(); i++) {
-                     System.out.println("" + formato.format(fechaActual));
-                     System.out.println("" + formato.format(FechaTablaNew.get(i).getFechaC()));
+                     
                      
                      Date fC = FechaTablaNew.get(i).getFechaC();
                      Date fD = FechaTablaNew.get(i).getFechaD();
                      
                     //preguntamos si ambas fechas son iguales
                      if (formato.format(fechaActual).equals(formato.format(fC)) || formato.format(fechaActual).equals(formato.format(fD))) {
-                          //igualamos el indice a la fecha
-                         comboPedidosLista.setSelectedIndex(i);
-                     }
+                         
+                         int numeroDeIndiceAescribri = i+1;
+                         
+                        if (primeraFechaEncontrada == false) {
+                            //igualamos el indice a la fecha
+                            comboMasDeFecha.addItem(""  + numeroDeIndiceAescribri);
+                            comboPedidosLista.setSelectedIndex(i);
+                            primeraFechaEncontrada = true;
+                        }else if (primeraFechaEncontrada == true) {
+                            masfechas = true;
+                            comboMasDeFecha.setVisible(true);
+                            textoFechasIguales.setVisible(true);
+                            comboMasDeFecha.addItem(""  + numeroDeIndiceAescribri);
+                        }
+                     }       
+                     
+                 }
+                 
+                 if (primeraFechaEncontrada == false) {
+                     
+                     int indiceMasFechasSeleccionado = indiceSeleccionado + 1;                    
+                     comboMasDeFecha.addItem(""  + indiceMasFechasSeleccionado);
+                 }
+                 
+                 if (masfechas == false) {
+                     comboMasDeFecha.setVisible(false);
+                     textoFechasIguales.setVisible(false);
                  }
                  
                  //pintamos la fecha seleccionada
@@ -894,9 +948,36 @@ public class FormularioViajes extends javax.swing.JFrame {
                     colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), Color.blue);
                     colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), Color.blue); 
                  }
-                 
+                             
                  
              }
+             
+             //cremos un if que nos ayudara a ver si hay fechas iguales 
+                int indiceFechas = -1; 
+                //este if guardara el numero del combo de fechas iguales en la variable anteriormente creaeda
+                if (comboMasDeFecha.getItemCount() > 1) {
+                    //agregamos el valor del item del combo a la variable de indice fechas
+                    String selectedItemFechasRepetidas = (String)comboMasDeFecha.getSelectedItem();
+                    indiceFechas = Integer.parseInt(selectedItemFechasRepetidas);
+                    indiceFechas -= 1;                
+                }
+                
+                
+                //cremos un if para ver las fechas iguales actuales 
+                if (indiceFechas != indiceFechasIgualesActuales && comboMasDeFecha.isVisible() && indiceFechas > -1) {
+                    System.out.println("hay mas fechas iguales"); 
+                    
+                    indiceFechasIgualesActuales = indiceFechas;
+                     
+                     int indiceFechaIgualACambiar;
+                     
+                     
+                     String selectedItemFechasRepetidas = (String)comboMasDeFecha.getSelectedItem();
+                     indiceFechaIgualACambiar = Integer.parseInt(selectedItemFechasRepetidas);
+                     indiceFechaIgualACambiar -= 1 ;
+                     
+                     comboPedidosLista.setSelectedIndex(indiceFechaIgualACambiar);
+                }
             
             //limita los recursos del bucle
             try {
@@ -952,6 +1033,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     private com.toedter.calendar.JCalendar CalendarioGeneral;
     private javax.swing.JComboBox<String> ComboTViajeA;
     private javax.swing.JComboBox<String> comboCamionesB;
+    private javax.swing.JComboBox<String> comboMasDeFecha;
     private javax.swing.JComboBox<String> comboPedidosLista;
     private javax.swing.JComboBox<String> comboPilotosA;
     private javax.swing.JComboBox<String> comboPilotosB;
@@ -990,5 +1072,6 @@ public class FormularioViajes extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tablaProductosA;
     private javax.swing.JTable tablaProductosB;
+    private javax.swing.JLabel textoFechasIguales;
     // End of variables declaration//GEN-END:variables
 }
