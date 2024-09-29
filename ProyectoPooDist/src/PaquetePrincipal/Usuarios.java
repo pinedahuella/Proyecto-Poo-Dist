@@ -125,6 +125,4 @@ public class Usuarios {
     public String toString() {
         return "Usuarios{" + "nombreUsuario=" + nombreUsuario + ", contrasenaUsuario=" + contrasenaUsuario + ", nombre=" + nombre + ", apellido=" + apellido + ", cargo=" + cargo + ", genero=" + genero + ", numeroDPI=" + numeroDPI + ", fechaNacimiento=" + fechaNacimiento + ", numeroTelefono=" + numeroTelefono + ", correoElectronico=" + correoElectronico + ", estado=" + estado + '}';
     }
-
-
 }

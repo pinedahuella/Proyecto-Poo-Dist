@@ -1,451 +1,1030 @@
 package PaquetePrincipal;
-
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.Vector;
 
 public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
-
+    public GESTIONUSUARIOS gestionUsuarios;
+    public Vector<Usuarios> listaUsuarios = new Vector<>();
+    
+    DefaultTableModel modeloUsuarios = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
     public INICIOGESTIONUSUARIOS() {
         initComponents();
+        
+        gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        
+        String[] columnas = {"Nombre", "Apellido", "DPI", "Cargo", "Teléfono", "Estado"};
+        modeloUsuarios.setColumnIdentifiers(columnas);
+        
+        if (gestionUsuarios.getUsuarios() != null) {
+            listaUsuarios = gestionUsuarios.getUsuarios();
+        }
+        
+        tblRegistroUsuarios.setModel(modeloUsuarios);
+        tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRegistroUsuarios.getTableHeader().setReorderingAllowed(false);
+        tblRegistroUsuarios.getTableHeader().setResizingAllowed(false);
+        tblRegistroUsuarios.setRowSelectionAllowed(true);
+        tblRegistroUsuarios.setColumnSelectionAllowed(false);
+        
+        cargarUsuariosEnTabla();
+        
+
     }
+
+
+private void cargarUsuariosEnTabla() {
+    for (Usuarios usuario : listaUsuarios) {
+        modeloUsuarios.addRow(new Object[]{
+            
+            usuario.getNombre(),
+            usuario.getApellido(),
+            usuario.getNumeroDPI(),
+            usuario.getCargo(),
+            usuario.getNumeroTelefono(),
+            usuario.getEstado(),
+            usuario.getCorreoElectronico(),
+            usuario.getGenero(),
+            usuario.getFechaNacimiento(),
+            usuario.getNombreUsuario(),
+            usuario.getContrasenaUsuario(),
+            
+
+        });
+    }
+}
+
 
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jTextField5 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField8 = new javax.swing.JTextField();
-        jTextField9 = new javax.swing.JTextField();
-        jPanel9 = new javax.swing.JPanel();
-        btnModificarPiloto4 = new javax.swing.JButton();
-        btnAgregarPiloto1 = new javax.swing.JButton();
-        btnEliminarPiloto1 = new javax.swing.JButton();
-        btnMostrarPiloto1 = new javax.swing.JButton();
-        btnListaPiloto1 = new javax.swing.JButton();
-        btnInicioPiloto1 = new javax.swing.JButton();
-        btnSalirPiloto1 = new javax.swing.JButton();
-        btnEstadoPiloto3 = new javax.swing.JButton();
-        jTextField10 = new javax.swing.JTextField();
-        jTextField11 = new javax.swing.JTextField();
-        jTextField12 = new javax.swing.JTextField();
-        jTextField13 = new javax.swing.JTextField();
-        jTextField14 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jTextField15 = new javax.swing.JTextField();
-        jTextField7 = new javax.swing.JTextField();
-        jTextField16 = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        btnGestionDeVentas = new javax.swing.JButton();
+        btnGestionDePedidos = new javax.swing.JButton();
+        btnPlanillaDeTrabajadores = new javax.swing.JButton();
+        btnGestionDeClientes = new javax.swing.JButton();
+        btnGestionDeCreditos = new javax.swing.JButton();
+        btnInventarioDeQuintales = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
+        btnCalendario = new javax.swing.JButton();
+        btnGestionDePilotos = new javax.swing.JButton();
+        btnGestionDeCamiones = new javax.swing.JButton();
+        btnGestionDeUsuarios = new javax.swing.JButton();
+        btnRegresarLogin = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jTextField18 = new javax.swing.JTextField();
+        jPanel10 = new javax.swing.JPanel();
+        btnGestionDeVentas2 = new javax.swing.JButton();
+        btnGestionDePedidos2 = new javax.swing.JButton();
+        btnPlanillaDeTrabajadores2 = new javax.swing.JButton();
+        btnGestionDeClientes2 = new javax.swing.JButton();
+        btnGestionDeCreditos2 = new javax.swing.JButton();
+        btnInventarioDeQuintales2 = new javax.swing.JButton();
+        btnCerrarSesion2 = new javax.swing.JButton();
+        btnCalendario2 = new javax.swing.JButton();
+        btnGestionDePilotos2 = new javax.swing.JButton();
+        btnGestionDeCamiones2 = new javax.swing.JButton();
+        btnGestionDeUsuarios2 = new javax.swing.JButton();
+        btnRegresarLogin2 = new javax.swing.JButton();
+        jPanel11 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblRegistroUsuarios = new javax.swing.JTable();
+        jLabel12 = new javax.swing.JLabel();
+        txtNumeroDeDpiUsuariosBuscar = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtApellidoUsuarioBuscar = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtNombreUsuarioBuscar = new javax.swing.JTextField();
+        mostrarUsuario = new javax.swing.JButton();
+        eliminarUsuario = new javax.swing.JButton();
+        agregarUsuario = new javax.swing.JButton();
+        modificarUsuario = new javax.swing.JButton();
+        buscarUsuario = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(0, 153, 153));
         jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField5.setText("            GESTION DE USUARIOS ");
+        jTextField5.setText("        PINEED");
         jTextField5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
 
-        jTextField4.setBackground(new java.awt.Color(255, 153, 255));
-        jTextField4.setBorder(null);
+        jPanel4.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
 
-        jTextField3.setBackground(new java.awt.Color(51, 255, 204));
-        jTextField3.setBorder(null);
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        btnGestionDeVentas.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeVentas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeVentas.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeVentas.setText("GESTION DE VENTAS");
+        btnGestionDeVentas.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                btnGestionDeVentasActionPerformed(evt);
             }
         });
 
-        jTextField8.setBackground(new java.awt.Color(204, 204, 255));
-        jTextField8.setBorder(null);
-        jTextField8.addActionListener(new java.awt.event.ActionListener() {
+        btnGestionDePedidos.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePedidos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePedidos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePedidos.setText("GESTION DE PEDIDOS");
+        btnGestionDePedidos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField8ActionPerformed(evt);
+                btnGestionDePedidosActionPerformed(evt);
             }
         });
 
-        jTextField9.setBackground(new java.awt.Color(204, 204, 255));
-        jTextField9.setBorder(null);
-
-        btnModificarPiloto4.setBackground(new java.awt.Color(0, 102, 102));
-        btnModificarPiloto4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnModificarPiloto4.setForeground(new java.awt.Color(255, 255, 255));
-        btnModificarPiloto4.setText("MODIFICAR");
-        btnModificarPiloto4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnModificarPiloto4.addActionListener(new java.awt.event.ActionListener() {
+        btnPlanillaDeTrabajadores.setBackground(new java.awt.Color(0, 102, 102));
+        btnPlanillaDeTrabajadores.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnPlanillaDeTrabajadores.setForeground(new java.awt.Color(255, 255, 255));
+        btnPlanillaDeTrabajadores.setText("PLANILLA DE TRABAJADORES");
+        btnPlanillaDeTrabajadores.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnPlanillaDeTrabajadores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarPiloto4ActionPerformed(evt);
+                btnPlanillaDeTrabajadoresActionPerformed(evt);
             }
         });
 
-        btnAgregarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnAgregarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnAgregarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnAgregarPiloto1.setText("AGREGAR");
-        btnAgregarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnAgregarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnGestionDeClientes.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeClientes.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeClientes.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeClientes.setText("GESTION DE CLIENTES");
+        btnGestionDeClientes.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarPiloto1ActionPerformed(evt);
+                btnGestionDeClientesActionPerformed(evt);
             }
         });
 
-        btnEliminarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnEliminarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnEliminarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnEliminarPiloto1.setText("ELIMINAR");
-        btnEliminarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnEliminarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnGestionDeCreditos.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCreditos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCreditos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCreditos.setText("GESTION DE CREDITOS");
+        btnGestionDeCreditos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCreditos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarPiloto1ActionPerformed(evt);
+                btnGestionDeCreditosActionPerformed(evt);
             }
         });
 
-        btnMostrarPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnMostrarPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnMostrarPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnMostrarPiloto1.setText("MOSTRAR");
-        btnMostrarPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnMostrarPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnInventarioDeQuintales.setBackground(new java.awt.Color(0, 102, 102));
+        btnInventarioDeQuintales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnInventarioDeQuintales.setForeground(new java.awt.Color(255, 255, 255));
+        btnInventarioDeQuintales.setText("INVENTARIO QUINTALES");
+        btnInventarioDeQuintales.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnInventarioDeQuintales.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarPiloto1ActionPerformed(evt);
+                btnInventarioDeQuintalesActionPerformed(evt);
             }
         });
 
-        btnListaPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnListaPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnListaPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnListaPiloto1.setText("LISTA");
-        btnListaPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnListaPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrarSesion.setBackground(new java.awt.Color(0, 102, 102));
+        btnCerrarSesion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCerrarSesion.setForeground(new java.awt.Color(255, 255, 255));
+        btnCerrarSesion.setText("CERRAR SESION");
+        btnCerrarSesion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListaPiloto1ActionPerformed(evt);
+                btnCerrarSesionActionPerformed(evt);
             }
         });
 
-        btnInicioPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnInicioPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnInicioPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnInicioPiloto1.setText("INICIO");
-        btnInicioPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnInicioPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnCalendario.setBackground(new java.awt.Color(0, 102, 102));
+        btnCalendario.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCalendario.setForeground(new java.awt.Color(255, 255, 255));
+        btnCalendario.setText("CALENDARIO");
+        btnCalendario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCalendario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInicioPiloto1ActionPerformed(evt);
+                btnCalendarioActionPerformed(evt);
             }
         });
 
-        btnSalirPiloto1.setBackground(new java.awt.Color(0, 102, 102));
-        btnSalirPiloto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnSalirPiloto1.setForeground(new java.awt.Color(255, 255, 255));
-        btnSalirPiloto1.setText("SALIR");
-        btnSalirPiloto1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnSalirPiloto1.addActionListener(new java.awt.event.ActionListener() {
+        btnGestionDePilotos.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePilotos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePilotos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePilotos.setText("GESTION DE PILOTOS");
+        btnGestionDePilotos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePilotos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirPiloto1ActionPerformed(evt);
+                btnGestionDePilotosActionPerformed(evt);
             }
         });
 
-        btnEstadoPiloto3.setBackground(new java.awt.Color(0, 102, 102));
-        btnEstadoPiloto3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnEstadoPiloto3.setForeground(new java.awt.Color(255, 255, 255));
-        btnEstadoPiloto3.setText("ESTADO");
-        btnEstadoPiloto3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnEstadoPiloto3.addActionListener(new java.awt.event.ActionListener() {
+        btnGestionDeCamiones.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCamiones.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCamiones.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCamiones.setText("GESTION DE CAMIONES");
+        btnGestionDeCamiones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCamiones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEstadoPiloto3ActionPerformed(evt);
+                btnGestionDeCamionesActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnEstadoPiloto3, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalirPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInicioPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAgregarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnListaPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnMostrarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificarPiloto4, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+        btnGestionDeUsuarios.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeUsuarios.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeUsuarios.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeUsuarios.setText("GESTION DE USUARIOS");
+        btnGestionDeUsuarios.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeUsuarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeUsuariosActionPerformed(evt);
+            }
+        });
+
+        btnRegresarLogin.setBackground(new java.awt.Color(0, 102, 102));
+        btnRegresarLogin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnRegresarLogin.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegresarLogin.setText("REGRESAR LOGIN");
+        btnRegresarLogin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnRegresarLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarLoginActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnRegresarLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDeUsuarios, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDeCamiones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDePilotos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCalendario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDeCreditos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnGestionDeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnGestionDeVentas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnPlanillaDeTrabajadores, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnGestionDePedidos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnInventarioDeQuintales, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .addComponent(btnInicioPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnInventarioDeQuintales)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAgregarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGestionDePedidos)
+                .addGap(12, 12, 12)
+                .addComponent(btnPlanillaDeTrabajadores)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEliminarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGestionDeVentas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnModificarPiloto4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGestionDeClientes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnMostrarPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGestionDeCreditos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnListaPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCalendario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEstadoPiloto3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGestionDePilotos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSalirPiloto1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addComponent(btnGestionDeCamiones)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeUsuarios)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRegresarLogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCerrarSesion)
+                .addContainerGap())
         );
-
-        jTextField10.setBackground(new java.awt.Color(255, 51, 255));
-        jTextField10.setBorder(null);
-        jTextField10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField10ActionPerformed(evt);
-            }
-        });
-
-        jTextField11.setBackground(new java.awt.Color(204, 255, 204));
-        jTextField11.setBorder(null);
-        jTextField11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField11ActionPerformed(evt);
-            }
-        });
-
-        jTextField12.setBackground(new java.awt.Color(255, 255, 204));
-        jTextField12.setBorder(null);
-        jTextField12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField12ActionPerformed(evt);
-            }
-        });
-
-        jTextField13.setBackground(new java.awt.Color(204, 153, 255));
-        jTextField13.setBorder(null);
-        jTextField13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField13ActionPerformed(evt);
-            }
-        });
-
-        jTextField14.setBackground(new java.awt.Color(255, 255, 204));
-        jTextField14.setBorder(null);
-        jTextField14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField14ActionPerformed(evt);
-            }
-        });
-
-        jTextField6.setBackground(new java.awt.Color(204, 255, 204));
-        jTextField6.setBorder(null);
-
-        jTextField15.setBackground(new java.awt.Color(255, 255, 204));
-        jTextField15.setBorder(null);
-
-        jTextField7.setForeground(new java.awt.Color(153, 153, 255));
-        jTextField7.setBorder(null);
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
-            }
-        });
-
-        jTextField16.setForeground(new java.awt.Color(255, 204, 204));
-        jTextField16.setBorder(null);
-        jTextField16.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField16ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextField4)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17)
-                        .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 844, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(393, 393, 393)
+                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(427, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(38, 38, 38))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(71, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel8.setBackground(new java.awt.Color(6, 40, 86));
+
+        jTextField18.setEditable(false);
+        jTextField18.setBackground(new java.awt.Color(0, 153, 153));
+        jTextField18.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
+        jTextField18.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField18.setText(" GESTION DE USUARIOS");
+        jTextField18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        jTextField18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField18ActionPerformed(evt);
+            }
+        });
+
+        jPanel10.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+
+        btnGestionDeVentas2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeVentas2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeVentas2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeVentas2.setText("GESTION DE VENTAS");
+        btnGestionDeVentas2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeVentas2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeVentas2ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDePedidos2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePedidos2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePedidos2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePedidos2.setText("GESTION DE PEDIDOS");
+        btnGestionDePedidos2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePedidos2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDePedidos2ActionPerformed(evt);
+            }
+        });
+
+        btnPlanillaDeTrabajadores2.setBackground(new java.awt.Color(0, 102, 102));
+        btnPlanillaDeTrabajadores2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnPlanillaDeTrabajadores2.setForeground(new java.awt.Color(255, 255, 255));
+        btnPlanillaDeTrabajadores2.setText("PLANILLA DE TRABAJADORES");
+        btnPlanillaDeTrabajadores2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnPlanillaDeTrabajadores2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlanillaDeTrabajadores2ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeClientes2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeClientes2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeClientes2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeClientes2.setText("GESTION DE CLIENTES");
+        btnGestionDeClientes2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeClientes2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeClientes2ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeCreditos2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCreditos2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCreditos2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCreditos2.setText("GESTION DE CREDITOS");
+        btnGestionDeCreditos2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCreditos2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeCreditos2ActionPerformed(evt);
+            }
+        });
+
+        btnInventarioDeQuintales2.setBackground(new java.awt.Color(0, 102, 102));
+        btnInventarioDeQuintales2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnInventarioDeQuintales2.setForeground(new java.awt.Color(255, 255, 255));
+        btnInventarioDeQuintales2.setText("INVENTARIO QUINTALES");
+        btnInventarioDeQuintales2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnInventarioDeQuintales2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventarioDeQuintales2ActionPerformed(evt);
+            }
+        });
+
+        btnCerrarSesion2.setBackground(new java.awt.Color(0, 102, 102));
+        btnCerrarSesion2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCerrarSesion2.setForeground(new java.awt.Color(255, 255, 255));
+        btnCerrarSesion2.setText("CERRAR SESION");
+        btnCerrarSesion2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesion2ActionPerformed(evt);
+            }
+        });
+
+        btnCalendario2.setBackground(new java.awt.Color(0, 102, 102));
+        btnCalendario2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCalendario2.setForeground(new java.awt.Color(255, 255, 255));
+        btnCalendario2.setText("CALENDARIO");
+        btnCalendario2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCalendario2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalendario2ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDePilotos2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePilotos2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePilotos2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePilotos2.setText("GESTION DE PILOTOS");
+        btnGestionDePilotos2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePilotos2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDePilotos2ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeCamiones2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCamiones2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCamiones2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCamiones2.setText("GESTION DE CAMIONES");
+        btnGestionDeCamiones2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCamiones2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeCamiones2ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeUsuarios2.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeUsuarios2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeUsuarios2.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeUsuarios2.setText("GESTION DE USUARIOS");
+        btnGestionDeUsuarios2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeUsuarios2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeUsuarios2ActionPerformed(evt);
+            }
+        });
+
+        btnRegresarLogin2.setBackground(new java.awt.Color(0, 102, 102));
+        btnRegresarLogin2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnRegresarLogin2.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegresarLogin2.setText("REGRESAR LOGIN");
+        btnRegresarLogin2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnRegresarLogin2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarLogin2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnRegresarLogin2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDeUsuarios2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDeCamiones2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDePilotos2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCalendario2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGestionDeCreditos2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnGestionDeClientes2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnGestionDeVentas2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnPlanillaDeTrabajadores2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnGestionDePedidos2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnInventarioDeQuintales2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnCerrarSesion2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnInventarioDeQuintales2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDePedidos2)
+                .addGap(12, 12, 12)
+                .addComponent(btnPlanillaDeTrabajadores2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeVentas2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeClientes2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCreditos2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCalendario2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDePilotos2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCamiones2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeUsuarios2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRegresarLogin2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCerrarSesion2)
+                .addContainerGap())
+        );
+
+        tblRegistroUsuarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(tblRegistroUsuarios);
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel12.setText("NUMERO DE DPI");
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel10.setText("APELLIDO");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel3.setText("NOMBRE");
+
+        mostrarUsuario.setBackground(new java.awt.Color(204, 204, 255));
+        mostrarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        mostrarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/redicmonacionas mostrar.png"))); // NOI18N
+        mostrarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        mostrarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mostrarUsuarioActionPerformed(evt);
+            }
+        });
+
+        eliminarUsuario.setBackground(new java.awt.Color(255, 0, 0));
+        eliminarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        eliminarUsuario.setText("X");
+        eliminarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        eliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarUsuarioActionPerformed(evt);
+            }
+        });
+
+        agregarUsuario.setBackground(new java.awt.Color(51, 255, 51));
+        agregarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        agregarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/rediomecionar agregar.png"))); // NOI18N
+        agregarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        agregarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarUsuarioActionPerformed(evt);
+            }
+        });
+
+        modificarUsuario.setBackground(new java.awt.Color(153, 0, 204));
+        modificarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        modificarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/lapis (1).png"))); // NOI18N
+        modificarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        modificarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarUsuarioActionPerformed(evt);
+            }
+        });
+
+        buscarUsuario.setBackground(new java.awt.Color(0, 102, 255));
+        buscarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        buscarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/redimenciona buscar.png"))); // NOI18N
+        buscarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        buscarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarUsuarioActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtNumeroDeDpiUsuariosBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                                    .addComponent(txtApellidoUsuarioBuscar))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(modificarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(agregarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtApellidoUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtNumeroDeDpiUsuariosBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(modificarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(agregarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(eliminarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(buscarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(27, 27, 27))
+        );
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(244, 244, 244)
+                        .addComponent(jTextField18, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextField18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnModificarPiloto4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPiloto4ActionPerformed
-        MODIFICARGESTIONUSUARIOS abrir = new   MODIFICARGESTIONUSUARIOS();
+    private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentasActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeVentasActionPerformed
+
+    private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePedidosActionPerformed
+
+    }//GEN-LAST:event_btnGestionDePedidosActionPerformed
+
+    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadoresActionPerformed
+        FramePlanillaSemanal abrir = new  FramePlanillaSemanal();
+        abrir.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnPlanillaDeTrabajadoresActionPerformed
+
+    private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientesActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeClientesActionPerformed
+
+    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCreditosActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeCreditosActionPerformed
+
+    private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintalesActionPerformed
+        FrameInventario abrir = new  FrameInventario();
+        abrir.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnInventarioDeQuintalesActionPerformed
+
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
+
+    }//GEN-LAST:event_btnCalendarioActionPerformed
+
+    private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotosActionPerformed
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnModificarPiloto4ActionPerformed
+    }//GEN-LAST:event_btnGestionDePilotosActionPerformed
 
-    private void btnAgregarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPiloto1ActionPerformed
-        AGREGARGESTIONUSUARIOS abrir = new  AGREGARGESTIONUSUARIOS();
+    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamionesActionPerformed
+        INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnAgregarPiloto1ActionPerformed
+    }//GEN-LAST:event_btnGestionDeCamionesActionPerformed
 
-    private void btnEliminarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPiloto1ActionPerformed
-        ELIMINARGESTIONUSUARIOS abrir = new  ELIMINARGESTIONUSUARIOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnEliminarPiloto1ActionPerformed
-
-    private void btnMostrarPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPiloto1ActionPerformed
-        MOSTRARGESTIONUSUARIOS abrir = new   MOSTRARGESTIONUSUARIOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnMostrarPiloto1ActionPerformed
-
-    private void btnListaPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListaPiloto1ActionPerformed
-        LISTAGESTIONUSUARIOS abrir = new   LISTAGESTIONUSUARIOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnListaPiloto1ActionPerformed
-
-    private void btnInicioPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioPiloto1ActionPerformed
+    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuariosActionPerformed
         INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnInicioPiloto1ActionPerformed
+    }//GEN-LAST:event_btnGestionDeUsuariosActionPerformed
 
-    private void btnSalirPiloto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPiloto1ActionPerformed
-        INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL();
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarLoginActionPerformed
+        LOGINPINEED abrir = new  LOGINPINEED();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnSalirPiloto1ActionPerformed
+    }//GEN-LAST:event_btnRegresarLoginActionPerformed
 
-    private void btnEstadoPiloto3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoPiloto3ActionPerformed
-        CONTRASEÑAUSUARIOGESTION abrir = new CONTRASEÑAUSUARIOGESTION();
+    private void btnGestionDeVentas2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentas2ActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeVentas2ActionPerformed
+
+    private void btnGestionDePedidos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePedidos2ActionPerformed
+
+    }//GEN-LAST:event_btnGestionDePedidos2ActionPerformed
+
+    private void btnPlanillaDeTrabajadores2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadores2ActionPerformed
+        FramePlanillaSemanal abrir = new  FramePlanillaSemanal();
+        abrir.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnPlanillaDeTrabajadores2ActionPerformed
+
+    private void btnGestionDeClientes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientes2ActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeClientes2ActionPerformed
+
+    private void btnGestionDeCreditos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCreditos2ActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeCreditos2ActionPerformed
+
+    private void btnInventarioDeQuintales2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintales2ActionPerformed
+        FrameInventario abrir = new  FrameInventario();
+        abrir.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnInventarioDeQuintales2ActionPerformed
+
+    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
+
+    private void btnCalendario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendario2ActionPerformed
+
+    }//GEN-LAST:event_btnCalendario2ActionPerformed
+
+    private void btnGestionDePilotos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotos2ActionPerformed
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnEstadoPiloto3ActionPerformed
+    }//GEN-LAST:event_btnGestionDePilotos2ActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void btnGestionDeCamiones2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamiones2ActionPerformed
+        INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDeCamiones2ActionPerformed
 
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    private void btnGestionDeUsuarios2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuarios2ActionPerformed
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDeUsuarios2ActionPerformed
 
-    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
+    private void btnRegresarLogin2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarLogin2ActionPerformed
+        LOGINPINEED abrir = new  LOGINPINEED();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnRegresarLogin2ActionPerformed
 
-    }//GEN-LAST:event_jTextField8ActionPerformed
+    private void jTextField18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField18ActionPerformed
 
-    private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
+    }//GEN-LAST:event_jTextField18ActionPerformed
 
-    }//GEN-LAST:event_jTextField10ActionPerformed
+    private void mostrarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarUsuarioActionPerformed
+int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            Usuarios usuarioSeleccionado = listaUsuarios.get(filaSeleccionada);
+            abrirVentanaMostrar(usuarioSeleccionado);
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para mostrar su información.");
+        }
+    }//GEN-LAST:event_mostrarUsuarioActionPerformed
 
-    private void jTextField11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField11ActionPerformed
+    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
+    int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String nombreSeleccionado = (String) tblRegistroUsuarios.getValueAt(filaSeleccionada, 0);
+            String apellidoSeleccionado = (String) tblRegistroUsuarios.getValueAt(filaSeleccionada, 1);
 
-    }//GEN-LAST:event_jTextField11ActionPerformed
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas borrar este usuario: " + nombreSeleccionado + " " + apellidoSeleccionado + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
 
-    private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
+            if (confirm == JOptionPane.YES_OPTION) {
+                gestionUsuarios.eliminarUsuario(nombreSeleccionado, apellidoSeleccionado);
+                actualizarTabla();
+                JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.");
+        }
+    }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
-    }//GEN-LAST:event_jTextField12ActionPerformed
+    private void agregarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarUsuarioActionPerformed
+    AGREGARGESTIONUSUARIOS abrir = new AGREGARGESTIONUSUARIOS ();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_agregarUsuarioActionPerformed
 
-    private void jTextField13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
+    private void modificarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarUsuarioActionPerformed
+int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            Usuarios usuarioSeleccionado = listaUsuarios.get(filaSeleccionada);
+            abrirVentanaModificar(usuarioSeleccionado);
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario para modificar.");
+        }
+    }//GEN-LAST:event_modificarUsuarioActionPerformed
 
-    }//GEN-LAST:event_jTextField13ActionPerformed
+private void abrirVentanaModificar(Usuarios usuario) {
+        MODIFICARGESTIONUSUARIOS ventanaModificar = new MODIFICARGESTIONUSUARIOS(usuario, this);
+        ventanaModificar.setVisible(true);
+        this.setVisible(false);
+    }
 
-    private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
 
-    }//GEN-LAST:event_jTextField14ActionPerformed
+private void abrirVentanaMostrar(Usuarios usuario) {
+        MOSTRARGESTIONUSUARIOS ventanaMostrar = new MOSTRARGESTIONUSUARIOS(usuario, this);
+        ventanaMostrar.setVisible(true);
+    }
+    
+public void actualizarTabla() {
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        listaUsuarios = gestionUsuarios.getUsuarios();
+        modeloUsuarios.setRowCount(0); // Limpiar la tabla
+        for (Usuarios usuario : listaUsuarios) {
+            modeloUsuarios.addRow(new Object[]{
+            usuario.getNombre(),
+            usuario.getApellido(),
+            usuario.getNumeroDPI(),
+            usuario.getCargo(),
+            usuario.getNumeroTelefono(),
+            usuario.getEstado(),
+            usuario.getCorreoElectronico(),
+            usuario.getGenero(),
+            usuario.getFechaNacimiento(),
+            usuario.getNombreUsuario(),
+            usuario.getContrasenaUsuario(),
+            });
+        }
+    }
+    
+    
+    private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
+if (txtNombreUsuarioBuscar.getText().trim().isEmpty() ||
+        txtApellidoUsuarioBuscar.getText().trim().isEmpty() ||
+        txtNumeroDeDpiUsuariosBuscar.getText().trim().isEmpty()) {
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+        JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
+        return;
+    }
 
-    }//GEN-LAST:event_jTextField7ActionPerformed
+    String nombreBuscado = txtNombreUsuarioBuscar.getText().trim();
+    String apellidoBuscado = txtApellidoUsuarioBuscar.getText().trim();
 
-    private void jTextField16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField16ActionPerformed
+    long dpiBuscado;
+    try {
+        dpiBuscado = Long.parseLong(txtNumeroDeDpiUsuariosBuscar.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "El DPI debe ser un número válido.");
+        return;
+    }
 
-    }//GEN-LAST:event_jTextField16ActionPerformed
+    modeloUsuarios.setRowCount(0);
+    boolean hayCoincidencias = false;
+
+    for (Usuarios usuarios : listaUsuarios) {
+        boolean coincide = true;
+
+        if (!nombreBuscado.isEmpty() && !usuarios.getNombre().equalsIgnoreCase(nombreBuscado)) {
+            coincide = false;
+        }
+
+        if (!apellidoBuscado.isEmpty() && !usuarios.getApellido().equalsIgnoreCase(apellidoBuscado)) {
+            coincide = false;
+        }
+
+        if (usuarios.getNumeroDPI() != dpiBuscado) {
+            coincide = false;
+        }
+
+        if (coincide) {
+            modeloUsuarios.addRow(new Object[]{
+                usuarios.getNombre(),
+                usuarios.getApellido(),
+                usuarios.getNumeroDPI(),
+                usuarios.getCargo(),
+                usuarios.getNumeroTelefono(),
+                usuarios.getEstado(),
+                usuarios.getCorreoElectronico(),
+                usuarios.getGenero(),
+                usuarios.getFechaNacimiento(),
+                usuarios.getNombreUsuario(),
+                usuarios.getContrasenaUsuario(),
+            });
+            hayCoincidencias = true;
+        }
+    }
+
+
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        for (Usuarios usuario : listaUsuarios) {
+            modeloUsuarios.addRow(new Object[]{
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado(),
+                usuario.getCorreoElectronico(),
+                usuario.getGenero(),
+                usuario.getFechaNacimiento(),
+                usuario.getNombreUsuario(),
+                usuario.getContrasenaUsuario(),
+            });
+        }
+    } else {
+        tblRegistroUsuarios.setVisible(true);
+        if (tblRegistroUsuarios.getRowCount() > 0) {
+            tblRegistroUsuarios.setRowSelectionInterval(0, 0);
+        }
+    }
+
+
+    txtNombreUsuarioBuscar.setText("");
+    txtApellidoUsuarioBuscar.setText("");
+    txtNumeroDeDpiUsuariosBuscar.setText("");
+    }//GEN-LAST:event_buscarUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -483,30 +1062,50 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarPiloto1;
-    private javax.swing.JButton btnEliminarPiloto1;
-    private javax.swing.JButton btnEstadoPiloto3;
-    private javax.swing.JButton btnInicioPiloto1;
-    private javax.swing.JButton btnListaPiloto1;
-    private javax.swing.JButton btnModificarPiloto4;
-    private javax.swing.JButton btnMostrarPiloto1;
-    private javax.swing.JButton btnSalirPiloto1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton agregarUsuario;
+    private javax.swing.JButton btnCalendario;
+    private javax.swing.JButton btnCalendario2;
+    private javax.swing.JButton btnCerrarSesion;
+    private javax.swing.JButton btnCerrarSesion2;
+    private javax.swing.JButton btnGestionDeCamiones;
+    private javax.swing.JButton btnGestionDeCamiones2;
+    private javax.swing.JButton btnGestionDeClientes;
+    private javax.swing.JButton btnGestionDeClientes2;
+    private javax.swing.JButton btnGestionDeCreditos;
+    private javax.swing.JButton btnGestionDeCreditos2;
+    private javax.swing.JButton btnGestionDePedidos;
+    private javax.swing.JButton btnGestionDePedidos2;
+    private javax.swing.JButton btnGestionDePilotos;
+    private javax.swing.JButton btnGestionDePilotos2;
+    private javax.swing.JButton btnGestionDeUsuarios;
+    private javax.swing.JButton btnGestionDeUsuarios2;
+    private javax.swing.JButton btnGestionDeVentas;
+    private javax.swing.JButton btnGestionDeVentas2;
+    private javax.swing.JButton btnInventarioDeQuintales;
+    private javax.swing.JButton btnInventarioDeQuintales2;
+    private javax.swing.JButton btnPlanillaDeTrabajadores;
+    private javax.swing.JButton btnPlanillaDeTrabajadores2;
+    private javax.swing.JButton btnRegresarLogin;
+    private javax.swing.JButton btnRegresarLogin2;
+    private javax.swing.JButton buscarUsuario;
+    private javax.swing.JButton eliminarUsuario;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField12;
-    private javax.swing.JTextField jTextField13;
-    private javax.swing.JTextField jTextField14;
-    private javax.swing.JTextField jTextField15;
-    private javax.swing.JTextField jTextField16;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextField jTextField18;
     private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
+    private javax.swing.JButton modificarUsuario;
+    private javax.swing.JButton mostrarUsuario;
+    private javax.swing.JTable tblRegistroUsuarios;
+    private javax.swing.JTextField txtApellidoUsuarioBuscar;
+    private javax.swing.JTextField txtNombreUsuarioBuscar;
+    private javax.swing.JTextField txtNumeroDeDpiUsuariosBuscar;
     // End of variables declaration//GEN-END:variables
 }
