@@ -25,9 +25,9 @@ public class gestionProductos {
     private String excelFilePath;
     
     
-    gestionProductos(){excelFilePath = "excels/inventarios.xlsx";};
+    public gestionProductos(){excelFilePath = "excels/inventarios.xlsx";};
     
-    gestionProductos(Vector<Producto> prod){
+    public gestionProductos(Vector<Producto> prod){
         this.productos = prod;
         excelFilePath = "excels/inventarios.xlsx";
     };
