@@ -29,4 +29,13 @@ public class GestionPedido {
     public Vector<Pedido> getPedidos(){
       return this.pedidos;  
     };
+    
+    //funciones para cargar desde excel
+    public void CargaDeExcel(){
+        
+    };
+    
+    public void GuardarEnExcel(){
+        
+    };
 }

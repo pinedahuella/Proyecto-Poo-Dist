@@ -3,6 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ControlPedidos;
+import ControlViajes.*;
+import PaquetePrincipal.*;
+
+//librerias para las fechas
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+import java.util.Calendar;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.IDateEvaluator;
+
+//definimos las librerias de tablas
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,8 +27,52 @@ public class FormularioPedidos extends javax.swing.JFrame {
     /**
      * Creates new form FormularioPedidos
      */
+    
+    //definimos el la gestion de pilotos, fechas, caminos e inventario
+    private gestionProductos gesproductos;
+    private GESTIONPILOTOS gespilotos;
+    private GESTIONCAMIONES gescamiones;
+    private GestionPedido gespedidos;
+    
+    //crearemos los modelos de las tablas de productos a
+    DefaultTableModel modeloProductosA = new DefaultTableModel();
+    DefaultTableModel modeloProductosB = new DefaultTableModel();
+    
+    //crearemos los modelos de las tablas de pedidos
+    DefaultTableModel modeloPedidosA = new DefaultTableModel();
+    DefaultTableModel modeloPedidosB = new DefaultTableModel();
+    
     public FormularioPedidos() {
         initComponents();
+        
+        
+        //creamos los objetos de gestion
+        gesproductos = new gestionProductos();
+        gespilotos = new GESTIONPILOTOS();
+        gescamiones = new GESTIONCAMIONES();
+        gespedidos = new GestionPedido();
+        
+        //cargamos los valores del excel del las gestiones
+        gesproductos.setCargarInvetarioExcel();
+        gespilotos.cargarPilotosDesdeExcel();
+        gescamiones.cargarCamionesDesdeExcel();
+        gespedidos.CargaDeExcel();
+        
+        //tabla productosA creamos la tabla
+        String ids [] = {"productos", "cantidades"};
+        modeloProductosA.setColumnIdentifiers(ids);
+        tablaProductosA.setModel(modeloProductosA);
+        
+        modeloProductosB.setColumnIdentifiers(ids);
+        tablaProductosB.setModel(modeloProductosB);
+        
+        //cremos la tabla para pedidos
+        String ids2 [] = {"No. pedido", "Fecha Carga", "Fecha Descarga"};
+        modeloPedidosA.setColumnIdentifiers(ids2);
+        tablaPedidosA.setModel(modeloPedidosA);
+        
+        modeloPedidosB.setColumnIdentifiers(ids2);
+        tablaPedidosB.setModel(modeloPedidosB);
     }
 
     /**
@@ -31,7 +89,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tablaProductosA = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -45,7 +103,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        tablaProductosB = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
@@ -60,13 +118,13 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
+        formato1 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaPedidosA = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tablaPedidosB = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -77,7 +135,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(219, 217, 92));
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        tablaProductosA.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -88,7 +146,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(jTable3);
+        jScrollPane3.setViewportView(tablaProductosA);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Productos del Pedido:");
@@ -204,7 +262,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(219, 217, 92));
 
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        tablaProductosB.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -215,7 +273,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(jTable4);
+        jScrollPane4.setViewportView(tablaProductosB);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Productos del Pedido:");
@@ -312,9 +370,9 @@ public class FormularioPedidos extends javax.swing.JFrame {
                     .addComponent(jDateChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -351,7 +409,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 515, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,7 +418,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
 
         jPanel7.setBackground(new java.awt.Color(154, 82, 12));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaPedidosA.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -371,7 +429,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaPedidosA);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -389,11 +447,11 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Pedidos En proceso", jPanel7);
+        formato1.addTab("Pedidos En proceso", jPanel7);
 
         jPanel8.setBackground(new java.awt.Color(154, 82, 12));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tablaPedidosB.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -404,7 +462,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tablaPedidosB);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -422,24 +480,24 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Pedidos Finalizados ", jPanel8);
+        formato1.addTab("Pedidos Finalizados ", jPanel8);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(formato1, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2))
+                .addComponent(formato1))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -510,6 +568,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTabbedPane formato1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
@@ -546,10 +605,9 @@ public class FormularioPedidos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
+    private javax.swing.JTable tablaPedidosA;
+    private javax.swing.JTable tablaPedidosB;
+    private javax.swing.JTable tablaProductosA;
+    private javax.swing.JTable tablaProductosB;
     // End of variables declaration//GEN-END:variables
 }
