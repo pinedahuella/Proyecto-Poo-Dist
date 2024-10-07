@@ -30,6 +30,11 @@ public class GestionPedido {
       return this.pedidos;  
     };
     
+    //funcion para agregar un nuevo pedido
+    public void agregarPedido(Pedido p){
+        pedidos.add(p);
+    };
+    
     //funciones para cargar desde excel
     public void CargaDeExcel(){
         

@@ -27,12 +27,12 @@ public class GestionCalendario {
         private SimpleDateFormat dateFormat;
 
     
-    GestionCalendario(){
+    public GestionCalendario(){
         excelFilePath = "excels/pedidos_calendario.xlsx";
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     };
     
-    GestionCalendario(Vector<FechaCalendario> pi){
+    public GestionCalendario(Vector<FechaCalendario> pi){
         this.fechasDeCalendario = pi;
         excelFilePath = "excels/pedidos_calendario.xlsx";
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");

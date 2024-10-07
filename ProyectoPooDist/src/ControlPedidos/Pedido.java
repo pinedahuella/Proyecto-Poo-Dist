@@ -30,4 +30,5 @@ public class Pedido {
     public int getIndiceViaje(){
       return  this.indiceViaje; 
     };
+    
 }
