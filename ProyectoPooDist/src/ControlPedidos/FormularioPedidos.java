@@ -45,6 +45,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
     //crearemos los modelos de las tablas de productos a
     DefaultTableModel modeloProductosA = new DefaultTableModel();
     DefaultTableModel modeloProductosB = new DefaultTableModel();
+    DefaultTableModel modeloProductosC = new DefaultTableModel();
     
     //crearemos los modelos de las tablas de pedidos
     DefaultTableModel modeloPedidosA = new DefaultTableModel(){
@@ -62,12 +63,14 @@ public class FormularioPedidos extends javax.swing.JFrame {
     
     //creamos el indice que se ha seleccionado
     int indiceGeneral;
+    int indiceGeneralB;
     
     public FormularioPedidos() {
         initComponents();
         
         //inicializamos el indice actual en -1
         indiceGeneral = -1;
+        indiceGeneralB = -1;
         
         //creamos los objetos de gestion
         gescalendario = new GestionCalendario();
@@ -91,6 +94,9 @@ public class FormularioPedidos extends javax.swing.JFrame {
         modeloProductosB.setColumnIdentifiers(ids);
         tablaProductosB.setModel(modeloProductosB);
         
+        modeloProductosC.setColumnIdentifiers(ids);
+        tablaProductosC.setModel(modeloProductosC);
+        
         //cremos la tabla para pedidos
         String ids2 [] = {"No. pedido", "Fecha Carga", "Fecha Descarga"};
         modeloPedidosA.setColumnIdentifiers(ids2);
@@ -108,16 +114,11 @@ public class FormularioPedidos extends javax.swing.JFrame {
         
         //inicamos los vectores de fechas
         FechaTablaNew = gescalendario.getFechasDeCalendario(); 
-        
-        //solo pruebas
-        Pedido newPedidoPreuba = new Pedido(0);
-        gespedidos.agregarPedido(newPedidoPreuba);
-        Pedido newPedidoPreuba2 = new Pedido(1);
-        gespedidos.agregarPedido(newPedidoPreuba2);
-        
+
         //e inicializamos la tabla pedidos B
         for (Producto prod : productosTablaNew) {
             modeloProductosB.addRow(new Object[]{prod.getNombre(), "0"});
+            modeloProductosC.addRow(new Object[]{prod.getNombre(), "0"});
         }
         
         //llenamos el combo box de pilotos
@@ -174,7 +175,36 @@ public class FormularioPedidos extends javax.swing.JFrame {
             }
                         
             //actualizamos la tabla y sus cantidades
-            modeloProductosB.addRow(new Object[]{productosTablaNew.get(i).getNombre(), numeroDeCantidades});            
+            modeloProductosB.addRow(new Object[]{productosTablaNew.get(i).getNombre(), Integer.toString(numeroDeCantidades)});            
+        }
+        
+        }
+    };
+    
+    //funcion para poder actualizar la tabla de productos b
+    private void ActualizarTablaC(){
+        
+        if (indiceGeneralB > -1) {
+            //primero vaciaremos la tabla totalmente
+        modeloProductosC.setRowCount(0);
+        
+        int indiceDelPedido = pedidoTablaNew.get((int) tablaPedidosB.getValueAt(indiceGeneralB, 0) -1).getIndiceViaje();
+        
+        //creamos un for para crear la tabla
+        for (int i = 0; i < productosTablaNew.size(); i++) {
+            
+            //creamos un int para el numero de cantidades del pedido 
+            int numeroDeCantidades = 0;
+            
+            //un for para para recorrer el vector de indices y modificar las existencias
+            for (int j = 0; j < FechaTablaNew.get(indiceDelPedido).getIndiceProductos().size(); j++) {
+                if (i == FechaTablaNew.get(indiceDelPedido).getIndiceProductos().get(j)) {
+                    numeroDeCantidades = FechaTablaNew.get(indiceDelPedido).getIndiceCantidad().get(j);
+                }
+            }
+                        
+            //actualizamos la tabla y sus cantidades
+            modeloProductosC.addRow(new Object[]{productosTablaNew.get(i).getNombre(), numeroDeCantidades});            
         }
         
         }
@@ -207,6 +237,38 @@ public class FormularioPedidos extends javax.swing.JFrame {
             
         }
         
+        
+        indiceGeneral = -1;
+        indiceGeneralB = -1;
+        
+
+        
+       
+            //igualamos las fechas
+             fechaCargaB.setDate(null);    
+             fechaDescargaB.setDate(null);
+                
+            //igualamos el combo box de pilotos y camiones
+            comboPilotoB.setSelectedIndex(0);
+            comboCamionB.setSelectedIndex(0);
+                
+            modeloProductosB.setRowCount(0);
+            modeloProductosC.setRowCount(0);
+            
+             //igualamos las fechas
+            labelFechaC.setText("Fecha de Carga");    
+            labelFechaD.setText("Fecha de Descarga");
+
+            //igualamos el combo box de pilotos y camiones
+            labelPiloto.setText("piloto");
+            labelCamion.setText("Transporte pesado");
+            
+           //e inicializamos la tabla pedidos B
+            for (Producto prod : productosTablaNew) {
+                modeloProductosB.addRow(new Object[]{prod.getNombre(), "0"});
+                modeloProductosC.addRow(new Object[]{prod.getNombre(), "0"});
+            }
+
     }
     
     
@@ -240,7 +302,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tablaProductosB = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        radioFinalizadoA = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         fechaDescargaB = new com.toedter.calendar.JDateChooser();
@@ -259,14 +321,14 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         tablaProductosC = new javax.swing.JTable();
         jPanel12 = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
+        labelFechaC = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
+        labelFechaD = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
-        jLabel20 = new javax.swing.JLabel();
+        labelPiloto = new javax.swing.JLabel();
         jPanel17 = new javax.swing.JPanel();
-        jLabel23 = new javax.swing.JLabel();
+        labelCamion = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         formato1 = new javax.swing.JTabbedPane();
@@ -437,8 +499,8 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Productos del Pedido:");
 
-        jRadioButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jRadioButton1.setText("Finalizar Pedido");
+        radioFinalizadoA.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        radioFinalizadoA.setText("Finalizar Pedido");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("Fecha de Carga:");
@@ -453,6 +515,11 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jLabel10.setText("Transporte Pesado:");
 
         jPanel10.setBackground(new java.awt.Color(78, 64, 2));
+        jPanel10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel10MouseClicked(evt);
+            }
+        });
 
         jLabel12.setBackground(new java.awt.Color(255, 255, 255));
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -505,7 +572,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(186, 186, 186)
-                                .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(radioFinalizadoA, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -517,7 +584,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jRadioButton1))
+                    .addComponent(radioFinalizadoA))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -570,8 +637,8 @@ public class FormularioPedidos extends javax.swing.JFrame {
         ));
         jScrollPane5.setViewportView(tablaProductosC);
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel14.setText("Fecha de Carga");
+        labelFechaC.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        labelFechaC.setText("Fecha de Carga");
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -579,22 +646,22 @@ public class FormularioPedidos extends javax.swing.JFrame {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(labelFechaC, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel14)
+                .addComponent(labelFechaC)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel18.setText("Fecha de Carga:");
 
-        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel19.setText("Fecha de Descarga");
+        labelFechaD.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        labelFechaD.setText("Fecha de Descarga");
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -602,19 +669,19 @@ public class FormularioPedidos extends javax.swing.JFrame {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(labelFechaD, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel19)
+                .addComponent(labelFechaD)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel20.setText("Piloto");
+        labelPiloto.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        labelPiloto.setText("Piloto");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
@@ -622,19 +689,19 @@ public class FormularioPedidos extends javax.swing.JFrame {
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labelPiloto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel20)
+                .addComponent(labelPiloto)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel23.setText("Transporte Pesado");
+        labelCamion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        labelCamion.setText("Transporte Pesado");
 
         javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
         jPanel17.setLayout(jPanel17Layout);
@@ -642,14 +709,14 @@ public class FormularioPedidos extends javax.swing.JFrame {
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(labelCamion, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel17Layout.setVerticalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel23)
+                .addComponent(labelCamion)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -807,10 +874,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -946,7 +1010,10 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 actualizarTablaDePedidos();
                 
                 //cargamos los datos en el excel
-                //gescalendario.guardarFecharExcel();
+                gescalendario.guardarFecharExcel();
+                
+                //cargamos el pedido al excel
+                gespedidos.GuardarEnExcel();
                 
                 //mostramos mesaje para acetar que este bien
                 JOptionPane.showMessageDialog(null, "Datos agregados de forma correcta", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
@@ -967,6 +1034,122 @@ public class FormularioPedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_jPanel9MouseClicked
+
+    private void jPanel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para modificar pedido
+        //leemos las fechas primero primero:  
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        
+        Date newFechaCarga = fechaCargaB.getDate();
+        Date newFechaDescarga = fechaDescargaB.getDate();
+        
+        try {
+            if (indiceGeneral > -1) {
+                       //verifica que las fechas sean validas
+                if (newFechaCarga != null && newFechaDescarga != null) {
+
+                    //creamos los indices de pilotos y camiones
+                    int newIndicePiloto = comboPilotoB.getSelectedIndex();
+                    int newIndiceCamion = comboCamionB.getSelectedIndex();
+
+                    //miramos si el viaje es una compra o una venta
+                    boolean newcompra;
+                    newcompra = true;
+
+                    boolean PedidoCancelado = !radioFinalizadoA.isSelected();
+
+
+                    //creamos los vectores que tengas los indices de los productos
+                    Vector<Integer> newIndiceProducto = new Vector<>();
+                    Vector<Integer> newIndiceCantidad = new Vector<>();
+
+                    //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                    for (int i = 0; i < tablaProductosB.getRowCount(); i++) {
+
+                        //definimos las variables a utilizar
+                        int cantidadDeProducto = 0;   
+                        Object value =  tablaProductosB.getValueAt(i, 1);
+
+                        //asignamos el valor a las variables
+                        cantidadDeProducto = Integer.parseInt((String) tablaProductosB.getValueAt(i, 1));
+
+
+                        //verificamos si la cantidad es superior a cero
+                        if (cantidadDeProducto > 0) {
+                            newIndiceProducto.add(i);
+                            newIndiceCantidad.add(cantidadDeProducto);
+                        }
+
+                    }
+
+
+                    //verificamos que los vectores no esten vacios
+                    if (!newIndiceProducto.isEmpty()) {
+                        //creamos la fecha nueva
+                        FechaCalendario newFecha = new FechaCalendario(newFechaCarga, newFechaDescarga, newIndicePiloto, newIndiceCamion, newIndiceProducto, newIndiceCantidad, PedidoCancelado, newcompra);
+
+                        //seleccionamos el indice a utiliza para la fecha necesaria
+                        int indiceDelPedido = pedidoTablaNew.get((int) tablaPedidosA.getValueAt(indiceGeneral, 0) -1).getIndiceViaje();
+
+
+                        //modificamos la lista de fechas
+                        gescalendario.modificarFecha(indiceDelPedido, newFecha);
+
+
+                        //imprimos que la fecha se haya hecho correctamente
+                        System.out.println("se ha creado la modificado correctamente");
+                        
+                        //ahora vamos a preguntar si el pedido fue cancelado para sumarle las cantidades al inventario de quintales
+                        if (PedidoCancelado == false) {
+                            //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                            for (int i = 0; i < tablaProductosB.getRowCount(); i++) {
+
+                                //definimos las variables a utilizar
+                                int cantidadDeProducto = 0;   
+                                Object value =  tablaProductosB.getValueAt(i, 1);
+
+                                //asignamos el valor a las variables
+                                cantidadDeProducto = Integer.parseInt((String) tablaProductosB.getValueAt(i, 1));
+
+                                gesproductos.setCantidad(i, cantidadDeProducto, "+");                               
+
+                            }
+                            
+                            gesproductos.getCargarInvetarioExcel();
+                        }
+
+                        //actualizamos la tabla general de pedidos
+                        actualizarTablaDePedidos();
+
+                        //cargamos los datos en el excel
+                        gescalendario.guardarFecharExcel();
+                        
+
+                        //mostramos mesaje para acetar que este bien
+                        JOptionPane.showMessageDialog(null, "Datos agregados se modificaron correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+
+
+                    }else{
+                       //mostramos mesaje para acetar que este bien
+                        JOptionPane.showMessageDialog(null, "Ingresa al menos un producto ", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+                    }
+
+                }else{
+                    //mostramos mesaje para acetar que este bien
+                    JOptionPane.showMessageDialog(null, "Ingresa fecha Valida", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                }  
+            }else{
+                //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "seleccione un pedido de la tabla valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
+            }
+            
+        } catch (NumberFormatException e) {
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_jPanel10MouseClicked
 
     
     
@@ -1006,6 +1189,43 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 ActualizarTablaB();
                  
              }
+             
+            //leemos el indice actual de la tabla de pedidos finalizados
+            int indiceSelecionadoB = tablaPedidosB.getSelectedRow();
+            
+            
+            //preguntamos si el indice general es diferente al indice seleccionado
+            if (indiceSelecionadoB != indiceGeneralB && indiceSelecionadoB > -1) {
+            
+                //creamos un formato para escribir la fecha
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                
+                //igualamos el indice seleccionado al actual
+                 indiceGeneralB = indiceSelecionadoB;
+                 
+                 //obtenemos el indice que se utilizara para el pedido
+                 int indiceDelPedido = pedidoTablaNew.get((int) tablaPedidosB.getValueAt(indiceGeneralB, 0) -1).getIndiceViaje();
+                 
+                 
+                 //agregamos todos los valores necesarios
+                 
+                 //igualamos las fechas
+                labelFechaC.setText(formato.format(FechaTablaNew.get(indiceDelPedido).getFechaC()));    
+                labelFechaD.setText(formato.format(FechaTablaNew.get(indiceDelPedido).getFechaD()));
+                
+                //utilizamos los vectores para llenar el label
+                Vector<Piloto> pilotonew = gespilotos.getPilotos();
+                Vector<Camiones> camionesnew = gescamiones.getCamiones();
+                
+                //igualamos el combo box de pilotos y camiones
+                labelPiloto.setText(pilotonew.get(FechaTablaNew.get(indiceDelPedido).getIndicePiloto()).getNombrePiloto());
+                labelCamion.setText(camionesnew.get(FechaTablaNew.get(indiceDelPedido).getIndiceCamion()).getMarca()
+                + " " + camionesnew.get(FechaTablaNew.get(indiceDelPedido).getIndiceCamion()).getModelo());
+                
+                //actualizamos la tabla de productos 
+                ActualizarTablaC();
+                
+            }
              
             
             //limita los recursos del bucle
@@ -1073,17 +1293,11 @@ public class FormularioPedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1097,8 +1311,6 @@ public class FormularioPedidos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1108,13 +1320,17 @@ public class FormularioPedidos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel labelCamion;
+    private javax.swing.JLabel labelFechaC;
+    private javax.swing.JLabel labelFechaD;
+    private javax.swing.JLabel labelPiloto;
+    private javax.swing.JRadioButton radioFinalizadoA;
     private javax.swing.JTable tablaPedidosA;
     private javax.swing.JTable tablaPedidosB;
     private javax.swing.JTable tablaProductosA;
