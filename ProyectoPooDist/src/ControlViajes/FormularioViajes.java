@@ -24,6 +24,9 @@ import java.util.Calendar;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.IDateEvaluator;
 import java.awt.Color;
+
+//libreria para hacer poups
+import javax.swing.JOptionPane;
 /**
  *
  * @author USUARIO
@@ -73,6 +76,7 @@ public class FormularioViajes extends javax.swing.JFrame {
         
         //iniciamos el indice a 0;
         indice = 0;
+        
         
         //iniciamos el indiceActual a -1
         indiceActual = -1;
@@ -138,6 +142,9 @@ public class FormularioViajes extends javax.swing.JFrame {
         //hacemos que el calendario se cargue
         CalendarioGeneral.getDayChooser().addDateEvaluator(marcador);
         ActualizarCalendario();
+        
+        //llenamos la lista de fechas
+        ActualizarComboListaPedidos();
             
         iniciarBucleEnHilo(); 
     }
@@ -257,7 +264,6 @@ public class FormularioViajes extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         comboPedidosLista = new javax.swing.JComboBox<>();
-        jLabel13 = new javax.swing.JLabel();
         textoFechasIguales = new javax.swing.JLabel();
         comboMasDeFecha = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
@@ -309,9 +315,6 @@ public class FormularioViajes extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Detalles del Viaje");
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel13.setText("Que viaje desea ver:");
-
         textoFechasIguales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         textoFechasIguales.setText("Fechas Iguales");
 
@@ -320,30 +323,22 @@ public class FormularioViajes extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(textoFechasIguales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(comboMasDeFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboPedidosLista, 0, 184, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel13)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(textoFechasIguales, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(comboMasDeFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(comboPedidosLista, 0, 184, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel13))
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboPedidosLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -749,7 +744,8 @@ public class FormularioViajes extends javax.swing.JFrame {
         Date newFechaCarga = fechaBCarga.getDate();
         Date newFechaDescarga = fechaBDescarga.getDate();
         
-        //verifica que las fechas sean validas
+         try {
+          //verifica que las fechas sean validas
         if (newFechaCarga != null && newFechaDescarga != null) {
             
             //creamos los indices de pilotos y camiones
@@ -821,10 +817,28 @@ public class FormularioViajes extends javax.swing.JFrame {
                 comboCamionesB.setSelectedIndex(0);
                 
                 comboTViajeB.setSelectedIndex(0);
+                
+                //cargamos los datos en el excel
+                gescalendario.guardarFecharExcel();
+                
+                //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "Datos agregados de forma correcta", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+  
+
+            }else{
+               //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "Ingresa al menos un producto ", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
             }
             
+        }else{
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa fecha Valida", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }  
+            
+        } catch (NumberFormatException e) {
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
         }
-        
     }//GEN-LAST:event_jPanel12MouseClicked
 
     private void iniciarBucleEnHilo() {
@@ -1047,7 +1061,6 @@ public class FormularioViajes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

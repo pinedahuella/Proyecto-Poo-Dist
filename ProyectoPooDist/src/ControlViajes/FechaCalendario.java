@@ -32,11 +32,11 @@ public class FechaCalendario {
     
     SimpleDateFormat formato;
     
-    FechaCalendario(){
+    public FechaCalendario(){
       formato = new SimpleDateFormat("dd/MM/yyyy");  
     };
     
-    FechaCalendario(Date fc, Date fd, int iP, int iC, Vector<Integer> iProd, Vector<Integer> iCad, boolean act, boolean com){
+    public FechaCalendario(Date fc, Date fd, int iP, int iC, Vector<Integer> iProd, Vector<Integer> iCad, boolean act, boolean com){
         this.fechac = fc;
         this.fechad = fd;
         formato = new SimpleDateFormat("dd/MM/yyyy");
