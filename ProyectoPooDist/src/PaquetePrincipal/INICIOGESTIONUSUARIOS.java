@@ -101,10 +101,6 @@ private void cargarUsuariosEnTabla() {
         jPanel11 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRegistroUsuarios = new javax.swing.JTable();
-        jLabel12 = new javax.swing.JLabel();
-        txtNumeroDeDpiUsuariosBuscar = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        txtApellidoUsuarioBuscar = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtNombreUsuarioBuscar = new javax.swing.JTextField();
         mostrarUsuario = new javax.swing.JButton();
@@ -112,6 +108,7 @@ private void cargarUsuariosEnTabla() {
         agregarUsuario = new javax.swing.JButton();
         modificarUsuario = new javax.swing.JButton();
         buscarUsuario = new javax.swing.JButton();
+        refrescarPagina = new javax.swing.JButton();
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -565,12 +562,6 @@ private void cargarUsuariosEnTabla() {
         ));
         jScrollPane3.setViewportView(tblRegistroUsuarios);
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel12.setText("NUMERO DE DPI");
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel10.setText("APELLIDO");
-
         jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel3.setText("NOMBRE");
 
@@ -586,7 +577,7 @@ private void cargarUsuariosEnTabla() {
 
         eliminarUsuario.setBackground(new java.awt.Color(255, 0, 0));
         eliminarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        eliminarUsuario.setText("X");
+        eliminarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/eliminausuare (1).png"))); // NOI18N
         eliminarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
         eliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -596,7 +587,7 @@ private void cargarUsuariosEnTabla() {
 
         agregarUsuario.setBackground(new java.awt.Color(51, 255, 51));
         agregarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        agregarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/rediomecionar agregar.png"))); // NOI18N
+        agregarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/agregarusers (1).png"))); // NOI18N
         agregarUsuario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
         agregarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -624,29 +615,31 @@ private void cargarUsuariosEnTabla() {
             }
         });
 
+        refrescarPagina.setBackground(new java.awt.Color(255, 255, 0));
+        refrescarPagina.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        refrescarPagina.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/regresarredimensionado.png"))); // NOI18N
+        refrescarPagina.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        refrescarPagina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarPaginaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtNumeroDeDpiUsuariosBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
-                                    .addComponent(txtApellidoUsuarioBuscar))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(refrescarPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -655,36 +648,30 @@ private void cargarUsuariosEnTabla() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(modificarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(agregarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(agregarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtApellidoUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNumeroDeDpiUsuariosBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12)))
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(modificarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(agregarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(buscarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(modificarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(agregarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(eliminarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(buscarUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(18, 18, 18)
+                        .addComponent(refrescarPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addGap(27, 27, 27))
         );
@@ -940,42 +927,24 @@ public void actualizarTabla() {
     
     
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-if (txtNombreUsuarioBuscar.getText().trim().isEmpty() ||
-        txtApellidoUsuarioBuscar.getText().trim().isEmpty() ||
-        txtNumeroDeDpiUsuariosBuscar.getText().trim().isEmpty()) {
-
+if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
         JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
         return;
     }
 
     String nombreBuscado = txtNombreUsuarioBuscar.getText().trim();
-    String apellidoBuscado = txtApellidoUsuarioBuscar.getText().trim();
-
-    long dpiBuscado;
-    try {
-        dpiBuscado = Long.parseLong(txtNumeroDeDpiUsuariosBuscar.getText().trim());
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "El DPI debe ser un número válido.");
-        return;
-    }
-
     modeloUsuarios.setRowCount(0);
     boolean hayCoincidencias = false;
 
+
     for (Usuarios usuarios : listaUsuarios) {
         boolean coincide = true;
+
 
         if (!nombreBuscado.isEmpty() && !usuarios.getNombre().equalsIgnoreCase(nombreBuscado)) {
             coincide = false;
         }
 
-        if (!apellidoBuscado.isEmpty() && !usuarios.getApellido().equalsIgnoreCase(apellidoBuscado)) {
-            coincide = false;
-        }
-
-        if (usuarios.getNumeroDPI() != dpiBuscado) {
-            coincide = false;
-        }
 
         if (coincide) {
             modeloUsuarios.addRow(new Object[]{
@@ -994,7 +963,6 @@ if (txtNombreUsuarioBuscar.getText().trim().isEmpty() ||
             hayCoincidencias = true;
         }
     }
-
 
     if (!hayCoincidencias) {
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
@@ -1022,9 +990,13 @@ if (txtNombreUsuarioBuscar.getText().trim().isEmpty() ||
 
 
     txtNombreUsuarioBuscar.setText("");
-    txtApellidoUsuarioBuscar.setText("");
-    txtNumeroDeDpiUsuariosBuscar.setText("");
     }//GEN-LAST:event_buscarUsuarioActionPerformed
+
+    private void refrescarPaginaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarPaginaActionPerformed
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_refrescarPaginaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1089,8 +1061,6 @@ if (txtNombreUsuarioBuscar.getText().trim().isEmpty() ||
     private javax.swing.JButton btnRegresarLogin2;
     private javax.swing.JButton buscarUsuario;
     private javax.swing.JButton eliminarUsuario;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1103,9 +1073,8 @@ if (txtNombreUsuarioBuscar.getText().trim().isEmpty() ||
     private javax.swing.JTextField jTextField5;
     private javax.swing.JButton modificarUsuario;
     private javax.swing.JButton mostrarUsuario;
+    private javax.swing.JButton refrescarPagina;
     private javax.swing.JTable tblRegistroUsuarios;
-    private javax.swing.JTextField txtApellidoUsuarioBuscar;
     private javax.swing.JTextField txtNombreUsuarioBuscar;
-    private javax.swing.JTextField txtNumeroDeDpiUsuariosBuscar;
     // End of variables declaration//GEN-END:variables
 }

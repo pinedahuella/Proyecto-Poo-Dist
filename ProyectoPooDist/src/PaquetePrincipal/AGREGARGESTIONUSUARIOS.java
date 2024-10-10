@@ -77,7 +77,6 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         txtNumeroTelefonicoUsuario = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         txtEstadoUsuario = new javax.swing.JComboBox<>();
-        botonRegresarInicioGestion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -135,16 +134,6 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
 
         txtEstadoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
-        botonRegresarInicioGestion.setBackground(new java.awt.Color(255, 255, 102));
-        botonRegresarInicioGestion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        botonRegresarInicioGestion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/fecla redimensionar.png"))); // NOI18N
-        botonRegresarInicioGestion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        botonRegresarInicioGestion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonRegresarInicioGestionActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -198,9 +187,7 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(txtCargoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botonRegresarInicioGestion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -252,9 +239,7 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                     .addComponent(txtCorreoElectronicoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(103, 103, 103))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(botonRegresarInicioGestion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 378, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -376,13 +361,12 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
     }
-    }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
-
-    private void botonRegresarInicioGestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRegresarInicioGestionActionPerformed
-        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS();
+    
+    
+    INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS();
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_botonRegresarInicioGestionActionPerformed
+    }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -420,7 +404,6 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton botonRegresarInicioGestion;
     private javax.swing.JButton btnAgregarUsuarioSistema;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;

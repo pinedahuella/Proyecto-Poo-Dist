@@ -45,12 +45,25 @@ public MOSTRARGESTIONUSUARIOS() {
     }
 }
 
-    private void configurarTabla() {
-        String[] columnas = {"Identificadores", "Datos"};
-        modeloUsuarios.setColumnIdentifiers(columnas);
-        tblRegistroUsuarios.setModel(modeloUsuarios);
-    }
+private void configurarTabla() {
 
+    modeloUsuarios = new DefaultTableModel(new Object[]{"Identificadores", "Datos"}, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            // Todas las celdas no son editables
+            return false;
+        }
+    };
+    
+    tblRegistroUsuarios.setModel(modeloUsuarios);
+    tblRegistroUsuarios.setCellSelectionEnabled(true);
+    tblRegistroUsuarios.setFocusable(true);
+    tblRegistroUsuarios.setRowSelectionAllowed(true);
+    tblRegistroUsuarios.setColumnSelectionAllowed(false);
+    
+    // Permitir que el usuario copie datos seleccionados
+    tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+}
 
     private void cargarDatosUsuario() {
         if (usuarioActual != null) {
@@ -70,6 +83,9 @@ public MOSTRARGESTIONUSUARIOS() {
             modeloUsuarios.addRow(new Object[]{"Estado", usuarioActual.getEstado()});
         }
     }
+    
+    
+  
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -107,13 +123,12 @@ public MOSTRARGESTIONUSUARIOS() {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 58, Short.MAX_VALUE)))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

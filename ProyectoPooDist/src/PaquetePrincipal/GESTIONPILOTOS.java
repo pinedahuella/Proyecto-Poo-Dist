@@ -2,32 +2,27 @@ package PaquetePrincipal;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 public class GESTIONPILOTOS {
-
     public Vector<Piloto> pilotos = new Vector<>();
-    
     private String excelFilePath;
-
 
     public GESTIONPILOTOS() {
         excelFilePath = "excels/PINEED.xlsx";
     }
 
-
-    public GESTIONPILOTOS(Vector<Piloto> pil) {
-        this.pilotos = pil;
+    public GESTIONPILOTOS(Vector<Piloto> pils) {
+        this.pilotos = pils;
         excelFilePath = "excels/PINEED.xlsx";
     }
-
 
     public void setPilotos(Vector<Piloto> piloto) {
         this.pilotos = piloto;
@@ -37,28 +32,35 @@ public class GESTIONPILOTOS {
         return this.pilotos;
     }
 
-
     public void setUnPiloto(Piloto piloto) {
         this.pilotos.add(piloto);
     }
 
-
-    public void actualizarPiloto(int indice, String nombrePiloto, String apellidoPiloto, long numeroDeDpi,
-                                 String tipoLicencia, String correoElectronicoPiloto, int numeroTelefonicoPiloto,
-                                 String generoPiloto, String fechaDeNacimiento, String estadoPiloto) {
-        Piloto piloto = this.pilotos.get(indice);
-        piloto.setNombrePiloto(nombrePiloto);
-        piloto.setApellidoPiloto(apellidoPiloto);
-        piloto.setNumeroDeDpi(numeroDeDpi);
-        piloto.setTipoLicencia(tipoLicencia);
-        piloto.setCorreoElectronicoPiloto(correoElectronicoPiloto);
-        piloto.setNumeroTelefonicoPiloto(numeroTelefonicoPiloto);
-        piloto.setGeneroPiloto(generoPiloto);
-        piloto.setFechaDeNacimiento(fechaDeNacimiento);
-        piloto.setEstadoPiloto(estadoPiloto);
+    public void actualizarPiloto(Piloto pilotoActualizado) {
+        boolean encontrado = false;
+        for (int i = 0; i < pilotos.size(); i++) {
+            if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
+                pilotos.set(i, pilotoActualizado);
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            pilotos.add(pilotoActualizado);
+        }
+        guardarPilotosEnExcel();
+        cargarPilotosDesdeExcel();
     }
 
+    public void eliminarPiloto(String nombre, String apellido) {
+        pilotos.removeIf(piloto -> piloto.getNombrePiloto().equals(nombre) && piloto.getApellidoPiloto().equals(apellido));
+        guardarPilotosEnExcel();
+        cargarPilotosDesdeExcel();
+    }
+
+
 public void cargarPilotosDesdeExcel() {
+    pilotos.clear();
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -119,37 +121,38 @@ public void cargarPilotosDesdeExcel() {
     }
 }
 
-private String getStringCellValue(Cell cell) {
-    if (cell == null) {
-        return "";
-    }
-    switch (cell.getCellType()) {
-        case STRING:
-            return cell.getStringCellValue();
-        case NUMERIC:
-            return String.valueOf(cell.getNumericCellValue());
-        default:
+    private String getStringCellValue(Cell cell) {
+        if (cell == null) {
             return "";
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.format("%.0f", cell.getNumericCellValue());
+            default:
+                return "";
+        }
     }
-}
 
-private long getNumericCellValue(Cell cell) {
-    if (cell == null) {
-        return 0;
-    }
-    switch (cell.getCellType()) {
-        case NUMERIC:
-            return (long) cell.getNumericCellValue();
-        case STRING:
-            try {
-                return Long.parseLong(cell.getStringCellValue());
-            } catch (NumberFormatException e) {
-                return 0;
-            }
-        default:
+    private long getNumericCellValue(Cell cell) {
+        if (cell == null) {
             return 0;
+        }
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                return (long) cell.getNumericCellValue();
+            case STRING:
+                try {
+                    return Long.parseLong(cell.getStringCellValue());
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            default:
+                return 0;
+        }
     }
-}
+
 
     public void guardarPilotosEnExcel() {
         try (Workbook workbook = new XSSFWorkbook();

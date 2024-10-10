@@ -2,6 +2,10 @@ package PaquetePrincipal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Vector;
+
 
 public class LOGINPINEED extends javax.swing.JFrame {
     private GESTIONUSUARIOS gestionUsuarios;
@@ -63,37 +67,64 @@ public class LOGINPINEED extends javax.swing.JFrame {
 
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
 String nombreUsuario = txtNombreUsuario.getText();
-        String contraseña = new String(txtContraseñaUsuario.getPassword());
-        Usuarios usuario = buscarUsuario(nombreUsuario);
-        if (usuario == null) {
-            mostrarMensajeError("Usuario no encontrado.");
-            return;
-        }
-        if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-            mostrarMensajeError("Usuario bloqueado. Contacte al administrador.");
-            return;
-        }
-        if (contraseña.equals(usuario.getContrasenaUsuario())) {
-            INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL();
-            abrir.setVisible(true);
-            this.setVisible(false);
-            intentosFallidos.remove(nombreUsuario);
-        } else {
-            int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
-            intentosFallidos.put(nombreUsuario, intentos);
-            if (intentos >= 3) {
-                if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-                    mostrarMensajeError("Ha superado los intentos. El programa se cerrará.");
-                    System.exit(0);
-                } else {
-                    bloquearUsuario(usuario);
-                    mostrarMensajeError("Usuario bloqueado después de 3 intentos fallidos.");
-                }
-            } else {
-                mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
-            }
-        }
+    String contraseña = new String(txtContraseñaUsuario.getPassword());
+    Usuarios usuario = buscarUsuario(nombreUsuario);
+    
+    if (usuario == null) {
+        mostrarMensajeError("Usuario no encontrado.");
+        return;
+    }
+    
+    if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+        mostrarMensajeError("Usuario bloqueado. Contacte al administrador.");
+        return;
+    }
+    
+    if (contraseña.equals(usuario.getContrasenaUsuario())) {
+        // Log the successful login
+        LocalDateTime tiempoEntrada = LocalDateTime.now();
+        String rol = usuario.getCargo(); // Assuming cargo is the role
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel(); // Load existing logins to ensure the list is up-to-date
+        
+        // Create a new Login instance
+        Login nuevoLogin = new Login(tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")), "", nombreUsuario, rol);
+        gestionLogin.setUnLogin(nuevoLogin); // Add the login record
+        
+        INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL();
+        abrir.setVisible(true);
+        this.setVisible(false);
+        intentosFallidos.remove(nombreUsuario);
+    } else {
+        // Handle failed login attempts...
+    }
     }//GEN-LAST:event_btnIngresarPineedActionPerformed
+
+    public void cerrarSesion(String nombreUsuario, String rol) {
+    LocalDateTime tiempoSalida = LocalDateTime.now();
+    
+    // Load the existing login records
+    GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+    gestionLogin.cargarLoginsDesdeExcel(); // Load existing logins to ensure the list is up-to-date
+    
+    // Update the exit time
+    Vector<Login> logins = gestionLogin.getLogins();
+    
+    for (Login login : logins) {
+        if (login.getPersonal().equals(nombreUsuario) && login.getTiempoSalida().isEmpty()) {
+            login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+            gestionLogin.guardarLoginsEnExcel(); // Save the updated login record
+            break;
+        }
+    }
+    
+    // Now perform the logout or close actions
+    this.setVisible(false);
+    // Any other cleanup if necessary
+}
+
+
+
 
     
      private Usuarios buscarUsuario(String nombreUsuario) {
@@ -107,7 +138,7 @@ String nombreUsuario = txtNombreUsuario.getText();
 
     private void bloquearUsuario(Usuarios usuario) {
         if (!usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-            usuario.setEstado("BLOQUEADOuser");
+            usuario.setEstado("BLOQUEADO");
             gestionUsuarios.guardarUsuariosEnExcel();
         }
     }

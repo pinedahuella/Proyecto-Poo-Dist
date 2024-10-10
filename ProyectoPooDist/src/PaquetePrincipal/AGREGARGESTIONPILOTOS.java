@@ -5,50 +5,34 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import com.toedter.calendar.JDateChooser;
-
-
-import javax.swing.JFrame; 
-import javax.swing.JOptionPane;
-
 
 public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
-
+   
     public GESTIONPILOTOS gestionPilotos;
     public Vector<Piloto> listaPilotos = new Vector<>();
     DefaultTableModel modeloPilotos = new DefaultTableModel();
     private int indiceActual;
-
+    
     public AGREGARGESTIONPILOTOS() {
         initComponents();
         indiceActual = 0;
 
- 
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
-
 
         String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Correo", "Teléfono", "Género", "Nacimiento", "Estado"};
         modeloPilotos.setColumnIdentifiers(columnas);
 
-  
         if (gestionPilotos.getPilotos() != null) {
             listaPilotos = gestionPilotos.getPilotos();
         }
-
 
         cargarPilotosEnTabla();
     }
 
     private void cargarPilotosEnTabla() {
-
         modeloPilotos.setRowCount(0);
-
-
         for (Piloto piloto : listaPilotos) {
             modeloPilotos.addRow(new Object[]{
                 piloto.getNombrePiloto(),
@@ -64,19 +48,17 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         }
     }
 
-    
     private void limpiarCampos() {
-    txtNombrePiloto.setText("");
-    txtApellidoPiloto.setText("");
-    txtNumeroDeDpiPiloto.setText("");
-    txtTipoDeLicenciaPiloto.setSelectedIndex(0); 
-    txtCorreoElectronicoPiloto.setText("");
-    txtNumeroTelefonicoPiloto.setText("");
-    txtGeneroPiloto.setSelectedIndex(0);
-    txtFechaDeNacimientoPiloto.setDate(null);
-    txtEstadoPiloto.setSelectedIndex(0);
-}
-    
+        txtNombrePiloto.setText("");
+        txtApellidoPiloto.setText("");
+        txtNumeroDeDpiPiloto.setText("");
+        txtTipoDeLicenciaPiloto.setSelectedIndex(0);
+        txtCorreoElectronicoPiloto.setText("");
+        txtNumeroTelefonicoPiloto.setText("");
+        txtGeneroPiloto.setSelectedIndex(0);
+        txtFechaDeNacimientoPiloto.setDate(null);
+        txtEstadoPiloto.setSelectedIndex(0);
+    }
     
     
     @SuppressWarnings("unchecked")
@@ -85,7 +67,6 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jTextField5 = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtNombrePiloto = new javax.swing.JTextField();
@@ -106,28 +87,15 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         txtEstadoPiloto = new javax.swing.JComboBox<>();
         btnAgregarPilotoSistema = new javax.swing.JButton();
         txtNumeroTelefonicoPiloto = new javax.swing.JTextField();
-        jPanel4 = new javax.swing.JPanel();
-        btnModificarPiloto = new javax.swing.JButton();
-        btnAgregarPiloto = new javax.swing.JButton();
-        btnEliminarPiloto = new javax.swing.JButton();
-        btnMostrarPiloto = new javax.swing.JButton();
-        btnListaPiloto = new javax.swing.JButton();
-        btnInicioPiloto = new javax.swing.JButton();
-        btnSalirPiloto = new javax.swing.JButton();
-        btnEstadoPiloto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel2.setBackground(new java.awt.Color(6, 40, 86));
+        jPanel2.setPreferredSize(new java.awt.Dimension(838, 495));
 
-        jTextField5.setEditable(false);
-        jTextField5.setBackground(new java.awt.Color(0, 153, 153));
-        jTextField5.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
-        jTextField5.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField5.setText(" AGREGAR PILOTO AL SISTEMA");
-        jTextField5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        jPanel5.setPreferredSize(new java.awt.Dimension(826, 483));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel3.setText("NOMBRE");
@@ -175,279 +143,139 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
             }
         });
 
+        txtNumeroTelefonicoPiloto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNumeroTelefonicoPilotoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFechaDeNacimientoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtGeneroPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtNumeroDeDpiPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtTipoDeLicenciaPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtFechaDeNacimientoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel18))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtEstadoPiloto, 0, 240, Short.MAX_VALUE)
-                                        .addComponent(txtNumeroTelefonicoPiloto))))
-                            .addGap(236, 236, 236))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtCorreoElectronicoPiloto))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNumeroDeDpiPiloto))
+                            .addComponent(txtCorreoElectronicoPiloto, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
                         .addGroup(jPanel5Layout.createSequentialGroup()
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtNombrePiloto)
-                                .addComponent(txtApellidoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombrePiloto, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                                .addComponent(txtApellidoPiloto))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNumeroTelefonicoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(306, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAgregarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(16, 16, 16)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombrePiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtApellidoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNumeroDeDpiPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
-                .addGap(21, 21, 21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(txtCorreoElectronicoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTipoDeLicenciaPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtFechaDeNacimientoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(txtGeneroPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(txtNumeroTelefonicoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel18))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(btnAgregarPilotoSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                        .addGap(17, 17, 17))))
-        );
-
-        btnModificarPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnModificarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnModificarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnModificarPiloto.setText("MODIFICAR");
-        btnModificarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnModificarPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarPilotoActionPerformed(evt);
-            }
-        });
-
-        btnAgregarPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnAgregarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnAgregarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnAgregarPiloto.setText("AGREGAR");
-        btnAgregarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnAgregarPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarPilotoActionPerformed(evt);
-            }
-        });
-
-        btnEliminarPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnEliminarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnEliminarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnEliminarPiloto.setText("ELIMINAR");
-        btnEliminarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnEliminarPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarPilotoActionPerformed(evt);
-            }
-        });
-
-        btnMostrarPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnMostrarPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnMostrarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnMostrarPiloto.setText("MOSTRAR");
-        btnMostrarPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnMostrarPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarPilotoActionPerformed(evt);
-            }
-        });
-
-        btnListaPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnListaPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnListaPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnListaPiloto.setText("LISTA");
-        btnListaPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnListaPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListaPilotoActionPerformed(evt);
-            }
-        });
-
-        btnInicioPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnInicioPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnInicioPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnInicioPiloto.setText("INICIO");
-        btnInicioPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnInicioPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInicioPilotoActionPerformed(evt);
-            }
-        });
-
-        btnSalirPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnSalirPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnSalirPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnSalirPiloto.setText("SALIR");
-        btnSalirPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnSalirPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirPilotoActionPerformed(evt);
-            }
-        });
-
-        btnEstadoPiloto.setBackground(new java.awt.Color(0, 102, 102));
-        btnEstadoPiloto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnEstadoPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        btnEstadoPiloto.setText("ESTADO");
-        btnEstadoPiloto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnEstadoPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEstadoPilotoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalirPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInicioPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAgregarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnListaPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnMostrarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .addComponent(btnInicioPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAgregarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEliminarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnModificarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnMostrarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnListaPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSalirPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtEstadoPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                .addComponent(btnAgregarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 848, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(134, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(49, 49, 49))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(38, 38, 38))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(71, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1163, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -458,137 +286,87 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoSistemaActionPerformed
- try {
-        
-        String nombrePiloto = txtNombrePiloto.getText().trim();
-        String apellidoPiloto = txtApellidoPiloto.getText().trim();
-        long numeroDeDpi = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim()); 
-        String tipoLicencia = txtTipoDeLicenciaPiloto.getSelectedItem().toString().trim();
-        String correoElectronicoPiloto = txtCorreoElectronicoPiloto.getText().trim();
-        int numeroTelefonico = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim()); 
-        String generoPiloto = txtGeneroPiloto.getSelectedItem().toString().trim();
+     try {
+            String nombrePiloto = txtNombrePiloto.getText().trim();
+            String apellidoPiloto = txtApellidoPiloto.getText().trim();
+            long numeroDeDpiPiloto = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim());
+            String tipoLicencia = txtTipoDeLicenciaPiloto.getSelectedItem().toString().trim();
+            String correoElectronicoPiloto = txtCorreoElectronicoPiloto.getText().trim();
+            int numeroTelefonicoPiloto = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim()); 
+            String generoPiloto = txtGeneroPiloto.getSelectedItem().toString().trim();
+            String estadoPiloto = txtEstadoPiloto.getSelectedItem().toString().trim();
 
-     
-        Date fechaNacimientoDate = txtFechaDeNacimientoPiloto.getDate();
-        if (fechaNacimientoDate == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
-            return;
-        }
-
-     
-        if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
-            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
-            return;
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaDeNacimiento = sdf.format(fechaNacimientoDate);
-        String estadoPiloto = txtEstadoPiloto.getSelectedItem().toString().trim();
-
-     
-        if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || tipoLicencia.isEmpty() ||
-            correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
-            return;
-        }
-
-    
-        if (String.valueOf(numeroDeDpi).length() != 13) { 
-            JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
-            return;
-        }
-
-        if (String.valueOf(numeroTelefonico).length() != 8) { 
-            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
-            return;
-        }
-
-   
-        for (Piloto pilotoExistente : listaPilotos) {
-            if (pilotoExistente.getNumeroDeDpi() == numeroDeDpi) {
-                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
+            Date fechaNacimientoPilotoDate = txtFechaDeNacimientoPiloto.getDate();
+            if (fechaNacimientoPilotoDate == null) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
                 return;
             }
-            if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonico) { 
-                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
+
+            if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
+                JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
                 return;
             }
-            if (pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
-                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaDeNacimientoPiloto = sdf.format(fechaNacimientoPilotoDate);
+
+            if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || tipoLicencia.isEmpty() ||
+                correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
                 return;
             }
-        }
 
+            if (String.valueOf(numeroDeDpiPiloto).length() != 13) { 
+                JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
+                return;
+            }
 
-        Piloto piloto = new Piloto(nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia, correoElectronicoPiloto,
-    numeroTelefonico, generoPiloto, fechaDeNacimiento, estadoPiloto);
+            if (String.valueOf(numeroTelefonicoPiloto).length() != 8) { 
+                JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
+                return;
+            }
+
+            for (Piloto pilotoExistente : listaPilotos) {
+                if (pilotoExistente.getNumeroDeDpi() == numeroDeDpiPiloto) { 
+                    JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
+                    return;
+                }
+                if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonicoPiloto) { 
+                    JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
+                    return;
+                }
+                if (pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
+                    return;
+                }
+            }
+
+            Piloto piloto = new Piloto(nombrePiloto, apellidoPiloto, numeroDeDpiPiloto, tipoLicencia, 
+                                       correoElectronicoPiloto, numeroTelefonicoPiloto, generoPiloto, 
+                                       fechaDeNacimientoPiloto, estadoPiloto);
+            
             listaPilotos.add(piloto);
             JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.");
 
-
             limpiarCampos();
+            
+            gestionPilotos.setPilotos(listaPilotos); 
+            gestionPilotos.guardarPilotosEnExcel();
 
-
-cargarPilotosEnTabla();     
-
-  
-        gestionPilotos.setPilotos(listaPilotos);
-        gestionPilotos.guardarPilotosEnExcel();
-
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al agregar piloto: " + e.getMessage());
-    }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar piloto: " + e.getMessage());
+        }
+        
+        INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS();
+        abrir.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnAgregarPilotoSistemaActionPerformed
 
-    private void btnModificarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPilotoActionPerformed
-        MODIFICARGESTIONPILOTOS abrir = new   MODIFICARGESTIONPILOTOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnModificarPilotoActionPerformed
-
-    private void btnAgregarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoActionPerformed
-        AGREGARGESTIONPILOTOS abrir = new  AGREGARGESTIONPILOTOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnAgregarPilotoActionPerformed
-
-    private void btnEliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPilotoActionPerformed
-        ELIMINARGESTIONPILOTOS abrir = new  ELIMINARGESTIONPILOTOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnEliminarPilotoActionPerformed
-
-    private void btnMostrarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPilotoActionPerformed
-        MOSTRARGESTIONPILOTOS abrir = new   MOSTRARGESTIONPILOTOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnMostrarPilotoActionPerformed
-
-    private void btnListaPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListaPilotoActionPerformed
-        LISTAGESTIONPILOTOS abrir = new   LISTAGESTIONPILOTOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnListaPilotoActionPerformed
-
-    private void btnInicioPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioPilotoActionPerformed
-        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnInicioPilotoActionPerformed
-
-    private void btnSalirPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirPilotoActionPerformed
-        INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnSalirPilotoActionPerformed
-
-    private void btnEstadoPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoPilotoActionPerformed
-        GARAGEGESTIONCAMIONES abrir = new GARAGEGESTIONCAMIONES();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnEstadoPilotoActionPerformed
+    private void txtNumeroTelefonicoPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroTelefonicoPilotoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumeroTelefonicoPilotoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -626,15 +404,7 @@ cargarPilotosEnTabla();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarPiloto;
     private javax.swing.JButton btnAgregarPilotoSistema;
-    private javax.swing.JButton btnEliminarPiloto;
-    private javax.swing.JButton btnEstadoPiloto;
-    private javax.swing.JButton btnInicioPiloto;
-    private javax.swing.JButton btnListaPiloto;
-    private javax.swing.JButton btnModificarPiloto;
-    private javax.swing.JButton btnMostrarPiloto;
-    private javax.swing.JButton btnSalirPiloto;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -646,9 +416,7 @@ cargarPilotosEnTabla();
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField txtApellidoPiloto;
     private javax.swing.JTextField txtCorreoElectronicoPiloto;
     private javax.swing.JComboBox<String> txtEstadoPiloto;

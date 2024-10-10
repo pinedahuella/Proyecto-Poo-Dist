@@ -15,17 +15,14 @@ public class GESTIONCAMIONES {
     private Vector<Camiones> camiones = new Vector<>();
     private String excelFilePath;
 
-
     public GESTIONCAMIONES() {
         excelFilePath = "excels/CAMIONES.xlsx";
     }
-
 
     public GESTIONCAMIONES(Vector<Camiones> camiones) {
         this.camiones = camiones;
         excelFilePath = "excels/CAMIONES.xlsx";
     }
-
 
     public void setCamiones(Vector<Camiones> camiones) {
         this.camiones = camiones;
@@ -35,39 +32,47 @@ public class GESTIONCAMIONES {
         return this.camiones;
     }
 
-
-    public void setUnCamiones(Camiones camiones) {
-        this.camiones.add(camiones);
+    public void agregarCamion(Camiones camion) {
+        this.camiones.add(camion);
+        guardarCamionesEnExcel();
     }
 
-    public void actualizarCamion(int indice, String placas, String modelo, String marca, String estado, 
-                                  String tipoCombustible, double kilometraje, double capacidadCarga, 
-                                  String añoFabricacion, double costoReparacion, double costoGalon, 
-                                  double galones, double costoMantenimiento, double gastoNoEspecificado, 
-                                  String descripcionDelGasto, String tiempoEnReparacion, String fechaDeMantenimiento,double total, double costoTotalCombustible) {
-        Camiones camiones = this.camiones.get(indice);
-        camiones.setPlacas(placas);
-        camiones.setModelo(modelo);
-        camiones.setMarca(marca);
-        camiones.setEstado(estado);
-        camiones.setTipoCombustible(tipoCombustible);
-        camiones.setKilometraje(kilometraje);
-        camiones.setCapacidadCarga(capacidadCarga);
-        camiones.setAñoFabricacion(añoFabricacion);
-        camiones.setCostoReparacion(costoReparacion);
-        camiones.setCostoGalon(costoGalon);
-        camiones.setGalones(galones);
-        camiones.setCostoMantenimiento(costoMantenimiento);
-        camiones.setGastoNoEspecificado(gastoNoEspecificado);
-        camiones.setDescripcionDelGasto(descripcionDelGasto);
-        camiones.setTiempoEnReparacion(tiempoEnReparacion);
-        camiones.setFechaDeMantenimiento(fechaDeMantenimiento);
-        camiones.setTotal(total);
-        camiones.setCostoTotalCombustible(costoTotalCombustible);
-
+    
+    
+public void actualizarCamion(Camiones camionActualizado) {
+    boolean encontrado = false;
+    
+    // Buscar el camión por el atributo único, como el modelo o las placas
+    for (int i = 0; i < camiones.size(); i++) {
+        if (camiones.get(i).getPlacas().equals(camionActualizado.getPlacas())) {
+            // Si se encuentra, actualiza el camión con la nueva información
+            camiones.set(i, camionActualizado);
+            encontrado = true;
+            break;
+        }
     }
-
+    
+    // Si no se encuentra, se puede añadir el nuevo camión a la lista
+    if (!encontrado) {
+        camiones.add(camionActualizado);
+    }
+    
+    // Guardar los camiones actualizados en el archivo Excel
+    guardarCamionesEnExcel();
+    
+    // Recargar los datos desde el archivo Excel (opcional)
+    cargarCamionesDesdeExcel();
+}
+       
+       
+    public void eliminarCamion(String modelo) {
+        camiones.removeIf(camion -> camion.getModelo().equals(modelo));
+        guardarCamionesEnExcel();
+    }
+    
+    
     public void cargarCamionesDesdeExcel() {
+        camiones.clear();
         try (FileInputStream fis = new FileInputStream(excelFilePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
