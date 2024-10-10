@@ -48,10 +48,12 @@ public class FrameInventario extends javax.swing.JFrame {
        
         
         //colocamos invisibles todos los paneles
-        panelp1.setVisible(false);
+        panelp1.setVisible(true);
         panelp2.setVisible(false);
         panelp3.setVisible(false);
-        panelp4.setVisible(false);
+        panelp4.setVisible(true);
+        
+        botonParaActualizar.setVisible(false);
         
         //tabla productos creamos la tabla
         String ids [] = {"Producto", "cantidad", "Proveedor", "precio costo", "Flete"};
@@ -298,7 +300,7 @@ public class FrameInventario extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        panelp2.setBackground(new java.awt.Color(85, 150, 202));
+        panelp2.setBackground(new java.awt.Color(85, 181, 229));
 
         jLabel6.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 51));
@@ -410,7 +412,7 @@ public class FrameInventario extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        panelp3.setBackground(new java.awt.Color(85, 150, 202));
+        panelp3.setBackground(new java.awt.Color(85, 181, 229));
 
         jLabel11.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 0, 51));
@@ -494,7 +496,7 @@ public class FrameInventario extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        panelp1.setBackground(new java.awt.Color(102, 255, 255));
+        panelp1.setBackground(new java.awt.Color(85, 181, 229));
 
         jLabel1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 51));
@@ -831,6 +833,9 @@ public class FrameInventario extends javax.swing.JFrame {
         textProductoPF.setText("");
         
         spinnerCantidad.setValue(0);
+        
+        //funcion para guardar todos los quintales actuales
+        Tproductos.getCargarInvetarioExcel();
     }//GEN-LAST:event_panelAgregarProductoMouseClicked
 
     private void panelModificarProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelModificarProductoMouseClicked
@@ -865,6 +870,9 @@ public class FrameInventario extends javax.swing.JFrame {
 
             //actualizamos los comobo box
             actualizarCombobox();
+            
+            //funcion para guardar todos los quintales actuales
+            Tproductos.getCargarInvetarioExcel();
         }
     }//GEN-LAST:event_panelModificarProductoMouseClicked
 
@@ -898,6 +906,9 @@ public class FrameInventario extends javax.swing.JFrame {
             
             //actualizamo la tabla
             cargarInvetrioTabla();
+            
+            //funcion para guardar todos los quintales actuales
+            Tproductos.getCargarInvetarioExcel();
         }
     }//GEN-LAST:event_panelExistenciasProductosMouseClicked
 
