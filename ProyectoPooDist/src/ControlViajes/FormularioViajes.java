@@ -67,6 +67,14 @@ public class FormularioViajes extends javax.swing.JFrame {
     
     //nos ayudara para ver el indice de elementos iguales
     int indiceFechasIgualesActuales;
+    
+    //estas variables nos ayudaran a pintar las fechas
+    Color pastelGreen = new Color(144, 238, 144); // Verde pastel
+    Color pastelRed = new Color(255, 182, 193);   // Rojo pastel
+    Color pastelBlue = new Color(173, 216, 255);  // Azul pastel
+    
+    Color defaultButtonGray = new Color(180,180,180);
+
 
     /**
      * Creates new form FormularioViajes
@@ -77,6 +85,10 @@ public class FormularioViajes extends javax.swing.JFrame {
         //iniciamos el indice a 0;
         indice = 0;
         
+        //ocultamos el boton de modificar un viaje
+        botonModificarViajes.setVisible(false);
+        //ocultamos el radio button de finalizar un pedido
+        radioFinalizarViaje.setVisible(false);
         
         //iniciamos el indiceActual a -1
         indiceActual = -1;
@@ -159,8 +171,8 @@ public class FormularioViajes extends javax.swing.JFrame {
             fechasCarga.add(fC);
             fechasDescarga.add(fD);
                  
-            colorearFecha(fC, Color.green);
-            colorearFecha(fD, Color.red);
+            colorearFecha(fC, pastelGreen);
+            colorearFecha(fD, pastelRed );
         }
         
         CalendarioGeneral.getDayChooser().repaint();
@@ -243,7 +255,7 @@ public class FormularioViajes extends javax.swing.JFrame {
             }
                         
             //actualizamos la tabla y sus cantidades
-            modeloProductosA.addRow(new Object[]{productosTablaNew.get(i).getNombre(), numeroDeCantidades});            
+            modeloProductosA.addRow(new Object[]{productosTablaNew.get(i).getNombre(), Integer.toString(numeroDeCantidades)});            
         }
         
         }
@@ -266,6 +278,7 @@ public class FormularioViajes extends javax.swing.JFrame {
         comboPedidosLista = new javax.swing.JComboBox<>();
         textoFechasIguales = new javax.swing.JLabel();
         comboMasDeFecha = new javax.swing.JComboBox<>();
+        radioFinalizarViaje = new javax.swing.JRadioButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -278,6 +291,8 @@ public class FormularioViajes extends javax.swing.JFrame {
         tablaProductosA = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
         ComboTViajeA = new javax.swing.JComboBox<>();
+        botonModificarViajes = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         CalendarioGeneral = new com.toedter.calendar.JCalendar();
         jPanel6 = new javax.swing.JPanel();
@@ -318,6 +333,14 @@ public class FormularioViajes extends javax.swing.JFrame {
         textoFechasIguales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         textoFechasIguales.setText("Fechas Iguales");
 
+        radioFinalizarViaje.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        radioFinalizarViaje.setText("Finalizar Viaje");
+        radioFinalizarViaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioFinalizarViajeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -331,14 +354,20 @@ public class FormularioViajes extends javax.swing.JFrame {
                         .addComponent(comboMasDeFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(comboPedidosLista, 0, 184, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboPedidosLista, 0, 290, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(radioFinalizarViaje)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(radioFinalizarViaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboPedidosLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -380,6 +409,33 @@ public class FormularioViajes extends javax.swing.JFrame {
 
         ComboTViajeA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pedido para Distribuidora", "Pedido Para Cliente " }));
 
+        botonModificarViajes.setBackground(new java.awt.Color(180, 150, 111));
+        botonModificarViajes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                botonModificarViajesMouseClicked(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel13.setText("Modificar Viajes ");
+
+        javax.swing.GroupLayout botonModificarViajesLayout = new javax.swing.GroupLayout(botonModificarViajes);
+        botonModificarViajes.setLayout(botonModificarViajesLayout);
+        botonModificarViajesLayout.setHorizontalGroup(
+            botonModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(botonModificarViajesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        botonModificarViajesLayout.setVerticalGroup(
+            botonModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, botonModificarViajesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel13)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -388,6 +444,7 @@ public class FormularioViajes extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(fechaDescargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
@@ -398,18 +455,19 @@ public class FormularioViajes extends javax.swing.JFrame {
                         .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7))
-                                .addGap(79, 79, 79)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 32, Short.MAX_VALUE)))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGap(79, 79, 79)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botonModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -432,12 +490,15 @@ public class FormularioViajes extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fechaDescargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(botonModificarViajes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -687,35 +748,32 @@ public class FormularioViajes extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(7, 7, 7)
-                                        .addComponent(fechaBCarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(12, 12, 12)
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(fechaBDescarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(comboPilotosB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(comboCamionesB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 21, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboTViajeB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2)
+                                .addGap(7, 7, 7)
+                                .addComponent(fechaBCarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                                .addComponent(fechaBDescarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(comboPilotosB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(comboCamionesB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(27, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(comboTViajeB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -809,8 +867,8 @@ public class FormularioViajes extends javax.swing.JFrame {
                  if (indiceActual > -1) {
                     
                     //pintamos la fecha seleccionada en azul
-                    colorearFecha(FechaTablaNew.get(0).getFechaC(), Color.blue);
-                    colorearFecha(FechaTablaNew.get(0).getFechaD(), Color.blue);
+                    colorearFecha(FechaTablaNew.get(0).getFechaC(), pastelBlue);
+                    colorearFecha(FechaTablaNew.get(0).getFechaD(), pastelBlue);
                  }
                 
                 comboPilotosB.setSelectedIndex(0);
@@ -841,6 +899,184 @@ public class FormularioViajes extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jPanel12MouseClicked
 
+    private void radioFinalizarViajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioFinalizarViajeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_radioFinalizarViajeActionPerformed
+
+    private void botonModificarViajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonModificarViajesMouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para modificar un viaje
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        
+        Date newFechaCarga = fechaCargaA.getDate();
+        Date newFechaDescarga = fechaDescargaA.getDate();
+        
+         try {
+          //verifica que las fechas sean validas
+        if (newFechaCarga != null && newFechaDescarga != null && indiceActual  > -1) {
+            
+            //creamos los indices de pilotos y camiones
+            int newIndicePiloto = comboPilotosA.getSelectedIndex();
+            int newIndiceCamion = comoboCamionesA.getSelectedIndex();
+            
+            
+            //leemos las fechas antiguas
+            Date oldFechaCarga = FechaTablaNew.get(indiceActual).getFechaC();
+            Date oldFechaDescarga = FechaTablaNew.get(indiceActual).getFechaD();
+            
+            
+            //miramos si el viaje es una compra o una venta
+            boolean newcompra;
+            
+            //preguntamo si el pedido estara activo pedido activo
+            boolean pedidoActivo = !radioFinalizarViaje.isSelected();
+            
+            if (ComboTViajeA.getSelectedItem().equals("Pedido para Distribuidora")) {
+                newcompra = true;
+            }else{
+                newcompra = false;
+            }
+            
+            //creamos los vectores que tengas los indices de los productos
+            Vector<Integer> newIndiceProducto = new Vector<>();
+            Vector<Integer> newIndiceCantidad = new Vector<>();
+            
+            //recoremos las tabla B para ver cuantos productos forman parte del viaje
+            for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+                
+                //definimos las variables a utilizar
+                int cantidadDeProducto = 0;     
+                Object value = tablaProductosA.getValueAt(i, 1);
+                
+                //asignamos el valor a las variables
+                cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+               
+                
+                //verificamos si la cantidad es superior a cero
+                if (cantidadDeProducto > 0) {
+                    newIndiceProducto.add(i);
+                    newIndiceCantidad.add(cantidadDeProducto);
+                }
+                
+            }
+            
+            
+            //vamos a hacer un bucle y una variable que nos ayude a identificar si hay suficientes existencias para completar un viaje de cliente
+            boolean ViajeDeCliente = true;
+            
+            if (pedidoActivo == false && newcompra == false) {
+                //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+
+                    //definimos las variables a utilizar
+                    int cantidadDeProducto = 0;
+
+                    //asignamos el valor a las variables
+                   cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+                   
+                    if (cantidadDeProducto > productosTablaNew.get(i).getExistencias() ) {
+                        ViajeDeCliente = false;
+                    }
+                }
+           }
+            
+            if (ViajeDeCliente == true) {
+                //verificamos que los vectores no esten vacios
+               if (!newIndiceProducto.isEmpty()) {
+                   //creamos la fecha nueva
+                   FechaCalendario newFecha = new FechaCalendario(newFechaCarga, newFechaDescarga, newIndicePiloto, newIndiceCamion, newIndiceProducto, newIndiceCantidad, pedidoActivo, newcompra);
+
+                   //la agregamos a la lista de fechas
+                   gescalendario.modificarFecha(indiceActual, newFecha);
+
+                   System.out.println("se ha creado la fecha correctamente");
+
+                   //pintamos la fecha seleccionada otra vez en gris
+                   colorearFecha(oldFechaCarga, defaultButtonGray);
+                   colorearFecha(oldFechaDescarga, defaultButtonGray);        
+
+                   //actualizamos el calendario 
+                   ActualizarCalendario();
+
+                   //pintamos la fecha seleccionada en azul
+                   colorearFecha(newFechaCarga, pastelBlue);
+                   colorearFecha(newFechaDescarga, pastelBlue);
+
+
+                   //preguntamos si el viaje fue cancelado para ocualtar los botones d editar
+                   if (pedidoActivo == false) {
+                       //ocultamos el boton de modificar un viaje
+                       botonModificarViajes.setVisible(false);
+                       //ocultamos el radio button de finalizar un pedido
+                       radioFinalizarViaje.setVisible(false);
+                   }
+
+
+                    //ahora vamos a preguntar si el pedido fue cancelado para sumarle las cantidades al inventario de quintales
+                    if (pedidoActivo == false && newcompra == true) {
+                           //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                           for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+
+                               //definimos las variables a utilizar
+                               int cantidadDeProducto = 0;   
+
+                               //asignamos el valor a las variables
+                               cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+
+                               gesproductos.setCantidad(i, cantidadDeProducto, "+");                               
+
+                           }
+
+                           gesproductos.getCargarInvetarioExcel();
+                    }
+                    
+                    //ahora vamos a preguntar si el pedido fue cancelado para sumarle las cantidades al inventario de quintales
+                    if (pedidoActivo == false && newcompra == false) {
+                           //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                           for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+
+                               //definimos las variables a utilizar
+                               int cantidadDeProducto = 0;   
+
+                               //asignamos el valor a las variables
+                               cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+
+                               gesproductos.setCantidad(i, cantidadDeProducto, "-");                               
+
+                           }
+
+                           gesproductos.getCargarInvetarioExcel();
+                    }
+
+
+                   //cargamos los datos en el excel
+                   gescalendario.guardarFecharExcel();
+
+                   //mostramos mesaje para acetar que este bien
+                   JOptionPane.showMessageDialog(null, "Datos fueron modificados de forma correcta", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+
+
+               }else{
+                  //mostramos mesaje para acetar que este bien
+                   JOptionPane.showMessageDialog(null, "Ingresa al menos un producto ", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+               }   
+            }else{
+               //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "no hay suficientes cantidades para completar el viaje", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+            }              
+            
+        }else{
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa fecha Valida", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }  
+            
+        } catch (NumberFormatException e) {
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_botonModificarViajesMouseClicked
+
     private void iniciarBucleEnHilo() {
         //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
         Thread hiloBucle = new Thread(() -> {
@@ -860,8 +1096,8 @@ public class FormularioViajes extends javax.swing.JFrame {
                     int indiceAntiguo = indiceActual;
                     
                     //volvemos a colores las fechas antiguas al color correspondiente 
-                    colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaC(), Color.green);
-                    colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaD(), Color.red);
+                    colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaC(), pastelGreen);
+                    colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaD(), pastelRed );
                  }
                 
                 //hacemos que el indice actual sea igual al seleccionado 
@@ -886,9 +1122,17 @@ public class FormularioViajes extends javax.swing.JFrame {
                 
                 
                 //colocamos las fechas seleccionadas en azul, para ver que son la fecha seleccionada
-                colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), Color.blue);
-                colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), Color.blue);
+                colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), pastelBlue);
+                colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), pastelBlue);
                 
+                //verificamos si el pedido aun esta activo para poder ponerlo activo o no el boton de modificar y el radio button
+                if (FechaTablaNew.get(indiceSeleccionado).getActivo() == true) {
+                    botonModificarViajes.setVisible(true);
+                    radioFinalizarViaje.setVisible(true);
+                }else{
+                    botonModificarViajes.setVisible(false);
+                    radioFinalizarViaje.setVisible(false);
+                }
                 
                 //actualizamos la tabla
                  ActualizarTablaA();
@@ -959,8 +1203,8 @@ public class FormularioViajes extends javax.swing.JFrame {
                  //pintamos la fecha seleccionada
                  if (indiceSeleccionado == indiceActual && indiceActual > -1) {
                     //colocamos las fechas seleccionadas en azul, para ver que son la fecha seleccionada
-                    colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), Color.blue);
-                    colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), Color.blue); 
+                    colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaC(), pastelBlue);
+                    colorearFecha(FechaTablaNew.get(indiceSeleccionado).getFechaD(), pastelBlue); 
                  }
                              
                  
@@ -1046,6 +1290,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JCalendar CalendarioGeneral;
     private javax.swing.JComboBox<String> ComboTViajeA;
+    private javax.swing.JPanel botonModificarViajes;
     private javax.swing.JComboBox<String> comboCamionesB;
     private javax.swing.JComboBox<String> comboMasDeFecha;
     private javax.swing.JComboBox<String> comboPedidosLista;
@@ -1061,6 +1306,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1083,6 +1329,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JRadioButton radioFinalizarViaje;
     private javax.swing.JTable tablaProductosA;
     private javax.swing.JTable tablaProductosB;
     private javax.swing.JLabel textoFechasIguales;
