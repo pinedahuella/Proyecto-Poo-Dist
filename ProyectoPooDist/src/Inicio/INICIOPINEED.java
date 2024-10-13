@@ -1,13 +1,29 @@
 package Inicio;
 
-import GestionDeCamiones.INICIOGESTIONCAMIONES;
+import ControlInventario.gestionProductos;
+import ControlInventario.Producto;
+import GestionDePilotos.Piloto;
+import GestionDePilotos.GESTIONPILOTOS;
+import GestionDeCamiones.GESTIONCAMIONES;
+import GestionDeCamiones.Camiones;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
+import Inicio.INICIOPINEED;
+import Inicio.INICIOPINEEDINICIAL;
+import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
 import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
+import javax.swing.JButton;
+import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.Container;
+
+
+
 
 
 public class INICIOPINEED extends javax.swing.JFrame {
@@ -15,19 +31,105 @@ public class INICIOPINEED extends javax.swing.JFrame {
     private String userRole;
     private LOGINPINEED loginFrame;
     
-    
-    
     public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
         addWindowListener();
+        configureButtonsByRole();
+        adjustComponentSizes();
+    }
+private void configureButtonsByRole() {
+    // Array of all buttons that should be managed
+    JButton[] allButtons = {
+        btnGestionDeVentas, btnGestionDePedidos, btnPlanillaDeTrabajadores,
+        btnGestionDeClientes, btnGestionDeCreditos, btnInventarioDeQuintales,
+        btnCalendario, btnGestionDePilotos, btnGestionDeCamiones,
+        btnGestionDeUsuarios   };
+
+    // Hide all buttons by default
+    for (JButton button : allButtons) {
+        if (button != null) {
+            button.setVisible(false);
+            button.setEnabled(false);
+        }
     }
 
+    // Configure buttons based on role
+    if (userRole != null) {
+        switch (userRole.toUpperCase()) {
+            case "ADMINISTRADOR":
+                // Show all buttons for administrator
+                for (JButton button : allButtons) {
+                    if (button != null) {
+                        button.setVisible(true);
+                        button.setEnabled(true);
+                    }
+                }
+                break;
+            case "USUARIO":
+                // Only show Regresar, Cerrar, and Calendario buttons for users
+
+                if (btnCalendario != null) {
+                    btnCalendario.setVisible(true);
+                    btnCalendario.setEnabled(true);
+                }
+                break;
+            case "SECRETARIA":
+                // Show specific buttons for secretary
+                if (btnGestionDeCamiones != null) {
+                    btnGestionDeCamiones.setVisible(true);
+                    btnGestionDeCamiones.setEnabled(true);
+                }
+                if (btnPlanillaDeTrabajadores != null) {
+                    btnPlanillaDeTrabajadores.setVisible(true);
+                    btnPlanillaDeTrabajadores.setEnabled(true);
+                }
+
+                break;
+            default:
+ 
+                break;
+        }
+    }
+}
+
+private void adjustComponentSizes() {
+    // Obtén el contenedor principal (normalmente un JPanel)
+    Container contentPane = this.getContentPane();
     
+    // Obtén todos los componentes del contenedor
+    Component[] components = contentPane.getComponents();
     
-        public void addWindowListener() {
+    // Ajusta el tamaño de los componentes visibles
+    for (Component component : components) {
+        if (component.isVisible()) {
+            // Si es un contenedor (como un JPanel), ajusta sus componentes internos
+            if (component instanceof Container) {
+                adjustContainerComponents((Container) component);
+            }
+            // Ajusta el tamaño del componente para que ocupe todo el espacio disponible
+            component.setPreferredSize(new Dimension(contentPane.getWidth(), component.getHeight()));
+        }
+    }
+    
+    // Actualiza la disposición de los componentes
+    contentPane.revalidate();
+    contentPane.repaint();
+}
+
+private void adjustContainerComponents(Container container) {
+    Component[] components = container.getComponents();
+    for (Component component : components) {
+        if (component.isVisible()) {
+            component.setPreferredSize(new Dimension(container.getWidth(), component.getHeight()));
+        }
+    }
+}
+
+
+    public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -35,17 +137,17 @@ public class INICIOPINEED extends javax.swing.JFrame {
             }
         });
     }
-    
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
+     
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
     }
-    // Pass the necessary arguments when creating a new INICIOPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
-    INICIOPINEED nuevaVentanaLogin = new INICIOPINEED(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
+
     
 
     @SuppressWarnings("unchecked")
@@ -221,33 +323,41 @@ private void cerrarSesionYSalir() {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnRegresarLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDeUsuarios, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDeCamiones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDePilotos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCalendario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDeCreditos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnGestionDeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnGestionDeVentas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnPlanillaDeTrabajadores, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnGestionDePedidos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnInventarioDeQuintales, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnGestionDeUsuarios, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDePilotos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDeVentas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDePedidos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGestionDeCreditos, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGestionDeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnRegresarLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCalendario, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGestionDeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPlanillaDeTrabajadores, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInventarioDeQuintales, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addComponent(btnCalendario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRegresarLogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCerrarSesion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCamiones)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnPlanillaDeTrabajadores)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnInventarioDeQuintales)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGestionDePedidos)
-                .addGap(12, 12, 12)
-                .addComponent(btnPlanillaDeTrabajadores)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGestionDeVentas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -255,18 +365,10 @@ private void cerrarSesionYSalir() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGestionDeCreditos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCalendario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGestionDePilotos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeCamiones)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGestionDeUsuarios)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRegresarLogin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCerrarSesion)
-                .addContainerGap())
+                .addGap(16, 16, 16))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -281,7 +383,7 @@ private void cerrarSesionYSalir() {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(427, Short.MAX_VALUE))
+                .addContainerGap(303, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -336,10 +438,15 @@ private void cerrarSesionYSalir() {
  String username = this.currentUser; // Assuming currentUser holds the username
     String role = this.userRole;        // Assuming userRole holds the role
     LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    FramePlanillaSemanal abrir = new  FramePlanillaSemanal(username, role, loginFrame);
+
+        
+      if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+    }
     }//GEN-LAST:event_btnPlanillaDeTrabajadoresActionPerformed
 
     private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientesActionPerformed
@@ -369,10 +476,13 @@ private void cerrarSesionYSalir() {
     String role = this.userRole;        // Assuming userRole holds the role
     LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
     
-    FormularioViajes abrir = new  FormularioViajes(username, role, loginFrame);
+   if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
+    } else {
+        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+    }
     }//GEN-LAST:event_btnCalendarioActionPerformed
 
     private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotosActionPerformed
@@ -393,9 +503,11 @@ private void cerrarSesionYSalir() {
     String role = this.userRole;        // Assuming userRole holds the role
     LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
     
-    INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
+            if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+            }
     }//GEN-LAST:event_btnGestionDeCamionesActionPerformed
 
     private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuariosActionPerformed

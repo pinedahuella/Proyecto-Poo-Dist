@@ -1,19 +1,28 @@
 package GestionDeCamiones;
 
+import ControlInventario.gestionProductos;
+import ControlInventario.Producto;
+import GestionDePilotos.Piloto;
+import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
-import GestionDeCamiones.GARAGEGESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
-import GestionDeCamiones.AGREGARGESTIONCAMIONES;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import ControlPedidos.FormularioPedidos;
-import ControlInventario.FrameInventario;
-import ControlPlanilla.FramePlanillaSemanal;
+import Inicio.INICIOPINEED;
+import Inicio.INICIOPINEEDINICIAL;
+import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
+import ControlInventario.FrameInventario;
+import ControlPedidos.FormularioPedidos;
+import ControlPlanilla.FramePlanillaSemanal;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
+import javax.swing.JButton;
+
+
 
 public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
     public GESTIONCAMIONES gestionCamiones;
@@ -30,11 +39,60 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
     };
 
     
+private void configureButtonsByRole() {
+    JButton[] allButtons = {
+        btnGestionDeVentas, btnGestionDePedidos, btnPlanillaDeTrabajadores,
+        btnGestionDeClientes, btnGestionDeCreditos, btnInventarioDeQuintales,
+        btnCalendario, btnGestionDePilotos, btnGestionDeCamiones,
+        btnGestionDeUsuarios
+    };
+    for (JButton button : allButtons) {
+        if (button != null) {
+            button.setVisible(false);
+            button.setEnabled(false);
+        } else {
+            System.out.println("Warning: A button is null");
+        }
+    }
 
-     
-     
-     
-          public void addWindowListener() {
+     if (userRole != null) {
+        switch (userRole.toUpperCase()) {
+            case "ADMINISTRADOR":
+                // Mostrar todos los botones para el administrador
+                for (JButton button : allButtons) {
+                    if (button != null) {
+                        button.setVisible(true);
+                        button.setEnabled(true);
+                    }
+                }
+                break;
+                case "USUARIO":
+                    // Solo mostrar y habilitar el botón de Calendario para usuarios
+                    btnCalendario.setVisible(true);
+                    btnCalendario.setEnabled(true);
+                    break;
+                case "SECRETARIA":
+                // Solo mostrar botones específicos para la secretaria
+                btnGestionDeCamiones.setVisible(true);
+                btnGestionDeCamiones.setEnabled(true);
+                btnPlanillaDeTrabajadores.setVisible(true);
+                btnPlanillaDeTrabajadores.setEnabled(true);
+                // Asegúrate de que btnGestionDeVentas no esté visible aquí
+                break;
+                default:
+                    // Para cualquier otro rol, no mostrar ningún botón
+                    break;
+           
+        
+        }
+        }
+    }
+
+
+
+
+
+    public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -42,21 +100,16 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
             }
         });
     }
-      
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
+     
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
     }
-    // Pass the necessary arguments when creating a new INICIOPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
-    INICIOGESTIONCAMIONES nuevaVentanaLogin = new INICIOGESTIONCAMIONES(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
-       
-
 
      
     public INICIOGESTIONCAMIONES(String username, String role, LOGINPINEED loginFrame) {
@@ -84,6 +137,7 @@ private void cerrarSesionYSalir() {
         this.userRole = role;
         this.loginFrame = loginFrame;
         addWindowListener();
+        configureButtonsByRole();
     }
 
     
@@ -111,19 +165,6 @@ private void cerrarSesionYSalir() {
 
         jPanel8 = new javax.swing.JPanel();
         jTextField18 = new javax.swing.JTextField();
-        jPanel10 = new javax.swing.JPanel();
-        btnGestionDeVentas2 = new javax.swing.JButton();
-        btnGestionDePedidos2 = new javax.swing.JButton();
-        btnPlanillaDeTrabajadores2 = new javax.swing.JButton();
-        btnGestionDeClientes2 = new javax.swing.JButton();
-        btnGestionDeCreditos2 = new javax.swing.JButton();
-        btnInventarioDeQuintales2 = new javax.swing.JButton();
-        btnCerrarSesion2 = new javax.swing.JButton();
-        btnCalendario2 = new javax.swing.JButton();
-        btnGestionDePilotos2 = new javax.swing.JButton();
-        btnGestionDeCamiones2 = new javax.swing.JButton();
-        btnGestionDeUsuarios2 = new javax.swing.JButton();
-        btnRegresarLogin2 = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRegistroCamiones = new javax.swing.JTable();
@@ -136,6 +177,19 @@ private void cerrarSesionYSalir() {
         refrescarPagina1 = new javax.swing.JButton();
         refrescarPagina2 = new javax.swing.JButton();
         refrescarPagina3 = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        btnGestionDeVentas = new javax.swing.JButton();
+        btnGestionDePedidos = new javax.swing.JButton();
+        btnPlanillaDeTrabajadores = new javax.swing.JButton();
+        btnGestionDeClientes = new javax.swing.JButton();
+        btnGestionDeCreditos = new javax.swing.JButton();
+        btnInventarioDeQuintales = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
+        btnCalendario = new javax.swing.JButton();
+        btnGestionDePilotos = new javax.swing.JButton();
+        btnGestionDeCamiones = new javax.swing.JButton();
+        btnGestionDeUsuarios = new javax.swing.JButton();
+        btnRegresarLogin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -152,193 +206,6 @@ private void cerrarSesionYSalir() {
                 jTextField18ActionPerformed(evt);
             }
         });
-
-        jPanel10.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-
-        btnGestionDeVentas2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeVentas2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeVentas2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeVentas2.setText("GESTION DE VENTAS");
-        btnGestionDeVentas2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeVentas2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeVentas2ActionPerformed(evt);
-            }
-        });
-
-        btnGestionDePedidos2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDePedidos2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDePedidos2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDePedidos2.setText("GESTION DE PEDIDOS");
-        btnGestionDePedidos2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDePedidos2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDePedidos2ActionPerformed(evt);
-            }
-        });
-
-        btnPlanillaDeTrabajadores2.setBackground(new java.awt.Color(0, 102, 102));
-        btnPlanillaDeTrabajadores2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnPlanillaDeTrabajadores2.setForeground(new java.awt.Color(255, 255, 255));
-        btnPlanillaDeTrabajadores2.setText("PLANILLA DE TRABAJADORES");
-        btnPlanillaDeTrabajadores2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnPlanillaDeTrabajadores2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPlanillaDeTrabajadores2ActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeClientes2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeClientes2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeClientes2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeClientes2.setText("GESTION DE CLIENTES");
-        btnGestionDeClientes2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeClientes2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeClientes2ActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeCreditos2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeCreditos2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeCreditos2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeCreditos2.setText("GESTION DE CREDITOS");
-        btnGestionDeCreditos2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeCreditos2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeCreditos2ActionPerformed(evt);
-            }
-        });
-
-        btnInventarioDeQuintales2.setBackground(new java.awt.Color(0, 102, 102));
-        btnInventarioDeQuintales2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnInventarioDeQuintales2.setForeground(new java.awt.Color(255, 255, 255));
-        btnInventarioDeQuintales2.setText("INVENTARIO QUINTALES");
-        btnInventarioDeQuintales2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnInventarioDeQuintales2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInventarioDeQuintales2ActionPerformed(evt);
-            }
-        });
-
-        btnCerrarSesion2.setBackground(new java.awt.Color(0, 102, 102));
-        btnCerrarSesion2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnCerrarSesion2.setForeground(new java.awt.Color(255, 255, 255));
-        btnCerrarSesion2.setText("CERRAR SESION");
-        btnCerrarSesion2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCerrarSesion2ActionPerformed(evt);
-            }
-        });
-
-        btnCalendario2.setBackground(new java.awt.Color(0, 102, 102));
-        btnCalendario2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnCalendario2.setForeground(new java.awt.Color(255, 255, 255));
-        btnCalendario2.setText("CALENDARIO");
-        btnCalendario2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnCalendario2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCalendario2ActionPerformed(evt);
-            }
-        });
-
-        btnGestionDePilotos2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDePilotos2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDePilotos2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDePilotos2.setText("GESTION DE PILOTOS");
-        btnGestionDePilotos2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDePilotos2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDePilotos2ActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeCamiones2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeCamiones2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeCamiones2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeCamiones2.setText("GESTION DE CAMIONES");
-        btnGestionDeCamiones2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeCamiones2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeCamiones2ActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeUsuarios2.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeUsuarios2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeUsuarios2.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeUsuarios2.setText("GESTION DE USUARIOS");
-        btnGestionDeUsuarios2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeUsuarios2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeUsuarios2ActionPerformed(evt);
-            }
-        });
-
-        btnRegresarLogin2.setBackground(new java.awt.Color(0, 102, 102));
-        btnRegresarLogin2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnRegresarLogin2.setForeground(new java.awt.Color(255, 255, 255));
-        btnRegresarLogin2.setText("REGRESAR LOGIN");
-        btnRegresarLogin2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnRegresarLogin2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarLogin2ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnRegresarLogin2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDeUsuarios2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDeCamiones2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDePilotos2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCalendario2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGestionDeCreditos2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnGestionDeClientes2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnGestionDeVentas2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnPlanillaDeTrabajadores2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnGestionDePedidos2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnInventarioDeQuintales2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnCerrarSesion2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnInventarioDeQuintales2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDePedidos2)
-                .addGap(12, 12, 12)
-                .addComponent(btnPlanillaDeTrabajadores2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeVentas2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeClientes2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeCreditos2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCalendario2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDePilotos2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeCamiones2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeUsuarios2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRegresarLogin2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCerrarSesion2)
-                .addContainerGap())
-        );
 
         tblRegistroCamiones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -481,6 +348,193 @@ private void cerrarSesionYSalir() {
                 .addGap(27, 27, 27))
         );
 
+        jPanel7.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+
+        btnGestionDeVentas.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeVentas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeVentas.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeVentas.setText("GESTION DE VENTAS");
+        btnGestionDeVentas.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeVentasActionPerformed(evt);
+            }
+        });
+
+        btnGestionDePedidos.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePedidos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePedidos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePedidos.setText("GESTION DE PEDIDOS");
+        btnGestionDePedidos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePedidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDePedidosActionPerformed(evt);
+            }
+        });
+
+        btnPlanillaDeTrabajadores.setBackground(new java.awt.Color(0, 102, 102));
+        btnPlanillaDeTrabajadores.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnPlanillaDeTrabajadores.setForeground(new java.awt.Color(255, 255, 255));
+        btnPlanillaDeTrabajadores.setText("PLANILLA DE TRABAJADORES");
+        btnPlanillaDeTrabajadores.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnPlanillaDeTrabajadores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlanillaDeTrabajadoresActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeClientes.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeClientes.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeClientes.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeClientes.setText("GESTION DE CLIENTES");
+        btnGestionDeClientes.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeClientesActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeCreditos.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCreditos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCreditos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCreditos.setText("GESTION DE CREDITOS");
+        btnGestionDeCreditos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCreditos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeCreditosActionPerformed(evt);
+            }
+        });
+
+        btnInventarioDeQuintales.setBackground(new java.awt.Color(0, 102, 102));
+        btnInventarioDeQuintales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnInventarioDeQuintales.setForeground(new java.awt.Color(255, 255, 255));
+        btnInventarioDeQuintales.setText("INVENTARIO QUINTALES");
+        btnInventarioDeQuintales.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnInventarioDeQuintales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventarioDeQuintalesActionPerformed(evt);
+            }
+        });
+
+        btnCerrarSesion.setBackground(new java.awt.Color(0, 102, 102));
+        btnCerrarSesion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCerrarSesion.setForeground(new java.awt.Color(255, 255, 255));
+        btnCerrarSesion.setText("CERRAR SESION");
+        btnCerrarSesion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesionActionPerformed(evt);
+            }
+        });
+
+        btnCalendario.setBackground(new java.awt.Color(0, 102, 102));
+        btnCalendario.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCalendario.setForeground(new java.awt.Color(255, 255, 255));
+        btnCalendario.setText("CALENDARIO");
+        btnCalendario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCalendario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalendarioActionPerformed(evt);
+            }
+        });
+
+        btnGestionDePilotos.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePilotos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePilotos.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePilotos.setText("GESTION DE PILOTOS");
+        btnGestionDePilotos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePilotos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDePilotosActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeCamiones.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCamiones.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCamiones.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCamiones.setText("GESTION DE CAMIONES");
+        btnGestionDeCamiones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCamiones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeCamionesActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeUsuarios.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeUsuarios.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeUsuarios.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeUsuarios.setText("GESTION DE USUARIOS");
+        btnGestionDeUsuarios.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeUsuarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeUsuariosActionPerformed(evt);
+            }
+        });
+
+        btnRegresarLogin.setBackground(new java.awt.Color(0, 102, 102));
+        btnRegresarLogin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnRegresarLogin.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegresarLogin.setText("REGRESAR LOGIN");
+        btnRegresarLogin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnRegresarLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarLoginActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnGestionDeUsuarios, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDePilotos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDeVentas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDePedidos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGestionDeCreditos, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGestionDeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnRegresarLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCalendario, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGestionDeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPlanillaDeTrabajadores, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInventarioDeQuintales, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCalendario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRegresarLogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCerrarSesion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCamiones)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnPlanillaDeTrabajadores)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInventarioDeQuintales)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDePedidos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeVentas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeClientes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCreditos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDePilotos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeUsuarios)
+                .addGap(16, 16, 16))
+        );
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -488,9 +542,9 @@ private void cerrarSesionYSalir() {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(16, 16, 16)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGap(244, 244, 244)
@@ -499,17 +553,14 @@ private void cerrarSesionYSalir() {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTextField18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addGap(60, 60, 60)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -531,107 +582,6 @@ private void cerrarSesionYSalir() {
     private void jTextField18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField18ActionPerformed
 
     }//GEN-LAST:event_jTextField18ActionPerformed
-
-    private void btnGestionDeVentas2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentas2ActionPerformed
-
-    }//GEN-LAST:event_btnGestionDeVentas2ActionPerformed
-
-    private void btnGestionDePedidos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePedidos2ActionPerformed
-   String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-
-    }//GEN-LAST:event_btnGestionDePedidos2ActionPerformed
-
-    private void btnPlanillaDeTrabajadores2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadores2ActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    FramePlanillaSemanal abrir = new  FramePlanillaSemanal(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-
-    }//GEN-LAST:event_btnPlanillaDeTrabajadores2ActionPerformed
-
-    private void btnGestionDeClientes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientes2ActionPerformed
-
-    }//GEN-LAST:event_btnGestionDeClientes2ActionPerformed
-
-    private void btnGestionDeCreditos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCreditos2ActionPerformed
-
-    }//GEN-LAST:event_btnGestionDeCreditos2ActionPerformed
-
-    private void btnInventarioDeQuintales2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintales2ActionPerformed
-       
-        
-         String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-           
-    }//GEN-LAST:event_btnInventarioDeQuintales2ActionPerformed
-
-    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
-
-    private void btnCalendario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendario2ActionPerformed
- String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    FormularioViajes abrir = new  FormularioViajes(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-
-    }//GEN-LAST:event_btnCalendario2ActionPerformed
-
-    private void btnGestionDePilotos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotos2ActionPerformed
-    String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-
-    }//GEN-LAST:event_btnGestionDePilotos2ActionPerformed
-
-    private void btnGestionDeCamiones2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamiones2ActionPerformed
-     
-    String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnGestionDeCamiones2ActionPerformed
-
-    private void btnGestionDeUsuarios2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuarios2ActionPerformed
-       
-                 String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnGestionDeUsuarios2ActionPerformed
-
-    private void btnRegresarLogin2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarLogin2ActionPerformed
-        LOGINPINEED abrir = new  LOGINPINEED();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnRegresarLogin2ActionPerformed
 
     private void modificarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarPilotoActionPerformed
         int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
@@ -743,6 +693,111 @@ private void cerrarSesionYSalir() {
         }
     }//GEN-LAST:event_refrescarPagina3ActionPerformed
 
+    private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentasActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeVentasActionPerformed
+
+    private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePedidosActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDePedidosActionPerformed
+
+    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadoresActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+    }
+    }//GEN-LAST:event_btnPlanillaDeTrabajadoresActionPerformed
+
+    private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientesActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeClientesActionPerformed
+
+    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCreditosActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeCreditosActionPerformed
+
+    private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintalesActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnInventarioDeQuintalesActionPerformed
+
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+    }
+    }//GEN-LAST:event_btnCalendarioActionPerformed
+
+    private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotosActionPerformed
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDePilotosActionPerformed
+
+    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamionesActionPerformed
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+        }
+    }//GEN-LAST:event_btnGestionDeCamionesActionPerformed
+
+    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuariosActionPerformed
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDeUsuariosActionPerformed
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarLoginActionPerformed
+        LOGINPINEED abrir = new  LOGINPINEED();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnRegresarLoginActionPerformed
+
     
 
     public void actualizarTabla() {
@@ -814,22 +869,22 @@ private void abrirVentanaModificar(Camiones camion) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCalendario2;
-    private javax.swing.JButton btnCerrarSesion2;
-    private javax.swing.JButton btnGestionDeCamiones2;
-    private javax.swing.JButton btnGestionDeClientes2;
-    private javax.swing.JButton btnGestionDeCreditos2;
-    private javax.swing.JButton btnGestionDePedidos2;
-    private javax.swing.JButton btnGestionDePilotos2;
-    private javax.swing.JButton btnGestionDeUsuarios2;
-    private javax.swing.JButton btnGestionDeVentas2;
-    private javax.swing.JButton btnInventarioDeQuintales2;
-    private javax.swing.JButton btnPlanillaDeTrabajadores2;
-    private javax.swing.JButton btnRegresarLogin2;
+    private javax.swing.JButton btnCalendario;
+    private javax.swing.JButton btnCerrarSesion;
+    private javax.swing.JButton btnGestionDeCamiones;
+    private javax.swing.JButton btnGestionDeClientes;
+    private javax.swing.JButton btnGestionDeCreditos;
+    private javax.swing.JButton btnGestionDePedidos;
+    private javax.swing.JButton btnGestionDePilotos;
+    private javax.swing.JButton btnGestionDeUsuarios;
+    private javax.swing.JButton btnGestionDeVentas;
+    private javax.swing.JButton btnInventarioDeQuintales;
+    private javax.swing.JButton btnPlanillaDeTrabajadores;
+    private javax.swing.JButton btnRegresarLogin;
     private javax.swing.JButton buscarPiloto;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField18;

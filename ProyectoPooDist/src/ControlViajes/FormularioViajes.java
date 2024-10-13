@@ -1,15 +1,23 @@
 package ControlViajes;
 
 
-//definimos las librerias de tablas
 import ControlInventario.gestionProductos;
 import ControlInventario.Producto;
-import GestionDeCamiones.AGREGARGESTIONCAMIONES;
 import GestionDePilotos.Piloto;
 import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
+import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
+import Inicio.INICIOPINEED;
+import Inicio.INICIOPINEEDINICIAL;
+import GestionDeCamiones.INICIOGESTIONCAMIONES;
+import GestionDePilotos.INICIOGESTIONPILOTOS;
+import ControlInventario.FrameInventario;
+import ControlPedidos.FormularioPedidos;
+import ControlPlanilla.FramePlanillaSemanal;
+import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
+import javax.swing.JButton;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,6 +27,7 @@ import java.util.Vector;
 //librerias para las fechas
 import java.util.Date;
 import java.text.SimpleDateFormat;
+
 
 
 
@@ -168,9 +177,75 @@ public class FormularioViajes extends javax.swing.JFrame {
         this.userRole = role;
         this.loginFrame = loginFrame;
         addWindowListener();
+        configureButtonsByRole();
+
+
     }
     
-    
+        private void configureButtonsByRole() {
+    // Array of all buttons
+    JButton[] allButtons = {
+        btnGestionDeVentas, btnGestionDePedidos1, btnPlanillaDeTrabajadores,
+        btnGestionDeClientes1, btnGestionDeCreditos1, btnInventarioDeQuintales1,
+        btnCalendario1, btnGestionDePilotos1, btnGestionDeCamiones,
+        btnGestionDeUsuarios1, btnRegresarLogin1, btnCerrarSesion1
+    };
+
+    // Hide all buttons by default
+    for (JButton button : allButtons) {
+        if (button != null) {
+            button.setVisible(false);
+            button.setEnabled(false);
+        }
+    }
+
+    // Configure buttons based on role
+    if (userRole != null) {
+        switch (userRole.toUpperCase()) {
+            case "ADMINISTRADOR":
+                // Show all buttons for administrator
+                for (JButton button : allButtons) {
+                    if (button != null) {
+                        button.setVisible(true);
+                        button.setEnabled(true);
+                    }
+                }
+                break;
+            case "USUARIO":
+                // Only show specific buttons for users
+                if (btnCalendario1 != null) {
+                    btnCalendario1.setVisible(true);
+                    btnCalendario1.setEnabled(true);
+                }
+                if (btnRegresarLogin1 != null) {
+                    btnRegresarLogin1.setVisible(true);
+                    btnRegresarLogin1.setEnabled(true);
+                }
+                if (btnCerrarSesion1 != null) {
+                    btnCerrarSesion1.setVisible(true);
+                    btnCerrarSesion1.setEnabled(true);
+                }
+                break;
+            case "SECRETARIA":
+                // Show specific buttons for secretary
+                if (btnGestionDeCamiones != null) {
+                    btnGestionDeCamiones.setVisible(true);
+                    btnGestionDeCamiones.setEnabled(true);
+                }
+                if (btnPlanillaDeTrabajadores != null) {
+                    btnPlanillaDeTrabajadores.setVisible(true);
+                    btnPlanillaDeTrabajadores.setEnabled(true);
+                }
+                break;
+            default:
+                // For any other role, don't show any buttons
+                break;
+        }
+    }
+}
+
+
+
     public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -179,19 +254,17 @@ public class FormularioViajes extends javax.swing.JFrame {
             }
         });
     }
-      
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
+     
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
     }
-    // Pass the necessary arguments when creating a new INICIOPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
-    FormularioViajes nuevaVentanaLogin = new FormularioViajes(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
+
        
 
 
@@ -330,6 +403,19 @@ private void cerrarSesionYSalir() {
         jLabel13 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         CalendarioGeneral = new com.toedter.calendar.JCalendar();
+        jPanel21 = new javax.swing.JPanel();
+        btnGestionDeVentas = new javax.swing.JButton();
+        btnGestionDePedidos1 = new javax.swing.JButton();
+        btnPlanillaDeTrabajadores = new javax.swing.JButton();
+        btnGestionDeClientes1 = new javax.swing.JButton();
+        btnGestionDeCreditos1 = new javax.swing.JButton();
+        btnInventarioDeQuintales1 = new javax.swing.JButton();
+        btnCerrarSesion1 = new javax.swing.JButton();
+        btnCalendario1 = new javax.swing.JButton();
+        btnGestionDePilotos1 = new javax.swing.JButton();
+        btnGestionDeCamiones = new javax.swing.JButton();
+        btnGestionDeUsuarios1 = new javax.swing.JButton();
+        btnRegresarLogin1 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
@@ -390,7 +476,7 @@ private void cerrarSesionYSalir() {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboPedidosLista, 0, 290, Short.MAX_VALUE)
+                    .addComponent(comboPedidosLista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(radioFinalizarViaje)))
@@ -479,7 +565,7 @@ private void cerrarSesionYSalir() {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(fechaDescargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
@@ -526,7 +612,7 @@ private void cerrarSesionYSalir() {
                     .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fechaDescargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -548,13 +634,200 @@ private void cerrarSesionYSalir() {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(CalendarioGeneral, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+            .addComponent(CalendarioGeneral, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 36, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(CalendarioGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel21.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+
+        btnGestionDeVentas.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeVentas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeVentas.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeVentas.setText("GESTION DE VENTAS");
+        btnGestionDeVentas.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeVentasActionPerformed(evt);
+            }
+        });
+
+        btnGestionDePedidos1.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePedidos1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePedidos1.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePedidos1.setText("GESTION DE PEDIDOS");
+        btnGestionDePedidos1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePedidos1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDePedidos1ActionPerformed(evt);
+            }
+        });
+
+        btnPlanillaDeTrabajadores.setBackground(new java.awt.Color(0, 102, 102));
+        btnPlanillaDeTrabajadores.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnPlanillaDeTrabajadores.setForeground(new java.awt.Color(255, 255, 255));
+        btnPlanillaDeTrabajadores.setText("PLANILLA DE TRABAJADORES");
+        btnPlanillaDeTrabajadores.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnPlanillaDeTrabajadores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlanillaDeTrabajadoresActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeClientes1.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeClientes1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeClientes1.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeClientes1.setText("GESTION DE CLIENTES");
+        btnGestionDeClientes1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeClientes1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeClientes1ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeCreditos1.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCreditos1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCreditos1.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCreditos1.setText("GESTION DE CREDITOS");
+        btnGestionDeCreditos1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCreditos1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeCreditos1ActionPerformed(evt);
+            }
+        });
+
+        btnInventarioDeQuintales1.setBackground(new java.awt.Color(0, 102, 102));
+        btnInventarioDeQuintales1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnInventarioDeQuintales1.setForeground(new java.awt.Color(255, 255, 255));
+        btnInventarioDeQuintales1.setText("INVENTARIO QUINTALES");
+        btnInventarioDeQuintales1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnInventarioDeQuintales1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventarioDeQuintales1ActionPerformed(evt);
+            }
+        });
+
+        btnCerrarSesion1.setBackground(new java.awt.Color(0, 102, 102));
+        btnCerrarSesion1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCerrarSesion1.setForeground(new java.awt.Color(255, 255, 255));
+        btnCerrarSesion1.setText("CERRAR SESION");
+        btnCerrarSesion1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCerrarSesion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesion1ActionPerformed(evt);
+            }
+        });
+
+        btnCalendario1.setBackground(new java.awt.Color(0, 102, 102));
+        btnCalendario1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCalendario1.setForeground(new java.awt.Color(255, 255, 255));
+        btnCalendario1.setText("CALENDARIO");
+        btnCalendario1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnCalendario1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalendario1ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDePilotos1.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDePilotos1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDePilotos1.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDePilotos1.setText("GESTION DE PILOTOS");
+        btnGestionDePilotos1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDePilotos1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDePilotos1ActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeCamiones.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeCamiones.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeCamiones.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeCamiones.setText("GESTION DE CAMIONES");
+        btnGestionDeCamiones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeCamiones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeCamionesActionPerformed(evt);
+            }
+        });
+
+        btnGestionDeUsuarios1.setBackground(new java.awt.Color(0, 102, 102));
+        btnGestionDeUsuarios1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionDeUsuarios1.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionDeUsuarios1.setText("GESTION DE USUARIOS");
+        btnGestionDeUsuarios1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnGestionDeUsuarios1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionDeUsuarios1ActionPerformed(evt);
+            }
+        });
+
+        btnRegresarLogin1.setBackground(new java.awt.Color(0, 102, 102));
+        btnRegresarLogin1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnRegresarLogin1.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegresarLogin1.setText("REGRESAR LOGIN");
+        btnRegresarLogin1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnRegresarLogin1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarLogin1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
+        jPanel21.setLayout(jPanel21Layout);
+        jPanel21Layout.setHorizontalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnGestionDeUsuarios1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDePilotos1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDeVentas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGestionDePedidos1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGestionDeCreditos1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGestionDeClientes1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnRegresarLogin1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCerrarSesion1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCalendario1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGestionDeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPlanillaDeTrabajadores, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInventarioDeQuintales1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel21Layout.setVerticalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btnCalendario1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRegresarLogin1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCerrarSesion1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCamiones)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnPlanillaDeTrabajadores)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInventarioDeQuintales1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDePedidos1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeVentas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeClientes1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeCreditos1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDePilotos1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGestionDeUsuarios1)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -562,20 +835,24 @@ private void cerrarSesionYSalir() {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(23, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(33, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
         );
 
         jPanel6.setBackground(new java.awt.Color(180, 150, 111));
@@ -746,7 +1023,6 @@ private void cerrarSesionYSalir() {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -775,6 +1051,7 @@ private void cerrarSesionYSalir() {
                             .addComponent(comboTViajeB, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1112,6 +1389,111 @@ private void cerrarSesionYSalir() {
         }
     }//GEN-LAST:event_botonModificarViajesMouseClicked
 
+    private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentasActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeVentasActionPerformed
+
+    private void btnGestionDePedidos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePedidos1ActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDePedidos1ActionPerformed
+
+    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadoresActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+    }
+    }//GEN-LAST:event_btnPlanillaDeTrabajadoresActionPerformed
+
+    private void btnGestionDeClientes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientes1ActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeClientes1ActionPerformed
+
+    private void btnGestionDeCreditos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCreditos1ActionPerformed
+
+    }//GEN-LAST:event_btnGestionDeCreditos1ActionPerformed
+
+    private void btnInventarioDeQuintales1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintales1ActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnInventarioDeQuintales1ActionPerformed
+
+    private void btnCerrarSesion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion1ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnCerrarSesion1ActionPerformed
+
+    private void btnCalendario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendario1ActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+    }
+    }//GEN-LAST:event_btnCalendario1ActionPerformed
+
+    private void btnGestionDePilotos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotos1ActionPerformed
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDePilotos1ActionPerformed
+
+    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamionesActionPerformed
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+        }
+    }//GEN-LAST:event_btnGestionDeCamionesActionPerformed
+
+    private void btnGestionDeUsuarios1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuarios1ActionPerformed
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGestionDeUsuarios1ActionPerformed
+
+    private void btnRegresarLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarLogin1ActionPerformed
+        LOGINPINEED abrir = new  LOGINPINEED();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnRegresarLogin1ActionPerformed
+
     private void iniciarBucleEnHilo() {
         //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
         Thread hiloBucle = new Thread(() -> {
@@ -1336,6 +1718,18 @@ private void cerrarSesionYSalir() {
     private com.toedter.calendar.JCalendar CalendarioGeneral;
     private javax.swing.JComboBox<String> ComboTViajeA;
     private javax.swing.JPanel botonModificarViajes;
+    private javax.swing.JButton btnCalendario1;
+    private javax.swing.JButton btnCerrarSesion1;
+    private javax.swing.JButton btnGestionDeCamiones;
+    private javax.swing.JButton btnGestionDeClientes1;
+    private javax.swing.JButton btnGestionDeCreditos1;
+    private javax.swing.JButton btnGestionDePedidos1;
+    private javax.swing.JButton btnGestionDePilotos1;
+    private javax.swing.JButton btnGestionDeUsuarios1;
+    private javax.swing.JButton btnGestionDeVentas;
+    private javax.swing.JButton btnInventarioDeQuintales1;
+    private javax.swing.JButton btnPlanillaDeTrabajadores;
+    private javax.swing.JButton btnRegresarLogin1;
     private javax.swing.JComboBox<String> comboCamionesB;
     private javax.swing.JComboBox<String> comboMasDeFecha;
     private javax.swing.JComboBox<String> comboPedidosLista;
@@ -1365,6 +1759,7 @@ private void cerrarSesionYSalir() {
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
