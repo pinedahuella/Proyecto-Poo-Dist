@@ -222,6 +222,7 @@ public void actualizarTabla() {
         modificarUsuario = new javax.swing.JButton();
         buscarUsuario = new javax.swing.JButton();
         refrescarPagina = new javax.swing.JButton();
+        refrescarPagina1 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         btnGestionDeVentas = new javax.swing.JButton();
         btnGestionDePedidos = new javax.swing.JButton();
@@ -318,13 +319,23 @@ public void actualizarTabla() {
             }
         });
 
-        refrescarPagina.setBackground(new java.awt.Color(255, 255, 0));
+        refrescarPagina.setBackground(new java.awt.Color(204, 153, 255));
         refrescarPagina.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        refrescarPagina.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/regresarredimensionado.png"))); // NOI18N
+        refrescarPagina.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GestionDeUsuarios/historial guardado (1).png"))); // NOI18N
         refrescarPagina.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
         refrescarPagina.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refrescarPaginaActionPerformed(evt);
+            }
+        });
+
+        refrescarPagina1.setBackground(new java.awt.Color(255, 255, 0));
+        refrescarPagina1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        refrescarPagina1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/regresarredimensionado.png"))); // NOI18N
+        refrescarPagina1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        refrescarPagina1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarPagina1ActionPerformed(evt);
             }
         });
 
@@ -339,8 +350,10 @@ public void actualizarTabla() {
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(refrescarPagina1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(refrescarPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -373,9 +386,11 @@ public void actualizarTabla() {
                                 .addComponent(jLabel3))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(refrescarPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(refrescarPagina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(refrescarPagina1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                 .addGap(27, 27, 27))
         );
 
@@ -727,13 +742,8 @@ public void actualizarTabla() {
 
     private void refrescarPaginaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarPaginaActionPerformed
 
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        INGRESOGESTIONUSUARIOS abrir = new  INGRESOGESTIONUSUARIOS();
         abrir.setVisible(true);
-        this.setVisible(false);
     }//GEN-LAST:event_refrescarPaginaActionPerformed
 
     private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentasActionPerformed
@@ -841,6 +851,10 @@ public void actualizarTabla() {
         this.setVisible(false);
     }//GEN-LAST:event_btnRegresarLoginActionPerformed
 
+    private void refrescarPagina1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarPagina1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_refrescarPagina1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -909,6 +923,7 @@ public void actualizarTabla() {
     private javax.swing.JButton modificarUsuario;
     private javax.swing.JButton mostrarUsuario;
     private javax.swing.JButton refrescarPagina;
+    private javax.swing.JButton refrescarPagina1;
     private javax.swing.JTable tblRegistroUsuarios;
     private javax.swing.JTextField txtNombreUsuarioBuscar;
     // End of variables declaration//GEN-END:variables
