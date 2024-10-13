@@ -1,10 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ControlPedidos;
+import ControlInventario.gestionProductos;
+import ControlInventario.Producto;
+import GestionDePilotos.Piloto;
+import GestionDePilotos.GESTIONPILOTOS;
+import GestionDeCamiones.GESTIONCAMIONES;
+import GestionDeCamiones.Camiones;
 import ControlViajes.*;
-import PaquetePrincipal.*;
+import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
+import Login.LOGINPINEED;
 
 //librerias para las fechas
 import java.util.Date;
@@ -41,6 +44,9 @@ public class FormularioPedidos extends javax.swing.JFrame {
     Vector<Producto> productosTablaNew;
     Vector<Pedido> pedidoTablaNew;
     Vector<FechaCalendario> FechaTablaNew;
+    private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
     
     //crearemos los modelos de las tablas de productos a
     DefaultTableModel modeloProductosA = new DefaultTableModel();
@@ -65,7 +71,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
     int indiceGeneral;
     int indiceGeneralB;
     
-    public FormularioPedidos() {
+    public FormularioPedidos(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
         //inicializamos el indice actual en -1
@@ -141,7 +147,37 @@ public class FormularioPedidos extends javax.swing.JFrame {
 
        //iniciamos el bucle infinito
        iniciarBucleEnHilo(); 
+                 this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+        addWindowListener();
     }
+    
+            
+   public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+      
+      
+      
+private void cerrarSesionYSalir() {
+    if (loginFrame != null) {
+        loginFrame.cerrarSesion(currentUser, userRole);
+    }
+    // Pass the necessary arguments when creating a new INICIOPINEED object
+    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
+    FormularioPedidos nuevaVentanaLogin = new FormularioPedidos(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
+    nuevaVentanaLogin.setVisible(true);
+    this.dispose();
+}
+
+
+
     
     //funcion para actualizar la tabla de productos necesarias para cada producto;
     public void ActualizarTablaA(){
@@ -1273,7 +1309,15 @@ public class FormularioPedidos extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormularioPedidos().setVisible(true);
+                             
+                 String username = "defaultUser";  // Replace with actual username or logic
+            String role = "defaultRole"; 
+            
+            
+            LOGINPINEED loginFrame = new LOGINPINEED();  // Instantiate the LOGINPINEED object
+
+            // Create the INICIOPINEED instance with the required parameters
+            new FormularioPedidos(username, role, loginFrame).setVisible(true);
             }
         });
     }

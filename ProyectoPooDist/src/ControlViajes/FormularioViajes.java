@@ -1,17 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ControlViajes;
 
 
 //definimos las librerias de tablas
+import ControlInventario.gestionProductos;
+import ControlInventario.Producto;
+import GestionDeCamiones.AGREGARGESTIONCAMIONES;
+import GestionDePilotos.Piloto;
+import GestionDePilotos.GESTIONPILOTOS;
+import GestionDeCamiones.GESTIONCAMIONES;
+import GestionDeCamiones.Camiones;
+import Login.LOGINPINEED;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 //definimos las librerias para el vector
 import java.util.Vector;
-import PaquetePrincipal.*;
 
 //librerias para las fechas
 import java.util.Date;
@@ -38,7 +41,9 @@ public class FormularioViajes extends javax.swing.JFrame {
     private gestionProductos gesproductos;
     private GESTIONPILOTOS gespilotos;
     private GESTIONCAMIONES gescamiones;
-    
+    private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
     
     //crearemos los modelos de las tablas de productos a
     DefaultTableModel modeloProductosA = new DefaultTableModel();
@@ -79,7 +84,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     /**
      * Creates new form FormularioViajes
      */
-    public FormularioViajes() {
+    public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
         //iniciamos el indice a 0;
@@ -159,8 +164,38 @@ public class FormularioViajes extends javax.swing.JFrame {
         ActualizarComboListaPedidos();
             
         iniciarBucleEnHilo(); 
+        this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+        addWindowListener();
     }
     
+    
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+      
+      
+      
+private void cerrarSesionYSalir() {
+    if (loginFrame != null) {
+        loginFrame.cerrarSesion(currentUser, userRole);
+    }
+    // Pass the necessary arguments when creating a new INICIOPINEED object
+    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
+    FormularioViajes nuevaVentanaLogin = new FormularioViajes(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
+    nuevaVentanaLogin.setVisible(true);
+    this.dispose();
+}
+       
+
+
+
     //creamos la funcion para señalar los dias de viajes en el calendario 
     private void ActualizarCalendario(){
        
@@ -1282,7 +1317,17 @@ public class FormularioViajes extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormularioViajes().setVisible(true);
+                
+                       
+                 String username = "defaultUser";  // Replace with actual username or logic
+            String role = "defaultRole"; 
+            
+            
+            LOGINPINEED loginFrame = new LOGINPINEED();  // Instantiate the LOGINPINEED object
+
+            // Create the INICIOPINEED instance with the required parameters
+            new FormularioViajes(username, role, loginFrame).setVisible(true);
+            
             }
         });
     }
