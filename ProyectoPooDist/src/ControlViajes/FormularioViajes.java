@@ -1505,7 +1505,7 @@ public class FormularioViajes extends javax.swing.JFrame {
             int indiceSeleccionado = comboPedidosLista.getSelectedIndex();
             
             //pregutamos si el indice seleccionado es el actual
-            if (indiceSeleccionado != indiceActual) {
+            if (indiceSeleccionado != indiceActual && indiceSeleccionado > -1) {
                 
                 //preguntamos si el indice anterior es superior de -1
                  if (indiceActual > -1) {
