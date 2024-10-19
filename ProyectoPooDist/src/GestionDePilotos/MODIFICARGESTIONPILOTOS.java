@@ -24,32 +24,6 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
 
 
 
-    
-          public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-          
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    // Create a new LOGINPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-    
-    // Create a new INICIOGESTIONCAMIONES object instead of MODIFICARGESTIONCAMIONES
-    INICIOGESTIONPILOTOS nuevaVentanaLogin = new INICIOGESTIONPILOTOS(null, null, nuevaLoginFrame);
-    
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
-
 
 
     
@@ -71,8 +45,6 @@ private void cerrarSesionYSalir() {
         this.pilotoActual = piloto;
         cargarDatosPiloto();
     }
-    
-    addWindowListener();
 }
 
     

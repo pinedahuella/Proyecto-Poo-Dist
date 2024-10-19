@@ -40,31 +40,10 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
           this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
-        addWindowListener();
+                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
     
     
-               public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-      
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    // Pass the necessary arguments when creating a new INICIOPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
-    AGREGARGESTIONPILOTOS nuevaVentanaLogin = new AGREGARGESTIONPILOTOS(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
 
 
     private void cargarPilotosEnTabla() {

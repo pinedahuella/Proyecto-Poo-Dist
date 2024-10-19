@@ -23,37 +23,10 @@ public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
     private LOGINPINEED loginFrame;
 
 
-    
-    
-    
-          public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-          
-          
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    // Create a new LOGINPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-    
-    // Create a new INICIOGESTIONCAMIONES object instead of MODIFICARGESTIONCAMIONES
-    INICIOGESTIONCAMIONES nuevaVentanaLogin = new INICIOGESTIONCAMIONES(null, null, nuevaLoginFrame);
-    
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
-
 
 public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
     initComponents();
+    // Cambia esto para que solo cierre esta ventana, no toda la aplicación
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     
     this.currentUser = username;
@@ -70,8 +43,6 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
         this.camionActual = camion;
         cargarDatosCamion();
     }
-    
-    addWindowListener();
 }
     
     

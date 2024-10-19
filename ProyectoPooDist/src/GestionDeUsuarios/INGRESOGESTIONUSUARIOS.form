@@ -114,7 +114,7 @@
             <Component class="javax.swing.JLabel" name="jLabel3">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI Emoji" size="18" style="1"/>
+                  <Font name="Nirmala UI" size="18" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="ENTRADAS / SALIDAS"/>
               </Properties>

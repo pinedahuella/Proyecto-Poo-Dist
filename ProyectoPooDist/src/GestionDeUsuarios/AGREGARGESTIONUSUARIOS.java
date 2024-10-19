@@ -35,32 +35,11 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
     this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
-        addWindowListener();
+              setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     
-    
-                   public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-      
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    // Pass the necessary arguments when creating a new INICIOPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
-    AGREGARGESTIONPILOTOS nuevaVentanaLogin = new AGREGARGESTIONPILOTOS(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
+   
 
     private void limpiarCampos() {
         txtNombreUsuario.setText("");
@@ -327,11 +306,14 @@ private void cerrarSesionYSalir() {
         
         String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
 
-        // Validación de la contraseña
-        if (!validarContrasena(contrasenaUsuario)) {
-            JOptionPane.showMessageDialog(this, "La contraseña debe contener letras, números, caracteres especiales, la palabra 'pineed', y tener al menos 8 caracteres.");
-            return;
-        }
+        // Validate password
+            if (!validarContrasena(contrasenaUsuario)) {
+                JOptionPane.showMessageDialog(this, "La contraseña no cumple con los requisitos:\n" +
+                    "- Debe tener al menos 8 caracteres\n" +
+                    "- Debe contener 'pineed'\n" +
+                    "- Debe incluir al menos una letra, un número y un carácter especial");
+                return;
+            }
         
         
    

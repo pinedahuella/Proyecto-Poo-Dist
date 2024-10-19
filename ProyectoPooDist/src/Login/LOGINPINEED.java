@@ -1,8 +1,6 @@
-// LOGINPINEED.java
 package Login;
 
-import Inicio.INICIOPINEEDINICIAL;
-import Inicio.INICIOPINEEDINICIAL;
+import Inicio.INICIOPINEED;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import Login.GESTIONLOGIN;
 import Login.GESTIONLOGIN;
@@ -13,102 +11,298 @@ import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.*; // Importación de Swing
+import java.awt.*; // Importación para colores y layouts
+import java.awt.event.*; // Importación para manejar eventos como FocusListener
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class LOGINPINEED extends javax.swing.JFrame {
     private GESTIONUSUARIOS gestionUsuarios;
     private Map<String, Integer> intentosFallidos;
     
-    public LOGINPINEED() {
+  public LOGINPINEED() {
         initComponents();
         gestionUsuarios = new GESTIONUSUARIOS();
         gestionUsuarios.cargarUsuariosDesdeExcel();
         intentosFallidos = new HashMap<>();
+        
+        // Iniciar en pantalla completa ajustada a la resolución de la pantalla
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
+
+        // Configurar el comportamiento de los campos de texto
+        setupTextField(txtNombreUsuario, "Ingrese su usuario");
+        setupPasswordField(txtContraseñaUsuario, "Ingrese su contraseña");
+
+        // Asegurarse de que ningún campo tenga el foco inicialmente
+        SwingUtilities.invokeLater(() -> {
+            this.requestFocusInWindow();
+        });
+    }
+
+
+   private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
+    }
+
+    private void setupPasswordField(JPasswordField passwordField, String placeholder) {
+        passwordField.setText(placeholder);
+        passwordField.setForeground(Color.GRAY);
+        passwordField.setEchoChar((char) 0); // Mostrar el texto del placeholder
+
+        passwordField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
+                    passwordField.setText("");
+                    passwordField.setForeground(Color.BLACK);
+                    passwordField.setEchoChar('•'); // O el carácter que prefieras para ocultar la contraseña
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordField.getPassword().length == 0) {
+                    passwordField.setText(placeholder);
+                    passwordField.setForeground(Color.GRAY);
+                    passwordField.setEchoChar((char) 0); // Mostrar el texto del placeholder
+                }
+            }
+        });
     }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel11 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         txtNombreUsuario = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
         txtContraseñaUsuario = new javax.swing.JPasswordField();
         btnIngresarPineed = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel11.setText("CONTRASEÑA");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 500, -1, 20));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel4.setText("USUARIO");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 450, 60, -1));
-        getContentPane().add(txtNombreUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 440, 210, -1));
-        getContentPane().add(txtContraseñaUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 490, 210, -1));
 
-        btnIngresarPineed.setBackground(new java.awt.Color(0, 102, 255));
+        txtNombreUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        txtNombreUsuario.setForeground(new java.awt.Color(204, 204, 204));
+        txtNombreUsuario.setBorder(null);
+
+        jLabel11.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel11.setText("CONTRASEÑA");
+
+        txtContraseñaUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 14)); // NOI18N
+        txtContraseñaUsuario.setForeground(new java.awt.Color(204, 204, 204));
+        txtContraseñaUsuario.setBorder(null);
+        txtContraseñaUsuario.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        txtContraseñaUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContraseñaUsuarioActionPerformed(evt);
+            }
+        });
+
+        btnIngresarPineed.setBackground(new java.awt.Color(10, 30, 67));
         btnIngresarPineed.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnIngresarPineed.setForeground(new java.awt.Color(255, 255, 255));
         btnIngresarPineed.setText("Ingresar");
-        btnIngresarPineed.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnIngresarPineed.setBorder(null);
         btnIngresarPineed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIngresarPineedActionPerformed(evt);
             }
         });
-        getContentPane().add(btnIngresarPineed, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 500, 100, 50));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/Imagen_de_WhatsApp_2024-09-09_a_las_09.35.27_baedf375-removebg-preview.png"))); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, 640, 370));
+        jPanel4.setBackground(new java.awt.Color(51, 51, 51));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/azul.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1020, 580));
+        jPanel5.setBackground(new java.awt.Color(51, 51, 51));
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Fotos/ImagenLogoPineed.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnIngresarPineed, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtNombreUsuario, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(287, 287, 287))
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                    .addContainerGap(24, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(11, 11, 11)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(482, 482, 482)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addComponent(btnIngresarPineed, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(279, Short.MAX_VALUE)))
+        );
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Fotos/vege.jpeg"))); // NOI18N
+
+        jPanel3.setBackground(new java.awt.Color(32, 67, 99));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1360, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(455, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(265, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(266, Short.MAX_VALUE)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(0, 2703, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(2062, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(1394, Short.MAX_VALUE)))
+        );
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
-String nombreUsuario = txtNombreUsuario.getText();
+        String nombreUsuario = txtNombreUsuario.getText();
         String contraseña = new String(txtContraseñaUsuario.getPassword());
         Usuarios usuario = buscarUsuario(nombreUsuario);
-        
+
         if (usuario == null) {
             mostrarMensajeError("Usuario no encontrado.");
             return;
         }
-        
+
         if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
             mostrarMensajeError("Usuario bloqueado. Contacte al administrador.");
             return;
         }
-        
+
         if (contraseña.equals(usuario.getContrasenaUsuario())) {
             LocalDateTime tiempoEntrada = LocalDateTime.now();
             String rol = usuario.getCargo();
             GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
             gestionLogin.cargarLoginsDesdeExcel();
-            
+
             Login nuevoLogin = new Login(
-                tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")), 
-                "", 
-                nombreUsuario, 
+                tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
+                "",
+                nombreUsuario,
                 rol
             );
             gestionLogin.setUnLogin(nuevoLogin);
-            
-            INICIOPINEEDINICIAL abrir = new INICIOPINEEDINICIAL(nombreUsuario, rol, this);
-            abrir.addWindowListener();
+
+            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
+            abrir.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                    LOGINPINEED.this.setVisible(true);
+                }
+            });
             abrir.setVisible(true);
             this.setVisible(false);
             intentosFallidos.remove(nombreUsuario);
         } else {
             int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
             intentosFallidos.put(nombreUsuario, intentos);
-            
+
             if (intentos >= 3) {
                 bloquearUsuario(usuario);
                 mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos.");
@@ -117,6 +311,10 @@ String nombreUsuario = txtNombreUsuario.getText();
             }
         }
     }//GEN-LAST:event_btnIngresarPineedActionPerformed
+
+    private void txtContraseñaUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtContraseñaUsuarioActionPerformed
 
     public void cerrarSesion(String nombreUsuario, String rol) {
         LocalDateTime tiempoSalida = LocalDateTime.now();
@@ -178,6 +376,8 @@ String nombreUsuario = txtNombreUsuario.getText();
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(LOGINPINEED.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -188,12 +388,48 @@ String nombreUsuario = txtNombreUsuario.getText();
         });
     }
 
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCalendario1;
+    private javax.swing.JButton btnCalendario2;
+    private javax.swing.JButton btnCalendario4;
+    private javax.swing.JButton btnCalendario5;
+    private javax.swing.JButton btnCerrarSesion1;
+    private javax.swing.JButton btnCerrarSesion2;
+    private javax.swing.JButton btnGestionDeCamiones;
+    private javax.swing.JButton btnGestionDeCamiones1;
+    private javax.swing.JButton btnGestionDeClientes1;
+    private javax.swing.JButton btnGestionDeClientes2;
+    private javax.swing.JButton btnGestionDeCreditos1;
+    private javax.swing.JButton btnGestionDeCreditos2;
+    private javax.swing.JButton btnGestionDePedidos1;
+    private javax.swing.JButton btnGestionDePedidos2;
+    private javax.swing.JButton btnGestionDePilotos1;
+    private javax.swing.JButton btnGestionDePilotos2;
+    private javax.swing.JButton btnGestionDeUsuarios1;
+    private javax.swing.JButton btnGestionDeUsuarios2;
+    private javax.swing.JButton btnGestionDeVentas;
+    private javax.swing.JButton btnGestionDeVentas1;
     private javax.swing.JButton btnIngresarPineed;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnInventarioDeQuintales1;
+    private javax.swing.JButton btnInventarioDeQuintales2;
+    private javax.swing.JButton btnPlanillaDeTrabajadores;
+    private javax.swing.JButton btnPlanillaDeTrabajadores1;
+    private javax.swing.JButton btnRegresarLogin1;
+    private javax.swing.JButton btnRegresarLogin2;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPasswordField txtContraseñaUsuario;
     private javax.swing.JTextField txtNombreUsuario;
     // End of variables declaration//GEN-END:variables

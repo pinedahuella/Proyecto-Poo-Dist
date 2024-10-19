@@ -105,7 +105,7 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(tblRegistroLogins);
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel3.setText("ENTRADAS / SALIDAS");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);

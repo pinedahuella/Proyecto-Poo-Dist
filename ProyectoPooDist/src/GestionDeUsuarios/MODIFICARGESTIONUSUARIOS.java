@@ -40,36 +40,8 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
             if (usuario != null) {
                 cargarDatosUsuario();
             }
-            addWindowListener();
         }   
     
-        
- public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-          
-          
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    // Create a new LOGINPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-    
-    // Create a new INICIOGESTIONCAMIONES object instead of MODIFICARGESTIONCAMIONES
-    INICIOGESTIONUSUARIOS nuevaVentanaLogin = new INICIOGESTIONUSUARIOS(null, null, nuevaLoginFrame);
-    
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
-
-
     
     private void cargarDatosUsuario() {
         if (usuarioActual != null) {
@@ -340,6 +312,37 @@ private void cerrarSesionYSalir() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private boolean validarContrasena(String contrasena) {
+    // Verificar longitud mínima
+    if (contrasena.length() < 8) {
+        return false;
+    }
+
+    // Verificar si contiene 'pineed'
+    if (!contrasena.toLowerCase().contains("pineed")) {
+        return false;
+    }
+
+    // Verificar si contiene al menos una letra, un número y un carácter especial
+    boolean tieneLetra = false;
+    boolean tieneNumero = false;
+    boolean tieneEspecial = false;
+
+    for (char c : contrasena.toCharArray()) {
+        if (Character.isLetter(c)) {
+            tieneLetra = true;
+        } else if (Character.isDigit(c)) {
+            tieneNumero = true;
+        } else if (!Character.isWhitespace(c)) {
+            tieneEspecial = true;
+        }
+    }
+
+    return tieneLetra && tieneNumero && tieneEspecial;
+}
+    
+    
     private void btnModificarUsuarioSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarUsuarioSistemaActionPerformed
         try {
             String nombreUsuario = txtNombreUsuarioModificarModificar.getText().trim();
@@ -384,11 +387,18 @@ private void cerrarSesionYSalir() {
                 return;
             }
 
-         
+            // Validate password
+            if (!validarContrasena(contrasenaUsuario)) {
+                JOptionPane.showMessageDialog(this, "La contraseña no cumple con los requisitos:\n" +
+                    "- Debe tener al menos 8 caracteres\n" +
+                    "- Debe contener 'pineed'\n" +
+                    "- Debe incluir al menos una letra, un número y un carácter especial");
+                return;
+            }
+
             boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
             boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
             boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
-
 
             for (Usuarios usuarioExistente : listaUsuarios) {
                 if (usuarioExistente != usuarioActual) {
@@ -407,7 +417,6 @@ private void cerrarSesionYSalir() {
                 }
             }
 
-       
             usuarioActual.setNombreUsuario(nombreDeUsuario);
             usuarioActual.setContrasenaUsuario(contrasenaUsuario);
             usuarioActual.setNombre(nombreUsuario);
@@ -420,18 +429,16 @@ private void cerrarSesionYSalir() {
             usuarioActual.setCorreoElectronico(correoElectronicoUsuario);
             usuarioActual.setEstado(estadoUsuario);
 
-    
             gestionUsuarios.actualizarUsuario(usuarioActual);
 
             JOptionPane.showMessageDialog(this, "Usuario modificado exitosamente.");
 
-     
             ventanaPrincipal.actualizarTabla();
 
-   
             ventanaPrincipal.setVisible(true);
             this.dispose();
 
+            
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
         } catch (Exception e) {
@@ -439,6 +446,9 @@ private void cerrarSesionYSalir() {
         }
     }//GEN-LAST:event_btnModificarUsuarioSistemaActionPerformed
 
+    
+    
+    
     /**
      * @param args the command line arguments
      */

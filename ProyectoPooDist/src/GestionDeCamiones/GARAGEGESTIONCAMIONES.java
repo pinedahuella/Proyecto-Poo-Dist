@@ -1,10 +1,18 @@
 package GestionDeCamiones;
 
+import ControlInventario.FrameInventario;
+import ControlPedidos.FormularioPedidos;
+import ControlPlanilla.FramePlanillaSemanal;
+import ControlViajes.FormularioViajes;
 import GestionDeCamiones.FACTURASGESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import GestionDeCamiones.CAMIONESFACTURA;
+import GestionDePilotos.INICIOGESTIONPILOTOS;
+import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import Login.LOGINPINEED;
 import com.toedter.calendar.JDateChooser;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -18,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.text.ParseException;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 
 
 
@@ -91,8 +100,15 @@ public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
         this.userRole = role;
         this.loginFrame = loginFrame;
         addWindowListener();
+        setupComboBox();  // Añade esta línea
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            this.requestFocusInWindow();
+        });
     }
-
+    
+    
 
      private String obtenerHoraActual() {
         LocalTime ahora = LocalTime.now();
@@ -132,10 +148,6 @@ private void cerrarSesionYSalir() {
     if (loginFrame != null) {
         loginFrame.cerrarSesion(currentUser, userRole);
     }
-    // Pass the necessary arguments when creating a new INICIOPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();  // Assuming you need a new LOGINPINEED frame
-    GARAGEGESTIONCAMIONES nuevaVentanaLogin = new GARAGEGESTIONCAMIONES(null, null, nuevaLoginFrame); // Passing nulls as placeholders for username and role
-    nuevaVentanaLogin.setVisible(true);
     this.dispose();
 }
 private void cargarCamionesTabla() {
@@ -164,86 +176,351 @@ private void cargarCamionesTabla() {
     }
  
  
+  
+  private void setupComboBox() {
+        txtMenu.removeAllItems();
+        txtMenu.addItem("Seleccione una opción");
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+            addAdminOptions();
+        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+            addSecretariaOptions();
+        } else if (userRole.equalsIgnoreCase("USUARIO")) {
+            addUsuarioOptions();
+        }
+
+        txtMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedOption = (String) txtMenu.getSelectedItem();
+                redirectToFrame(selectedOption);
+            }
+        });
+    }
+
+
+
+
+
+
+    private void addAdminOptions() {
+        txtMenu.addItem("Gestión de Usuarios");
+        txtMenu.addItem("Gestión de Pilotos");
+        txtMenu.addItem("Gestión de Créditos");
+        txtMenu.addItem("Gestión de Clientes");
+        txtMenu.addItem("Gestión de Ventas");
+        txtMenu.addItem("Gestión de Pedidos");
+        txtMenu.addItem("Inventario de Quintales");
+        txtMenu.addItem("Planilla de Trabajadores");
+        txtMenu.addItem("Gestión de Camiones");
+        txtMenu.addItem("Calendario");
+        txtMenu.addItem("Login");
+        txtMenu.addItem("Cerrar Sesión");
+    }
+
+    private void addSecretariaOptions() {
+        txtMenu.addItem("Gestión de Ventas");
+        txtMenu.addItem("Planilla de Trabajadores");
+        txtMenu.addItem("Login");
+        txtMenu.addItem("Cerrar Sesión");
+    }
+
+    private void addUsuarioOptions() {
+        txtMenu.addItem("Calendario");
+        txtMenu.addItem("Login");
+        txtMenu.addItem("Cerrar Sesión");
+    }
+    
+    
+    
+    
+private void redirectToFrame(String option) {
+    switch (option) {
+        case "Seleccione una opción":
+            btnSeleccionarUnaOpcionActionPerformed(null);
+            break;
+        case "Gestión de Usuarios":
+            btnGestionDeUsuariosActionPerformed(null);
+            break;
+        case "Gestión de Pilotos":
+            btnGestionDePilotosActionPerformed(null);
+            break;
+        case "Gestión de Créditos":
+            btnGestionDeCreditosActionPerformed(null);
+            break;
+        case "Gestión de Clientes":
+            btnGestionDeClientesActionPerformed(null);
+            break;
+        case "Gestión de Ventas":
+            btnGestionDeVentasActionPerformed(null);
+            break;
+        case "Gestión de Pedidos":
+            btnGestionDePedidosActionPerformed(null);
+            break;
+        case "Inventario de Quintales":
+            btnInventarioDeQuintalesActionPerformed(null);
+            break;
+        case "Planilla de Trabajadores":
+            btnPlanillaDeTrabajadoresActionPerformed(null);
+            break;
+        case "Gestión de Camiones":
+            btnGestionDeCamionesActionPerformed(null);
+            break;
+        case "Calendario":
+            btnCalendarioActionPerformed(null);
+            break;
+        case "Login":
+            btnRegresarLoginActionPerformed(null);
+            break;
+        case "Cerrar Sesión":
+            btnCerrarSesionActionPerformed(null);
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Opción no válida");
+            break;
+    }
+}
+
+    private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+    }  
+    
+    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                    
+
+    private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                   
+
+    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+    }                                                    
+
+    private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+    }                                                    
+
+    private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+
+    }                                                  
+
+    private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                   
+
+    private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {                                                         
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                        
+
+    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {                                                          
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+            FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+        }
+    }                                                         
+
+    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
+            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+        }
+    }                                                    
+
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
+        System.exit(0);
+    }                                               
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        LOGINPINEED abrir = new  LOGINPINEED();
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
+            FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
+        }
+    }     
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        txtCostoGalonGasto = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        txtCostoDeReparacionGasto = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jTextField19 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtMarcaCamionBuscar = new javax.swing.JTextField();
+        buscarCamion = new javax.swing.JButton();
+        actualizarCamion = new javax.swing.JButton();
+        agregarCamion = new javax.swing.JButton();
+        eliminarCamion = new javax.swing.JButton();
         txtGastoNoEspecificadoGasto = new javax.swing.JTextField();
-        txtDescripcionDelGastoGasto = new javax.swing.JTextField();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        tblRegistroGastos = new javax.swing.JTable();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         txtCostoDeMantenimiento = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         txtTiempoMantenimientoGasto = new com.toedter.calendar.JDateChooser();
-        txtNumeroDeGalonesGasto = new javax.swing.JTextField();
-        refrescarPagina = new javax.swing.JButton();
-        agregarFactura = new javax.swing.JButton();
-        eliminarFactura = new javax.swing.JButton();
-        buscarCamion = new javax.swing.JButton();
-        txtMarcaCamionBuscar = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        tblRegistroCamiones = new javax.swing.JTable();
-        reparado = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        txtDescripcionDelGastoGasto = new javax.swing.JTextField();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tblRegistroGastos = new javax.swing.JTable();
         txtActualizarEstado = new javax.swing.JComboBox<>();
         jLabel19 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         txtActualizarTiempoReparacion = new javax.swing.JTextField();
+        txtCostoDeReparacionGasto = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txtCostoGalonGasto = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtNumeroDeGalonesGasto = new javax.swing.JTextField();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tblRegistroCamiones = new javax.swing.JTable();
+        txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+        setPreferredSize(new java.awt.Dimension(1375, 752));
 
-        jPanel2.setBackground(new java.awt.Color(6, 40, 86));
-        jPanel2.setPreferredSize(new java.awt.Dimension(1110, 550));
+        jPanel1.setBackground(new java.awt.Color(32, 67, 99));
 
-        jPanel5.setPreferredSize(new java.awt.Dimension(1110, 550));
-        jPanel5.setRequestFocusEnabled(false);
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel6.setText("NUMERO DE GALONES");
+        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel7.setText("COSTO DEL GALON");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel8.setText("COSTO MANTENIMIENTO");
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel9.setText("COSTO DE REPARACION");
-
-        txtCostoGalonGasto.addActionListener(new java.awt.event.ActionListener() {
+        jTextField19.setEditable(false);
+        jTextField19.setBackground(new java.awt.Color(0, 51, 102));
+        jTextField19.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
+        jTextField19.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField19.setText(" GESTION CAMIONES");
+        jTextField19.setBorder(null);
+        jTextField19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCostoGalonGastoActionPerformed(evt);
+                jTextField19ActionPerformed(evt);
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel10.setText("GASTO NO ESPECIFICADO");
+        jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel4.setText("MARCA");
 
-        txtCostoDeReparacionGasto.addActionListener(new java.awt.event.ActionListener() {
+        buscarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        buscarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        buscarCamion.setForeground(new java.awt.Color(255, 255, 255));
+        buscarCamion.setText("BUSCAR");
+        buscarCamion.setBorder(null);
+        buscarCamion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCostoDeReparacionGastoActionPerformed(evt);
+                buscarCamionActionPerformed(evt);
             }
         });
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel11.setText("DESCRIPCION DEL GASTO");
+        actualizarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        actualizarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        actualizarCamion.setForeground(new java.awt.Color(255, 255, 255));
+        actualizarCamion.setText("ACTUALIZAR");
+        actualizarCamion.setBorder(null);
+        actualizarCamion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actualizarCamionActionPerformed(evt);
+            }
+        });
+
+        agregarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        agregarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        agregarCamion.setForeground(new java.awt.Color(255, 255, 255));
+        agregarCamion.setText("AGREGAR");
+        agregarCamion.setBorder(null);
+        agregarCamion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarCamionActionPerformed(evt);
+            }
+        });
+
+        eliminarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        eliminarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        eliminarCamion.setForeground(new java.awt.Color(255, 255, 255));
+        eliminarCamion.setText("ELIMINAR");
+        eliminarCamion.setBorder(null);
+        eliminarCamion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarCamionActionPerformed(evt);
+            }
+        });
 
         txtGastoNoEspecificadoGasto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtGastoNoEspecificadoGastoActionPerformed(evt);
             }
         });
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel10.setText("GASTO NO ESPECIFICADO");
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel8.setText("COSTO MANTENIMIENTO");
+
+        txtCostoDeMantenimiento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCostoDeMantenimientoActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel12.setText("TIEMPO MANTENIMIENTO");
+
+        txtTiempoMantenimientoGasto.setDateFormatString("dd/MM/yyyy");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel11.setText("DESCRIPCION DEL GASTO");
 
         tblRegistroGastos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -257,89 +534,6 @@ private void cargarCamionesTabla() {
             }
         ));
         jScrollPane5.setViewportView(tblRegistroGastos);
-
-        txtCostoDeMantenimiento.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCostoDeMantenimientoActionPerformed(evt);
-            }
-        });
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel12.setText("TIEMPO MANTENIMIENTO");
-
-        txtTiempoMantenimientoGasto.setDateFormatString("dd/MM/yyyy");
-
-        txtNumeroDeGalonesGasto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNumeroDeGalonesGastoActionPerformed(evt);
-            }
-        });
-
-        refrescarPagina.setBackground(new java.awt.Color(255, 255, 0));
-        refrescarPagina.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        refrescarPagina.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/regresainicio (1).png"))); // NOI18N
-        refrescarPagina.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        refrescarPagina.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refrescarPaginaActionPerformed(evt);
-            }
-        });
-
-        agregarFactura.setBackground(new java.awt.Color(51, 255, 51));
-        agregarFactura.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        agregarFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/factagrea.png"))); // NOI18N
-        agregarFactura.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        agregarFactura.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                agregarFacturaActionPerformed(evt);
-            }
-        });
-
-        eliminarFactura.setBackground(new java.awt.Color(255, 0, 0));
-        eliminarFactura.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        eliminarFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/eliminarincoo.png"))); // NOI18N
-        eliminarFactura.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        eliminarFactura.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eliminarFacturaActionPerformed(evt);
-            }
-        });
-
-        buscarCamion.setBackground(new java.awt.Color(0, 102, 255));
-        buscarCamion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        buscarCamion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/redimenciona buscar.png"))); // NOI18N
-        buscarCamion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        buscarCamion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buscarCamionActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel3.setText("MARCA");
-
-        tblRegistroCamiones.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane6.setViewportView(tblRegistroCamiones);
-
-        reparado.setBackground(new java.awt.Color(255, 204, 0));
-        reparado.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        reparado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PaquetePrincipal/reparado.png"))); // NOI18N
-        reparado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        reparado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reparadoActionPerformed(evt);
-            }
-        });
 
         txtActualizarEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Descompuesto", "Funcional" }));
         txtActualizarEstado.addActionListener(new java.awt.event.ActionListener() {
@@ -360,144 +554,177 @@ private void cargarCamionesTabla() {
             }
         });
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1029, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
+        txtCostoDeReparacionGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCostoDeReparacionGastoActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel9.setText("COSTO DE REPARACION");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel7.setText("COSTO DEL GALON");
+
+        txtCostoGalonGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCostoGalonGastoActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel6.setText("NUMERO DE GALONES");
+
+        txtNumeroDeGalonesGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNumeroDeGalonesGastoActionPerformed(evt);
+            }
+        });
+
+        tblRegistroCamiones.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane6.setViewportView(tblRegistroCamiones);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtDescripcionDelGastoGasto))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(40, 40, 40)
-                                        .addComponent(txtNumeroDeGalonesGasto))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtMarcaCamionBuscar))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(txtTiempoMantenimientoGasto, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(40, 40, 40)
-                                        .addComponent(txtCostoGalonGasto))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(28, 28, 28)
-                                        .addComponent(txtCostoDeReparacionGasto))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                                        .addComponent(txtTiempoMantenimientoGasto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(txtCostoDeMantenimiento))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(txtGastoNoEspecificadoGasto))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel8)
-                                        .addGap(26, 26, 26)
-                                        .addComponent(txtCostoDeMantenimiento)))
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGap(379, 379, 379)
-                                        .addComponent(reparado, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(eliminarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(agregarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(11, 11, 11)
-                                        .addComponent(refrescarPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGap(24, 24, 24)
-                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(jLabel14)
-                                                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(txtActualizarEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                                        .addGap(2, 2, 2)
-                                                        .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 646, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
-                .addGap(32, 32, 32))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(txtCostoDeReparacionGasto))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(40, 40, 40)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtNumeroDeGalonesGasto)
+                                            .addComponent(txtCostoGalonGasto))))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtActualizarEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 17, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1142, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(25, 25, 25))
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(refrescarPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(buscarCamion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(agregarFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(eliminarFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(reparado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtActualizarEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(txtNumeroDeGalonesGasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(5, 5, 5)
                                 .addComponent(jLabel7))
                             .addComponent(txtCostoGalonGasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtCostoDeReparacionGasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtGastoNoEspecificadoGasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
                             .addComponent(txtCostoDeMantenimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtTiempoMantenimientoGasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel14))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtActualizarEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel19))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtDescripcionDelGastoGasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addGap(66, 66, 66))
+                .addGap(35, 35, 35))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -505,175 +732,265 @@ private void cargarCamionesTabla() {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1098, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(724, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 562, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
+    private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
 
-    
-    private void txtCostoGalonGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoGalonGastoActionPerformed
-   
-    }//GEN-LAST:event_txtCostoGalonGastoActionPerformed
+    }//GEN-LAST:event_jTextField19ActionPerformed
 
-    private void txtCostoDeMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeMantenimientoActionPerformed
+    private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
+        if (txtMarcaCamionBuscar.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, completa al menos un campo de búsqueda.");
+            return;
+        }
 
-    }//GEN-LAST:event_txtCostoDeMantenimientoActionPerformed
+        // Obtiene la marca buscada
+        String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
 
-    private void txtCostoDeReparacionGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeReparacionGastoActionPerformed
+        // Limpia el modelo de la tabla
+        modeloCamiones.setRowCount(0);
+        boolean hayCoincidencias = false;
 
-    }//GEN-LAST:event_txtCostoDeReparacionGastoActionPerformed
+        // Itera sobre la lista de camiones
+        for (Camiones camion : listaCamiones) {
+            boolean coincide = true;
 
-    private void txtNumeroDeGalonesGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroDeGalonesGastoActionPerformed
+            // Verifica si la marca coincide
+            if (!marcaBuscada.isEmpty() && !camion.getMarca().equalsIgnoreCase(marcaBuscada)) {
+                coincide = false;
+            }
 
-    }//GEN-LAST:event_txtNumeroDeGalonesGastoActionPerformed
+            // Si hay coincidencias, añade el camión a la tabla
+            if (coincide) {
+                modeloCamiones.addRow(new Object[]{
+                    camion.getPlacas(),
+                    camion.getMarca(),
+                    camion.getModelo(),
+                    camion.getEstado(),
+                    camion.getTipoCombustible(),
+                    camion.getKilometraje(),
+                    camion.getCapacidadCarga(),
+                    camion.getAñoFabricacion(),
+                    camion.getCostoReparacion(),
+                    camion.getCostoGalon(),
+                    camion.getGalones(),
+                    camion.getCostoMantenimiento(),
+                    camion.getGastoNoEspecificado(),
+                    camion.getDescripcionDelGasto(),
+                    camion.getTiempoEnReparacion(),
+                    camion.getFechaDeMantenimiento()
+                });
+                hayCoincidencias = true;
+            }
+        }
 
-    private void refrescarPaginaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarPaginaActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_refrescarPaginaActionPerformed
+        // Muestra la tabla solo si hay coincidencias
+        tblRegistroCamiones.setVisible(hayCoincidencias);
 
-    private void agregarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarFacturaActionPerformed
-  int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+        // Muestra un mensaje si no se encontraron coincidencias
+        if (!hayCoincidencias) {
+            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        }
 
-    if (filaSeleccionada < 0) {
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
-        return;
-    }
+        // Limpia el campo de texto de búsqueda
+        txtMarcaCamionBuscar.setText("");
+    }//GEN-LAST:event_buscarCamionActionPerformed
 
-    try {
-        Camiones camiones = listaCamiones.get(filaSeleccionada);
+    private void actualizarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarCamionActionPerformed
+        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+        if (filaSeleccionada < 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
+            return;
+        }
+
+        Camiones camion = listaCamiones.get(filaSeleccionada);
         boolean huboModificaciones = false;
-        double montoTotal = 0.0;
-        String tipoDeGasto = "";
-        String descripcionDelGasto = "";
-        String fechaMantenimientoStr = null;
 
-        // Variables for validation
-        String costoReparacionGasto = txtCostoDeReparacionGasto.getText().trim();
-        String costoGalonGasto = txtCostoGalonGasto.getText().trim();
-        String galonesGasto = txtNumeroDeGalonesGasto.getText().trim();
-        String costoMantenimientoGasto = txtCostoDeMantenimiento.getText().trim();
-        String gastoNoEspecificadoGasto = txtGastoNoEspecificadoGasto.getText().trim();
-        Date fechaMantenimiento = txtTiempoMantenimientoGasto.getDate();
-
-        // Validate and process repair cost
-        if (!costoReparacionGasto.isEmpty()) {
-            double nuevoCostoReparacion = Double.parseDouble(costoReparacionGasto);
-            if (nuevoCostoReparacion < 0) {
-                JOptionPane.showMessageDialog(this, "Los valores de costos no pueden ser negativos.");
+        // Actualizar tiempo de reparación
+        String nuevoTiempoReparacion = txtActualizarTiempoReparacion.getText().trim();
+        if (!nuevoTiempoReparacion.isEmpty()) {
+            if (validarFormatoTiempoReparacion(nuevoTiempoReparacion)) {
+                camion.setTiempoEnReparacion(nuevoTiempoReparacion);
+                huboModificaciones = true;
+            } else {
+                JOptionPane.showMessageDialog(this, "Formato invalido. Número seguido de una unidad de tiempo válida.");
                 return;
             }
-            camiones.setCostoReparacion(Math.max(0, camiones.getCostoReparacion() + nuevoCostoReparacion));
-            montoTotal += nuevoCostoReparacion;
-            tipoDeGasto = "Reparación";
-            descripcionDelGasto = txtDescripcionDelGastoGasto.getText().trim();
+        }
+
+        // Actualizar estado
+        String nuevoEstado = (String) txtActualizarEstado.getSelectedItem();
+        if (!nuevoEstado.equals(camion.getEstado())) {
+            camion.setEstado(nuevoEstado);
             huboModificaciones = true;
         }
 
-        // Validate and process fuel cost
-        if (!costoGalonGasto.isEmpty() || !galonesGasto.isEmpty()) {
-            if (costoGalonGasto.isEmpty() || galonesGasto.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar tanto el costo por galón como el número de galones.");
-                return;
-            }
-            double nuevoCostoGalon = Double.parseDouble(costoGalonGasto);
-            double nuevosGalones = Double.parseDouble(galonesGasto);
-            if (nuevoCostoGalon < 10) {
-                JOptionPane.showMessageDialog(this, "El costo por galón no puede ser menor a Q10.");
-                return;
-            }
-            if (nuevoCostoGalon < 0 || nuevosGalones < 0) {
-                JOptionPane.showMessageDialog(this, "Los valores no pueden ser negativos.");
-                return;
-            }
-            double costoTotalCombustibleNuevo = formatearDecimal(nuevosGalones * nuevoCostoGalon);
-            double galonesTotales = camiones.getGalones() + nuevosGalones;
-            double costoTotalCombustible = formatearDecimal(Math.max(0, camiones.getCostoTotalCombustible() + costoTotalCombustibleNuevo));
-
-            camiones.setGalones(galonesTotales);
-            camiones.setCostoTotalCombustible(costoTotalCombustible);
-
-            if (galonesTotales > 0) {
-                camiones.setCostoGalon(costoTotalCombustible / galonesTotales);
-            }
-
-            montoTotal += costoTotalCombustibleNuevo;
-            tipoDeGasto = "Combustible";
-            huboModificaciones = true;
-        }
-
-        // Validate and process maintenance cost
-        if (fechaMantenimiento != null || !costoMantenimientoGasto.isEmpty()) {
-            if (fechaMantenimiento == null || costoMantenimientoGasto.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar tanto la fecha como el costo de mantenimiento.");
-                return;
-            }
-            double nuevoCostoMantenimiento = Double.parseDouble(costoMantenimientoGasto);
-            if (nuevoCostoMantenimiento < 0) {
-                JOptionPane.showMessageDialog(this, "Los valores de costos no pueden ser negativos.");
-                return;
-            }
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            fechaMantenimientoStr = sdf.format(fechaMantenimiento);
-            camiones.setFechaDeMantenimiento(fechaMantenimientoStr);
-            camiones.setCostoMantenimiento(Math.max(0, camiones.getCostoMantenimiento() + nuevoCostoMantenimiento));
-            montoTotal += nuevoCostoMantenimiento;
-            tipoDeGasto = "Mantenimiento";
-            descripcionDelGasto = txtDescripcionDelGastoGasto.getText().trim();
-            huboModificaciones = true;
-        }
-
-        // Validate and process unspecified expense
-        if (!gastoNoEspecificadoGasto.isEmpty()) {
-            double nuevoGastoNoEspecificado = Double.parseDouble(gastoNoEspecificadoGasto);
-            if (nuevoGastoNoEspecificado < 0) {
-                JOptionPane.showMessageDialog(this, "Los valores de gastos no pueden ser negativos.");
-                return;
-            }
-            camiones.setGastoNoEspecificado(Math.max(0, camiones.getGastoNoEspecificado() + nuevoGastoNoEspecificado));
-            montoTotal += nuevoGastoNoEspecificado;
-            tipoDeGasto = "No Especificado";
-            descripcionDelGasto = txtDescripcionDelGastoGasto.getText().trim();
-            huboModificaciones = true;
-        }
-
-        // Al agregar una factura, asegúrate de que el tiempo de reparación esté excluido
         if (huboModificaciones) {
-            // Actualizar el total invertido
-            double totalInvertido = formatearDecimal(Math.max(0, 
-                camiones.getCostoReparacion() + 
-                camiones.getCostoTotalCombustible() + 
-                camiones.getCostoMantenimiento() + 
-                camiones.getGastoNoEspecificado()));
+            listaCamiones.set(filaSeleccionada, camion);
+            guardarCamionesEnExcel();
+            refrescarTablas();
+            JOptionPane.showMessageDialog(this, "Camión actualizado correctamente.");
+
+            // Limpiar campos
+            txtActualizarTiempoReparacion.setText("");
+            txtActualizarEstado.setSelectedIndex(0);
+        } else {
+            JOptionPane.showMessageDialog(this, "No se realizaron modificaciones.");
+        }
+    }//GEN-LAST:event_actualizarCamionActionPerformed
+
+    private void agregarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCamionActionPerformed
+int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+
+        if (filaSeleccionada < 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
+            return;
+        }
+
+        try {
+            Camiones camiones = listaCamiones.get(filaSeleccionada);
+            boolean huboModificaciones = false;
+            double montoTotal = 0.0;
+            String tipoDeGasto = "";
+            String descripcionDelGasto = "";
+            String fechaMantenimientoStr = null;
+
+            // Variables for validation
+            String costoReparacionGasto = txtCostoDeReparacionGasto.getText().trim();
+            String costoGalonGasto = txtCostoGalonGasto.getText().trim();
+            String galonesGasto = txtNumeroDeGalonesGasto.getText().trim();
+            String costoMantenimientoGasto = txtCostoDeMantenimiento.getText().trim();
+            String gastoNoEspecificadoGasto = txtGastoNoEspecificadoGasto.getText().trim();
+            Date fechaMantenimiento = txtTiempoMantenimientoGasto.getDate();
+
+            // Validate and process repair cost
+            if (!costoReparacionGasto.isEmpty()) {
+                double nuevoCostoReparacion = Double.parseDouble(costoReparacionGasto);
+                if (nuevoCostoReparacion < 0) {
+                    JOptionPane.showMessageDialog(this, "Los valores de costos no pueden ser negativos.");
+                    return;
+                }
+                camiones.setCostoReparacion(Math.max(0, camiones.getCostoReparacion() + nuevoCostoReparacion));
+                montoTotal += nuevoCostoReparacion;
+                tipoDeGasto = "Reparación";
+                descripcionDelGasto = txtDescripcionDelGastoGasto.getText().trim();
+                huboModificaciones = true;
+            }
+
+            // Validate and process fuel cost
+            if (!costoGalonGasto.isEmpty() || !galonesGasto.isEmpty()) {
+                if (costoGalonGasto.isEmpty() || galonesGasto.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar tanto el costo por galón como el número de galones.");
+                    return;
+                }
+                double nuevoCostoGalon = Double.parseDouble(costoGalonGasto);
+                double nuevosGalones = Double.parseDouble(galonesGasto);
+                if (nuevoCostoGalon < 10) {
+                    JOptionPane.showMessageDialog(this, "El costo por galón no puede ser menor a Q10.");
+                    return;
+                }
+                if (nuevoCostoGalon < 0 || nuevosGalones < 0) {
+                    JOptionPane.showMessageDialog(this, "Los valores no pueden ser negativos.");
+                    return;
+                }
+                double costoTotalCombustibleNuevo = formatearDecimal(nuevosGalones * nuevoCostoGalon);
+                double galonesTotales = camiones.getGalones() + nuevosGalones;
+                double costoTotalCombustible = formatearDecimal(Math.max(0, camiones.getCostoTotalCombustible() + costoTotalCombustibleNuevo));
+
+                camiones.setGalones(galonesTotales);
+                camiones.setCostoTotalCombustible(costoTotalCombustible);
+
+                if (galonesTotales > 0) {
+                    camiones.setCostoGalon(costoTotalCombustible / galonesTotales);
+                }
+
+                montoTotal += costoTotalCombustibleNuevo;
+                tipoDeGasto = "Combustible";
+                huboModificaciones = true;
+            }
+
+            // Validate and process maintenance cost
+            if (fechaMantenimiento != null || !costoMantenimientoGasto.isEmpty()) {
+                if (fechaMantenimiento == null || costoMantenimientoGasto.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar tanto la fecha como el costo de mantenimiento.");
+                    return;
+                }
+                double nuevoCostoMantenimiento = Double.parseDouble(costoMantenimientoGasto);
+                if (nuevoCostoMantenimiento < 0) {
+                    JOptionPane.showMessageDialog(this, "Los valores de costos no pueden ser negativos.");
+                    return;
+                }
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                fechaMantenimientoStr = sdf.format(fechaMantenimiento);
+                camiones.setFechaDeMantenimiento(fechaMantenimientoStr);
+                camiones.setCostoMantenimiento(Math.max(0, camiones.getCostoMantenimiento() + nuevoCostoMantenimiento));
+                montoTotal += nuevoCostoMantenimiento;
+                tipoDeGasto = "Mantenimiento";
+                descripcionDelGasto = txtDescripcionDelGastoGasto.getText().trim();
+                huboModificaciones = true;
+            }
+
+            // Validate and process unspecified expense
+            if (!gastoNoEspecificadoGasto.isEmpty()) {
+                double nuevoGastoNoEspecificado = Double.parseDouble(gastoNoEspecificadoGasto);
+                if (nuevoGastoNoEspecificado < 0) {
+                    JOptionPane.showMessageDialog(this, "Los valores de gastos no pueden ser negativos.");
+                    return;
+                }
+                camiones.setGastoNoEspecificado(Math.max(0, camiones.getGastoNoEspecificado() + nuevoGastoNoEspecificado));
+                montoTotal += nuevoGastoNoEspecificado;
+                tipoDeGasto = "No Especificado";
+                descripcionDelGasto = txtDescripcionDelGastoGasto.getText().trim();
+                huboModificaciones = true;
+            }
+
+            // Al agregar una factura, asegúrate de que el tiempo de reparación esté excluido
+            if (huboModificaciones) {
+                // Actualizar el total invertido
+                double totalInvertido = formatearDecimal(Math.max(0,
+                    camiones.getCostoReparacion() +
+                    camiones.getCostoTotalCombustible() +
+                    camiones.getCostoMantenimiento() +
+                    camiones.getGastoNoEspecificado()));
 
             camiones.setTotal(totalInvertido);
 
@@ -710,11 +1027,90 @@ private void cargarCamionesTabla() {
             JOptionPane.showMessageDialog(this, "No se realizaron modificaciones.");
         }
 
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingresa valores válidos para los costos y galones.");
-    }
-    }//GEN-LAST:event_agregarFacturaActionPerformed
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa valores válidos para los costos y galones.");
+        }
+    }//GEN-LAST:event_agregarCamionActionPerformed
 
+    private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
+int filaSeleccionada = tblRegistroGastos.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String placaSeleccionada = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 0);
+            String fechaFactura = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 1);
+            double montoFactura = Double.parseDouble(tblRegistroGastos.getValueAt(filaSeleccionada, 4).toString());
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas borrar esta factura?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                CAMIONESFACTURA facturaAEliminar = null;
+                for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
+                    if (factura.getPlacasFactura().equals(placaSeleccionada) &&
+                        factura.getFechaFactura().equals(fechaFactura) &&
+                        Math.abs(factura.getMontoFactura() - montoFactura) < 0.01) {
+                        facturaAEliminar = factura;
+                        break;
+                    }
+                }
+
+                if (facturaAEliminar != null) {
+                    for (Camiones camion : listaCamiones) {
+                        if (camion.getPlacas().equals(placaSeleccionada)) {
+                            actualizarCamionTrasEliminarFactura(camion, facturaAEliminar);
+                            break;
+                        }
+                    }
+
+                    // Eliminar la factura
+                    gestionFacturas.getCamionesfactura().remove(facturaAEliminar);
+                    actualizarTablaGastos();
+                    cargarCamionesTabla();
+                    gestionFacturas.guardarFacturasEnExcel();
+                    guardarCamionesEnExcel();
+                    JOptionPane.showMessageDialog(this, "Factura eliminada correctamente y costos actualizados.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo encontrar la factura exacta para eliminar.");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una factura para eliminar.");
+        }
+    }//GEN-LAST:event_eliminarCamionActionPerformed
+
+    private void txtGastoNoEspecificadoGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGastoNoEspecificadoGastoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtGastoNoEspecificadoGastoActionPerformed
+
+    private void txtCostoDeMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeMantenimientoActionPerformed
+
+    }//GEN-LAST:event_txtCostoDeMantenimientoActionPerformed
+
+    private void txtActualizarEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarEstadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtActualizarEstadoActionPerformed
+
+    private void txtActualizarTiempoReparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarTiempoReparacionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtActualizarTiempoReparacionActionPerformed
+
+    private void txtCostoDeReparacionGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeReparacionGastoActionPerformed
+
+    }//GEN-LAST:event_txtCostoDeReparacionGastoActionPerformed
+
+    private void txtCostoGalonGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoGalonGastoActionPerformed
+
+    }//GEN-LAST:event_txtCostoGalonGastoActionPerformed
+
+    private void txtNumeroDeGalonesGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroDeGalonesGastoActionPerformed
+
+    }//GEN-LAST:event_txtNumeroDeGalonesGastoActionPerformed
+
+    
+    
+
+    
     
 
 private void actualizarTablaGastos() {
@@ -746,54 +1142,7 @@ private void actualizarTablaGastos() {
 
     
     
-    
-    private void eliminarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarFacturaActionPerformed
- int filaSeleccionada = tblRegistroGastos.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            String placaSeleccionada = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 0);
-            String fechaFactura = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 1);
-            double montoFactura = Double.parseDouble(tblRegistroGastos.getValueAt(filaSeleccionada, 4).toString());
-            
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar esta factura?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
-            
-            if (confirm == JOptionPane.YES_OPTION) {
-                CAMIONESFACTURA facturaAEliminar = null;
-                for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
-                    if (factura.getPlacasFactura().equals(placaSeleccionada) && 
-                        factura.getFechaFactura().equals(fechaFactura) &&
-                        Math.abs(factura.getMontoFactura() - montoFactura) < 0.01) {
-                        facturaAEliminar = factura;
-                        break;
-                    }
-                }
-
-                if (facturaAEliminar != null) {
-                    for (Camiones camion : listaCamiones) {
-                        if (camion.getPlacas().equals(placaSeleccionada)) {
-                            actualizarCamionTrasEliminarFactura(camion, facturaAEliminar);
-                            break;
-                        }
-                    }
-
-                    // Eliminar la factura
-                    gestionFacturas.getCamionesfactura().remove(facturaAEliminar);
-                    actualizarTablaGastos();
-                    cargarCamionesTabla();
-                    gestionFacturas.guardarFacturasEnExcel();
-                    guardarCamionesEnExcel();
-                    JOptionPane.showMessageDialog(this, "Factura eliminada correctamente y costos actualizados.");
-                } else {
-                    JOptionPane.showMessageDialog(this, "No se pudo encontrar la factura exacta para eliminar.");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona una factura para eliminar.");
-        }
-    }//GEN-LAST:event_eliminarFacturaActionPerformed
-private void actualizarCamionTrasEliminarFactura(Camiones camion, CAMIONESFACTURA factura) {
+    private void actualizarCamionTrasEliminarFactura(Camiones camion, CAMIONESFACTURA factura) {
     double montoFactura = factura.getMontoFactura();
 
     switch (factura.getTipoDeGastoFactura()) {
@@ -896,69 +1245,6 @@ private double formatearDecimal(double valor) {
     
 
     
-    private void txtGastoNoEspecificadoGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGastoNoEspecificadoGastoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtGastoNoEspecificadoGastoActionPerformed
-
-    private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-// Verifica si el campo de búsqueda está vacío
-    if (txtMarcaCamionBuscar.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, completa al menos un campo de búsqueda.");
-        return;
-    }
-
-    // Obtiene la marca buscada
-    String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
-
-    // Limpia el modelo de la tabla
-    modeloCamiones.setRowCount(0);
-    boolean hayCoincidencias = false;
-
-    // Itera sobre la lista de camiones
-    for (Camiones camion : listaCamiones) {
-        boolean coincide = true;
-
-        // Verifica si la marca coincide
-        if (!marcaBuscada.isEmpty() && !camion.getMarca().equalsIgnoreCase(marcaBuscada)) {
-            coincide = false;
-        }
-
-        // Si hay coincidencias, añade el camión a la tabla
-        if (coincide) {
-            modeloCamiones.addRow(new Object[]{
-                camion.getPlacas(),
-                camion.getMarca(),
-                camion.getModelo(),
-                camion.getEstado(),
-                camion.getTipoCombustible(),
-                camion.getKilometraje(),
-                camion.getCapacidadCarga(),
-                camion.getAñoFabricacion(),
-                camion.getCostoReparacion(),
-                camion.getCostoGalon(),
-                camion.getGalones(),
-                camion.getCostoMantenimiento(),
-                camion.getGastoNoEspecificado(),
-                camion.getDescripcionDelGasto(),
-                camion.getTiempoEnReparacion(),
-                camion.getFechaDeMantenimiento()
-            });
-            hayCoincidencias = true;
-        }
-    }
-
-    // Muestra la tabla solo si hay coincidencias
-    tblRegistroCamiones.setVisible(hayCoincidencias);
-
-    // Muestra un mensaje si no se encontraron coincidencias
-    if (!hayCoincidencias) {
-        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-    }
-
-    // Limpia el campo de texto de búsqueda
-    txtMarcaCamionBuscar.setText("");
-    }//GEN-LAST:event_buscarCamionActionPerformed
-
     
     
 private boolean validarFormatoTiempoReparacion(String tiempo) {
@@ -983,57 +1269,6 @@ private boolean validarFormatoTiempoReparacion(String tiempo) {
 }
 
 
-
-    private void reparadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reparadoActionPerformed
-int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
-        if (filaSeleccionada < 0) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
-            return;
-        }
-
-        Camiones camion = listaCamiones.get(filaSeleccionada);
-        boolean huboModificaciones = false;
-
-        // Actualizar tiempo de reparación
-        String nuevoTiempoReparacion = txtActualizarTiempoReparacion.getText().trim();
-        if (!nuevoTiempoReparacion.isEmpty()) {
-            if (validarFormatoTiempoReparacion(nuevoTiempoReparacion)) {
-                camion.setTiempoEnReparacion(nuevoTiempoReparacion);
-                huboModificaciones = true;
-            } else {
-                JOptionPane.showMessageDialog(this, "Formato invalido. Número seguido de una unidad de tiempo válida.");
-                return;
-            }
-        }
-
-        // Actualizar estado
-        String nuevoEstado = (String) txtActualizarEstado.getSelectedItem();
-        if (!nuevoEstado.equals(camion.getEstado())) {
-            camion.setEstado(nuevoEstado);
-            huboModificaciones = true;
-        }
-
-        if (huboModificaciones) {
-            listaCamiones.set(filaSeleccionada, camion);
-            guardarCamionesEnExcel();
-            refrescarTablas();
-            JOptionPane.showMessageDialog(this, "Camión actualizado correctamente.");
-            
-            // Limpiar campos
-            txtActualizarTiempoReparacion.setText("");
-            txtActualizarEstado.setSelectedIndex(0);
-        } else {
-            JOptionPane.showMessageDialog(this, "No se realizaron modificaciones.");
-        }
-    }//GEN-LAST:event_reparadoActionPerformed
-
-    private void txtActualizarEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarEstadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtActualizarEstadoActionPerformed
-
-    private void txtActualizarTiempoReparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarTiempoReparacionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtActualizarTiempoReparacionActionPerformed
 
     
     
@@ -1082,25 +1317,26 @@ int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton agregarFactura;
+    private javax.swing.JButton actualizarCamion;
+    private javax.swing.JButton agregarCamion;
     private javax.swing.JButton buscarCamion;
-    private javax.swing.JButton eliminarFactura;
+    private javax.swing.JButton eliminarCamion;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JButton refrescarPagina;
-    private javax.swing.JButton reparado;
+    private javax.swing.JTextField jTextField19;
     private javax.swing.JTable tblRegistroCamiones;
     private javax.swing.JTable tblRegistroGastos;
     private javax.swing.JComboBox<String> txtActualizarEstado;
@@ -1111,6 +1347,7 @@ int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
     private javax.swing.JTextField txtDescripcionDelGastoGasto;
     private javax.swing.JTextField txtGastoNoEspecificadoGasto;
     private javax.swing.JTextField txtMarcaCamionBuscar;
+    private javax.swing.JComboBox<String> txtMenu;
     private javax.swing.JTextField txtNumeroDeGalonesGasto;
     private com.toedter.calendar.JDateChooser txtTiempoMantenimientoGasto;
     // End of variables declaration//GEN-END:variables
