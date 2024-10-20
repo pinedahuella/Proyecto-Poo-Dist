@@ -90,7 +90,9 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel14.setBackground(new java.awt.Color(6, 40, 86));
+        jPanel14.setBackground(new java.awt.Color(32, 67, 99));
+
+        jPanel15.setBackground(new java.awt.Color(255, 255, 255));
 
         tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -105,7 +107,7 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
         ));
         jScrollPane6.setViewportView(tblRegistroPilotos);
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel6.setText("INFORMACIÓN DEL PILOTO");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
@@ -119,14 +121,14 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
+                .addGap(47, 47, 47))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

@@ -97,68 +97,80 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
 
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        btnAgregarCamionesSistema = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        txtKilometrajeCamiones = new javax.swing.JTextField();
+        txtMarcaCamiones = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtModeloCamiones = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        txtCapacidadDeCargaCamiones = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        txtPlacasCamiones = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         txtAñoDeFabricacionCamiones = new com.toedter.calendar.JDateChooser();
-        jLabel16 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtCapacidadDeCargaCamiones = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        btnAgregarCamionSistema = new javax.swing.JButton();
-        txtEstadoCamiones = new javax.swing.JComboBox<>();
-        txtPlacasCamiones = new javax.swing.JTextField();
         txtTipoCombustibleCamiones = new javax.swing.JComboBox<>();
-        txtMarcaCamiones = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        txtKilometrajeCamiones = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        txtEstadoCamiones = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new java.awt.Color(6, 40, 86));
-        jPanel2.setPreferredSize(new java.awt.Dimension(838, 495));
+        jPanel2.setBackground(new java.awt.Color(32, 67, 99));
 
-        jPanel5.setPreferredSize(new java.awt.Dimension(826, 483));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel3.setText("MARCA");
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel10.setText("MODELO");
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel12.setText("CAPACIDAD DE CARGA");
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel13.setText("KILOMETRAJE");
-
-        jLabel15.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel15.setText("AÑO DE FABRICACION");
-
-        txtAñoDeFabricacionCamiones.setDateFormatString("dd/MM/yyyy");
-
-        jLabel16.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel16.setText("PLACA");
-
-        jLabel17.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel17.setText("TIPO DE COMBUSTIBLE");
-
-        jLabel18.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel18.setText("ESTADO");
-
-        btnAgregarCamionSistema.setBackground(new java.awt.Color(0, 102, 255));
-        btnAgregarCamionSistema.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnAgregarCamionSistema.setForeground(new java.awt.Color(255, 255, 255));
-        btnAgregarCamionSistema.setText("AGREGAR");
-        btnAgregarCamionSistema.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnAgregarCamionSistema.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarCamionesSistema.setBackground(new java.awt.Color(85, 111, 169));
+        btnAgregarCamionesSistema.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        btnAgregarCamionesSistema.setForeground(new java.awt.Color(255, 255, 255));
+        btnAgregarCamionesSistema.setText("AGREGAR");
+        btnAgregarCamionesSistema.setBorder(null);
+        btnAgregarCamionesSistema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarCamionSistemaActionPerformed(evt);
+                btnAgregarCamionesSistemaActionPerformed(evt);
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel3.setText("MARCA");
+
+        txtMarcaCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel10.setText("MODELO");
+
+        txtModeloCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel16.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel16.setText("PLACA");
+
+        txtPlacasCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel15.setText("AÑO DE FABRICACION");
+
+        txtAñoDeFabricacionCamiones.setDateFormatString("dd/MM/yyyy");
+        txtAñoDeFabricacionCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel12.setText("CAPACIDAD DE CARGA");
+
+        txtCapacidadDeCargaCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel17.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel17.setText("TIPO DE COMBUSTIBLE");
+
+        txtTipoCombustibleCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtTipoCombustibleCamiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disel", "Gasolina", "Eléctrico", "Híbrido", "Hidrógeno", "Gas Licuado de Petróleo", " " }));
+
+        jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel13.setText("KILOMETRAJE");
+
+        txtKilometrajeCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel18.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel18.setText("ESTADO");
+
+        txtEstadoCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtEstadoCamiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "En viaje", "Libre", "Descompuesto", "Funcional" }));
         txtEstadoCamiones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,59 +178,55 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
             }
         });
 
-        txtTipoCombustibleCamiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disel", "Gasolina", "Eléctrico", "Híbrido", "Hidrógeno", "Gas Licuado de Petróleo", " " }));
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAgregarCamionSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtPlacasCamiones))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtMarcaCamiones)
-                                    .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCapacidadDeCargaCamiones)
-                                    .addComponent(txtTipoCombustibleCamiones, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtKilometrajeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 470, Short.MAX_VALUE)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(696, Short.MAX_VALUE)
+                .addComponent(btnAgregarCamionesSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtPlacasCamiones))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtMarcaCamiones)
+                            .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCapacidadDeCargaCamiones)
+                            .addComponent(txtTipoCombustibleCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtKilometrajeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addGap(19, 19, 19)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtMarcaCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -250,8 +258,8 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
                     .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
-                .addComponent(btnAgregarCamionSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(127, 127, 127)
+                .addComponent(btnAgregarCamionesSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -268,8 +276,8 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -280,14 +288,16 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAgregarCamionSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCamionSistemaActionPerformed
-       try {
+    private void btnAgregarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCamionesSistemaActionPerformed
+try {
             // Obtención de datos desde el formulario
             String placas = txtPlacasCamiones.getText().trim();
             String modelo = txtModeloCamiones.getText().trim();
@@ -358,17 +368,15 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al modificar camión: " + e.getMessage());
         }
-       
-              String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-   
-    
-    INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES(username, role, loginFrame);
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnAgregarCamionSistemaActionPerformed
+    }//GEN-LAST:event_btnAgregarCamionesSistemaActionPerformed
 
     private void txtEstadoCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionesActionPerformed
 
@@ -421,7 +429,7 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarCamionSistema;
+    private javax.swing.JButton btnAgregarCamionesSistema;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;

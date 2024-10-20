@@ -229,7 +229,9 @@ private void redirectToFrame(String option) {
         
     }                                                    
 
-    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
+          
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {     
+        cerrarSesionYSalir();
         System.exit(0);
     }                                               
 
@@ -397,7 +399,7 @@ public void actualizarTabla() {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jTextField19.setEditable(false);
         jTextField19.setBackground(new java.awt.Color(0, 51, 102));
@@ -411,6 +413,7 @@ public void actualizarTabla() {
             }
         });
 
+        tblRegistroUsuarios.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -424,10 +427,12 @@ public void actualizarTabla() {
         ));
         jScrollPane4.setViewportView(tblRegistroUsuarios);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtNombreUsuarioBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("NOMBRE");
 
-        agregarUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        agregarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         agregarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         agregarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         agregarUsuario.setText("AGREGAR");
@@ -438,7 +443,7 @@ public void actualizarTabla() {
             }
         });
 
-        eliminarUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        eliminarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         eliminarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         eliminarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         eliminarUsuario.setText("ELIMINAR");
@@ -449,7 +454,7 @@ public void actualizarTabla() {
             }
         });
 
-        editarUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        editarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         editarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         editarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         editarUsuario.setText("EDITAR");
@@ -460,7 +465,7 @@ public void actualizarTabla() {
             }
         });
 
-        mostrarUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        mostrarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         mostrarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         mostrarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         mostrarUsuario.setText("MOSTRAR");
@@ -471,7 +476,7 @@ public void actualizarTabla() {
             }
         });
 
-        refrescarUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        refrescarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         refrescarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         refrescarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         refrescarUsuario.setText("REFRESCAR");
@@ -482,7 +487,7 @@ public void actualizarTabla() {
             }
         });
 
-        entradasUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        entradasUsuario.setBackground(new java.awt.Color(85, 111, 169));
         entradasUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         entradasUsuario.setForeground(new java.awt.Color(255, 255, 255));
         entradasUsuario.setText("ENTRADAS");
@@ -493,7 +498,7 @@ public void actualizarTabla() {
             }
         });
 
-        buscarUsuario.setBackground(new java.awt.Color(102, 102, 255));
+        buscarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         buscarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         buscarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         buscarUsuario.setText("BUSCAR");
@@ -566,6 +571,8 @@ public void actualizarTabla() {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        txtMenu.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

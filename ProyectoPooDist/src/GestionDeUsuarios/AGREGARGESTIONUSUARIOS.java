@@ -56,6 +56,25 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
     }
     
     
+        public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+     
+
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -79,69 +98,98 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         txtNumeroDeDpiUsuario = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
         txtApellidoUsuario = new javax.swing.JTextField();
-        txtContraseñaUsuario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         txtNombreDeUsuarioUsuario = new javax.swing.JTextField();
         txtNumeroTelefonicoUsuario = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         txtEstadoUsuario = new javax.swing.JComboBox<>();
+        txtContraseñaUsuario = new javax.swing.JPasswordField();
+        btnMostrarContraseña = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new java.awt.Color(6, 40, 86));
+        jPanel2.setBackground(new java.awt.Color(32, 67, 99));
+        jPanel2.setPreferredSize(new java.awt.Dimension(839, 452));
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel12.setText("NOMBRE");
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtNombreUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel13.setText("CARGO");
 
+        txtCargoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtCargoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "USUARIO", "ADMINISTRADOR", "SECRETARIA" }));
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel14.setText("CORREO ELECTRONICO");
 
-        jLabel15.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtCorreoElectronicoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel15.setText("FECHA DE NACIMIENTO");
 
         txtFechaDeNacimientoUsuario.setDateFormatString("dd/MM/yyyy");
+        txtFechaDeNacimientoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel16.setText("GENERO");
 
+        txtGeneroUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtGeneroUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Masculino", "Femenino" }));
 
-        jLabel17.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel17.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel17.setText("NUMERO TELEFONICO");
 
-        jLabel18.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel18.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel18.setText("NUMERO DE DPI");
 
-        btnAgregarUsuarioSistema.setBackground(new java.awt.Color(0, 102, 255));
-        btnAgregarUsuarioSistema.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnAgregarUsuarioSistema.setBackground(new java.awt.Color(85, 111, 169));
+        btnAgregarUsuarioSistema.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
         btnAgregarUsuarioSistema.setForeground(new java.awt.Color(255, 255, 255));
         btnAgregarUsuarioSistema.setText("AGREGAR");
-        btnAgregarUsuarioSistema.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
+        btnAgregarUsuarioSistema.setBorder(null);
         btnAgregarUsuarioSistema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAgregarUsuarioSistemaActionPerformed(evt);
             }
         });
 
-        jLabel19.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtNumeroDeDpiUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel19.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel19.setText("APELLIDO");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtApellidoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel3.setText("NOMBRE DE USUARIO");
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel10.setText("CONTRASEÑA");
 
-        jLabel20.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtNombreDeUsuarioUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        txtNumeroTelefonicoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel20.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel20.setText("ESTADO ");
 
+        txtEstadoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtEstadoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
+
+        btnMostrarContraseña.setBackground(new java.awt.Color(204, 153, 255));
+        btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        btnMostrarContraseña.setForeground(new java.awt.Color(255, 255, 255));
+        btnMostrarContraseña.setText("MOSTRAR");
+        btnMostrarContraseña.setBorder(null);
+        btnMostrarContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostrarContraseñaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -154,19 +202,22 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                            .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtApellidoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel10))
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtNombreDeUsuarioUsuario)
-                                .addComponent(txtContraseñaUsuario))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtApellidoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel10))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNombreDeUsuarioUsuario)
+                                    .addComponent(txtContraseñaUsuario))))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -195,8 +246,10 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(txtCargoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
-                .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(200, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -210,15 +263,17 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(txtApellidoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombreDeUsuarioUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtEstadoUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -234,11 +289,11 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtGeneroUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNumeroTelefonicoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
                     .addComponent(txtNumeroDeDpiUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -246,10 +301,8 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(txtCorreoElectronicoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(103, 103, 103))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -395,6 +448,22 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
+
+    
+    private boolean isPasswordVisible = false;
+
+    private void btnMostrarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarContraseñaActionPerformed
+        if (!isPasswordVisible) {
+            // Mostrar contraseña
+            txtContraseñaUsuario.setEchoChar((char)0);
+            btnMostrarContraseña.setText("OCULTAR");
+        } else {
+            // Ocultar contraseña
+            txtContraseñaUsuario.setEchoChar('*');
+            btnMostrarContraseña.setText("MOSTRAR");
+        }
+        isPasswordVisible = !isPasswordVisible;
+    }//GEN-LAST:event_btnMostrarContraseñaActionPerformed
 private boolean validarContrasena(String contrasena) {
     // Verificar longitud mínima
     if (contrasena.length() < 8) {
@@ -467,6 +536,7 @@ private boolean validarContrasena(String contrasena) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarUsuarioSistema;
+    private javax.swing.JButton btnMostrarContraseña;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -482,7 +552,7 @@ private boolean validarContrasena(String contrasena) {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JTextField txtApellidoUsuario;
     private javax.swing.JComboBox<String> txtCargoUsuario;
-    private javax.swing.JTextField txtContraseñaUsuario;
+    private javax.swing.JPasswordField txtContraseñaUsuario;
     private javax.swing.JTextField txtCorreoElectronicoUsuario;
     private javax.swing.JComboBox<String> txtEstadoUsuario;
     private com.toedter.calendar.JDateChooser txtFechaDeNacimientoUsuario;

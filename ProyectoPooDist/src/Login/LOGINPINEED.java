@@ -144,7 +144,7 @@ public class LOGINPINEED extends javax.swing.JFrame {
         });
 
         btnIngresarPineed.setBackground(new java.awt.Color(10, 30, 67));
-        btnIngresarPineed.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnIngresarPineed.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         btnIngresarPineed.setForeground(new java.awt.Color(255, 255, 255));
         btnIngresarPineed.setText("Ingresar");
         btnIngresarPineed.setBorder(null);
@@ -391,42 +391,13 @@ public class LOGINPINEED extends javax.swing.JFrame {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCalendario1;
-    private javax.swing.JButton btnCalendario2;
-    private javax.swing.JButton btnCalendario4;
-    private javax.swing.JButton btnCalendario5;
-    private javax.swing.JButton btnCerrarSesion1;
-    private javax.swing.JButton btnCerrarSesion2;
-    private javax.swing.JButton btnGestionDeCamiones;
-    private javax.swing.JButton btnGestionDeCamiones1;
-    private javax.swing.JButton btnGestionDeClientes1;
-    private javax.swing.JButton btnGestionDeClientes2;
-    private javax.swing.JButton btnGestionDeCreditos1;
-    private javax.swing.JButton btnGestionDeCreditos2;
-    private javax.swing.JButton btnGestionDePedidos1;
-    private javax.swing.JButton btnGestionDePedidos2;
-    private javax.swing.JButton btnGestionDePilotos1;
-    private javax.swing.JButton btnGestionDePilotos2;
-    private javax.swing.JButton btnGestionDeUsuarios1;
-    private javax.swing.JButton btnGestionDeUsuarios2;
-    private javax.swing.JButton btnGestionDeVentas;
-    private javax.swing.JButton btnGestionDeVentas1;
     private javax.swing.JButton btnIngresarPineed;
-    private javax.swing.JButton btnInventarioDeQuintales1;
-    private javax.swing.JButton btnInventarioDeQuintales2;
-    private javax.swing.JButton btnPlanillaDeTrabajadores;
-    private javax.swing.JButton btnPlanillaDeTrabajadores1;
-    private javax.swing.JButton btnRegresarLogin1;
-    private javax.swing.JButton btnRegresarLogin2;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel21;
-    private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;

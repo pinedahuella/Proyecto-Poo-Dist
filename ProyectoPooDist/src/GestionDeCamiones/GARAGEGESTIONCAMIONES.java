@@ -429,13 +429,12 @@ private void redirectToFrame(String option) {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(1375, 752));
 
         jPanel1.setBackground(new java.awt.Color(32, 67, 99));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jTextField19.setEditable(false);
         jTextField19.setBackground(new java.awt.Color(0, 51, 102));
@@ -452,7 +451,7 @@ private void redirectToFrame(String option) {
         jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel4.setText("MARCA");
 
-        buscarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        buscarCamion.setBackground(new java.awt.Color(85, 111, 169));
         buscarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         buscarCamion.setForeground(new java.awt.Color(255, 255, 255));
         buscarCamion.setText("BUSCAR");
@@ -463,7 +462,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        actualizarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        actualizarCamion.setBackground(new java.awt.Color(85, 111, 169));
         actualizarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         actualizarCamion.setForeground(new java.awt.Color(255, 255, 255));
         actualizarCamion.setText("ACTUALIZAR");
@@ -474,7 +473,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        agregarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        agregarCamion.setBackground(new java.awt.Color(85, 111, 169));
         agregarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         agregarCamion.setForeground(new java.awt.Color(255, 255, 255));
         agregarCamion.setText("AGREGAR");
@@ -485,7 +484,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        eliminarCamion.setBackground(new java.awt.Color(102, 102, 255));
+        eliminarCamion.setBackground(new java.awt.Color(85, 111, 169));
         eliminarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         eliminarCamion.setForeground(new java.awt.Color(255, 255, 255));
         eliminarCamion.setText("ELIMINAR");

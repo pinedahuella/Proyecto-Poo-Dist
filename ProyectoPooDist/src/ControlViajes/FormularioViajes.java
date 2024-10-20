@@ -398,7 +398,8 @@ private void redirectToFrame(String option) {
     }                                                    
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
-        System.exit(0);
+    cerrarSesionYSalir();
+    System.exit(0);
     }                                               
 
     private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
@@ -582,19 +583,24 @@ private void redirectToFrame(String option) {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1375, 752));
 
-        jPanel2.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel3.setBackground(new java.awt.Color(128, 179, 220));
 
-        jPanel4.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel4.setBackground(new java.awt.Color(85, 111, 169));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Detalles del Viaje");
 
-        textoFechasIguales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        comboPedidosLista.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        textoFechasIguales.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         textoFechasIguales.setText("Fechas Iguales");
 
-        radioFinalizarViaje.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        comboMasDeFecha.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        radioFinalizarViaje.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         radioFinalizarViaje.setText("Finalizar Viaje");
         radioFinalizarViaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -637,22 +643,29 @@ private void redirectToFrame(String option) {
                 .addContainerGap())
         );
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel9.setText("Piloto:");
+        jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel9.setText("Piloto");
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel6.setText("Fecha de Carga:");
+        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel6.setText("Fecha de Carga");
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel8.setText("Transporte pesado:");
+        jLabel8.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel8.setText("Transporte pesado");
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel7.setText("Fecha de Descarga:");
+        jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel7.setText("Fecha de Descarga");
 
-        comoboCamionesA.setBackground(new java.awt.Color(102, 102, 255));
+        comoboCamionesA.setBackground(new java.awt.Color(204, 204, 255));
+        comoboCamionesA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        comboPilotosA.setBackground(new java.awt.Color(102, 102, 255));
+        comboPilotosA.setBackground(new java.awt.Color(204, 204, 255));
+        comboPilotosA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
+        fechaCargaA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        fechaDescargaA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        tablaProductosA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tablaProductosA.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -666,19 +679,23 @@ private void redirectToFrame(String option) {
         ));
         jScrollPane1.setViewportView(tablaProductosA);
 
+        jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel12.setText("Tipo de Viaje");
 
+        ComboTViajeA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         ComboTViajeA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pedido para Distribuidora", "Pedido Para Cliente " }));
 
-        botonModificarViajes.setBackground(new java.awt.Color(102, 102, 255));
+        botonModificarViajes.setBackground(new java.awt.Color(85, 111, 169));
+        botonModificarViajes.setForeground(new java.awt.Color(255, 255, 255));
         botonModificarViajes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 botonModificarViajesMouseClicked(evt);
             }
         });
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel13.setText("Modificar Viajes ");
+        jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText(" MODIFICAR VIAJES");
 
         javax.swing.GroupLayout botonModificarViajesLayout = new javax.swing.GroupLayout(botonModificarViajes);
         botonModificarViajes.setLayout(botonModificarViajesLayout);
@@ -686,7 +703,7 @@ private void redirectToFrame(String option) {
             botonModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(botonModificarViajesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                 .addContainerGap())
         );
         botonModificarViajesLayout.setVerticalGroup(
@@ -705,30 +722,35 @@ private void redirectToFrame(String option) {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(fechaDescargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(fechaCargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
-                        .addGap(79, 79, 79)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botonModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(botonModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(fechaDescargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -744,9 +766,9 @@ private void redirectToFrame(String option) {
                     .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fechaCargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -754,19 +776,20 @@ private void redirectToFrame(String option) {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addGap(12, 12, 12)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(botonModificarViajes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(botonModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jPanel5.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel5.setBackground(new java.awt.Color(128, 179, 220));
 
-        CalendarioGeneral.setBackground(new java.awt.Color(207, 186, 132));
-        CalendarioGeneral.setDecorationBackgroundColor(new java.awt.Color(153, 153, 255));
+        CalendarioGeneral.setBackground(new java.awt.Color(102, 102, 255));
+        CalendarioGeneral.setDecorationBackgroundColor(new java.awt.Color(204, 204, 255));
+        CalendarioGeneral.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         CalendarioGeneral.setSundayForeground(new java.awt.Color(0, 0, 0));
         CalendarioGeneral.setWeekdayForeground(new java.awt.Color(0, 0, 0));
 
@@ -809,11 +832,10 @@ private void redirectToFrame(String option) {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -828,6 +850,7 @@ private void redirectToFrame(String option) {
         );
 
         jPanel6.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel6.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -931,40 +954,47 @@ private void redirectToFrame(String option) {
                 .addContainerGap())
         );
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setText("Fecha de Carga:");
+        jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel2.setText("Fecha de Carga");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel3.setText("Fecha de Descarga:");
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel3.setText("Fecha de Descarga");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel4.setText("Piloto:");
+        fechaBDescarga.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel5.setText("Transporte pesado:");
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel4.setText("Piloto");
 
-        comboPilotosB.setBackground(new java.awt.Color(102, 102, 255));
+        jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel5.setText("Transporte pesado");
 
-        comboCamionesB.setBackground(new java.awt.Color(102, 102, 255));
+        comboPilotosB.setBackground(new java.awt.Color(204, 204, 255));
+        comboPilotosB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        jPanel12.setBackground(new java.awt.Color(102, 102, 255));
+        comboCamionesB.setBackground(new java.awt.Color(204, 204, 255));
+        comboCamionesB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        fechaBCarga.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jPanel12.setBackground(new java.awt.Color(85, 111, 169));
         jPanel12.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel12MouseClicked(evt);
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel10.setText("Agregar Fecha");
+        jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("   AGREGAR FECHA");
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -974,6 +1004,7 @@ private void redirectToFrame(String option) {
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
+        tablaProductosB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tablaProductosB.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -987,8 +1018,10 @@ private void redirectToFrame(String option) {
         ));
         jScrollPane2.setViewportView(tablaProductosB);
 
+        comboTViajeB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         comboTViajeB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pedido para Distribuidora", "Pedido Para Cliente " }));
 
+        jLabel11.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel11.setText("Tipo de Viaje");
 
         jPanel13.setBackground(new java.awt.Color(32, 67, 99));
@@ -1062,24 +1095,23 @@ private void redirectToFrame(String option) {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(comboTViajeB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(7, 7, 7)
-                                .addComponent(fechaBCarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(fechaBDescarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboPilotosB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboCamionesB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(7, 7, 7)
+                            .addComponent(fechaBCarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(12, 12, 12)
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fechaBDescarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(comboPilotosB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(comboCamionesB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(35, Short.MAX_VALUE))

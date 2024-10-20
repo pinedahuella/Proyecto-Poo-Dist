@@ -54,12 +54,12 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
             }
         };
 
-        tblRegistroPilotos.setModel(modeloCamiones);
-        tblRegistroPilotos.setCellSelectionEnabled(true);
-        tblRegistroPilotos.setFocusable(true);
-        tblRegistroPilotos.setRowSelectionAllowed(true);
-        tblRegistroPilotos.setColumnSelectionAllowed(false);
-        tblRegistroPilotos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRegistroCamiones.setModel(modeloCamiones);
+        tblRegistroCamiones.setCellSelectionEnabled(true);
+        tblRegistroCamiones.setFocusable(true);
+        tblRegistroCamiones.setRowSelectionAllowed(true);
+        tblRegistroCamiones.setColumnSelectionAllowed(false);
+        tblRegistroCamiones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     }
 
     private void cargarDatosCamion() {
@@ -89,14 +89,16 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
         jPanel14 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        tblRegistroPilotos = new javax.swing.JTable();
+        tblRegistroCamiones = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel14.setBackground(new java.awt.Color(6, 40, 86));
+        jPanel14.setBackground(new java.awt.Color(32, 67, 99));
 
-        tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
+        jPanel15.setBackground(new java.awt.Color(255, 255, 255));
+
+        tblRegistroCamiones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -107,9 +109,9 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane6.setViewportView(tblRegistroPilotos);
+        jScrollPane6.setViewportView(tblRegistroCamiones);
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel6.setText("INFORMACIÓN DEL CAMIÓN");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
@@ -120,17 +122,17 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(jPanel15Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(47, 47, 47))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -206,6 +208,6 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTable tblRegistroPilotos;
+    private javax.swing.JTable tblRegistroCamiones;
     // End of variables declaration//GEN-END:variables
 }

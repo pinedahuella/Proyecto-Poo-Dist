@@ -45,17 +45,10 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
         modeloLogins = new DefaultTableModel(new Object[]{"Tiempo Entrada", "Tiempo Salida", "Personal", "Rol"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;  // Disable cell editing
+                return false;
             }
         };
-
-        tblRegistroLogins.setModel(modeloLogins); // Ensure this is the login table
-
-        // Disable column reordering and cell selection
-        tblRegistroLogins.getTableHeader().setReorderingAllowed(false);
-        tblRegistroLogins.setColumnSelectionAllowed(false);
-        tblRegistroLogins.setRowSelectionAllowed(true);
-        tblRegistroLogins.setCellSelectionEnabled(false);
+        tblRegistroLogins.setModel(modeloLogins);
     }
 
     // Load login data into the table
@@ -86,12 +79,12 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
         jPanel9 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRegistroLogins = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel8.setBackground(new java.awt.Color(6, 40, 86));
+        jPanel8.setBackground(new java.awt.Color(32, 67, 99));
 
+        tblRegistroLogins.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroLogins.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -105,30 +98,21 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(tblRegistroLogins);
 
-        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
-        jLabel3.setText("ENTRADAS / SALIDAS");
-
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -201,7 +185,6 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane3;

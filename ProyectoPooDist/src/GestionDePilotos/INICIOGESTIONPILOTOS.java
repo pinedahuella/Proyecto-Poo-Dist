@@ -226,7 +226,8 @@ private void redirectToFrame(String option) {
     }                                                    
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
-        System.exit(0);
+    cerrarSesionYSalir();
+    System.exit(0);
     }                                               
 
     private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
@@ -349,7 +350,7 @@ private void redirectToFrame(String option) {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jTextField19.setEditable(false);
         jTextField19.setBackground(new java.awt.Color(0, 51, 102));
@@ -363,6 +364,7 @@ private void redirectToFrame(String option) {
             }
         });
 
+        tblRegistroPilotos.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -376,10 +378,12 @@ private void redirectToFrame(String option) {
         ));
         jScrollPane4.setViewportView(tblRegistroPilotos);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        txtNombrePilotoBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("NOMBRE");
 
-        eliminarPiloto.setBackground(new java.awt.Color(102, 102, 255));
+        eliminarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         eliminarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         eliminarPiloto.setForeground(new java.awt.Color(255, 255, 255));
         eliminarPiloto.setText("ELIMINAR");
@@ -390,7 +394,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        editarPiloto.setBackground(new java.awt.Color(102, 102, 255));
+        editarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         editarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         editarPiloto.setForeground(new java.awt.Color(255, 255, 255));
         editarPiloto.setText("EDITAR");
@@ -401,7 +405,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        mostrarPiloto.setBackground(new java.awt.Color(102, 102, 255));
+        mostrarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         mostrarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         mostrarPiloto.setForeground(new java.awt.Color(255, 255, 255));
         mostrarPiloto.setText("MOSTRAR");
@@ -412,7 +416,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        agregarPiloto.setBackground(new java.awt.Color(102, 102, 255));
+        agregarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         agregarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         agregarPiloto.setForeground(new java.awt.Color(255, 255, 255));
         agregarPiloto.setText("AGREGAR");
@@ -423,7 +427,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        refrescarPiloto.setBackground(new java.awt.Color(102, 102, 255));
+        refrescarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         refrescarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         refrescarPiloto.setForeground(new java.awt.Color(255, 255, 255));
         refrescarPiloto.setText("REFRESCAR");
@@ -434,7 +438,7 @@ private void redirectToFrame(String option) {
             }
         });
 
-        buscarPiloto.setBackground(new java.awt.Color(102, 102, 255));
+        buscarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         buscarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         buscarPiloto.setForeground(new java.awt.Color(255, 255, 255));
         buscarPiloto.setText("BUSCAR");
@@ -507,6 +511,8 @@ private void redirectToFrame(String option) {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        txtMenu.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
