@@ -19,14 +19,15 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
     private Usuarios usuarioActual;
     private INICIOGESTIONUSUARIOS ventanaPrincipal;
 
-    // Constructor
-    public INGRESOGESTIONUSUARIOS() {
-        initComponents();
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        initializeData(); // Separate method to initialize data
-        configurarTablaLogins();  // Set up the login table
-        cargarDatosLogin();  // Load login data into the table
-    }
+ public INGRESOGESTIONUSUARIOS() {
+    initComponents();
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    setResizable(false); // Desactivar el cambio de tamaño
+    initializeData(); // Método separado para inicializar datos
+    configurarTablaLogins(); // Configurar la tabla de logins
+    cargarDatosLogin(); // Cargar datos de login en la tabla
+}
+
 
     // Method to initialize user and login data
     private void initializeData() {

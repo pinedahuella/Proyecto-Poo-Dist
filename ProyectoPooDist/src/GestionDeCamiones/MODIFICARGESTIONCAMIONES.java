@@ -1,5 +1,6 @@
 package GestionDeCamiones;
 
+// Importación de clases necesarias para el funcionamiento de la aplicación
 import Login.LOGINPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDeCamiones.GESTIONCAMIONES;
@@ -13,41 +14,49 @@ import javax.swing.table.DefaultTableModel;
 
 public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
 
-    public GESTIONCAMIONES gestionCamiones;
-    public Vector<Camiones> listaCamiones = new Vector<>();
-    DefaultTableModel modeloCamiones = new DefaultTableModel();
-    private Camiones camionActual;
-    private INICIOGESTIONCAMIONES ventanaPrincipal;
-    private String currentUser;
-    private String userRole;
-    private LOGINPINEED loginFrame;
+    // Atributos de la clase
+    public GESTIONCAMIONES gestionCamiones; // Objeto para gestionar camiones
+    public Vector<Camiones> listaCamiones = new Vector<>(); // Lista de camiones
+    DefaultTableModel modeloCamiones = new DefaultTableModel(); // Modelo de tabla para camiones
+    private Camiones camionActual; // Camión actualmente seleccionado
+    private INICIOGESTIONCAMIONES ventanaPrincipal; // Ventana principal de gestión de camiones
+    private String currentUser; // Nombre del usuario actual
+    private String userRole; // Rol del usuario actual
+    private LOGINPINEED loginFrame; // Objeto de la clase LOGINPINEED
 
+    /**
+     * Constructor de la clase MODIFICARGESTIONCAMIONES.
+     *
+     * @param camion Camión a modificar
+     * @param ventanaPrincipal Ventana principal de gestión de camiones
+     * @param username Nombre del usuario actual
+     * @param role Rol del usuario actual
+     * @param loginFrame Objeto de la clase LOGINPINEED
+     */
+    public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
+        initComponents(); // Inicialización de componentes de la interfaz gráfica
+        setResizable(false); // Desactivar el cambio de tamaño
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); // Cerrar solo esta ventana
 
+        this.currentUser = username; // Asignar el nombre del usuario
+        this.userRole = role; // Asignar el rol del usuario
+        this.loginFrame = loginFrame; // Asignar el objeto de inicio de sesión
 
-public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
-    initComponents();
-    // Cambia esto para que solo cierre esta ventana, no toda la aplicación
-    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    
-    this.currentUser = username;
-    this.userRole = role;
-    this.loginFrame = loginFrame;
-    
-    if (ventanaPrincipal != null) {
-        this.ventanaPrincipal = ventanaPrincipal;
-        this.gestionCamiones = ventanaPrincipal.gestionCamiones;
-        this.listaCamiones = gestionCamiones.getCamiones();
+        if (ventanaPrincipal != null) {
+            this.ventanaPrincipal = ventanaPrincipal; // Asignar la ventana principal
+            this.gestionCamiones = ventanaPrincipal.gestionCamiones; // Asignar el objeto de gestión de camiones
+            this.listaCamiones = gestionCamiones.getCamiones(); // Obtener la lista de camiones
+        }
+
+        if (camion != null) {
+            this.camionActual = camion; // Asignar el camión actual
+            cargarDatosCamion(); // Cargar los datos del camión en los campos de entrada
+        }
     }
-    
-    if (camion != null) {
-        this.camionActual = camion;
-        cargarDatosCamion();
-    }
-}
-    
-    
 
-    
+    /**
+     * Método para cargar los datos del camión en los campos de entrada.
+     */
     private void cargarDatosCamion() {
         if (camionActual != null) {
             txtPlacaCamionesModificar.setText(camionActual.getPlacas());
@@ -57,7 +66,7 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
             txtTipoCombustibleCamionModificar.setSelectedItem(camionActual.getTipoCombustible());
             txtKilometrajeCamionModificar.setText(String.valueOf(camionActual.getKilometraje()));
             txtCapacidadDeCargaCamionModificar.setText(String.valueOf(camionActual.getCapacidadCarga()));
-            
+
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
                 Date añoFabricacion = sdf.parse(camionActual.getAñoFabricacion());
@@ -67,7 +76,10 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
             }
         }
     }
-    
+
+    /**
+     * Método para limpiar los campos de entrada.
+     */
     private void limpiarCamposCamion() {
         txtPlacaCamionesModificar.setText("");
         txtModeloCamionModificar.setText("");
@@ -78,7 +90,7 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
         txtCapacidadDeCargaCamionModificar.setText("");
         txtAñoDeFabricacionCamionModificar.setDate(null);
     }
-    
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -285,6 +297,7 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
 
     private void btnModificarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCamionesSistemaActionPerformed
         try {
+            // Obtener datos de los campos de entrada
             String placas = txtPlacaCamionesModificar.getText().trim();
             String modelo = txtModeloCamionModificar.getText().trim();
             String marca = txtMarcaCamionModificar.getText().trim();
@@ -302,6 +315,7 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
             String añoFabricacion = sdf.format(añoFabricacionDate);
 
+            // Validar campos de entrada
             if (placas.isEmpty() || modelo.isEmpty() || marca.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
                 return;
@@ -322,8 +336,10 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
                 return;
             }
 
+            // Verificar si las placas han cambiado
             boolean placasCambiadas = !placas.equals(camionActual.getPlacas());
 
+            // Validar que no exista otro camión con las mismas placas
             for (Camiones camionExistente : listaCamiones) {
                 if (camionExistente != camionActual && placasCambiadas && camionExistente.getPlacas().equals(placas)) {
                     JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
@@ -331,6 +347,7 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
                 }
             }
 
+            // Actualizar datos del camión
             camionActual.setPlacas(placas);
             camionActual.setModelo(modelo);
             camionActual.setMarca(marca);
@@ -340,14 +357,16 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
             camionActual.setCapacidadCarga(capacidadCarga);
             camionActual.setAñoFabricacion(añoFabricacion);
 
+            // Actualizar camión en la gestión de camiones
             gestionCamiones.actualizarCamion(camionActual);
 
             JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.");
 
+            // Actualizar la tabla en la ventana principal
             ventanaPrincipal.actualizarTabla();
 
-            ventanaPrincipal.setVisible(true);
-            this.dispose();
+            ventanaPrincipal.setVisible(true); // Hacer visible la ventana principal
+            this.dispose(); // Cerrar esta ventana
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
@@ -361,23 +380,42 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
     }//GEN-LAST:event_txtEstadoCamionModificarActionPerformed
 
     
-    
+    /**
+     * Método para validar el formato de las placas.
+     *
+     * @param placas Placas del camión
+     * @return true si el formato es válido, false en caso contrario
+     */
     private boolean validarPlacas(String placas) {
-        String regex = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+$";
+        String regex = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+$"; // Expresión regular para validar placas
         return placas.matches(regex);
     }
 
+    /**
+     * Método para validar el kilometraje.
+     *
+     * @param kilometraje Kilometraje del camión
+     * @return true si el kilometraje es válido, false en caso contrario
+     */
     private boolean validarKilometraje(double kilometraje) {
-        return (kilometraje >= 0 && kilometraje <= 1000000);
+        return kilometraje >= 0 && kilometraje <= 1000000; // Validar rango de kilometraje
     }
 
+    /**
+     * Método para validar la capacidad de carga.
+     *
+     * @param capacidadCarga Capacidad de carga del camión
+     * @return true si la capacidad de carga es válida, false en caso contrario
+     */
     private boolean validarCapacidadCarga(double capacidadCarga) {
-        return (capacidadCarga >= 100 && capacidadCarga <= 30000);
+        return capacidadCarga >= 100 && capacidadCarga <= 30000; // Validar rango de capacidad de carga
     }
     
     
     /**
-     * @param args the command line arguments
+     * Método principal para ejecutar la aplicación.
+     *
+     * @param args Argumentos de línea de comando.
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -403,19 +441,16 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Crear y mostrar el formulario */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                String username = "defaultUser";  // Reemplazar con el nombre de usuario actual o lógica
+                String role = "defaultRole"; 
 
-                 String username = "defaultUser";  // Replace with actual username or logic
-        String role = "defaultRole"; 
-        
-        LOGINPINEED loginFrame = new LOGINPINEED();  // Instantiate the LOGINPINEED object
-        
-        // Create the MODIFICARGESTIONCAMIONES instance with the required parameters
-        new MODIFICARGESTIONCAMIONES(null, null, username, role, loginFrame).setVisible(true);
-    
-            
+                LOGINPINEED loginFrame = new LOGINPINEED();  // Instanciar el objeto LOGINPINEED
+
+                // Crear la instancia de MODIFICARGESTIONCAMIONES con los parámetros requeridos
+                new MODIFICARGESTIONCAMIONES(null, null, username, role, loginFrame).setVisible(true);
             }
         });
     }

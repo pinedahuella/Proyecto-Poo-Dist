@@ -30,7 +30,7 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
     public MODIFICARGESTIONPILOTOS(Piloto piloto, INICIOGESTIONPILOTOS ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
     initComponents();
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    
+    setResizable(false); // Desactivar el cambio de tamaño
     this.currentUser = username;
     this.userRole = role;
     this.loginFrame = loginFrame;

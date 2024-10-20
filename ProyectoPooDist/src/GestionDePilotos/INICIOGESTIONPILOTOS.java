@@ -6,7 +6,7 @@ import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import Inicio.INICIOPINEED;
+import InicioApp.INICIOPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
@@ -126,6 +126,7 @@ private void redirectToFrame(String option) {
 }
 
     private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+    
     }  
     
     private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
@@ -264,7 +265,7 @@ private void cerrarSesionYRegresarLogin() {
 
     public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
         

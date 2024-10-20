@@ -1,14 +1,6 @@
 package GestionDeCamiones;
-
-import ControlInventario.gestionProductos;
-import ControlInventario.Producto;
-import GestionDePilotos.Piloto;
-import GestionDePilotos.GESTIONPILOTOS;
-import GestionDeCamiones.GESTIONCAMIONES;
-import GestionDeCamiones.Camiones;
+// Importación de clases necesarias para el funcionamiento de la aplicación
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import Inicio.INICIOPINEED;
-import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
 import ControlPedidos.FormularioPedidos;
@@ -19,36 +11,31 @@ import Login.GESTIONLOGIN;
 import Login.Login;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;  // Para manejar eventos de acción
-import java.awt.event.ActionEvent;  // Para representar eventos de acción
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.SwingUtilities;
 
-
-
+// Clase principal para la gestión de camiones
 public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
-    public GESTIONCAMIONES gestionCamiones;
-    public Vector<Camiones> listaCamiones = new Vector<>();
-    private String currentUser;
-    private String userRole;
-    private LOGINPINEED loginFrame;
-    
+// Atributos de la clase
+public GESTIONCAMIONES gestionCamiones;
+public Vector<Camiones> listaCamiones = new Vector<>();
+private String currentUser;
+private String userRole;
+private LOGINPINEED loginFrame;
+
+    // Modelo de tabla para mostrar los camiones
     DefaultTableModel modeloCamiones = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
-            return false;
+            return false; // Hace que las celdas no sean editables
         }
     };
 
-
-
-
-
-
+    // Método para añadir un listener de ventana
     public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -57,19 +44,21 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
             }
         });
     }
-     
-private void cerrarSesionYRegresarLogin() {
+
+    // Método para cerrar sesión y volver a la pantalla de login
+    private void cerrarSesionYRegresarLogin() {
         cerrarSesionManualmente();
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
         nuevaLoginFrame.setVisible(true);
         this.dispose();
     }
 
+    // Método para cerrar sesión manualmente
     private void cerrarSesionManualmente() {
         LocalDateTime tiempoSalida = LocalDateTime.now();
         GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
         gestionLogin.cargarLoginsDesdeExcel();
-        
+
         boolean sesionCerrada = false;
         for (Login login : gestionLogin.getLogins()) {
             if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
@@ -80,55 +69,55 @@ private void cerrarSesionYRegresarLogin() {
                 break;
             }
         }
-        
+
         if (!sesionCerrada) {
             System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
         }
     }
 
+    // Método para cerrar sesión y salir de la aplicación
     private void cerrarSesionYSalir() {
         cerrarSesionManualmente();
         System.exit(0);
     }
 
-     
+    // Constructor de la clase
     public INICIOGESTIONCAMIONES(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         gestionCamiones = new GESTIONCAMIONES();
         gestionCamiones.cargarCamionesDesdeExcel();
-        
+
+        // Configuración de las columnas de la tabla
         String[] columnas = {"Placas", "Modelo", "Marca", "Estado", "Tipo Combustible", "Kilometraje"};
         modeloCamiones.setColumnIdentifiers(columnas);
-        
+
         if (gestionCamiones.getCamiones() != null) {
             listaCamiones = gestionCamiones.getCamiones();
         }
-        
+
+        // Configuración de la tabla de camiones
         tblRegistroCamiones1.setModel(modeloCamiones);
         tblRegistroCamiones1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRegistroCamiones1.getTableHeader().setReorderingAllowed(false);
         tblRegistroCamiones1.getTableHeader().setResizingAllowed(false);
         tblRegistroCamiones1.setRowSelectionAllowed(true);
         tblRegistroCamiones1.setColumnSelectionAllowed(false);
-        
+
         cargarCamionesEnTabla();
         this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
         addWindowListener();
-        setupComboBox();  // Añade esta línea
+        setupComboBox();
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
         SwingUtilities.invokeLater(() -> {
             this.requestFocusInWindow();
         });
     }
-    
-    
 
-
-
+    // Método para cargar los camiones en la tabla
     private void cargarCamionesEnTabla() {
         for (Camiones camion : listaCamiones) {
             modeloCamiones.addRow(new Object[]{
@@ -142,8 +131,8 @@ private void cerrarSesionYRegresarLogin() {
         }
     }
 
-
-private void setupComboBox() {
+    // Método para configurar el menú desplegable
+    private void setupComboBox() {
         txtMenu.removeAllItems();
         txtMenu.addItem("Seleccione una opción");
 
@@ -161,7 +150,7 @@ private void setupComboBox() {
         });
     }
 
-
+    // Método para añadir opciones de administrador al menú
     private void addAdminOptions() {
         txtMenu.addItem("Gestión de Usuarios");
         txtMenu.addItem("Gestión de Pilotos");
@@ -176,64 +165,66 @@ private void setupComboBox() {
         txtMenu.addItem("Cerrar Sesión");
     }
 
+    // Método para añadir opciones de secretaria al menú
     private void addSecretariaOptions() {
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Planilla de Trabajadores");
         txtMenu.addItem("Cerrar Sesión");
     }
-    
-private void redirectToFrame(String option) {
-    switch (option) {
-        case "Seleccione una opción":
-            btnSeleccionarUnaOpcionActionPerformed(null);
-            break;
-        case "Gestión de Usuarios":
-            btnGestionDeUsuariosActionPerformed(null);
-            break;
-        case "Gestión de Pilotos":
-            btnGestionDePilotosActionPerformed(null);
-            break;
-        case "Gestión de Créditos":
-            btnGestionDeCreditosActionPerformed(null);
-            break;
-        case "Gestión de Clientes":
-            btnGestionDeClientesActionPerformed(null);
-            break;
-        case "Gestión de Ventas":
-            btnGestionDeVentasActionPerformed(null);
-            break;
-        case "Gestión de Pedidos":
-            btnGestionDePedidosActionPerformed(null);
-            break;
-        case "Inventario de Quintales":
-            btnInventarioDeQuintalesActionPerformed(null);
-            break;
-        case "Planilla de Trabajadores":
-            btnPlanillaDeTrabajadoresActionPerformed(null);
-            break;
-        case "Gestión de Camiones":
-            btnGestionDeCamionesActionPerformed(null);
-            break;
-        case "Calendario":
-            btnCalendarioActionPerformed(null);
-            break;
-        case "Cerrar Sesión":
-            btnRegresarLoginActionPerformed(null);
-            break;
-        default:
-            JOptionPane.showMessageDialog(this, "Opción no válida");
-            break;
-    }
-}
 
+    // Método para redirigir a diferentes frames según la opción seleccionada
+    private void redirectToFrame(String option) {
+        switch (option) {
+            case "Seleccione una opción":
+                btnSeleccionarUnaOpcionActionPerformed(null);
+                break;
+            case "Gestión de Usuarios":
+                btnGestionDeUsuariosActionPerformed(null);
+                break;
+            case "Gestión de Pilotos":
+                btnGestionDePilotosActionPerformed(null);
+                break;
+            case "Gestión de Créditos":
+                btnGestionDeCreditosActionPerformed(null);
+                break;
+            case "Gestión de Clientes":
+                btnGestionDeClientesActionPerformed(null);
+                break;
+            case "Gestión de Ventas":
+                btnGestionDeVentasActionPerformed(null);
+                break;
+            case "Gestión de Pedidos":
+                btnGestionDePedidosActionPerformed(null);
+                break;
+            case "Inventario de Quintales":
+                btnInventarioDeQuintalesActionPerformed(null);
+                break;
+            case "Planilla de Trabajadores":
+                btnPlanillaDeTrabajadoresActionPerformed(null);
+                break;
+            case "Gestión de Camiones":
+                btnGestionDeCamionesActionPerformed(null);
+                break;
+            case "Calendario":
+                btnCalendarioActionPerformed(null);
+                break;
+            case "Cerrar Sesión":
+                btnRegresarLoginActionPerformed(null);
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Opción no válida");
+                break;
+        }
+    }
+
+    // Métodos de acción para los botones del menú
     private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
     }  
-    
-    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
         INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
         abrir.setVisible(true);
@@ -241,10 +232,9 @@ private void redirectToFrame(String option) {
     }                                                    
 
     private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
         INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
         abrir.setVisible(true);
@@ -252,21 +242,18 @@ private void redirectToFrame(String option) {
     }                                                   
 
     private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-
     }                                                    
 
     private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-
     }                                                    
 
     private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
-
     }                                                  
 
     private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
         FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
         abrir.setVisible(true);
@@ -274,9 +261,9 @@ private void redirectToFrame(String option) {
     }                                                   
 
     private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {                                                         
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
         FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
         abrir.setVisible(true);
@@ -284,9 +271,9 @@ private void redirectToFrame(String option) {
     }                                                        
 
     private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {                                                          
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
         FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
@@ -294,11 +281,10 @@ private void redirectToFrame(String option) {
     }                                                         
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-        
         INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
@@ -309,14 +295,14 @@ private void redirectToFrame(String option) {
     }                                                
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser;
+        String role = this.userRole;
+        LOGINPINEED loginFrame = this.loginFrame;
 
         FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-    }     
+    }          
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -560,8 +546,17 @@ private void redirectToFrame(String option) {
 
     }//GEN-LAST:event_jTextField19ActionPerformed
 
+    
+        /**
+     * Maneja la acción de buscar un camión según su marca.
+     * Si el campo de entrada está vacío, muestra un mensaje solicitando al usuario que ingrese la marca.
+     * Si se encuentran coincidencias, se llena la tabla con los camiones que coinciden con los criterios de búsqueda.
+     * Si no se encuentran coincidencias, se muestra un mensaje indicando que no se encontraron camiones.
+     * 
+     * @param evt el evento que activó esta acción
+     */
     private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-                if (txtMarcaCamionBuscar1.getText().trim().isEmpty()) {
+            if (txtMarcaCamionBuscar1.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingresa la marca del camión para buscar.");
             return;
         }
@@ -597,25 +592,43 @@ private void redirectToFrame(String option) {
         txtMarcaCamionBuscar1.setText("");
     }//GEN-LAST:event_buscarCamionActionPerformed
 
+     /**
+     * Refresca la pantalla de gestión de camiones creando una nueva instancia de 
+     * INICIOGESTIONCAMIONES y cerrando la ventana actual.
+     *
+     * @param evt el evento que activó esta acción
+     */
     private void refrescarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarCamionActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
-        INICIOGESTIONCAMIONES abrir = new  INICIOGESTIONCAMIONES(username, role, loginFrame);
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_refrescarCamionActionPerformed
 
+     /**
+     * Abre la ventana para agregar un nuevo camión. 
+     * Pasa los detalles del usuario actual a la nueva ventana.
+     *
+     * @param evt el evento que activó esta acción
+     */
     private void agregarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCamionActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
-        AGREGARGESTIONCAMIONES abrir = new  AGREGARGESTIONCAMIONES(username, role, loginFrame);
+        AGREGARGESTIONCAMIONES abrir = new AGREGARGESTIONCAMIONES(username, role, loginFrame);
         abrir.setVisible(true);
     }//GEN-LAST:event_agregarCamionActionPerformed
 
+     /**
+     * Muestra la información del camión seleccionado en una nueva ventana.
+     * Si no hay un camión seleccionado, muestra un mensaje solicitando que se seleccione uno.
+     *
+     * @param evt el evento que activó esta acción
+     */
     private void mostrarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarCamionActionPerformed
         int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         if (filaSeleccionada >= 0) {
@@ -626,6 +639,12 @@ private void redirectToFrame(String option) {
         }
     }//GEN-LAST:event_mostrarCamionActionPerformed
 
+     /**
+     * Abre la ventana para editar la información del camión seleccionado.
+     * Si no hay un camión seleccionado, muestra un mensaje solicitando que se seleccione uno.
+     *
+     * @param evt el evento que activó esta acción
+     */
     private void editarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarCamionActionPerformed
         int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         if (filaSeleccionada >= 0) {
@@ -636,8 +655,14 @@ private void redirectToFrame(String option) {
         }
     }//GEN-LAST:event_editarCamionActionPerformed
 
+     /**
+     * Elimina el camión seleccionado después de confirmar la acción.
+     * Si no hay un camión seleccionado, muestra un mensaje solicitando que se seleccione uno.
+     *
+     * @param evt el evento que activó esta acción
+     */
     private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
-int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+    int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         if (filaSeleccionada >= 0) {
             String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 0);
 
@@ -656,18 +681,25 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         }
     }//GEN-LAST:event_eliminarCamionActionPerformed
 
+     /**
+     * Abre la ventana de gestión del garaje de camiones.
+     * Pasa los detalles del usuario actual a la nueva ventana.
+     *
+     * @param evt el evento que activó esta acción
+     */
     private void garageCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_garageCamionesActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
-        GARAGEGESTIONCAMIONES abrir = new  GARAGEGESTIONCAMIONES(username, role, loginFrame);
+        GARAGEGESTIONCAMIONES abrir = new GARAGEGESTIONCAMIONES(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_garageCamionesActionPerformed
 
-    
-
+     /**
+     * Actualiza la tabla de camiones recargando los datos desde Excel.
+     */
     public void actualizarTabla() {
         gestionCamiones.cargarCamionesDesdeExcel();
         listaCamiones = gestionCamiones.getCamiones();
@@ -675,23 +707,37 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         cargarCamionesEnTabla();
     }
 
-private void abrirVentanaModificar(Camiones camion) {
-    String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+     /**
+     * Abre la ventana para modificar la información de un camión.
+     * 
+     * @param camion el camión cuya información se va a modificar
+     */
+    private void abrirVentanaModificar(Camiones camion) {
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
-    MODIFICARGESTIONCAMIONES ventanaModificar = new MODIFICARGESTIONCAMIONES(camion, this, username, role, loginFrame);
-    ventanaModificar.setVisible(true);
-}
+        MODIFICARGESTIONCAMIONES ventanaModificar = new MODIFICARGESTIONCAMIONES(camion, this, username, role, loginFrame);
+        ventanaModificar.setVisible(true);
+    }
 
+     /**
+     * Abre la ventana para mostrar la información de un camión.
+     * 
+     * @param camion el camión cuya información se va a mostrar
+     */
     private void abrirVentanaMostrar(Camiones camion) {
         MOSTRARGESTIONCAMIONES ventanaMostrar = new MOSTRARGESTIONCAMIONES(camion, this);
         ventanaMostrar.setVisible(true);
     }
-    
-    
-    
 
+    
+     /**
+     * Método principal que establece el aspecto y la sensación de Nimbus,
+     * y crea y muestra la interfaz de gestión de camiones.
+     * 
+     * @param args los argumentos de la línea de comandos
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -716,21 +762,16 @@ private void abrirVentanaModificar(Camiones camion) {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+    /* Crea y muestra el formulario */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        public void run() {
+                String username = "defaultUser";  // Reemplaza con el nombre de usuario real o lógica
+                String role = "defaultRole"; 
 
-               
-                 String username = "defaultUser";  // Replace with actual username or logic
-            String role = "defaultRole"; 
-            
-            
-            LOGINPINEED loginFrame = new LOGINPINEED();  // Instantiate the LOGINPINEED object
+                LOGINPINEED loginFrame = new LOGINPINEED();  // Instancia el objeto LOGINPINEED
 
-            // Create the INICIOPINEED instance with the required parameters
-            new INICIOGESTIONCAMIONES(username, role, loginFrame).setVisible(true);
-            
-            
+                // Crea la instancia de INICIOGESTIONCAMIONES con los parámetros requeridos
+                new INICIOGESTIONCAMIONES(username, role, loginFrame).setVisible(true);
             }
         });
     }

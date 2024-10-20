@@ -26,6 +26,7 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
         
         public MODIFICARGESTIONUSUARIOS(Usuarios usuario, INICIOGESTIONUSUARIOS ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
             initComponents();
+            setResizable(false); // Desactivar el cambio de tamaño
             setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
                 this.currentUser = username;
     this.userRole = role;

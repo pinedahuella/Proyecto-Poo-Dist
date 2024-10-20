@@ -17,6 +17,7 @@ public class MOSTRARGESTIONUSUARIOS extends javax.swing.JFrame {
 
 public MOSTRARGESTIONUSUARIOS() {
     initComponents();
+    setResizable(false); // Desactivar el cambio de tamaño
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     gestionUsuarios = new GESTIONUSUARIOS();
     gestionUsuarios.cargarUsuariosDesdeExcel();
@@ -30,7 +31,7 @@ public MOSTRARGESTIONUSUARIOS() {
     initComponents();
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     this.ventanaPrincipal = ventanaPrincipal;
-    
+    setResizable(false); // Desactivar el cambio de tamaño
     if (ventanaPrincipal != null) {
         this.gestionUsuarios = ventanaPrincipal.gestionUsuarios;
         this.listaUsuarios = gestionUsuarios.getUsuarios();

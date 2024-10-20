@@ -8,72 +8,88 @@ import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
+/**
+ * Clase AGREGARGESTIONUSUARIOS
+ * Esta clase representa una ventana para agregar usuarios en la aplicación.
+ * Hereda de JFrame y maneja la interacción del usuario para ingresar datos de nuevos usuarios.
+ */
+public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
 
-public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
+    // Variables de instancia
+    public GESTIONUSUARIOS gestionUsuarios; // Manejo de usuarios
+    public Vector<Usuarios> listaUsuarios = new Vector<>(); // Lista de usuarios
+    private int indiceActual; // Índice del usuario actual
+    private String currentUser; // Nombre de usuario actual
+    private String userRole; // Rol del usuario actual
+    private LOGINPINEED loginFrame; // Marco de inicio de sesión
 
-   
-    public GESTIONUSUARIOS gestionUsuarios;
-    public Vector<Usuarios> listaUsuarios = new Vector<>();
-    private int indiceActual;
-       private String currentUser;
-    private String userRole;
-    private LOGINPINEED loginFrame;
-    
-    
-    public AGREGARGESTIONUSUARIOS (String username, String role, LOGINPINEED loginFrame) {
-      initComponents();
-        indiceActual = 0;
-
-       gestionUsuarios = new GESTIONUSUARIOS();
+    /**
+     * Constructor de la clase AGREGARGESTIONUSUARIOS.
+     * Inicializa los componentes de la ventana y carga los usuarios desde un archivo Excel.
+     *
+     * @param username El nombre de usuario actual.
+     * @param role El rol del usuario actual.
+     * @param loginFrame La instancia del marco de inicio de sesión.
+     */
+    public AGREGARGESTIONUSUARIOS(String username, String role, LOGINPINEED loginFrame) {
+        initComponents(); // Inicializa los componentes gráficos
+        indiceActual = 0; // Inicializa el índice del usuario actual
+        setResizable(false); // Desactivar el cambio de tamaño
+        // Crea una instancia de GESTIONUSUARIOS y carga los usuarios desde Excel
+        gestionUsuarios = new GESTIONUSUARIOS();
         gestionUsuarios.cargarUsuariosDesdeExcel();
 
-
- 
+        // Si se cargaron usuarios, se asignan a la lista
         if (gestionUsuarios.getUsuarios() != null) {
             listaUsuarios = gestionUsuarios.getUsuarios();
         }
-    this.currentUser = username;
-        this.userRole = role;
-        this.loginFrame = loginFrame;
-              setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        
+        this.currentUser = username; // Asigna el nombre de usuario actual
+        this.userRole = role; // Asigna el rol del usuario actual
+        this.loginFrame = loginFrame; // Asigna el marco de inicio de sesión
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); // Cierra la ventana al finalizar
     }
 
-    
-   
-
+    /**
+     * Limpia los campos de entrada en la ventana.
+     */
     private void limpiarCampos() {
-        txtNombreUsuario.setText("");
-        txtApellidoUsuario.setText("");
-        txtNumeroDeDpiUsuario.setText("");
-        txtCargoUsuario.setSelectedIndex(0);
-        txtContraseñaUsuario.setText("");
-        txtCorreoElectronicoUsuario.setText("");
-        txtNumeroTelefonicoUsuario.setText("");
-        txtGeneroUsuario.setSelectedIndex(0);
-        txtFechaDeNacimientoUsuario.setDate(null);
-        txtNombreDeUsuarioUsuario.setText("");
-        txtEstadoUsuario.setSelectedIndex(0);
+        txtNombreUsuario.setText(""); // Limpia el campo de nombre
+        txtApellidoUsuario.setText(""); // Limpia el campo de apellido
+        txtNumeroDeDpiUsuario.setText(""); // Limpia el campo de DPI
+        txtCargoUsuario.setSelectedIndex(0); // Reinicia el índice de cargo
+        txtContraseñaUsuario.setText(""); // Limpia el campo de contraseña
+        txtCorreoElectronicoUsuario.setText(""); // Limpia el campo de correo electrónico
+        txtNumeroTelefonicoUsuario.setText(""); // Limpia el campo de número telefónico
+        txtGeneroUsuario.setSelectedIndex(0); // Reinicia el índice de género
+        txtFechaDeNacimientoUsuario.setDate(null); // Reinicia la fecha de nacimiento
+        txtNombreDeUsuarioUsuario.setText(""); // Limpia el campo de nombre de usuario
+        txtEstadoUsuario.setSelectedIndex(0); // Reinicia el índice de estado
     }
-    
-    
-        public void addWindowListener() {
+
+    /**
+     * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
+     */
+    public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
+                cerrarSesionYSalir(); // Cierra sesión y sale
             }
         });
     }
-     
 
+    /**
+     * Cierra la sesión del usuario actual y muestra la ventana de inicio de sesión.
+     */
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
-            loginFrame.cerrarSesion(currentUser, userRole);
+            loginFrame.cerrarSesion(currentUser, userRole); // Cierra sesión
         }
-        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        // Crea una nueva instancia de LOGINPINEED
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-        nuevaLoginFrame.setVisible(true);
-        this.dispose();
+        nuevaLoginFrame.setVisible(true); // Muestra el marco de inicio de sesión
+        this.dispose(); // Cierra la ventana actual
     }
     
     @SuppressWarnings("unchecked")
@@ -337,29 +353,40 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * Maneja el evento de acción para agregar un usuario al sistema.
+     * Este método valida la entrada del usuario, incluyendo el nombre, apellido, DPI, 
+     * cargo, correo electrónico, número telefónico, género, nombre de usuario y 
+     * contraseña. Si todos los campos son válidos, se crea un nuevo objeto `Usuarios`, 
+     * se agrega a la lista de usuarios y se guarda en un archivo Excel. 
+     * Se muestra un mensaje de confirmación al usuario.
+     *
+     * @param evt El evento de acción que desencadena este método.
+     */
     private void btnAgregarUsuarioSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarUsuarioSistemaActionPerformed
-    try {
+        try {
+            // Recuperar y limpiar los datos de entrada
+            String nombreUsuario = txtNombreUsuario.getText().trim();
+            String apellidoUsuario = txtApellidoUsuario.getText().trim();
+            long numeroDeDpiUsuario = Long.parseLong(txtNumeroDeDpiUsuario.getText().trim());
+            String cargoUsuario = txtCargoUsuario.getSelectedItem().toString().trim();
+            String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
+            int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuario.getText().trim());
+            String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
+            String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
+            String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
 
-        String nombreUsuario = txtNombreUsuario.getText().trim();
-        String apellidoUsuario = txtApellidoUsuario.getText().trim();
-        long numeroDeDpiUsuario = Long.parseLong(txtNumeroDeDpiUsuario.getText().trim());
-        String cargoUsuario = txtCargoUsuario.getSelectedItem().toString().trim();
-        String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
-        int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuario.getText().trim()); 
-        String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
-        String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
-        String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
+            // Validar fecha de nacimiento
+            Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
+            if (fechaNacimientoUsuarioDate == null) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
+                return;
+            }
 
-        Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
-        if (fechaNacimientoUsuarioDate == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
-            return;
-        }
+            String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
 
-        
-        String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
-
-        // Validate password
+            // Validar contraseña
             if (!validarContrasena(contrasenaUsuario)) {
                 JOptionPane.showMessageDialog(this, "La contraseña no cumple con los requisitos:\n" +
                     "- Debe tener al menos 8 caracteres\n" +
@@ -367,137 +394,152 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                     "- Debe incluir al menos una letra, un número y un carácter especial");
                 return;
             }
-        
-        // Verificar si el nombre de usuario ha sido modificado a mayúsculas
-        if (!nombreDeUsuario.equals(txtNombreDeUsuarioUsuario.getText().trim())) {
-            JOptionPane.showMessageDialog(this, "El nombre de usuario debe estar en minúsculas. Se ha convertido automáticamente.");
-        }
-   
-        if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
-            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
-            return;
-        }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaDeNacimientoUsuario = sdf.format(fechaNacimientoUsuarioDate);
+            // Verificar si el nombre de usuario ha sido modificado a mayúsculas
+            if (!nombreDeUsuario.equals(txtNombreDeUsuarioUsuario.getText().trim())) {
+                JOptionPane.showMessageDialog(this, "El nombre de usuario debe estar en minúsculas. Se ha convertido automáticamente.");
+            }
 
-
-        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || cargoUsuario.isEmpty() ||
-            correoElectronicoUsuario.isEmpty() || generoUsuario.isEmpty() || nombreDeUsuario.isEmpty() ||
-            contrasenaUsuario.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
-            return;
-        }
-
-   
-        if (String.valueOf(numeroDeDpiUsuario).length() != 13) { 
-            JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
-            return;
-        }
-
-        if (String.valueOf(numeroTelefonicoUsuario).length() != 8) { 
-            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
-            return;
-        }
-
-
-        for (Usuarios usuarioExistente : listaUsuarios) {
-            if (usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) { 
-                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+            // Validar correo electrónico
+            if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
+                JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
                 return;
             }
-            if (usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) { 
-                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+
+            // Formatear fecha de nacimiento
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaDeNacimientoUsuario = sdf.format(fechaNacimientoUsuarioDate);
+
+            // Validar campos vacíos
+            if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || cargoUsuario.isEmpty() ||
+                correoElectronicoUsuario.isEmpty() || generoUsuario.isEmpty() || nombreDeUsuario.isEmpty() ||
+                contrasenaUsuario.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
                 return;
             }
-            if (usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
-                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+
+            // Validar longitud del DPI y número telefónico
+            if (String.valueOf(numeroDeDpiUsuario).length() != 13) { 
+                JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
                 return;
             }
+            if (String.valueOf(numeroTelefonicoUsuario).length() != 8) { 
+                JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
+                return;
+            }
+
+            // Verificar si el usuario ya existe
+            for (Usuarios usuarioExistente : listaUsuarios) {
+                if (usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) { 
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+                    return;
+                }
+                if (usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) { 
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+                    return;
+                }
+                if (usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+                    return;
+                }
+            }
+
+            // Crear un nuevo usuario
+            Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, apellidoUsuario, 
+                                            cargoUsuario, generoUsuario, numeroDeDpiUsuario, 
+                                            fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
+                                            correoElectronicoUsuario, estadoUsuario);
+
+            // Agregar usuario a la lista
+            listaUsuarios.add(usuario);
+            JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.");
+
+            // Limpiar los campos de entrada
+            limpiarCampos();
+
+            // Guardar usuarios en Excel
+            gestionUsuarios.setUsuarios(listaUsuarios); 
+            gestionUsuarios.guardarUsuariosEnExcel();
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
         }
 
+        // Navegar a la ventana de gestión de usuarios
+        String username = this.currentUser; // Asumiendo que currentUser almacena el nombre de usuario
+        String role = this.userRole; // Asumiendo que userRole almacena el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Asumiendo que loginFrame ya está disponible
 
-        Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, apellidoUsuario, cargoUsuario, 
-                                        generoUsuario, numeroDeDpiUsuario, fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
-                                        correoElectronicoUsuario, estadoUsuario);
-        
-        listaUsuarios.add(usuario);
-        JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.");
-
-
-        limpiarCampos();
-
-
-
-      
-        gestionUsuarios.setUsuarios(listaUsuarios); 
-        gestionUsuarios.guardarUsuariosEnExcel();
-        
-        
-} catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
-    }
-
-
-    
-
-                 String username = this.currentUser; // Assuming currentUser holds the username
-    String role = this.userRole;        // Assuming userRole holds the role
-    LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-    
-    INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        INICIOGESTIONUSUARIOS abrir = new INICIOGESTIONUSUARIOS(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
 
-    
+    // Indica si la contraseña es visible o no. Inicialmente, está oculta.
     private boolean isPasswordVisible = false;
 
+    /**
+     * Maneja el evento de acción para mostrar u ocultar la contraseña.
+     * Cambia el carácter de eco del campo de texto de la contraseña
+     * y actualiza el texto del botón en consecuencia.
+     *
+     * @param evt El evento de acción que activó este método.
+     */
     private void btnMostrarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarContraseñaActionPerformed
         if (!isPasswordVisible) {
-            // Mostrar contraseña
+            // Mostrar la contraseña configurando el carácter de eco a 0
             txtContraseñaUsuario.setEchoChar((char)0);
-            btnMostrarContraseña.setText("OCULTAR");
+            btnMostrarContraseña.setText("OCULTAR"); // Cambiar el texto del botón a "OCULTAR"
         } else {
-            // Ocultar contraseña
+            // Ocultar la contraseña configurando el carácter de eco a '*'
             txtContraseñaUsuario.setEchoChar('*');
-            btnMostrarContraseña.setText("MOSTRAR");
+            btnMostrarContraseña.setText("MOSTRAR"); // Cambiar el texto del botón a "MOSTRAR"
         }
+        // Alternar el estado de visibilidad de la contraseña
         isPasswordVisible = !isPasswordVisible;
     }//GEN-LAST:event_btnMostrarContraseñaActionPerformed
-private boolean validarContrasena(String contrasena) {
-    // Verificar longitud mínima
-    if (contrasena.length() < 8) {
-        return false;
-    }
 
-    // Verificar si contiene 'pineed'
-    if (!contrasena.toLowerCase().contains("pineed")) {
-        return false;
-    }
-
-    // Verificar si contiene al menos una letra, un número y un carácter especial
-    boolean tieneLetra = false;
-    boolean tieneNumero = false;
-    boolean tieneEspecial = false;
-
-    for (char c : contrasena.toCharArray()) {
-        if (Character.isLetter(c)) {
-            tieneLetra = true;
-        } else if (Character.isDigit(c)) {
-            tieneNumero = true;
-        } else if (!Character.isWhitespace(c)) {
-            tieneEspecial = true;
-        }
-    }
-
-    return tieneLetra && tieneNumero && tieneEspecial;
-}
-    /**
-     * @param args the command line arguments
+    
+     /**
+     * Valida si la contraseña cumple con ciertos criterios de seguridad.
+     *
+     * @param contrasena La contraseña a validar.
+     * @return true si la contraseña es válida, false en caso contrario.
      */
+    private boolean validarContrasena(String contrasena) {
+        // Verificar longitud mínima de la contraseña
+        if (contrasena.length() < 8) {
+            return false; // La contraseña es demasiado corta
+        }
+
+        // Verificar si la contraseña contiene 'pineed'
+        if (!contrasena.toLowerCase().contains("pineed")) {
+            return false; // La contraseña no contiene la palabra requerida
+        }
+
+        // Verificar si contiene al menos una letra, un número y un carácter especial
+        boolean tieneLetra = false;
+        boolean tieneNumero = false;
+        boolean tieneEspecial = false;
+
+        for (char c : contrasena.toCharArray()) {
+            if (Character.isLetter(c)) {
+                tieneLetra = true; // Hay al menos una letra
+            } else if (Character.isDigit(c)) {
+                tieneNumero = true; // Hay al menos un número
+            } else if (!Character.isWhitespace(c)) {
+                tieneEspecial = true; // Hay al menos un carácter especial
+            }
+        }
+
+        // Retorna true solo si se cumplen todas las condiciones
+        return tieneLetra && tieneNumero && tieneEspecial;
+    }
+    
+
+    // Método main para inicializar la interfaz gráfica
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -522,18 +564,16 @@ private boolean validarContrasena(String contrasena) {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                
-                                 String username = "defaultUser";  // Replace with actual username or logic
-            String role = "defaultRole";      // Replace with actual role
-            LOGINPINEED loginFrame = new LOGINPINEED();  // Instantiate the LOGINPINEED object
+            /* Crear y mostrar el formulario */
+       java.awt.EventQueue.invokeLater(new Runnable() {
+           public void run() {
+               String username = "defaultUser";  // Reemplazar con el nombre de usuario real o lógica
+               String role = "defaultRole";      // Reemplazar con el rol real
+               LOGINPINEED loginFrame = new LOGINPINEED();  // Instanciar el objeto LOGINPINEED
 
-            // Create the INICIOPINEED instance with the required parameters
-            new AGREGARGESTIONUSUARIOS(username, role, loginFrame).setVisible(true);
-
-            }
+               // Crear la instancia de AGREGARGESTIONUSUARIOS con los parámetros requeridos
+               new AGREGARGESTIONUSUARIOS(username, role, loginFrame).setVisible(true);
+           }
         });
     }
 

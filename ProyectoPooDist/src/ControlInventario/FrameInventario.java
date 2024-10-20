@@ -7,7 +7,7 @@ import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import Inicio.INICIOPINEED;
+import InicioApp.INICIOPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlPedidos.FormularioPedidos;
@@ -56,7 +56,7 @@ public class FrameInventario extends javax.swing.JFrame {
      */
     public FrameInventario(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         //iniciamos el indicie actual en 0, el primer elemnto del combo box
         indiceActual = 0;
         

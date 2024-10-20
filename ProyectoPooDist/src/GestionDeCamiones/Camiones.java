@@ -1,31 +1,56 @@
 package GestionDeCamiones;
 
+/**
+ * La clase Camiones representa un camión y contiene información sobre su estado,
+ * características, costos de operación y mantenimiento.
+ */
 public class Camiones {
 
-    private String placas;
-    private String estado;
-    private String tipoCombustible;
-    private double kilometraje;
-    private double capacidadCarga;
-    private String añoFabricacion;
-    private String modelo;
-    private String marca;
+    private String placas; // Placas del camión
+    private String estado; // Estado actual del camión (disponible, en reparación, etc.)
+    private String tipoCombustible; // Tipo de combustible utilizado por el camión
+    private double kilometraje; // Kilometraje actual del camión
+    private double capacidadCarga; // Capacidad de carga del camión en toneladas
+    private String añoFabricacion; // Año de fabricación del camión
+    private String modelo; // Modelo del camión
+    private String marca; // Marca del camión
 
-    private double costoReparacion;
-    private double costoGalon;
-    private double galones;
-    private double costoMantenimiento;
-    private double gastoNoEspecificado;
-    private String descripcionDelGasto;
-    private String tiempoEnReparacion;
-    private String fechaDeMantenimiento; 
-    private double total; 
-    private double costoTotalCombustible;
+    // Atributos relacionados con los costos
+    private double costoReparacion; // Costo de reparación del camión
+    private double costoGalon; // Costo por galón de combustible
+    private double galones; // Cantidad de galones consumidos
+    private double costoMantenimiento; // Costo de mantenimiento del camión
+    private double gastoNoEspecificado; // Gastos que no han sido especificados
+    private String descripcionDelGasto; // Descripción de los gastos
+    private String tiempoEnReparacion; // Tiempo que el camión ha estado en reparación
+    private String fechaDeMantenimiento; // Fecha del último mantenimiento realizado
+    private double total; // Total de gastos asociados al camión
+    private double costoTotalCombustible; // Costo total del combustible consumido
 
-
+    // Constructor por defecto
     public Camiones() {}
 
-
+    /**
+     * Constructor para inicializar una instancia de Camiones.
+     * 
+     * @param placas Placas del camión
+     * @param estado Estado actual del camión
+     * @param tipoCombustible Tipo de combustible utilizado
+     * @param kilometraje Kilometraje del camión
+     * @param capacidadCarga Capacidad de carga del camión
+     * @param añoFabricacion Año de fabricación del camión
+     * @param modelo Modelo del camión
+     * @param marca Marca del camión
+     * @param costoReparacion Costo de reparación del camión
+     * @param costoGalon Costo por galón de combustible
+     * @param galones Cantidad de galones consumidos
+     * @param costoMantenimiento Costo de mantenimiento del camión
+     * @param gastoNoEspecificado Gastos no especificados
+     * @param descripcionDelGasto Descripción de los gastos
+     * @param tiempoEnReparacion Tiempo en reparación del camión
+     * @param fechaDeMantenimiento Fecha del último mantenimiento
+     * @param total Total de gastos asociados
+     */
     public Camiones(String placas, String estado, String tipoCombustible, double kilometraje,
                     double capacidadCarga, String añoFabricacion, String modelo,
                     String marca, double costoReparacion, double costoGalon,
@@ -49,9 +74,10 @@ public class Camiones {
         this.tiempoEnReparacion = tiempoEnReparacion;
         this.fechaDeMantenimiento = fechaDeMantenimiento;
         this.total = total;
-        this.costoTotalCombustible = costoGalon * galones;
+        this.costoTotalCombustible = costoGalon * galones; // Calcula el costo total del combustible
     }
 
+    // Métodos getter y setter para acceder y modificar los atributos
     public String getPlacas() {
         return placas;
     }
@@ -196,9 +222,32 @@ public class Camiones {
         this.costoTotalCombustible = costoTotalCombustible;
     }
 
+    /**
+     * Método toString que devuelve una representación en forma de cadena del camión.
+     * 
+     * @return Cadena que representa la información del camión.
+     */
     @Override
     public String toString() {
-        return "Camiones{" + "placas=" + placas + ", estado=" + estado + ", tipoCombustible=" + tipoCombustible + ", kilometraje=" + kilometraje + ", capacidadCarga=" + capacidadCarga + ", a\u00f1oFabricacion=" + añoFabricacion + ", modelo=" + modelo + ", marca=" + marca + ", costoReparacion=" + costoReparacion + ", costoGalon=" + costoGalon + ", galones=" + galones + ", costoMantenimiento=" + costoMantenimiento + ", gastoNoEspecificado=" + gastoNoEspecificado + ", descripcionDelGasto=" + descripcionDelGasto + ", tiempoEnReparacion=" + tiempoEnReparacion + ", fechaDeMantenimiento=" + fechaDeMantenimiento + ", total=" + total + ", costoTotalCombustible=" + costoTotalCombustible + '}';
+        return "Camiones{" + 
+                "placas='" + placas + '\'' + 
+                ", estado='" + estado + '\'' + 
+                ", tipoCombustible='" + tipoCombustible + '\'' + 
+                ", kilometraje=" + kilometraje + 
+                ", capacidadCarga=" + capacidadCarga + 
+                ", añoFabricacion='" + añoFabricacion + '\'' + 
+                ", modelo='" + modelo + '\'' + 
+                ", marca='" + marca + '\'' + 
+                ", costoReparacion=" + costoReparacion + 
+                ", costoGalon=" + costoGalon + 
+                ", galones=" + galones + 
+                ", costoMantenimiento=" + costoMantenimiento + 
+                ", gastoNoEspecificado=" + gastoNoEspecificado + 
+                ", descripcionDelGasto='" + descripcionDelGasto + '\'' + 
+                ", tiempoEnReparacion='" + tiempoEnReparacion + '\'' + 
+                ", fechaDeMantenimiento='" + fechaDeMantenimiento + '\'' + 
+                ", total=" + total + 
+                ", costoTotalCombustible=" + costoTotalCombustible + 
+                '}';
     }  
-
 }

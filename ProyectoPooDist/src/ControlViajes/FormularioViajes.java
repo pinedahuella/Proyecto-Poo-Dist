@@ -8,7 +8,7 @@ import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import Inicio.INICIOPINEED;
+import InicioApp.INICIOPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
@@ -102,7 +102,7 @@ public class FormularioViajes extends javax.swing.JFrame {
      */
     public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         //iniciamos el indice a 0;
         indice = 0;
         

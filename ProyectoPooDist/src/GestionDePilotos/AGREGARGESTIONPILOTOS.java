@@ -25,7 +25,7 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
     public AGREGARGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         indiceActual = 0;
-
+        setResizable(false); // Desactivar el cambio de tamaño
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
 

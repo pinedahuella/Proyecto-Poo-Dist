@@ -1,33 +1,32 @@
 package GestionDeCamiones;
 
-import ControlInventario.FrameInventario;
-import ControlPedidos.FormularioPedidos;
-import ControlPlanilla.FramePlanillaSemanal;
-import ControlViajes.FormularioViajes;
-import GestionDeCamiones.FACTURASGESTIONCAMIONES;
-import GestionDeCamiones.Camiones;
-import GestionDeCamiones.CAMIONESFACTURA;
-import GestionDePilotos.INICIOGESTIONPILOTOS;
-import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import Login.LOGINPINEED;
-import com.toedter.calendar.JDateChooser;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Vector;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.text.ParseException;
-import java.util.List;
-import java.util.ArrayList;
-import javax.swing.SwingUtilities;
-
+// Importación de clases necesarias para la gestión de camiones y otras funcionalidades de la aplicación
+import ControlInventario.FrameInventario; // Importa la clase FrameInventario para gestionar la interfaz de inventario
+import ControlPedidos.FormularioPedidos; // Importa la clase FormularioPedidos para gestionar pedidos de productos
+import ControlPlanilla.FramePlanillaSemanal; // Importa la clase FramePlanillaSemanal para manejar la planilla semanal
+import ControlViajes.FormularioViajes; // Importa la clase FormularioViajes para gestionar la logística de viajes
+import GestionDePilotos.INICIOGESTIONPILOTOS; // Importa la clase INICIOGESTIONPILOTOS para manejar la gestión de pilotos
+import GestionDeUsuarios.INICIOGESTIONUSUARIOS; // Importa la clase INICIOGESTIONUSUARIOS para gestionar usuarios
+import Login.GESTIONLOGIN; // Importa la clase GESTIONLOGIN para gestionar la lógica de inicio de sesión
+import Login.LOGINPINEED; // Importa la clase LOGINPINEED para manejar la interfaz de inicio de sesión
+import Login.Login; // Importa la clase Login que probablemente maneja la autenticación de usuarios
+import com.toedter.calendar.JDateChooser; // Importa la clase JDateChooser para seleccionar fechas de manera visual
+import java.awt.event.ActionEvent; // Importa la clase ActionEvent para manejar eventos de acción
+import java.awt.event.ActionListener; // Importa la interfaz ActionListener para escuchar eventos de acción
+import java.text.SimpleDateFormat; // Importa la clase SimpleDateFormat para formatear fechas
+import java.util.Date; // Importa la clase Date para manejar fechas y horas
+import java.util.Vector; // Importa la clase Vector para almacenar datos en una lista dinámica
+import javax.swing.JOptionPane; // Importa la clase JOptionPane para mostrar diálogos de mensaje y entrada
+import javax.swing.JTable; // Importa la clase JTable para crear tablas en la interfaz gráfica
+import javax.swing.table.DefaultTableModel; // Importa la clase DefaultTableModel para gestionar modelos de tabla en Swing
+import java.time.LocalDateTime; // Importa la clase LocalDateTime para manejar fechas y horas de manera moderna
+import java.time.LocalTime; // Importa la clase LocalTime para trabajar con horas sin fechas
+import java.time.format.DateTimeFormatter; // Importa la clase DateTimeFormatter para formatear fechas y horas
+import java.text.ParseException; // Importa la clase ParseException para manejar errores de análisis de texto
+import java.util.List; // Importa la interfaz List para manejar listas de objetos
+import java.util.ArrayList; // Importa la clase ArrayList para crear listas dinámicas
+import javax.swing.JFrame; // Importa la clase JFrame para crear ventanas de aplicación
+import javax.swing.SwingUtilities; // Importa la clase SwingUtilities para realizar tareas en el hilo de eventos de Swing
 
 
 public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
@@ -46,7 +45,7 @@ public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
   public GARAGEGESTIONCAMIONES(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         indiceActual = 0;
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         gestionCamiones = new GESTIONCAMIONES();
         gestionCamiones.cargarCamionesDesdeExcel();
         
@@ -131,25 +130,6 @@ public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
     }
 
 
-    
-    
-        public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-      
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    this.dispose();
-}
 private void cargarCamionesTabla() {
     modeloCamiones.setRowCount(0);
     for (Camiones camiones : listaCamiones) {
@@ -176,8 +156,7 @@ private void cargarCamionesTabla() {
     }
  
  
-  
-  private void setupComboBox() {
+private void setupComboBox() {
         txtMenu.removeAllItems();
         txtMenu.addItem("Seleccione una opción");
 
@@ -185,8 +164,6 @@ private void cargarCamionesTabla() {
             addAdminOptions();
         } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
             addSecretariaOptions();
-        } else if (userRole.equalsIgnoreCase("USUARIO")) {
-            addUsuarioOptions();
         }
 
         txtMenu.addActionListener(new ActionListener() {
@@ -198,10 +175,19 @@ private void cargarCamionesTabla() {
     }
 
 
-
-
-
-
+    private void openNewFrame(JFrame newFrame) {
+        newFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        newFrame.setVisible(true);
+        
+        // Hacer invisible el frame actual
+        this.setVisible(false);
+        
+        // Dispose del frame actual
+        SwingUtilities.invokeLater(() -> {
+            this.dispose();
+        });
+    }
+    
     private void addAdminOptions() {
         txtMenu.addItem("Gestión de Usuarios");
         txtMenu.addItem("Gestión de Pilotos");
@@ -213,25 +199,14 @@ private void cargarCamionesTabla() {
         txtMenu.addItem("Planilla de Trabajadores");
         txtMenu.addItem("Gestión de Camiones");
         txtMenu.addItem("Calendario");
-        txtMenu.addItem("Login");
         txtMenu.addItem("Cerrar Sesión");
     }
 
     private void addSecretariaOptions() {
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Login");
         txtMenu.addItem("Cerrar Sesión");
     }
-
-    private void addUsuarioOptions() {
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Login");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-    
-    
-    
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -268,11 +243,8 @@ private void redirectToFrame(String option) {
         case "Calendario":
             btnCalendarioActionPerformed(null);
             break;
-        case "Login":
-            btnRegresarLoginActionPerformed(null);
-            break;
         case "Cerrar Sesión":
-            btnCerrarSesionActionPerformed(null);
+            btnRegresarLoginActionPerformed(null);
             break;
         default:
             JOptionPane.showMessageDialog(this, "Opción no válida");
@@ -342,13 +314,9 @@ private void redirectToFrame(String option) {
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
-            FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        } else {
-            JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
-        }
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                         
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
@@ -356,22 +324,14 @@ private void redirectToFrame(String option) {
         String username = this.currentUser; // Assuming currentUser holds the username
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
-            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        }
-    }                                                    
-
-    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
-        System.exit(0);
-    }                                               
-
-    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
-        LOGINPINEED abrir = new  LOGINPINEED();
+        
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
+    }                                                                                                  
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        cerrarSesionYRegresarLogin();
     }                                                
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
@@ -379,14 +339,54 @@ private void redirectToFrame(String option) {
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
-            FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        } else {
-            JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
-        }
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }     
+    
+    
+        public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+     
+
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -640,7 +640,7 @@ private void redirectToFrame(String option) {
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel14)
                             .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -772,113 +772,79 @@ private void redirectToFrame(String option) {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
+    private void txtNumeroDeGalonesGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroDeGalonesGastoActionPerformed
 
-    }//GEN-LAST:event_jTextField19ActionPerformed
+    }//GEN-LAST:event_txtNumeroDeGalonesGastoActionPerformed
 
-    private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-        if (txtMarcaCamionBuscar.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa al menos un campo de búsqueda.");
-            return;
-        }
+    private void txtCostoGalonGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoGalonGastoActionPerformed
 
-        // Obtiene la marca buscada
-        String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
+    }//GEN-LAST:event_txtCostoGalonGastoActionPerformed
 
-        // Limpia el modelo de la tabla
-        modeloCamiones.setRowCount(0);
-        boolean hayCoincidencias = false;
+    private void txtCostoDeReparacionGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeReparacionGastoActionPerformed
 
-        // Itera sobre la lista de camiones
-        for (Camiones camion : listaCamiones) {
-            boolean coincide = true;
+    }//GEN-LAST:event_txtCostoDeReparacionGastoActionPerformed
 
-            // Verifica si la marca coincide
-            if (!marcaBuscada.isEmpty() && !camion.getMarca().equalsIgnoreCase(marcaBuscada)) {
-                coincide = false;
+    private void txtActualizarTiempoReparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarTiempoReparacionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtActualizarTiempoReparacionActionPerformed
+
+    private void txtActualizarEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarEstadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtActualizarEstadoActionPerformed
+
+    private void txtGastoNoEspecificadoGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGastoNoEspecificadoGastoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtGastoNoEspecificadoGastoActionPerformed
+
+    private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
+        int filaSeleccionada = tblRegistroGastos.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String placaSeleccionada = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 0);
+            String fechaFactura = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 1);
+            double montoFactura = Double.parseDouble(tblRegistroGastos.getValueAt(filaSeleccionada, 4).toString());
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas borrar esta factura?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                CAMIONESFACTURA facturaAEliminar = null;
+                for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
+                    if (factura.getPlacasFactura().equals(placaSeleccionada) &&
+                        factura.getFechaFactura().equals(fechaFactura) &&
+                        Math.abs(factura.getMontoFactura() - montoFactura) < 0.01) {
+                        facturaAEliminar = factura;
+                        break;
+                    }
+                }
+
+                if (facturaAEliminar != null) {
+                    for (Camiones camion : listaCamiones) {
+                        if (camion.getPlacas().equals(placaSeleccionada)) {
+                            actualizarCamionTrasEliminarFactura(camion, facturaAEliminar);
+                            break;
+                        }
+                    }
+
+                    // Eliminar la factura
+                    gestionFacturas.getCamionesfactura().remove(facturaAEliminar);
+                    actualizarTablaGastos();
+                    cargarCamionesTabla();
+                    gestionFacturas.guardarFacturasEnExcel();
+                    guardarCamionesEnExcel();
+                    JOptionPane.showMessageDialog(this, "Factura eliminada correctamente y costos actualizados.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo encontrar la factura exacta para eliminar.");
+                }
             }
-
-            // Si hay coincidencias, añade el camión a la tabla
-            if (coincide) {
-                modeloCamiones.addRow(new Object[]{
-                    camion.getPlacas(),
-                    camion.getMarca(),
-                    camion.getModelo(),
-                    camion.getEstado(),
-                    camion.getTipoCombustible(),
-                    camion.getKilometraje(),
-                    camion.getCapacidadCarga(),
-                    camion.getAñoFabricacion(),
-                    camion.getCostoReparacion(),
-                    camion.getCostoGalon(),
-                    camion.getGalones(),
-                    camion.getCostoMantenimiento(),
-                    camion.getGastoNoEspecificado(),
-                    camion.getDescripcionDelGasto(),
-                    camion.getTiempoEnReparacion(),
-                    camion.getFechaDeMantenimiento()
-                });
-                hayCoincidencias = true;
-            }
-        }
-
-        // Muestra la tabla solo si hay coincidencias
-        tblRegistroCamiones.setVisible(hayCoincidencias);
-
-        // Muestra un mensaje si no se encontraron coincidencias
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-        }
-
-        // Limpia el campo de texto de búsqueda
-        txtMarcaCamionBuscar.setText("");
-    }//GEN-LAST:event_buscarCamionActionPerformed
-
-    private void actualizarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarCamionActionPerformed
-        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
-        if (filaSeleccionada < 0) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
-            return;
-        }
-
-        Camiones camion = listaCamiones.get(filaSeleccionada);
-        boolean huboModificaciones = false;
-
-        // Actualizar tiempo de reparación
-        String nuevoTiempoReparacion = txtActualizarTiempoReparacion.getText().trim();
-        if (!nuevoTiempoReparacion.isEmpty()) {
-            if (validarFormatoTiempoReparacion(nuevoTiempoReparacion)) {
-                camion.setTiempoEnReparacion(nuevoTiempoReparacion);
-                huboModificaciones = true;
-            } else {
-                JOptionPane.showMessageDialog(this, "Formato invalido. Número seguido de una unidad de tiempo válida.");
-                return;
-            }
-        }
-
-        // Actualizar estado
-        String nuevoEstado = (String) txtActualizarEstado.getSelectedItem();
-        if (!nuevoEstado.equals(camion.getEstado())) {
-            camion.setEstado(nuevoEstado);
-            huboModificaciones = true;
-        }
-
-        if (huboModificaciones) {
-            listaCamiones.set(filaSeleccionada, camion);
-            guardarCamionesEnExcel();
-            refrescarTablas();
-            JOptionPane.showMessageDialog(this, "Camión actualizado correctamente.");
-
-            // Limpiar campos
-            txtActualizarTiempoReparacion.setText("");
-            txtActualizarEstado.setSelectedIndex(0);
         } else {
-            JOptionPane.showMessageDialog(this, "No se realizaron modificaciones.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una factura para eliminar.");
         }
-    }//GEN-LAST:event_actualizarCamionActionPerformed
+    }//GEN-LAST:event_eliminarCamionActionPerformed
 
     private void agregarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCamionActionPerformed
-int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
 
         if (filaSeleccionada < 0) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
@@ -1031,80 +997,114 @@ int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
         }
     }//GEN-LAST:event_agregarCamionActionPerformed
 
-    private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
-int filaSeleccionada = tblRegistroGastos.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            String placaSeleccionada = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 0);
-            String fechaFactura = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 1);
-            double montoFactura = Double.parseDouble(tblRegistroGastos.getValueAt(filaSeleccionada, 4).toString());
-
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar esta factura?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                CAMIONESFACTURA facturaAEliminar = null;
-                for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
-                    if (factura.getPlacasFactura().equals(placaSeleccionada) &&
-                        factura.getFechaFactura().equals(fechaFactura) &&
-                        Math.abs(factura.getMontoFactura() - montoFactura) < 0.01) {
-                        facturaAEliminar = factura;
-                        break;
-                    }
-                }
-
-                if (facturaAEliminar != null) {
-                    for (Camiones camion : listaCamiones) {
-                        if (camion.getPlacas().equals(placaSeleccionada)) {
-                            actualizarCamionTrasEliminarFactura(camion, facturaAEliminar);
-                            break;
-                        }
-                    }
-
-                    // Eliminar la factura
-                    gestionFacturas.getCamionesfactura().remove(facturaAEliminar);
-                    actualizarTablaGastos();
-                    cargarCamionesTabla();
-                    gestionFacturas.guardarFacturasEnExcel();
-                    guardarCamionesEnExcel();
-                    JOptionPane.showMessageDialog(this, "Factura eliminada correctamente y costos actualizados.");
-                } else {
-                    JOptionPane.showMessageDialog(this, "No se pudo encontrar la factura exacta para eliminar.");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona una factura para eliminar.");
+    private void actualizarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarCamionActionPerformed
+        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+        if (filaSeleccionada < 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
+            return;
         }
-    }//GEN-LAST:event_eliminarCamionActionPerformed
 
-    private void txtGastoNoEspecificadoGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGastoNoEspecificadoGastoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtGastoNoEspecificadoGastoActionPerformed
+        Camiones camion = listaCamiones.get(filaSeleccionada);
+        boolean huboModificaciones = false;
+
+        // Actualizar tiempo de reparación
+        String nuevoTiempoReparacion = txtActualizarTiempoReparacion.getText().trim();
+        if (!nuevoTiempoReparacion.isEmpty()) {
+            if (validarFormatoTiempoReparacion(nuevoTiempoReparacion)) {
+                camion.setTiempoEnReparacion(nuevoTiempoReparacion);
+                huboModificaciones = true;
+            } else {
+                JOptionPane.showMessageDialog(this, "Formato invalido. Número seguido de una unidad de tiempo válida.");
+                return;
+            }
+        }
+
+        // Actualizar estado
+        String nuevoEstado = (String) txtActualizarEstado.getSelectedItem();
+        if (!nuevoEstado.equals(camion.getEstado())) {
+            camion.setEstado(nuevoEstado);
+            huboModificaciones = true;
+        }
+
+        if (huboModificaciones) {
+            listaCamiones.set(filaSeleccionada, camion);
+            guardarCamionesEnExcel();
+            refrescarTablas();
+            JOptionPane.showMessageDialog(this, "Camión actualizado correctamente.");
+
+            // Limpiar campos
+            txtActualizarTiempoReparacion.setText("");
+            txtActualizarEstado.setSelectedIndex(0);
+        } else {
+            JOptionPane.showMessageDialog(this, "No se realizaron modificaciones.");
+        }
+    }//GEN-LAST:event_actualizarCamionActionPerformed
+
+    private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
+        if (txtMarcaCamionBuscar.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, completa al menos un campo de búsqueda.");
+            return;
+        }
+
+        // Obtiene la marca buscada
+        String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
+
+        // Limpia el modelo de la tabla
+        modeloCamiones.setRowCount(0);
+        boolean hayCoincidencias = false;
+
+        // Itera sobre la lista de camiones
+        for (Camiones camion : listaCamiones) {
+            boolean coincide = true;
+
+            // Verifica si la marca coincide
+            if (!marcaBuscada.isEmpty() && !camion.getMarca().equalsIgnoreCase(marcaBuscada)) {
+                coincide = false;
+            }
+
+            // Si hay coincidencias, añade el camión a la tabla
+            if (coincide) {
+                modeloCamiones.addRow(new Object[]{
+                    camion.getPlacas(),
+                    camion.getMarca(),
+                    camion.getModelo(),
+                    camion.getEstado(),
+                    camion.getTipoCombustible(),
+                    camion.getKilometraje(),
+                    camion.getCapacidadCarga(),
+                    camion.getAñoFabricacion(),
+                    camion.getCostoReparacion(),
+                    camion.getCostoGalon(),
+                    camion.getGalones(),
+                    camion.getCostoMantenimiento(),
+                    camion.getGastoNoEspecificado(),
+                    camion.getDescripcionDelGasto(),
+                    camion.getTiempoEnReparacion(),
+                    camion.getFechaDeMantenimiento()
+                });
+                hayCoincidencias = true;
+            }
+        }
+
+        // Muestra la tabla solo si hay coincidencias
+        tblRegistroCamiones.setVisible(hayCoincidencias);
+
+        // Muestra un mensaje si no se encontraron coincidencias
+        if (!hayCoincidencias) {
+            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        }
+
+        // Limpia el campo de texto de búsqueda
+        txtMarcaCamionBuscar.setText("");
+    }//GEN-LAST:event_buscarCamionActionPerformed
+
+    private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
+
+    }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void txtCostoDeMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeMantenimientoActionPerformed
 
     }//GEN-LAST:event_txtCostoDeMantenimientoActionPerformed
-
-    private void txtActualizarEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarEstadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtActualizarEstadoActionPerformed
-
-    private void txtActualizarTiempoReparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarTiempoReparacionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtActualizarTiempoReparacionActionPerformed
-
-    private void txtCostoDeReparacionGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoDeReparacionGastoActionPerformed
-
-    }//GEN-LAST:event_txtCostoDeReparacionGastoActionPerformed
-
-    private void txtCostoGalonGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoGalonGastoActionPerformed
-
-    }//GEN-LAST:event_txtCostoGalonGastoActionPerformed
-
-    private void txtNumeroDeGalonesGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroDeGalonesGastoActionPerformed
-
-    }//GEN-LAST:event_txtNumeroDeGalonesGastoActionPerformed
 
     
     

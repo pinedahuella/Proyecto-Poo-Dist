@@ -6,7 +6,7 @@ import GestionDePilotos.Piloto;
 import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
-import Inicio.INICIOPINEED;
+import InicioApp.INICIOPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;  // Para manejar eventos de acción
 import java.awt.event.ActionEvent;  // Para representar eventos de acción
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 
@@ -69,6 +70,19 @@ private void setupComboBox() {
     }
 
 
+    private void openNewFrame(JFrame newFrame) {
+        newFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        newFrame.setVisible(true);
+        
+        // Hacer invisible el frame actual
+        this.setVisible(false);
+        
+        // Dispose del frame actual
+        SwingUtilities.invokeLater(() -> {
+            this.dispose();
+        });
+    }
+    
     private void addAdminOptions() {
         txtMenu.addItem("Gestión de Usuarios");
         txtMenu.addItem("Gestión de Pilotos");
@@ -274,7 +288,7 @@ private void cerrarSesionYRegresarLogin() {
     
     public INICIOGESTIONUSUARIOS(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         gestionUsuarios = new GESTIONUSUARIOS();
         gestionUsuarios.cargarUsuariosDesdeExcel();
         

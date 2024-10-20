@@ -17,6 +17,7 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
 
     public MOSTRARGESTIONPILOTOS() {
         initComponents();
+        setResizable(false); // Desactivar el cambio de tamaño
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         gestionPilotos = new GESTIONPILOTOS();
         gestionPilotos.cargarPilotosDesdeExcel();
@@ -26,6 +27,7 @@ public class MOSTRARGESTIONPILOTOS extends javax.swing.JFrame {
 
     public MOSTRARGESTIONPILOTOS(Piloto piloto, INICIOGESTIONPILOTOS ventanaPrincipal) {
         initComponents();
+        setResizable(false); // Desactivar el cambio de tamaño
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.ventanaPrincipal = ventanaPrincipal;
 
