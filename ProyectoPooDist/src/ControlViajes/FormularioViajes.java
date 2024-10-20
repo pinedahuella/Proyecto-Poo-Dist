@@ -16,6 +16,10 @@ import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
+import Login.GESTIONLOGIN;
+import Login.Login;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -202,73 +206,78 @@ public class FormularioViajes extends javax.swing.JFrame {
         });
     }
      
-    private void cerrarSesionYSalir() {
-        if (loginFrame != null) {
-            loginFrame.cerrarSesion(currentUser, userRole);
-        }
-        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
         nuevaLoginFrame.setVisible(true);
         this.dispose();
     }
 
-       
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
 
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
+
+       
 private void setupComboBox() {
-        txtMenu1.removeAllItems();
-        txtMenu1.addItem("Seleccione una opción");
+        txtMenu.removeAllItems();
+        txtMenu.addItem("Seleccione una opción");
 
         if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
             addAdminOptions();
         } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
             addSecretariaOptions();
-        } else if (userRole.equalsIgnoreCase("USUARIO")) {
-            addUsuarioOptions();
         }
 
-        txtMenu1.addActionListener(new ActionListener() {
+        txtMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu1.getSelectedItem();
+                String selectedOption = (String) txtMenu.getSelectedItem();
                 redirectToFrame(selectedOption);
             }
         });
     }
 
 
-
-
-
-
     private void addAdminOptions() {
-        txtMenu1.addItem("Gestión de Usuarios");
-        txtMenu1.addItem("Gestión de Pilotos");
-        txtMenu1.addItem("Gestión de Créditos");
-        txtMenu1.addItem("Gestión de Clientes");
-        txtMenu1.addItem("Gestión de Ventas");
-        txtMenu1.addItem("Gestión de Pedidos");
-        txtMenu1.addItem("Inventario de Quintales");
-        txtMenu1.addItem("Planilla de Trabajadores");
-        txtMenu1.addItem("Gestión de Camiones");
-        txtMenu1.addItem("Calendario");
-        txtMenu1.addItem("Login");
-        txtMenu1.addItem("Cerrar Sesión");
+        txtMenu.addItem("Gestión de Usuarios");
+        txtMenu.addItem("Gestión de Pilotos");
+        txtMenu.addItem("Gestión de Créditos");
+        txtMenu.addItem("Gestión de Clientes");
+        txtMenu.addItem("Gestión de Ventas");
+        txtMenu.addItem("Gestión de Pedidos");
+        txtMenu.addItem("Inventario de Quintales");
+        txtMenu.addItem("Planilla de Trabajadores");
+        txtMenu.addItem("Gestión de Camiones");
+        txtMenu.addItem("Calendario");
+        txtMenu.addItem("Cerrar Sesión");
     }
 
     private void addSecretariaOptions() {
-        txtMenu1.addItem("Gestión de Ventas");
-        txtMenu1.addItem("Planilla de Trabajadores");
-        txtMenu1.addItem("Login");
-        txtMenu1.addItem("Cerrar Sesión");
+        txtMenu.addItem("Gestión de Ventas");
+        txtMenu.addItem("Planilla de Trabajadores");
+        txtMenu.addItem("Cerrar Sesión");
     }
-
-    private void addUsuarioOptions() {
-        txtMenu1.addItem("Calendario");
-        txtMenu1.addItem("Login");
-        txtMenu1.addItem("Cerrar Sesión");
-    }
-    
-    
-    
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -305,11 +314,8 @@ private void redirectToFrame(String option) {
         case "Calendario":
             btnCalendarioActionPerformed(null);
             break;
-        case "Login":
-            btnRegresarLoginActionPerformed(null);
-            break;
         case "Cerrar Sesión":
-            btnCerrarSesionActionPerformed(null);
+            btnRegresarLoginActionPerformed(null);
             break;
         default:
             JOptionPane.showMessageDialog(this, "Opción no válida");
@@ -318,8 +324,8 @@ private void redirectToFrame(String option) {
 }
 
     private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-    }                                                    
-
+    }  
+    
     private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 
         String username = this.currentUser; // Assuming currentUser holds the username
@@ -379,10 +385,9 @@ private void redirectToFrame(String option) {
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-
-            FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                         
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
@@ -390,22 +395,14 @@ private void redirectToFrame(String option) {
         String username = this.currentUser; // Assuming currentUser holds the username
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
         
-    }                                                    
-
-    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
-    cerrarSesionYSalir();
-    System.exit(0);
-    }                                               
-
-    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
-        LOGINPINEED abrir = new  LOGINPINEED();
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
+    }                                                                                                  
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        cerrarSesionYRegresarLogin();
     }                                                
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
@@ -413,9 +410,9 @@ private void redirectToFrame(String option) {
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-            FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }     
 
 
@@ -575,7 +572,7 @@ private void redirectToFrame(String option) {
         comboTViajeB = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
-        txtMenu1 = new javax.swing.JComboBox<>();
+        txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -1033,14 +1030,14 @@ private void redirectToFrame(String option) {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txtMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1690,6 +1687,6 @@ private void redirectToFrame(String option) {
     private javax.swing.JTable tablaProductosA;
     private javax.swing.JTable tablaProductosB;
     private javax.swing.JLabel textoFechasIguales;
-    private javax.swing.JComboBox<String> txtMenu1;
+    private javax.swing.JComboBox<String> txtMenu;
     // End of variables declaration//GEN-END:variables
 }

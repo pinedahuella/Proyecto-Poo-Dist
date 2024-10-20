@@ -15,6 +15,10 @@ import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
+import Login.GESTIONLOGIN;
+import Login.Login;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -54,14 +58,37 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
         });
     }
      
-    private void cerrarSesionYSalir() {
-        if (loginFrame != null) {
-            loginFrame.cerrarSesion(currentUser, userRole);
-        }
-        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
         nuevaLoginFrame.setVisible(true);
         this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
     }
 
      
@@ -124,8 +151,6 @@ private void setupComboBox() {
             addAdminOptions();
         } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
             addSecretariaOptions();
-        } else if (userRole.equalsIgnoreCase("USUARIO")) {
-            addUsuarioOptions();
         }
 
         txtMenu.addActionListener(new ActionListener() {
@@ -135,10 +160,6 @@ private void setupComboBox() {
             }
         });
     }
-
-
-
-
 
 
     private void addAdminOptions() {
@@ -152,25 +173,14 @@ private void setupComboBox() {
         txtMenu.addItem("Planilla de Trabajadores");
         txtMenu.addItem("Gestión de Camiones");
         txtMenu.addItem("Calendario");
-        txtMenu.addItem("Login");
         txtMenu.addItem("Cerrar Sesión");
     }
 
     private void addSecretariaOptions() {
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Login");
         txtMenu.addItem("Cerrar Sesión");
     }
-
-    private void addUsuarioOptions() {
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Login");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-    
-    
-    
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -207,11 +217,8 @@ private void redirectToFrame(String option) {
         case "Calendario":
             btnCalendarioActionPerformed(null);
             break;
-        case "Login":
-            btnRegresarLoginActionPerformed(null);
-            break;
         case "Cerrar Sesión":
-            btnCerrarSesionActionPerformed(null);
+            btnRegresarLoginActionPerformed(null);
             break;
         default:
             JOptionPane.showMessageDialog(this, "Opción no válida");
@@ -281,13 +288,9 @@ private void redirectToFrame(String option) {
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
-            FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        } else {
-            JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
-        }
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                         
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
@@ -295,23 +298,14 @@ private void redirectToFrame(String option) {
         String username = this.currentUser; // Assuming currentUser holds the username
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
-            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        }
-    }                                                    
-
-    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {                                                
-    cerrarSesionYSalir();
-    System.exit(0);
-    }                                               
-
-    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
-        LOGINPINEED abrir = new  LOGINPINEED();
+        
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
+    }                                                                                                  
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        cerrarSesionYRegresarLogin();
     }                                                
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
@@ -319,13 +313,9 @@ private void redirectToFrame(String option) {
         String role = this.userRole;        // Assuming userRole holds the role
         LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
-            FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        } else {
-            JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
-        }
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }     
 
     @SuppressWarnings("unchecked")

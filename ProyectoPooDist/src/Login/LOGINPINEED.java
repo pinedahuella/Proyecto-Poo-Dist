@@ -113,6 +113,7 @@ public class LOGINPINEED extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        btnMostrarContraseña = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
 
@@ -160,14 +161,22 @@ public class LOGINPINEED extends javax.swing.JFrame {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Fotos/ImagenLogoPineed.png"))); // NOI18N
 
+        btnMostrarContraseña.setBackground(new java.awt.Color(153, 153, 255));
+        btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        btnMostrarContraseña.setForeground(new java.awt.Color(255, 255, 255));
+        btnMostrarContraseña.setText("MOSTRAR");
+        btnMostrarContraseña.setBorder(null);
+        btnMostrarContraseña.setPreferredSize(new java.awt.Dimension(79, 22));
+        btnMostrarContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostrarContraseñaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnIngresarPineed, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(80, 80, 80)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -179,7 +188,11 @@ public class LOGINPINEED extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnIngresarPineed, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
+                .addGap(21, 21, 21))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                     .addContainerGap(24, Short.MAX_VALUE)
@@ -198,7 +211,9 @@ public class LOGINPINEED extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
@@ -247,12 +262,12 @@ public class LOGINPINEED extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(0, 2703, Short.MAX_VALUE))
+                .addGap(0, 2705, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addContainerGap(2062, Short.MAX_VALUE)
+                    .addContainerGap(2063, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(1394, Short.MAX_VALUE)))
+                    .addContainerGap(1397, Short.MAX_VALUE)))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -263,6 +278,13 @@ public class LOGINPINEED extends javax.swing.JFrame {
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
         String nombreUsuario = txtNombreUsuario.getText();
         String contraseña = new String(txtContraseñaUsuario.getPassword());
+
+        // Verificar si el nombre de usuario contiene mayúsculas
+        if (!nombreUsuario.equals(nombreUsuario.toLowerCase())) {
+            mostrarMensajeError("El nombre de usuario debe estar en minúsculas. Por favor, corríjalo e intente de nuevo.");
+            return;
+        }
+
         Usuarios usuario = buscarUsuario(nombreUsuario);
 
         if (usuario == null) {
@@ -316,20 +338,58 @@ public class LOGINPINEED extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtContraseñaUsuarioActionPerformed
 
-    public void cerrarSesion(String nombreUsuario, String rol) {
+        
+    private boolean isPasswordVisible = false;
+    
+    private void btnMostrarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarContraseñaActionPerformed
+        if (!isPasswordVisible) {
+            // Mostrar contraseña
+            txtContraseñaUsuario.setEchoChar((char)0);
+            btnMostrarContraseña.setText("OCULTAR");
+        } else {
+            // Ocultar contraseña
+            txtContraseñaUsuario.setEchoChar('*');
+            btnMostrarContraseña.setText("MOSTRAR");
+        }
+        isPasswordVisible = !isPasswordVisible;
+    }//GEN-LAST:event_btnMostrarContraseñaActionPerformed
+
+public void cerrarSesion(String nombreUsuario, String rol) {
         LocalDateTime tiempoSalida = LocalDateTime.now();
         GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
         gestionLogin.cargarLoginsDesdeExcel();
         
         Vector<Login> logins = gestionLogin.getLogins();
+        boolean sesionCerrada = false;
         for (Login login : logins) {
             if (login.getPersonal().equals(nombreUsuario) && login.getTiempoSalida().isEmpty()) {
                 login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                 gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
                 break;
             }
         }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + nombreUsuario);
+        }
     }
+
+    public void limpiarCampos() {
+            txtNombreUsuario.setText("Ingrese su usuario");
+            txtNombreUsuario.setForeground(Color.GRAY);
+            txtContraseñaUsuario.setText("Ingrese su contraseña");
+            txtContraseñaUsuario.setForeground(Color.GRAY);
+            txtContraseñaUsuario.setEchoChar((char) 0);
+        }
+
+        @Override
+        public void setVisible(boolean visible) {
+            if (visible) {
+                limpiarCampos();
+            }
+            super.setVisible(visible);
+        }
     
     private Usuarios buscarUsuario(String nombreUsuario) {
         for (Usuarios u : gestionUsuarios.getUsuarios()) {
@@ -392,6 +452,7 @@ public class LOGINPINEED extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresarPineed;
+    private javax.swing.JButton btnMostrarContraseña;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

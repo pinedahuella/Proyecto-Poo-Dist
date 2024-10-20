@@ -121,7 +121,7 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         jLabel13.setText("CARGO");
 
         txtCargoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtCargoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "USUARIO", "ADMINISTRADOR", "SECRETARIA" }));
+        txtCargoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SECRETARIA", "ADMINISTRADOR" }));
 
         jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel14.setText("CORREO ELECTRONICO");
@@ -180,7 +180,7 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         txtEstadoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtEstadoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
-        btnMostrarContraseña.setBackground(new java.awt.Color(204, 153, 255));
+        btnMostrarContraseña.setBackground(new java.awt.Color(153, 153, 255));
         btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         btnMostrarContraseña.setForeground(new java.awt.Color(255, 255, 255));
         btnMostrarContraseña.setText("MOSTRAR");
@@ -347,7 +347,7 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
         String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
         int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuario.getText().trim()); 
         String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
-        String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim();
+        String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
         String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
 
         Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
@@ -368,7 +368,10 @@ public class AGREGARGESTIONUSUARIOS  extends javax.swing.JFrame {
                 return;
             }
         
-        
+        // Verificar si el nombre de usuario ha sido modificado a mayúsculas
+        if (!nombreDeUsuario.equals(txtNombreDeUsuarioUsuario.getText().trim())) {
+            JOptionPane.showMessageDialog(this, "El nombre de usuario debe estar en minúsculas. Se ha convertido automáticamente.");
+        }
    
         if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
             JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
