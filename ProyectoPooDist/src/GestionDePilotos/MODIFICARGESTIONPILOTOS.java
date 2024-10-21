@@ -24,39 +24,13 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
 
 
 
-    
-          public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-          
-      
-      
-private void cerrarSesionYSalir() {
-    if (loginFrame != null) {
-        loginFrame.cerrarSesion(currentUser, userRole);
-    }
-    // Create a new LOGINPINEED object
-    LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-    
-    // Create a new INICIOGESTIONCAMIONES object instead of MODIFICARGESTIONCAMIONES
-    INICIOGESTIONPILOTOS nuevaVentanaLogin = new INICIOGESTIONPILOTOS(null, null, nuevaLoginFrame);
-    
-    nuevaVentanaLogin.setVisible(true);
-    this.dispose();
-}
-
 
 
     
     public MODIFICARGESTIONPILOTOS(Piloto piloto, INICIOGESTIONPILOTOS ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
     initComponents();
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    
+    setResizable(false); // Desactivar el cambio de tamaño
     this.currentUser = username;
     this.userRole = role;
     this.loginFrame = loginFrame;
@@ -71,8 +45,6 @@ private void cerrarSesionYSalir() {
         this.pilotoActual = piloto;
         cargarDatosPiloto();
     }
-    
-    addWindowListener();
 }
 
     
@@ -116,91 +88,105 @@ private void cerrarSesionYSalir() {
 
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        btnModificarPilotosSistema = new javax.swing.JButton();
+        txtEstadoPilotoModificarModificar = new javax.swing.JComboBox<>();
+        txtNumeroTelefonicoPilotoModificarModificar = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtNombrePilotoModificarModificar = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        txtApellidoPilotoModificarModificar = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        txtNumeroDeDpiPilotoModificarModificar = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        txtTipoDeLicenciaPilotoModificarModificar = new javax.swing.JComboBox<>();
         jLabel14 = new javax.swing.JLabel();
-        txtCorreoElectronicoPilotoModificarModificar = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
         txtFechaDeNacimientoPilotoModificarModificar = new com.toedter.calendar.JDateChooser();
+        txtCorreoElectronicoPilotoModificarModificar = new javax.swing.JTextField();
+        txtNumeroDeDpiPilotoModificarModificar = new javax.swing.JTextField();
+        txtTipoDeLicenciaPilotoModificarModificar = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         txtGeneroPilotoModificarModificar = new javax.swing.JComboBox<>();
-        jLabel17 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtApellidoPilotoModificarModificar = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
-        txtEstadoPilotoModificarModificar = new javax.swing.JComboBox<>();
-        btnModificarPilotoSistema = new javax.swing.JButton();
-        txtNumeroTelefonicoPilotoModificarModificar = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new java.awt.Color(6, 40, 86));
-        jPanel2.setPreferredSize(new java.awt.Dimension(838, 495));
+        jPanel2.setBackground(new java.awt.Color(32, 67, 99));
 
-        jPanel5.setPreferredSize(new java.awt.Dimension(826, 483));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel3.setText("NOMBRE");
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel10.setText("APELLIDO");
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel12.setText("NUMERO DE DPI");
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel13.setText("TIPO DE LICENCIA");
-
-        txtTipoDeLicenciaPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A", "B", "C", "D", "E", "M" }));
-
-        jLabel14.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel14.setText("CORREO ELECTRONICO");
-
-        jLabel15.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel15.setText("FECHA DE NACIMIENTO");
-
-        txtFechaDeNacimientoPilotoModificarModificar.setDateFormatString("dd/MM/yyyy");
-
-        jLabel16.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel16.setText("GENERO");
-
-        txtGeneroPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Masculino", "Femenino" }));
-
-        jLabel17.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel17.setText("NUMERO TELEFONICO");
-
-        jLabel18.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
-        jLabel18.setText("ESTADO DEL PILOTO");
-
-        txtEstadoPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEUTRO", "ENFERMO", "EN CASA", "EN VACACIONES", "EN VIAJE" }));
-
-        btnModificarPilotoSistema.setBackground(new java.awt.Color(0, 102, 255));
-        btnModificarPilotoSistema.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnModificarPilotoSistema.setForeground(new java.awt.Color(255, 255, 255));
-        btnModificarPilotoSistema.setText("MODIFICAR");
-        btnModificarPilotoSistema.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnModificarPilotoSistema.addActionListener(new java.awt.event.ActionListener() {
+        btnModificarPilotosSistema.setBackground(new java.awt.Color(85, 111, 169));
+        btnModificarPilotosSistema.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        btnModificarPilotosSistema.setForeground(new java.awt.Color(255, 255, 255));
+        btnModificarPilotosSistema.setText("MODIFICAR");
+        btnModificarPilotosSistema.setBorder(null);
+        btnModificarPilotosSistema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarPilotoSistemaActionPerformed(evt);
+                btnModificarPilotosSistemaActionPerformed(evt);
             }
         });
 
+        txtEstadoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtEstadoPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEUTRO", "ENFERMO", "EN CASA", "EN VACACIONES", "EN VIAJE" }));
+
+        txtNumeroTelefonicoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtNumeroTelefonicoPilotoModificarModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNumeroTelefonicoPilotoModificarModificarActionPerformed(evt);
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel3.setText("NOMBRE");
+
+        txtNombrePilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel10.setText("APELLIDO");
+
+        jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel14.setText("CORREO ELECTRONICO");
+
+        txtFechaDeNacimientoPilotoModificarModificar.setDateFormatString("dd/MM/yyyy");
+        txtFechaDeNacimientoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        txtCorreoElectronicoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        txtNumeroDeDpiPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        txtTipoDeLicenciaPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtTipoDeLicenciaPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A", "B", "C", "D", "E", "M" }));
+
+        jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel13.setText("TIPO DE LICENCIA");
+
+        jLabel16.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel16.setText("GENERO");
+
+        txtGeneroPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtGeneroPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Masculino", "Femenino" }));
+
+        jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel12.setText("NUMERO DE DPI");
+
+        txtApellidoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel18.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel18.setText("ESTADO DEL PILOTO");
+
+        jLabel17.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel17.setText("NUMERO TELEFONICO");
+
+        jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel15.setText("FECHA DE NACIMIENTO");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(696, Short.MAX_VALUE)
+                .addComponent(btnModificarPilotosSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(26, 26, 26)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -222,15 +208,15 @@ private void cerrarSesionYSalir() {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtCorreoElectronicoPilotoModificarModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
+                            .addComponent(txtCorreoElectronicoPilotoModificarModificar))
                         .addGroup(jPanel5Layout.createSequentialGroup()
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtNombrePilotoModificarModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
-                                .addComponent(txtApellidoPilotoModificarModificar))))
+                                .addComponent(txtNombrePilotoModificarModificar)
+                                .addComponent(txtApellidoPilotoModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel18)
@@ -239,16 +225,12 @@ private void cerrarSesionYSalir() {
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNumeroTelefonicoPilotoModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtEstadoPilotoModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(306, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnModificarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombrePilotoModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
@@ -284,8 +266,8 @@ private void cerrarSesionYSalir() {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEstadoPilotoModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
-                .addComponent(btnModificarPilotoSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(89, 89, 89)
+                .addComponent(btnModificarPilotosSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -293,10 +275,10 @@ private void cerrarSesionYSalir() {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,8 +302,8 @@ private void cerrarSesionYSalir() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnModificarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPilotoSistemaActionPerformed
-        try {
+    private void btnModificarPilotosSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPilotosSistemaActionPerformed
+                try {
             String nombrePiloto = txtNombrePilotoModificarModificar.getText().trim();
             String apellidoPiloto = txtApellidoPilotoModificarModificar.getText().trim();
             long numeroDeDpiPiloto = Long.parseLong(txtNumeroDeDpiPilotoModificarModificar.getText().trim());
@@ -401,12 +383,12 @@ private void cerrarSesionYSalir() {
             ventanaPrincipal.setVisible(true);
             this.dispose();
 
-} catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al modificar piloto: " + e.getMessage());
         }
-    }//GEN-LAST:event_btnModificarPilotoSistemaActionPerformed
+    }//GEN-LAST:event_btnModificarPilotosSistemaActionPerformed
 
     private void txtNumeroTelefonicoPilotoModificarModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroTelefonicoPilotoModificarModificarActionPerformed
         // TODO add your handling code here:
@@ -451,7 +433,7 @@ private void cerrarSesionYSalir() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnModificarPilotoSistema;
+    private javax.swing.JButton btnModificarPilotosSistema;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;

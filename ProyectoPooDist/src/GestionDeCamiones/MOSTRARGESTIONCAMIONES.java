@@ -1,71 +1,97 @@
 package GestionDeCamiones;
 
+// Importación de clases necesarias para el funcionamiento de la aplicación
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * Clase MOSTRARGESTIONCAMIONES
+ * Esta clase representa una ventana JFrame para mostrar y gestionar la información de los camiones.
+ * Permite visualizar detalles específicos de un camión seleccionado y gestionar la lista de camiones.
+ */
 public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
 
-    private GESTIONCAMIONES gestionCamiones;
-    private Vector<Camiones> listaCamiones;
-    private DefaultTableModel modeloCamiones;
-    private Camiones camionActual;
-    private INICIOGESTIONCAMIONES ventanaPrincipal;
+    // Atributos de la clase
+    private GESTIONCAMIONES gestionCamiones;  // Gestión de camiones
+    private Vector<Camiones> listaCamiones;    // Lista de camiones
+    private DefaultTableModel modeloCamiones;  // Modelo de la tabla para mostrar camiones
+    private Camiones camionActual;              // Camión actualmente seleccionado
+    private INICIOGESTIONCAMIONES ventanaPrincipal; // Ventana principal de gestión
 
+    /**
+     * Constructor por defecto de la clase.
+     * Inicializa la ventana y carga los camiones desde el archivo Excel.
+     */
     public MOSTRARGESTIONCAMIONES() {
         initComponents();
+        setResizable(false); // Desactivar el cambio de tamaño
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         gestionCamiones = new GESTIONCAMIONES();
-        gestionCamiones.cargarCamionesDesdeExcel();
-        listaCamiones = gestionCamiones.getCamiones();
-        configurarTabla();
+        gestionCamiones.cargarCamionesDesdeExcel(); // Cargar camiones
+        listaCamiones = gestionCamiones.getCamiones(); // Obtener lista de camiones
+        configurarTabla(); // Configurar la tabla
     }
 
+    /**
+     * Constructor que permite cargar un camión específico.
+     * @param camion Camión a cargar
+     * @param ventanaPrincipal Ventana principal de gestión
+     */
     public MOSTRARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPrincipal) {
         initComponents();
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.ventanaPrincipal = ventanaPrincipal;
-
+        setResizable(false); // Desactivar el cambio de tamaño
         if (ventanaPrincipal != null) {
-            this.gestionCamiones = ventanaPrincipal.gestionCamiones;
-            this.listaCamiones = gestionCamiones.getCamiones();
+            this.gestionCamiones = ventanaPrincipal.gestionCamiones; // Obtener gestión de camiones de la ventana principal
+            this.listaCamiones = gestionCamiones.getCamiones(); // Obtener lista de camiones
         } else {
             gestionCamiones = new GESTIONCAMIONES();
-            gestionCamiones.cargarCamionesDesdeExcel();
-            listaCamiones = gestionCamiones.getCamiones();
+            gestionCamiones.cargarCamionesDesdeExcel(); // Cargar camiones
+            listaCamiones = gestionCamiones.getCamiones(); // Obtener lista de camiones
         }
 
-        this.camionActual = camion;
-        configurarTabla();
+        this.camionActual = camion; // Asignar camión actual
+        configurarTabla(); // Configurar la tabla
         if (camion != null) {
-            cargarDatosCamion();
+            cargarDatosCamion(); // Cargar datos del camión actual
         }
     }
 
+    /**
+     * Configura la tabla para mostrar los datos de los camiones.
+     * Define el modelo de la tabla y desactiva la edición de celdas.
+     */
     private void configurarTabla() {
         modeloCamiones = new DefaultTableModel(new Object[]{
-            "Identificadores", "Datos"
+            "Identificadores", "Datos" // Nombres de las columnas
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return false; // Las celdas no son editables
             }
         };
 
-        tblRegistroPilotos.setModel(modeloCamiones);
-        tblRegistroPilotos.setCellSelectionEnabled(true);
-        tblRegistroPilotos.setFocusable(true);
-        tblRegistroPilotos.setRowSelectionAllowed(true);
-        tblRegistroPilotos.setColumnSelectionAllowed(false);
-        tblRegistroPilotos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRegistroCamiones.setModel(modeloCamiones); // Asignar modelo a la tabla
+        tblRegistroCamiones.setCellSelectionEnabled(true);
+        tblRegistroCamiones.setFocusable(true);
+        tblRegistroCamiones.setRowSelectionAllowed(true);
+        tblRegistroCamiones.setColumnSelectionAllowed(false);
+        tblRegistroCamiones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); // Selección de una sola fila
     }
 
+    /**
+     * Carga los datos del camión actual en la tabla.
+     * Actualiza la tabla con la información del camión seleccionado.
+     */
     private void cargarDatosCamion() {
         if (camionActual != null) {
-            modeloCamiones.setRowCount(0);
+            modeloCamiones.setRowCount(0); // Limpiar la tabla
 
+            // Agregar filas a la tabla con los datos del camión
             modeloCamiones.addRow(new Object[]{"Placas", camionActual.getPlacas()});
             modeloCamiones.addRow(new Object[]{"Marca", camionActual.getMarca()});
             modeloCamiones.addRow(new Object[]{"Modelo", camionActual.getModelo()});
@@ -89,14 +115,16 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
         jPanel14 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        tblRegistroPilotos = new javax.swing.JTable();
+        tblRegistroCamiones = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel14.setBackground(new java.awt.Color(6, 40, 86));
+        jPanel14.setBackground(new java.awt.Color(32, 67, 99));
 
-        tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
+        jPanel15.setBackground(new java.awt.Color(255, 255, 255));
+
+        tblRegistroCamiones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -107,9 +135,9 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane6.setViewportView(tblRegistroPilotos);
+        jScrollPane6.setViewportView(tblRegistroCamiones);
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel6.setText("INFORMACIÓN DEL CAMIÓN");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
@@ -120,17 +148,17 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(jPanel15Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(47, 47, 47))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -167,7 +195,9 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * @param args the command line arguments
+     * Método principal para ejecutar la aplicación.
+     *
+     * @param args Argumentos de línea de comando.
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -193,10 +223,10 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Crea y muestra la ventana */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MOSTRARGESTIONCAMIONES().setVisible(true);
+               new MOSTRARGESTIONCAMIONES().setVisible(true); // Crear una instancia de MOSTRARGESTIONCAMIONES y hacerla visible
             }
         });
     }
@@ -206,6 +236,6 @@ public class MOSTRARGESTIONCAMIONES extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTable tblRegistroPilotos;
+    private javax.swing.JTable tblRegistroCamiones;
     // End of variables declaration//GEN-END:variables
 }

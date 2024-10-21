@@ -7,21 +7,26 @@ import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
-import Inicio.INICIOPINEED;
-import Inicio.INICIOPINEEDINICIAL;
+import InicioApp.INICIOPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
 import ControlPedidos.FormularioPedidos;
-import ControlPlanilla.FramePlanillaSemanal;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
+import Login.GESTIONLOGIN;
+import Login.Login;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
 import java.util.Vector;
 import java.util.Set;
-
+import java.awt.event.ActionListener;  // Para manejar eventos de acción
+import javax.swing.SwingUtilities;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
 
 public class FramePlanillaSemanal extends javax.swing.JFrame {
 
@@ -46,7 +51,7 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     
     public FramePlanillaSemanal(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+        setResizable(false); // Desactivar el cambio de tamaño
         //crearemos el objeto gtrabajadores
         gTrabajadores = new GestionFichaTrabajador();
         
@@ -84,62 +89,190 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         this.userRole = role;
         this.loginFrame = loginFrame;
         addWindowListener();
-        configureButtonsByRole();
+        setupComboBox();  // Añade esta línea
+                this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            this.requestFocusInWindow();
+        });
     }
     
     
  
+private void setupComboBox() {
+        txtMenu.removeAllItems();
+        txtMenu.addItem("Seleccione una opción");
 
-
-
-private void configureButtonsByRole() {
-    JButton[] allButtons = {
-        btnGestionDeVentas1, btnGestionDePedidos, btnPlanillaDeTrabajadores,
-        btnGestionDeClientes, btnGestionDeCreditos, btnInventarioDeQuintales,
-        btnCalendario, btnGestionDePilotos, btnGestionDeCamiones,
-        btnGestionDeUsuarios
-    };
-    for (JButton button : allButtons) {
-        if (button != null) {
-            button.setVisible(false);
-            button.setEnabled(false);
-        } else {
-            System.out.println("Warning: A button is null");
+        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+            addAdminOptions();
+        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+            addSecretariaOptions();
         }
+
+        txtMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedOption = (String) txtMenu.getSelectedItem();
+                redirectToFrame(selectedOption);
+            }
+        });
     }
 
-     if (userRole != null) {
-        switch (userRole.toUpperCase()) {
-            case "ADMINISTRADOR":
-                // Mostrar todos los botones para el administrador
-                for (JButton button : allButtons) {
-                    if (button != null) {
-                        button.setVisible(true);
-                        button.setEnabled(true);
-                    }
-                }
-                break;
-                case "USUARIO":
-                    // Solo mostrar y habilitar el botón de Calendario para usuarios
-                    btnCalendario.setVisible(true);
-                    btnCalendario.setEnabled(true);
-                    break;
-                case "SECRETARIA":
-                // Solo mostrar botones específicos para la secretaria
-                btnGestionDeCamiones.setVisible(true);
-                btnGestionDeCamiones.setEnabled(true);
-                btnPlanillaDeTrabajadores.setVisible(true);
-                btnPlanillaDeTrabajadores.setEnabled(true);
-                // Asegúrate de que btnGestionDeVentas no esté visible aquí
-                break;
-                default:
-                    // Para cualquier otro rol, no mostrar ningún botón
-                    break;
-           
+
+    private void addAdminOptions() {
+        txtMenu.addItem("Gestión de Usuarios");
+        txtMenu.addItem("Gestión de Pilotos");
+        txtMenu.addItem("Gestión de Créditos");
+        txtMenu.addItem("Gestión de Clientes");
+        txtMenu.addItem("Gestión de Ventas");
+        txtMenu.addItem("Gestión de Pedidos");
+        txtMenu.addItem("Inventario de Quintales");
+        txtMenu.addItem("Planilla de Trabajadores");
+        txtMenu.addItem("Gestión de Camiones");
+        txtMenu.addItem("Calendario");
+        txtMenu.addItem("Cerrar Sesión");
+    }
+
+    private void addSecretariaOptions() {
+        txtMenu.addItem("Gestión de Ventas");
+        txtMenu.addItem("Planilla de Trabajadores");
+        txtMenu.addItem("Cerrar Sesión");
+    }
+    
+private void redirectToFrame(String option) {
+    switch (option) {
+        case "Seleccione una opción":
+            btnSeleccionarUnaOpcionActionPerformed(null);
+            break;
+        case "Gestión de Usuarios":
+            btnGestionDeUsuariosActionPerformed(null);
+            break;
+        case "Gestión de Pilotos":
+            btnGestionDePilotosActionPerformed(null);
+            break;
+        case "Gestión de Créditos":
+            btnGestionDeCreditosActionPerformed(null);
+            break;
+        case "Gestión de Clientes":
+            btnGestionDeClientesActionPerformed(null);
+            break;
+        case "Gestión de Ventas":
+            btnGestionDeVentasActionPerformed(null);
+            break;
+        case "Gestión de Pedidos":
+            btnGestionDePedidosActionPerformed(null);
+            break;
+        case "Inventario de Quintales":
+            btnInventarioDeQuintalesActionPerformed(null);
+            break;
+        case "Planilla de Trabajadores":
+            btnPlanillaDeTrabajadoresActionPerformed(null);
+            break;
+        case "Gestión de Camiones":
+            btnGestionDeCamionesActionPerformed(null);
+            break;
+        case "Calendario":
+            btnCalendarioActionPerformed(null);
+            break;
+        case "Cerrar Sesión":
+            btnRegresarLoginActionPerformed(null);
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Opción no válida");
+            break;
+    }
+}
+
+    private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+    }  
+    
+    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                    
+
+    private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                   
+
+    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+    }                                                    
+
+    private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+    }                                                    
+
+    private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+
+    }                                                  
+
+    private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                   
+
+    private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {                                                         
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                        
+
+    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {                                                          
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                         
+
+    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
         
-        }
-        }
-    }
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                                                                  
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        cerrarSesionYRegresarLogin();
+    }                                                
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }     
 
     public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -150,14 +283,37 @@ private void configureButtonsByRole() {
         });
     }
      
-    private void cerrarSesionYSalir() {
-        if (loginFrame != null) {
-            loginFrame.cerrarSesion(currentUser, userRole);
-        }
-        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
         nuevaLoginFrame.setVisible(true);
         this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
     }
 
 
@@ -238,28 +394,19 @@ private void configureButtonsByRole() {
         jLabel12 = new javax.swing.JLabel();
         textoRazonEntrada = new javax.swing.JTextField();
         PanelBoton3 = new javax.swing.JPanel();
-        jPanel20 = new javax.swing.JPanel();
-        btnGestionDeVentas1 = new javax.swing.JButton();
-        btnGestionDePedidos = new javax.swing.JButton();
-        btnPlanillaDeTrabajadores = new javax.swing.JButton();
-        btnGestionDeClientes = new javax.swing.JButton();
-        btnGestionDeCreditos = new javax.swing.JButton();
-        btnInventarioDeQuintales = new javax.swing.JButton();
-        btnCerrarSesion = new javax.swing.JButton();
-        btnCalendario = new javax.swing.JButton();
-        btnGestionDePilotos = new javax.swing.JButton();
-        btnGestionDeCamiones = new javax.swing.JButton();
-        btnGestionDeUsuarios = new javax.swing.JButton();
-        btnRegresarLogin = new javax.swing.JButton();
+        jTextField19 = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(18, 59, 87));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(128, 179, 220));
 
-        tablaTrabajadores.setBackground(new java.awt.Color(128, 179, 220));
+        tablaTrabajadores.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tablaTrabajadores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -273,7 +420,7 @@ private void configureButtonsByRole() {
         ));
         jScrollPane1.setViewportView(tablaTrabajadores);
 
-        jPanel3.setBackground(new java.awt.Color(85, 150, 202));
+        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
         jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel3MouseClicked(evt);
@@ -288,10 +435,10 @@ private void configureButtonsByRole() {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 93, Short.MAX_VALUE)
+            .addGap(0, 31, Short.MAX_VALUE)
         );
 
-        botonguardarDatos.setBackground(new java.awt.Color(153, 153, 0));
+        botonguardarDatos.setBackground(new java.awt.Color(255, 255, 204));
         botonguardarDatos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 botonguardarDatosMouseClicked(evt);
@@ -306,33 +453,32 @@ private void configureButtonsByRole() {
         );
         botonguardarDatosLayout.setVerticalGroup(
             botonguardarDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 31, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(botonguardarDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botonguardarDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(10, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botonguardarDatos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botonguardarDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
 
@@ -353,10 +499,11 @@ private void configureButtonsByRole() {
         );
         panelBoton1Layout.setVerticalGroup(
             panelBoton1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 61, Short.MAX_VALUE)
+            .addGap(0, 25, Short.MAX_VALUE)
         );
 
         jPanel10.setBackground(new java.awt.Color(85, 111, 169));
+        jPanel10.setPreferredSize(new java.awt.Dimension(79, 90));
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -373,25 +520,26 @@ private void configureButtonsByRole() {
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 47, Short.MAX_VALUE)
+            .addGap(0, 33, Short.MAX_VALUE)
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 47, Short.MAX_VALUE)
+            .addGap(0, 29, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                        .addGap(0, 20, Short.MAX_VALUE)
+                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 20, Short.MAX_VALUE))
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,17 +552,27 @@ private void configureButtonsByRole() {
         );
 
         areaDescripcionT.setColumns(20);
+        areaDescripcionT.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         areaDescripcionT.setRows(5);
         jScrollPane2.setViewportView(areaDescripcionT);
 
-        jLabel1.setText("Nombre del Trabajador:");
+        jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel1.setText("Nombre Del Trabajador");
 
-        jLabel2.setText("pequeña descripcion:");
+        textoNombre.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        jLabel14.setText("semanas de trabajo:");
+        jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel2.setText("Pequeña Descripción");
 
-        jLabel15.setText("Salario Semanal:");
+        jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel14.setText("Semanas de trabajo:");
 
+        textoSalario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel15.setText("Salario Semanal");
+
+        labelSemanas.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         labelSemanas.setText("0");
 
         javax.swing.GroupLayout panelf1Layout = new javax.swing.GroupLayout(panelf1);
@@ -427,8 +585,8 @@ private void configureButtonsByRole() {
                     .addGroup(panelf1Layout.createSequentialGroup()
                         .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelf1Layout.createSequentialGroup()
-                                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
                                 .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(panelf1Layout.createSequentialGroup()
                                         .addComponent(jLabel15)
@@ -437,48 +595,46 @@ private void configureButtonsByRole() {
                                     .addComponent(textoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panelf1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelSemanas, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
+                        .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(panelf1Layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelSemanas, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelf1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(12, 12, 12))))
         );
         panelf1Layout.setVerticalGroup(
             panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
                 .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelf1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelf1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel14)
                             .addComponent(labelSemanas))
-                        .addGap(27, 27, 27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(11, 11, 11)
                         .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(textoSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15))
-                        .addGap(6, 6, 6)))
-                .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel15)))
                     .addGroup(panelf1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel2)
-                        .addGap(5, 5, 5)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addGap(24, 24, 24)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(24, 24, 24)
+                .addComponent(jLabel2)
+                .addGap(5, 5, 5)
+                .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelf2.setBackground(new java.awt.Color(128, 179, 220));
@@ -501,13 +657,20 @@ private void configureButtonsByRole() {
             .addGap(0, 26, Short.MAX_VALUE)
         );
 
-        jLabel4.setText("Nombre del Trabajador:");
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel4.setText("Nombre Del Trabajador");
+
+        textoNombreModificado.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         areaDescripcionModificada.setColumns(20);
+        areaDescripcionModificada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         areaDescripcionModificada.setRows(5);
         jScrollPane4.setViewportView(areaDescripcionModificada);
 
-        jLabel13.setText("Salario Semanal:");
+        jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel13.setText("Salario Semanal");
+
+        textoSalarioModificado.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         javax.swing.GroupLayout panelf2Layout = new javax.swing.GroupLayout(panelf2);
         panelf2.setLayout(panelf2Layout);
@@ -522,7 +685,7 @@ private void configureButtonsByRole() {
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 76, Short.MAX_VALUE)
                         .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panelBoton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
@@ -539,7 +702,7 @@ private void configureButtonsByRole() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textoNombreModificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -548,6 +711,8 @@ private void configureButtonsByRole() {
                 .addComponent(panelBoton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        jPanel8.setBackground(new java.awt.Color(204, 204, 255));
 
         jPanel9.setBackground(new java.awt.Color(128, 179, 220));
 
@@ -561,18 +726,18 @@ private void configureButtonsByRole() {
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 37, Short.MAX_VALUE)
+            .addGap(0, 43, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
         jPanel15Layout.setHorizontalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 38, Short.MAX_VALUE)
+            .addGap(0, 33, Short.MAX_VALUE)
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 35, Short.MAX_VALUE)
+            .addGap(0, 29, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
@@ -584,24 +749,26 @@ private void configureButtonsByRole() {
                 .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(29, Short.MAX_VALUE)
                 .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addGap(27, 27, 27))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
+        labelNombre.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         labelNombre.setText("Nombre");
 
         areaDescripcionNo.setEditable(false);
         areaDescripcionNo.setColumns(20);
+        areaDescripcionNo.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         areaDescripcionNo.setRows(5);
         jScrollPane3.setViewportView(areaDescripcionNo);
 
@@ -623,7 +790,8 @@ private void configureButtonsByRole() {
             .addGap(0, 42, Short.MAX_VALUE)
         );
 
-        jLabel16.setText("semanas de trabajo:");
+        jLabel16.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel16.setText("Semanas De trabajo");
 
         labelSemanaInfo.setText("0");
 
@@ -632,14 +800,14 @@ private void configureButtonsByRole() {
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(16, 16, 16)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labelNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(labelSemanaInfo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -648,35 +816,33 @@ private void configureButtonsByRole() {
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(labelNombre)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelSemanaInfo)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addContainerGap(13, Short.MAX_VALUE)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(panelBotonModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addContainerGap())
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
+                            .addGap(16, 16, 16)
+                            .addComponent(labelNombre)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel16)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(labelSemanaInfo)))
+                    .addComponent(panelBotonModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel5.setText("Salario Semanal:  Q");
 
+        labelSalirioSemanal.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         labelSalirioSemanal.setText("00.00");
 
         tablaEtnradas.setBackground(new java.awt.Color(128, 179, 220));
+        tablaEtnradas.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tablaEtnradas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -690,19 +856,29 @@ private void configureButtonsByRole() {
         ));
         jScrollPane5.setViewportView(tablaEtnradas);
 
+        jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel7.setText("Valor Total: Q");
 
         labelSalioTotal.setText("00.00");
 
-        jLabel9.setText("Grabar nueva entrada:");
+        jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel9.setText("Grabar Nueva Entrada");
 
-        jLabel10.setText("Valor de la entrada:");
+        jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel10.setText("Valor De La Entrada");
 
-        jLabel11.setText("operacion:");
+        jLabel11.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel11.setText("Operación");
 
+        textoValorEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+
+        comboOperacionEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         comboOperacionEntrada.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "+", "-" }));
 
-        jLabel12.setText("Razon:");
+        jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel12.setText("Razón");
+
+        textoRazonEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         PanelBoton3.setBackground(new java.awt.Color(85, 111, 169));
         PanelBoton3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -719,14 +895,13 @@ private void configureButtonsByRole() {
         );
         PanelBoton3Layout.setVerticalGroup(
             PanelBoton3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 86, Short.MAX_VALUE)
+            .addGap(0, 28, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -752,22 +927,21 @@ private void configureButtonsByRole() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(textoRazonEntrada, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(PanelBoton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(30, 30, 30))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(comboOperacionEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel9)
                         .addGap(72, 72, 72))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(textoValorEntrada)
-                        .addContainerGap())))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(textoValorEntrada, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textoRazonEntrada, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(PanelBoton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(30, 30, 30))))
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -793,8 +967,8 @@ private void configureButtonsByRole() {
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
                             .addComponent(textoRazonEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PanelBoton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                        .addComponent(PanelBoton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -803,191 +977,37 @@ private void configureButtonsByRole() {
                 .addGap(18, 18, 18))
         );
 
-        jPanel20.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-
-        btnGestionDeVentas1.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeVentas1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeVentas1.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeVentas1.setText("GESTION DE VENTAS");
-        btnGestionDeVentas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeVentas1.addActionListener(new java.awt.event.ActionListener() {
+        jTextField19.setEditable(false);
+        jTextField19.setBackground(new java.awt.Color(0, 51, 102));
+        jTextField19.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
+        jTextField19.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField19.setText(" PLANILLA");
+        jTextField19.setBorder(null);
+        jTextField19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeVentas1ActionPerformed(evt);
+                jTextField19ActionPerformed(evt);
             }
         });
 
-        btnGestionDePedidos.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDePedidos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDePedidos.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDePedidos.setText("GESTION DE PEDIDOS");
-        btnGestionDePedidos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDePedidos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDePedidosActionPerformed(evt);
-            }
-        });
+        jPanel4.setBackground(new java.awt.Color(32, 67, 99));
 
-        btnPlanillaDeTrabajadores.setBackground(new java.awt.Color(0, 102, 102));
-        btnPlanillaDeTrabajadores.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnPlanillaDeTrabajadores.setForeground(new java.awt.Color(255, 255, 255));
-        btnPlanillaDeTrabajadores.setText("PLANILLA DE TRABAJADORES");
-        btnPlanillaDeTrabajadores.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnPlanillaDeTrabajadores.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPlanillaDeTrabajadoresActionPerformed(evt);
-            }
-        });
+        txtMenu.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        btnGestionDeClientes.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeClientes.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeClientes.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeClientes.setText("GESTION DE CLIENTES");
-        btnGestionDeClientes.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeClientes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeClientesActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeCreditos.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeCreditos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeCreditos.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeCreditos.setText("GESTION DE CREDITOS");
-        btnGestionDeCreditos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeCreditos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeCreditosActionPerformed(evt);
-            }
-        });
-
-        btnInventarioDeQuintales.setBackground(new java.awt.Color(0, 102, 102));
-        btnInventarioDeQuintales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnInventarioDeQuintales.setForeground(new java.awt.Color(255, 255, 255));
-        btnInventarioDeQuintales.setText("INVENTARIO QUINTALES");
-        btnInventarioDeQuintales.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnInventarioDeQuintales.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInventarioDeQuintalesActionPerformed(evt);
-            }
-        });
-
-        btnCerrarSesion.setBackground(new java.awt.Color(0, 102, 102));
-        btnCerrarSesion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnCerrarSesion.setForeground(new java.awt.Color(255, 255, 255));
-        btnCerrarSesion.setText("CERRAR SESION");
-        btnCerrarSesion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCerrarSesionActionPerformed(evt);
-            }
-        });
-
-        btnCalendario.setBackground(new java.awt.Color(0, 102, 102));
-        btnCalendario.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnCalendario.setForeground(new java.awt.Color(255, 255, 255));
-        btnCalendario.setText("CALENDARIO");
-        btnCalendario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnCalendario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCalendarioActionPerformed(evt);
-            }
-        });
-
-        btnGestionDePilotos.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDePilotos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDePilotos.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDePilotos.setText("GESTION DE PILOTOS");
-        btnGestionDePilotos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDePilotos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDePilotosActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeCamiones.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeCamiones.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeCamiones.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeCamiones.setText("GESTION DE CAMIONES");
-        btnGestionDeCamiones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeCamiones.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeCamionesActionPerformed(evt);
-            }
-        });
-
-        btnGestionDeUsuarios.setBackground(new java.awt.Color(0, 102, 102));
-        btnGestionDeUsuarios.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGestionDeUsuarios.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionDeUsuarios.setText("GESTION DE USUARIOS");
-        btnGestionDeUsuarios.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnGestionDeUsuarios.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGestionDeUsuariosActionPerformed(evt);
-            }
-        });
-
-        btnRegresarLogin.setBackground(new java.awt.Color(0, 102, 102));
-        btnRegresarLogin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnRegresarLogin.setForeground(new java.awt.Color(255, 255, 255));
-        btnRegresarLogin.setText("REGRESAR LOGIN");
-        btnRegresarLogin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 51), 3));
-        btnRegresarLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarLoginActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
-        jPanel20.setLayout(jPanel20Layout);
-        jPanel20Layout.setHorizontalGroup(
-            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel20Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnGestionDeUsuarios, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGestionDePilotos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGestionDeVentas1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGestionDePedidos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnGestionDeCreditos, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGestionDeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnRegresarLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnCalendario, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnGestionDeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPlanillaDeTrabajadores, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInventarioDeQuintales, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel20Layout.setVerticalGroup(
-            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCalendario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRegresarLogin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCerrarSesion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeCamiones)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnPlanillaDeTrabajadores)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnInventarioDeQuintales)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDePedidos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeVentas1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeClientes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeCreditos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDePilotos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGestionDeUsuarios)
-                .addGap(16, 16, 16))
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -995,47 +1015,50 @@ private void configureButtonsByRole() {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(21, 21, 21)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(panelf1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(panelf2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(168, 168, 168))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(panelf1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(panelf2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(16, 16, 16))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(panelf1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelf1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelf2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(89, 89, 89))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(31, 31, 31))
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1276, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -1209,110 +1232,9 @@ private void configureButtonsByRole() {
         System.out.println("se ha guardado correctamente");
     }//GEN-LAST:event_botonguardarDatosMouseClicked
 
-    private void btnGestionDeVentas1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeVentas1ActionPerformed
+    private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
 
-    }//GEN-LAST:event_btnGestionDeVentas1ActionPerformed
-
-    private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePedidosActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnGestionDePedidosActionPerformed
-
-    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillaDeTrabajadoresActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-    if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
-        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    } else {
-        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
-    }
-    }//GEN-LAST:event_btnPlanillaDeTrabajadoresActionPerformed
-
-    private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeClientesActionPerformed
-
-    }//GEN-LAST:event_btnGestionDeClientesActionPerformed
-
-    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCreditosActionPerformed
-
-    }//GEN-LAST:event_btnGestionDeCreditosActionPerformed
-
-    private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioDeQuintalesActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnInventarioDeQuintalesActionPerformed
-
-    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_btnCerrarSesionActionPerformed
-
-    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-       if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("USUARIO")) {
-        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    } else {
-        JOptionPane.showMessageDialog(this, "No tienes permiso para acceder a este módulo.");
-    }
-    }//GEN-LAST:event_btnCalendarioActionPerformed
-
-    private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDePilotosActionPerformed
-
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnGestionDePilotosActionPerformed
-
-    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeCamionesActionPerformed
-
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR") || userRole.equalsIgnoreCase("SECRETARIA")) {
-            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-        }
-    }//GEN-LAST:event_btnGestionDeCamionesActionPerformed
-
-    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionDeUsuariosActionPerformed
-
-        String username = this.currentUser; // Assuming currentUser holds the username
-        String role = this.userRole;        // Assuming userRole holds the role
-        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
-
-        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnGestionDeUsuariosActionPerformed
-
-    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarLoginActionPerformed
-        LOGINPINEED abrir = new  LOGINPINEED();
-        abrir.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnRegresarLoginActionPerformed
+    }//GEN-LAST:event_jTextField19ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1441,18 +1363,6 @@ private void configureButtonsByRole() {
     private javax.swing.JTextArea areaDescripcionNo;
     private javax.swing.JTextArea areaDescripcionT;
     private javax.swing.JPanel botonguardarDatos;
-    private javax.swing.JButton btnCalendario;
-    private javax.swing.JButton btnCerrarSesion;
-    private javax.swing.JButton btnGestionDeCamiones;
-    private javax.swing.JButton btnGestionDeClientes;
-    private javax.swing.JButton btnGestionDeCreditos;
-    private javax.swing.JButton btnGestionDePedidos;
-    private javax.swing.JButton btnGestionDePilotos;
-    private javax.swing.JButton btnGestionDeUsuarios;
-    private javax.swing.JButton btnGestionDeVentas1;
-    private javax.swing.JButton btnInventarioDeQuintales;
-    private javax.swing.JButton btnPlanillaDeTrabajadores;
-    private javax.swing.JButton btnRegresarLogin;
     private javax.swing.JComboBox<String> comboOperacionEntrada;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1475,8 +1385,8 @@ private void configureButtonsByRole() {
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1484,6 +1394,7 @@ private void configureButtonsByRole() {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JTextField jTextField19;
     private javax.swing.JLabel labelNombre;
     private javax.swing.JLabel labelSalioTotal;
     private javax.swing.JLabel labelSalirioSemanal;
@@ -1502,5 +1413,6 @@ private void configureButtonsByRole() {
     private javax.swing.JTextField textoSalario;
     private javax.swing.JTextField textoSalarioModificado;
     private javax.swing.JTextField textoValorEntrada;
+    private javax.swing.JComboBox<String> txtMenu;
     // End of variables declaration//GEN-END:variables
 }
