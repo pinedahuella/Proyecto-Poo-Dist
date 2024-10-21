@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class GestionPedido {
     public Vector<Pedido> pedidos = new Vector<>();
-        private String excelFilePath;
+    private String excelFilePath;
 
     
     //constructor 
