@@ -54,28 +54,39 @@ public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * Método para cargar los datos del camión en los campos de entrada.
-     */
-    private void cargarDatosCamion() {
-        if (camionActual != null) {
-            txtPlacaCamionesModificar.setText(camionActual.getPlacas());
-            txtModeloCamionModificar.setText(camionActual.getModelo());
-            txtMarcaCamionModificar.setText(camionActual.getMarca());
-            txtEstadoCamionModificar.setSelectedItem(camionActual.getEstado());
-            txtTipoCombustibleCamionModificar.setSelectedItem(camionActual.getTipoCombustible());
-            txtKilometrajeCamionModificar.setText(String.valueOf(camionActual.getKilometraje()));
-            txtCapacidadDeCargaCamionModificar.setText(String.valueOf(camionActual.getCapacidadCarga()));
+/**
+ * Método para cargar los datos del camión en los campos de entrada.
+ */
+private void cargarDatosCamion() {
+    if (camionActual != null) {
+        txtPlacaCamionesModificar.setText(camionActual.getPlacas());
+        txtModeloCamionModificar.setText(camionActual.getModelo());
+        txtMarcaCamionModificar.setText(camionActual.getMarca());
+        txtEstadoCamionModificar.setSelectedItem(camionActual.getEstado());
+        txtTipoCombustibleCamionModificar.setSelectedItem(camionActual.getTipoCombustible());
+        txtKilometrajeCamionModificar.setText(String.valueOf(camionActual.getKilometraje()));
+        txtCapacidadDeCargaCamionModificar.setText(String.valueOf(camionActual.getCapacidadCarga()));
 
+        try {
+            // Cambiar el formato de fecha para que acepte el formato dd/MM/yyyy
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            // Parsear la fecha del camión
+            Date fechaFabricacion = sdf.parse(camionActual.getAñoFabricacion());
+            // Establecer la fecha en el JDateChooser
+            txtAñoDeFabricacionCamionModificar.setDate(fechaFabricacion);
+        } catch (Exception e) {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-                Date añoFabricacion = sdf.parse(camionActual.getAñoFabricacion());
-                txtAñoDeFabricacionCamionModificar.setDate(añoFabricacion);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al cargar el año de fabricación: " + e.getMessage());
+                // Si falla el primer intento, intentar parsear solo el año
+                SimpleDateFormat sdfAño = new SimpleDateFormat("yyyy");
+                Date fechaFabricacion = sdfAño.parse(camionActual.getAñoFabricacion());
+                txtAñoDeFabricacionCamionModificar.setDate(fechaFabricacion);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error al cargar la fecha de fabricación: " + e.getMessage());
             }
         }
     }
+}
 
     /**
      * Método para limpiar los campos de entrada.
@@ -308,11 +319,11 @@ public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
 
             Date añoFabricacionDate = txtAñoDeFabricacionCamionModificar.getDate();
             if (añoFabricacionDate == null) {
-                JOptionPane.showMessageDialog(this, "Por favor, selecciona un año de fabricación válido.");
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de fabricación válida.");
                 return;
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String añoFabricacion = sdf.format(añoFabricacionDate);
 
             // Validar campos de entrada

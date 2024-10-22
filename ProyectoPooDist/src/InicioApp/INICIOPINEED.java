@@ -1,6 +1,7 @@
 package InicioApp;
 
 // Importación de clases necesarias para la funcionalidad de inicio de sesión
+import ControlCliente.FrameClientes;
 import ControlInventario.gestionProductos;
 import ControlInventario.Producto;
 import GestionDePilotos.Piloto;
@@ -13,6 +14,7 @@ import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
 import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
+import ControlVentas.FrameVentaDiaria;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
@@ -65,22 +67,16 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
     }
     
    
-
-    /**
-     * Configura el ComboBox de opciones según el rol del usuario.
-     */
-    private void setupComboBox() {
+private void setupComboBox() {
         txtMenu.removeAllItems();
         txtMenu.addItem("Seleccione una opción");
 
-        // Agrega opciones dependiendo del rol
         if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
             addAdminOptions();
         } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
             addSecretariaOptions();
         }
 
-        // Añade un listener para redirigir a la opción seleccionada
         txtMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedOption = (String) txtMenu.getSelectedItem();
@@ -89,13 +85,10 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
         });
     }
 
-    /**
-     * Añade opciones al ComboBox para el rol de ADMINISTRADOR.
-     */
+
     private void addAdminOptions() {
         txtMenu.addItem("Gestión de Usuarios");
         txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Créditos");
         txtMenu.addItem("Gestión de Clientes");
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Gestión de Pedidos");
@@ -106,145 +99,155 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
         txtMenu.addItem("Cerrar Sesión");
     }
 
-    /**
-     * Añade opciones al ComboBox para el rol de SECRETARIA.
-     */
     private void addSecretariaOptions() {
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Planilla de Trabajadores");
         txtMenu.addItem("Cerrar Sesión");
     }
-
-    /**
-     * Redirige al marco correspondiente según la opción seleccionada.
-     * 
-     * @param option La opción seleccionada en el ComboBox.
-     */
-    private void redirectToFrame(String option) {
-        switch (option) {
-            case "Seleccione una opción":
-                btnSeleccionarUnaOpcionActionPerformed(null);
-                break;
-            case "Gestión de Usuarios":
-                btnGestionDeUsuariosActionPerformed(null);
-                break;
-            case "Gestión de Pilotos":
-                btnGestionDePilotosActionPerformed(null);
-                break;
-            case "Gestión de Créditos":
-                btnGestionDeCreditosActionPerformed(null);
-                break;
-            case "Gestión de Clientes":
-                btnGestionDeClientesActionPerformed(null);
-                break;
-            case "Gestión de Ventas":
-                btnGestionDeVentasActionPerformed(null);
-                break;
-            case "Gestión de Pedidos":
-                btnGestionDePedidosActionPerformed(null);
-                break;
-            case "Inventario de Quintales":
-                btnInventarioDeQuintalesActionPerformed(null);
-                break;
-            case "Planilla de Trabajadores":
-                btnPlanillaDeTrabajadoresActionPerformed(null);
-                break;
-            case "Gestión de Camiones":
-                btnGestionDeCamionesActionPerformed(null);
-                break;
-            case "Calendario":
-                btnCalendarioActionPerformed(null);
-                break;
-            case "Cerrar Sesión":
-                btnRegresarLoginActionPerformed(null);
-                break;
-            default:
-                JOptionPane.showMessageDialog(this, "Opción no válida");
-                break;
-        }
+    
+private void redirectToFrame(String option) {
+    switch (option) {
+        case "Seleccione una opción":
+            btnSeleccionarUnaOpcionActionPerformed(null);
+            break;
+        case "Gestión de Usuarios":
+            btnGestionDeUsuariosActionPerformed(null);
+            break;
+        case "Gestión de Pilotos":
+            btnGestionDePilotosActionPerformed(null);
+            break;
+        case "Gestión de Clientes":
+            btnGestionDeClientesActionPerformed(null);
+            break;
+        case "Gestión de Ventas":
+            btnGestionDeVentasActionPerformed(null);
+            break;
+        case "Gestión de Pedidos":
+            btnGestionDePedidosActionPerformed(null);
+            break;
+        case "Inventario de Quintales":
+            btnInventarioDeQuintalesActionPerformed(null);
+            break;
+        case "Planilla de Trabajadores":
+            btnPlanillaDeTrabajadoresActionPerformed(null);
+            break;
+        case "Gestión de Camiones":
+            btnGestionDeCamionesActionPerformed(null);
+            break;
+        case "Calendario":
+            btnCalendarioActionPerformed(null);
+            break;
+        case "Cerrar Sesión":
+            btnRegresarLoginActionPerformed(null);
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Opción no válida");
+            break;
     }
+}
 
-    // Métodos de acción para cada opción del menú
+
     private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
     }  
-   
+    
     private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-        INICIOGESTIONUSUARIOS abrir = new INICIOGESTIONUSUARIOS(currentUser, userRole, loginFrame);
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
     }                                                    
 
     private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
 
-        INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-        
     }                                                   
-
-    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-        // Lógica para gestión de créditos
-    }                                                    
+                                          
 
     private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-        // Lógica para gestión de clientes
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameClientes abrir = new  FrameClientes(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                    
 
     private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
-        // Lógica para gestión de ventas
+        FrameVentaDiaria abrir = new FrameVentaDiaria(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                  
 
     private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-        FormularioPedidos abrir = new FormularioPedidos(currentUser, userRole, loginFrame);
+        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
     }                                                   
 
     private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {                                                         
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-        FrameInventario abrir = new FrameInventario(currentUser, userRole, loginFrame);
+        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
     }                                                        
 
     private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {                                                          
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
     }                                                         
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        
         INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
     }                                                                                                  
 
-
     private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
-
         cerrarSesionYRegresarLogin();
-        
     }                                                
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-
     }     
 
-    /**
-     * Añade un listener para cerrar la ventana correctamente.
-     */
+ 
+
+
+
     public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -253,44 +256,39 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
             }
         });
     }
-
-    /**
-     * Cierra la sesión y regresa al marco de inicio de sesión.
-     */
-    private void cerrarSesionYRegresarLogin() {
+     
+private void cerrarSesionYRegresarLogin() {
         cerrarSesionManualmente();
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
         nuevaLoginFrame.setVisible(true);
         this.dispose();
     }
 
-    /**
-     * Cierra la sesión del usuario manualmente y actualiza los registros de inicio de sesión.
-     */
     private void cerrarSesionManualmente() {
         LocalDateTime tiempoSalida = LocalDateTime.now();
         GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
         gestionLogin.cargarLoginsDesdeExcel();
         
-        // Actualiza el tiempo de salida en los registros
+        boolean sesionCerrada = false;
         for (Login login : gestionLogin.getLogins()) {
-            if (login.getPersonal().equals(currentUser)) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
                 login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
                 break;
             }
         }
-        gestionLogin.guardarLoginsEnExcel();  // Guarda los registros actualizados
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
     }
 
-    /**
-     * Cierra la aplicación correctamente.
-     */
     private void cerrarSesionYSalir() {
         cerrarSesionManualmente();
         System.exit(0);
     }
-    
-    
     
     
     @SuppressWarnings("unchecked")
@@ -325,6 +323,7 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
         jTextField21.setBorder(null);
 
         jPanel8.setBackground(new java.awt.Color(32, 67, 99));
+        jPanel8.setPreferredSize(new java.awt.Dimension(183, 0));
 
         txtMenu.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
@@ -333,9 +332,9 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15)
                 .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,32 +352,32 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, Short.MAX_VALUE)))
-                .addGap(83, 83, 83)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(68, 68, 68)
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(437, 437, 437)
-                        .addComponent(jTextField21, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(529, 529, 529)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(0, 460, Short.MAX_VALUE)
+                                .addComponent(jLabel5))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(83, 83, 83)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(373, 373, 373))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(437, 437, 437)
+                                .addComponent(jTextField21, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(529, 529, 529)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel9Layout.createSequentialGroup()
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel6))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,20 +397,18 @@ public INICIOPINEED(String username, String role, LOGINPINEED loginFrame) {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 6, Short.MAX_VALUE))
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(91, 91, 91)
+                        .addGap(93, 93, 93)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6))))
-            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

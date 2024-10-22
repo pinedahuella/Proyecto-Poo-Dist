@@ -11,14 +11,12 @@ public class Piloto {
     private String generoPiloto;
     private String fechaDeNacimiento;
     private String estadoPiloto;
+    
 
 
     public Piloto() {}
 
-
-    public Piloto(String nombrePiloto, String apellidoPiloto, long numeroDeDpi, String tipoLicencia,
-                  String correoElectronicoPiloto, int numeroTelefonicoPiloto, String generoPiloto,
-                  String fechaDeNacimiento, String estadoPiloto) {
+    public Piloto(String nombrePiloto, String apellidoPiloto, long numeroDeDpi, String tipoLicencia, String correoElectronicoPiloto, int numeroTelefonicoPiloto, String generoPiloto, String fechaDeNacimiento, String estadoPiloto) {
         this.nombrePiloto = nombrePiloto;
         this.apellidoPiloto = apellidoPiloto;
         this.numeroDeDpi = numeroDeDpi;
@@ -30,93 +28,81 @@ public class Piloto {
         this.estadoPiloto = estadoPiloto;
     }
 
+    public String getNombrePiloto() {
+        return nombrePiloto;
+    }
 
     public void setNombrePiloto(String nombrePiloto) {
         this.nombrePiloto = nombrePiloto;
+    }
+
+    public String getApellidoPiloto() {
+        return apellidoPiloto;
     }
 
     public void setApellidoPiloto(String apellidoPiloto) {
         this.apellidoPiloto = apellidoPiloto;
     }
 
+    public long getNumeroDeDpi() {
+        return numeroDeDpi;
+    }
+
     public void setNumeroDeDpi(long numeroDeDpi) {
         this.numeroDeDpi = numeroDeDpi;
+    }
+
+    public String getTipoLicencia() {
+        return tipoLicencia;
     }
 
     public void setTipoLicencia(String tipoLicencia) {
         this.tipoLicencia = tipoLicencia;
     }
 
+    public String getCorreoElectronicoPiloto() {
+        return correoElectronicoPiloto;
+    }
+
     public void setCorreoElectronicoPiloto(String correoElectronicoPiloto) {
         this.correoElectronicoPiloto = correoElectronicoPiloto;
+    }
+
+    public int getNumeroTelefonicoPiloto() {
+        return numeroTelefonicoPiloto;
     }
 
     public void setNumeroTelefonicoPiloto(int numeroTelefonicoPiloto) {
         this.numeroTelefonicoPiloto = numeroTelefonicoPiloto;
     }
 
+    public String getGeneroPiloto() {
+        return generoPiloto;
+    }
+
     public void setGeneroPiloto(String generoPiloto) {
         this.generoPiloto = generoPiloto;
+    }
+
+    public String getFechaDeNacimiento() {
+        return fechaDeNacimiento;
     }
 
     public void setFechaDeNacimiento(String fechaDeNacimiento) {
         this.fechaDeNacimiento = fechaDeNacimiento;
     }
 
+
+    public String getEstadoPiloto() {
+        return estadoPiloto;
+    }
+
     public void setEstadoPiloto(String estadoPiloto) {
         this.estadoPiloto = estadoPiloto;
     }
 
-
-    public String getNombrePiloto() {
-        return this.nombrePiloto;
-    }
-
-    public String getApellidoPiloto() {
-        return this.apellidoPiloto;
-    }
-
-    public long getNumeroDeDpi() {
-        return this.numeroDeDpi;
-    }
-
-    public String getTipoLicencia() {
-        return this.tipoLicencia;
-    }
-
-    public String getCorreoElectronicoPiloto() {
-        return this.correoElectronicoPiloto;
-    }
-
-    public int getNumeroTelefonicoPiloto() {
-        return this.numeroTelefonicoPiloto;
-    }
-
-    public String getGeneroPiloto() {
-        return this.generoPiloto;
-    }
-
-    public String getFechaDeNacimiento() {
-        return this.fechaDeNacimiento;
-    }
-
-    public String getEstadoPiloto() {
-        return this.estadoPiloto;
-    }
-
     @Override
     public String toString() {
-        return "Piloto{" +
-                "nombrePiloto='" + nombrePiloto + '\'' +
-                ", apellidoPiloto='" + apellidoPiloto + '\'' +
-                ", numeroDeDpi=" + numeroDeDpi +
-                ", tipoLicencia='" + tipoLicencia + '\'' +
-                ", correoElectronicoPiloto='" + correoElectronicoPiloto + '\'' +
-                ", numeroTelefonicoPiloto=" + numeroTelefonicoPiloto +
-                ", generoPiloto='" + generoPiloto + '\'' +
-                ", fechaDeNacimiento='" + fechaDeNacimiento + '\'' +
-                ", estadoPiloto='" + estadoPiloto + '\'' +
-                '}';
-    
+        return "Piloto{" + "nombrePiloto=" + nombrePiloto + ", apellidoPiloto=" + apellidoPiloto + ", numeroDeDpi=" + numeroDeDpi + ", tipoLicencia=" + tipoLicencia + ", correoElectronicoPiloto=" + correoElectronicoPiloto + ", numeroTelefonicoPiloto=" + numeroTelefonicoPiloto + ", generoPiloto=" + generoPiloto + ", fechaDeNacimiento=" + fechaDeNacimiento + ", estadoPiloto=" + estadoPiloto + '}';
     }
 }

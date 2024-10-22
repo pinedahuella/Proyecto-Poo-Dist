@@ -14,6 +14,7 @@ public class Camiones {
     private String añoFabricacion; // Año de fabricación del camión
     private String modelo; // Modelo del camión
     private String marca; // Marca del camión
+    private boolean activo;
 
     // Atributos relacionados con los costos
     private double costoReparacion; // Costo de reparación del camión
@@ -30,33 +31,7 @@ public class Camiones {
     // Constructor por defecto
     public Camiones() {}
 
-    /**
-     * Constructor para inicializar una instancia de Camiones.
-     * 
-     * @param placas Placas del camión
-     * @param estado Estado actual del camión
-     * @param tipoCombustible Tipo de combustible utilizado
-     * @param kilometraje Kilometraje del camión
-     * @param capacidadCarga Capacidad de carga del camión
-     * @param añoFabricacion Año de fabricación del camión
-     * @param modelo Modelo del camión
-     * @param marca Marca del camión
-     * @param costoReparacion Costo de reparación del camión
-     * @param costoGalon Costo por galón de combustible
-     * @param galones Cantidad de galones consumidos
-     * @param costoMantenimiento Costo de mantenimiento del camión
-     * @param gastoNoEspecificado Gastos no especificados
-     * @param descripcionDelGasto Descripción de los gastos
-     * @param tiempoEnReparacion Tiempo en reparación del camión
-     * @param fechaDeMantenimiento Fecha del último mantenimiento
-     * @param total Total de gastos asociados
-     */
-    public Camiones(String placas, String estado, String tipoCombustible, double kilometraje,
-                    double capacidadCarga, String añoFabricacion, String modelo,
-                    String marca, double costoReparacion, double costoGalon,
-                    double galones, double costoMantenimiento, 
-                    double gastoNoEspecificado, String descripcionDelGasto,
-                    String tiempoEnReparacion, String fechaDeMantenimiento, double total) {
+    public Camiones(String placas, String estado, String tipoCombustible, double kilometraje, double capacidadCarga, String añoFabricacion, String modelo, String marca, boolean activo, double costoReparacion, double costoGalon, double galones, double costoMantenimiento, double gastoNoEspecificado, String descripcionDelGasto, String tiempoEnReparacion, String fechaDeMantenimiento, double total, double costoTotalCombustible) {
         this.placas = placas;
         this.estado = estado;
         this.tipoCombustible = tipoCombustible;
@@ -65,6 +40,7 @@ public class Camiones {
         this.añoFabricacion = añoFabricacion;
         this.modelo = modelo;
         this.marca = marca;
+        this.activo = activo;
         this.costoReparacion = costoReparacion;
         this.costoGalon = costoGalon;
         this.galones = galones;
@@ -74,10 +50,9 @@ public class Camiones {
         this.tiempoEnReparacion = tiempoEnReparacion;
         this.fechaDeMantenimiento = fechaDeMantenimiento;
         this.total = total;
-        this.costoTotalCombustible = costoGalon * galones; // Calcula el costo total del combustible
+        this.costoTotalCombustible = costoTotalCombustible;
     }
 
-    // Métodos getter y setter para acceder y modificar los atributos
     public String getPlacas() {
         return placas;
     }
@@ -140,6 +115,14 @@ public class Camiones {
 
     public void setMarca(String marca) {
         this.marca = marca;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public double getCostoReparacion() {
@@ -222,32 +205,8 @@ public class Camiones {
         this.costoTotalCombustible = costoTotalCombustible;
     }
 
-    /**
-     * Método toString que devuelve una representación en forma de cadena del camión.
-     * 
-     * @return Cadena que representa la información del camión.
-     */
     @Override
     public String toString() {
-        return "Camiones{" + 
-                "placas='" + placas + '\'' + 
-                ", estado='" + estado + '\'' + 
-                ", tipoCombustible='" + tipoCombustible + '\'' + 
-                ", kilometraje=" + kilometraje + 
-                ", capacidadCarga=" + capacidadCarga + 
-                ", añoFabricacion='" + añoFabricacion + '\'' + 
-                ", modelo='" + modelo + '\'' + 
-                ", marca='" + marca + '\'' + 
-                ", costoReparacion=" + costoReparacion + 
-                ", costoGalon=" + costoGalon + 
-                ", galones=" + galones + 
-                ", costoMantenimiento=" + costoMantenimiento + 
-                ", gastoNoEspecificado=" + gastoNoEspecificado + 
-                ", descripcionDelGasto='" + descripcionDelGasto + '\'' + 
-                ", tiempoEnReparacion='" + tiempoEnReparacion + '\'' + 
-                ", fechaDeMantenimiento='" + fechaDeMantenimiento + '\'' + 
-                ", total=" + total + 
-                ", costoTotalCombustible=" + costoTotalCombustible + 
-                '}';
-    }  
+        return "Camiones{" + "placas=" + placas + ", estado=" + estado + ", tipoCombustible=" + tipoCombustible + ", kilometraje=" + kilometraje + ", capacidadCarga=" + capacidadCarga + ", a\u00f1oFabricacion=" + añoFabricacion + ", modelo=" + modelo + ", marca=" + marca + ", activo=" + activo + ", costoReparacion=" + costoReparacion + ", costoGalon=" + costoGalon + ", galones=" + galones + ", costoMantenimiento=" + costoMantenimiento + ", gastoNoEspecificado=" + gastoNoEspecificado + ", descripcionDelGasto=" + descripcionDelGasto + ", tiempoEnReparacion=" + tiempoEnReparacion + ", fechaDeMantenimiento=" + fechaDeMantenimiento + ", total=" + total + ", costoTotalCombustible=" + costoTotalCombustible + '}';
+    }
 }

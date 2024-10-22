@@ -1,10 +1,12 @@
 package GestionDeCamiones;
 // Importación de clases necesarias para el funcionamiento de la aplicación
+import ControlCliente.FrameClientes;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario;
 import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
+import ControlVentas.FrameVentaDiaria;
 import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
@@ -35,52 +37,7 @@ private LOGINPINEED loginFrame;
         }
     };
 
-    // Método para añadir un listener de ventana
-    public void addWindowListener() {
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
-            }
-        });
-    }
-
-    // Método para cerrar sesión y volver a la pantalla de login
-    private void cerrarSesionYRegresarLogin() {
-        cerrarSesionManualmente();
-        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-        nuevaLoginFrame.setVisible(true);
-        this.dispose();
-    }
-
-    // Método para cerrar sesión manualmente
-    private void cerrarSesionManualmente() {
-        LocalDateTime tiempoSalida = LocalDateTime.now();
-        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
-        gestionLogin.cargarLoginsDesdeExcel();
-
-        boolean sesionCerrada = false;
-        for (Login login : gestionLogin.getLogins()) {
-            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
-                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-                gestionLogin.actualizarLogin(login);
-                sesionCerrada = true;
-                System.out.println("Sesión cerrada para el usuario: " + currentUser);
-                break;
-            }
-        }
-
-        if (!sesionCerrada) {
-            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
-        }
-    }
-
-    // Método para cerrar sesión y salir de la aplicación
-    private void cerrarSesionYSalir() {
-        cerrarSesionManualmente();
-        System.exit(0);
-    }
-
+   
     // Constructor de la clase
     public INICIOGESTIONCAMIONES(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
@@ -131,7 +88,6 @@ private LOGINPINEED loginFrame;
         }
     }
 
-    // Método para configurar el menú desplegable
     private void setupComboBox() {
         txtMenu.removeAllItems();
         txtMenu.addItem("Seleccione una opción");
@@ -150,11 +106,10 @@ private LOGINPINEED loginFrame;
         });
     }
 
-    // Método para añadir opciones de administrador al menú
+
     private void addAdminOptions() {
         txtMenu.addItem("Gestión de Usuarios");
         txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Créditos");
         txtMenu.addItem("Gestión de Clientes");
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Gestión de Pedidos");
@@ -165,66 +120,62 @@ private LOGINPINEED loginFrame;
         txtMenu.addItem("Cerrar Sesión");
     }
 
-    // Método para añadir opciones de secretaria al menú
     private void addSecretariaOptions() {
         txtMenu.addItem("Gestión de Ventas");
         txtMenu.addItem("Planilla de Trabajadores");
         txtMenu.addItem("Cerrar Sesión");
     }
-
-    // Método para redirigir a diferentes frames según la opción seleccionada
-    private void redirectToFrame(String option) {
-        switch (option) {
-            case "Seleccione una opción":
-                btnSeleccionarUnaOpcionActionPerformed(null);
-                break;
-            case "Gestión de Usuarios":
-                btnGestionDeUsuariosActionPerformed(null);
-                break;
-            case "Gestión de Pilotos":
-                btnGestionDePilotosActionPerformed(null);
-                break;
-            case "Gestión de Créditos":
-                btnGestionDeCreditosActionPerformed(null);
-                break;
-            case "Gestión de Clientes":
-                btnGestionDeClientesActionPerformed(null);
-                break;
-            case "Gestión de Ventas":
-                btnGestionDeVentasActionPerformed(null);
-                break;
-            case "Gestión de Pedidos":
-                btnGestionDePedidosActionPerformed(null);
-                break;
-            case "Inventario de Quintales":
-                btnInventarioDeQuintalesActionPerformed(null);
-                break;
-            case "Planilla de Trabajadores":
-                btnPlanillaDeTrabajadoresActionPerformed(null);
-                break;
-            case "Gestión de Camiones":
-                btnGestionDeCamionesActionPerformed(null);
-                break;
-            case "Calendario":
-                btnCalendarioActionPerformed(null);
-                break;
-            case "Cerrar Sesión":
-                btnRegresarLoginActionPerformed(null);
-                break;
-            default:
-                JOptionPane.showMessageDialog(this, "Opción no válida");
-                break;
-        }
+    
+private void redirectToFrame(String option) {
+    switch (option) {
+        case "Seleccione una opción":
+            btnSeleccionarUnaOpcionActionPerformed(null);
+            break;
+        case "Gestión de Usuarios":
+            btnGestionDeUsuariosActionPerformed(null);
+            break;
+        case "Gestión de Pilotos":
+            btnGestionDePilotosActionPerformed(null);
+            break;
+        case "Gestión de Clientes":
+            btnGestionDeClientesActionPerformed(null);
+            break;
+        case "Gestión de Ventas":
+            btnGestionDeVentasActionPerformed(null);
+            break;
+        case "Gestión de Pedidos":
+            btnGestionDePedidosActionPerformed(null);
+            break;
+        case "Inventario de Quintales":
+            btnInventarioDeQuintalesActionPerformed(null);
+            break;
+        case "Planilla de Trabajadores":
+            btnPlanillaDeTrabajadoresActionPerformed(null);
+            break;
+        case "Gestión de Camiones":
+            btnGestionDeCamionesActionPerformed(null);
+            break;
+        case "Calendario":
+            btnCalendarioActionPerformed(null);
+            break;
+        case "Cerrar Sesión":
+            btnRegresarLoginActionPerformed(null);
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Opción no válida");
+            break;
     }
+}
 
-    // Métodos de acción para los botones del menú
+
     private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
     }  
-
+    
     private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
         abrir.setVisible(true);
@@ -232,28 +183,37 @@ private LOGINPINEED loginFrame;
     }                                                    
 
     private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
     }                                                   
-
-    private void btnGestionDeCreditosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-    }                                                    
+                                          
 
     private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameClientes abrir = new  FrameClientes(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                    
 
     private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+        FrameVentaDiaria abrir = new FrameVentaDiaria(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
     }                                                  
 
     private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
         abrir.setVisible(true);
@@ -261,9 +221,9 @@ private LOGINPINEED loginFrame;
     }                                                   
 
     private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {                                                         
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
         abrir.setVisible(true);
@@ -271,9 +231,9 @@ private LOGINPINEED loginFrame;
     }                                                        
 
     private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {                                                          
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
@@ -281,10 +241,11 @@ private LOGINPINEED loginFrame;
     }                                                         
 
     private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
 
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        
         INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
@@ -295,14 +256,60 @@ private LOGINPINEED loginFrame;
     }                                                
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
-        String username = this.currentUser;
-        String role = this.userRole;
-        LOGINPINEED loginFrame = this.loginFrame;
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
         FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
         this.setVisible(false);
-    }          
+    }     
+
+ 
+
+
+
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+     
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -323,11 +330,12 @@ private LOGINPINEED loginFrame;
         editarCamion = new javax.swing.JButton();
         eliminarCamion = new javax.swing.JButton();
         garageCamiones = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(32, 67, 99));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -441,73 +449,100 @@ private LOGINPINEED loginFrame;
             }
         });
 
+        jPanel7.setBackground(new java.awt.Color(32, 67, 99));
+        jPanel7.setPreferredSize(new java.awt.Dimension(194, 34));
+
+        txtMenu.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMenuActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1142, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)))
+                .addGap(9, 9, 9)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addGap(25, 25, 25))
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        txtMenu.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -515,24 +550,20 @@ private LOGINPINEED loginFrame;
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -697,6 +728,10 @@ private LOGINPINEED loginFrame;
         this.setVisible(false);
     }//GEN-LAST:event_garageCamionesActionPerformed
 
+    private void txtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMenuActionPerformed
+
      /**
      * Actualiza la tabla de camiones recargando los datos desde Excel.
      */
@@ -786,6 +821,7 @@ private LOGINPINEED loginFrame;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
     private javax.swing.JButton mostrarCamion;
