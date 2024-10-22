@@ -90,6 +90,16 @@ public class GestionFichaTrabajador {
         
     }
     
+    //funcion para inidicar una nueva semana de trabajo
+    public void nuevaSemana(){
+        //recorremos el vector de trabajadores
+        for (int i = 0; i < trabajador.size(); i++) {
+            trabajador.get(i).getEntrada().clear();
+            trabajador.get(i).getValorEntrada().clear();
+            trabajador.get(i).nuevaSemanaTrabajada();
+        }
+    }
+    
     //cargar el invetario de excel
     public void cargarTrabajadoresExcel(){
         try (FileInputStream fis = new FileInputStream(excelFilePath);

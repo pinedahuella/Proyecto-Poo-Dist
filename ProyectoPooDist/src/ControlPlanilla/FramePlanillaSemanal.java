@@ -51,6 +51,9 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     
     public FramePlanillaSemanal(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
+        
+        //desactivamos el boton de guardar
+        botonguardarDatos.setVisible(false);
         setResizable(false); // Desactivar el cambio de tamaño
         //crearemos el objeto gtrabajadores
         gTrabajadores = new GestionFichaTrabajador();
@@ -346,9 +349,11 @@ private void cerrarSesionYRegresarLogin() {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaTrabajadores = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
         botonguardarDatos = new javax.swing.JPanel();
         panelf1 = new javax.swing.JPanel();
         panelBoton1 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
@@ -363,6 +368,7 @@ private void cerrarSesionYRegresarLogin() {
         labelSemanas = new javax.swing.JLabel();
         panelf2 = new javax.swing.JPanel();
         panelBoton2 = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         textoNombreModificado = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -378,6 +384,7 @@ private void cerrarSesionYRegresarLogin() {
         jScrollPane3 = new javax.swing.JScrollPane();
         areaDescripcionNo = new javax.swing.JTextArea();
         panelBotonModificar = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         labelSemanaInfo = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -394,9 +401,12 @@ private void cerrarSesionYRegresarLogin() {
         jLabel12 = new javax.swing.JLabel();
         textoRazonEntrada = new javax.swing.JTextField();
         PanelBoton3 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
         jTextField19 = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -427,15 +437,24 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel3.setText("Agregar Trabajador");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 102, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 31, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(9, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addContainerGap())
         );
 
         botonguardarDatos.setBackground(new java.awt.Color(255, 255, 204));
@@ -463,7 +482,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -491,15 +510,23 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Agregar Trabajador");
+
         javax.swing.GroupLayout panelBoton1Layout = new javax.swing.GroupLayout(panelBoton1);
         panelBoton1.setLayout(panelBoton1Layout);
         panelBoton1Layout.setHorizontalGroup(
             panelBoton1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 117, Short.MAX_VALUE)
+            .addGroup(panelBoton1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
         );
         panelBoton1Layout.setVerticalGroup(
             panelBoton1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBoton1Layout.createSequentialGroup()
+                .addGap(0, 9, Short.MAX_VALUE)
+                .addComponent(jLabel6))
         );
 
         jPanel10.setBackground(new java.awt.Color(85, 111, 169));
@@ -597,16 +624,15 @@ private void cerrarSesionYRegresarLogin() {
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                        .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(panelf1Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labelSemanas, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelf1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(12, 12, 12))))
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelSemanas, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         panelf1Layout.setVerticalGroup(
             panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -646,15 +672,21 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel18.setText("Modificar Informacion ");
+
         javax.swing.GroupLayout panelBoton2Layout = new javax.swing.GroupLayout(panelBoton2);
         panelBoton2.setLayout(panelBoton2Layout);
         panelBoton2Layout.setHorizontalGroup(
             panelBoton2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 90, Short.MAX_VALUE)
+            .addComponent(jLabel18)
         );
         panelBoton2Layout.setVerticalGroup(
             panelBoton2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 26, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBoton2Layout.createSequentialGroup()
+                .addGap(0, 10, Short.MAX_VALUE)
+                .addComponent(jLabel18))
         );
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -687,11 +719,11 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
                         .addGap(0, 76, Short.MAX_VALUE)
                         .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(panelBoton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(textoSalarioModificado, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(textoSalarioModificado, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(panelBoton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         panelf2Layout.setVerticalGroup(
@@ -779,15 +811,21 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel17.setText("Modificar Trabajador");
+
         javax.swing.GroupLayout panelBotonModificarLayout = new javax.swing.GroupLayout(panelBotonModificar);
         panelBotonModificar.setLayout(panelBotonModificarLayout);
         panelBotonModificarLayout.setHorizontalGroup(
             panelBotonModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 97, Short.MAX_VALUE)
+            .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelBotonModificarLayout.setVerticalGroup(
             panelBotonModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 42, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBotonModificarLayout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addComponent(jLabel17)
+                .addContainerGap())
         );
 
         jLabel16.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -887,15 +925,23 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Agregar nueva Entrada");
+
         javax.swing.GroupLayout PanelBoton3Layout = new javax.swing.GroupLayout(PanelBoton3);
         PanelBoton3.setLayout(PanelBoton3Layout);
         PanelBoton3Layout.setHorizontalGroup(
             PanelBoton3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 78, Short.MAX_VALUE)
+            .addGroup(PanelBoton3Layout.createSequentialGroup()
+                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .addContainerGap())
         );
         PanelBoton3Layout.setVerticalGroup(
             PanelBoton3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 28, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelBoton3Layout.createSequentialGroup()
+                .addGap(0, 12, Short.MAX_VALUE)
+                .addComponent(jLabel8))
         );
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -997,7 +1043,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1008,6 +1054,34 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap()
                 .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel5.setBackground(new java.awt.Color(85, 111, 169));
+        jPanel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel5MouseClicked(evt);
+            }
+        });
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setText("Iniciar Nueva Semana");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(jLabel19)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1029,6 +1103,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addGap(16, 16, 16))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1036,7 +1112,9 @@ private void cerrarSesionYRegresarLogin() {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1081,15 +1159,16 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
         
         //funcion que nos ayuda a agregar un nuevo trabajador
-        
-        //primero obtenemos los datos ingresador por el usuario 
+        try{
+            //primero obtenemos los datos ingresador por el usuario 
         
         String newnombre = textoNombre.getText();
         float newsalario = Float.parseFloat(textoSalario.getText());
         int newsemanas = 0;
         String newDescripcion = areaDescripcionT.getText();
         
-        //crearemos el objeto trabajador provisional
+        if (!newnombre.isEmpty() && !newDescripcion.isEmpty()) {
+                   //crearemos el objeto trabajador provisional
         FichaTrabajador newTrabajador = new FichaTrabajador(newnombre, newDescripcion, newsalario, newsemanas);
         
         //agregamos este trabajador al vector de gestion trabajador
@@ -1111,6 +1190,26 @@ private void cerrarSesionYRegresarLogin() {
             //colocamos la tabala seleccionando el indice actual
             tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
         }
+        
+        //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Trabajador agregado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
+            //funcion provisional para guardas datos en el excel
+        gTrabajadores.guardarTrabajadoresExcel();
+         
+                }else{
+                  //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Completar los campos de nombre y descripcion", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+              
+                }
+        
+        }
+        catch (NumberFormatException e) {
+            //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        }
+        
+        
     }//GEN-LAST:event_panelBoton1MouseClicked
 
     private void panelBotonModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBotonModificarMouseClicked
@@ -1130,12 +1229,17 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
         
         //funcion para actualizar los cambio del trabajador
-        //preguntamos si el indice seleccionado de la tabla es legal
+        
+        try{
+            //preguntamos si el indice seleccionado de la tabla es legal
             if (tablaTrabajadores.getSelectedRow() > -1) {
                 
                 //primeor obtenemos los valores del trabajador 
                 String newnombre = textoNombreModificado.getText();
                 String newDescripcion = areaDescripcionModificada.getText();
+                
+                if (!newnombre.isEmpty() && !newDescripcion.isEmpty()) {
+                    
                 float newSalario = Float.parseFloat(textoSalarioModificado.getText());
 
                 //indiceActual
@@ -1175,7 +1279,28 @@ private void cerrarSesionYRegresarLogin() {
                 
                 //acemos que la tabla siga seleccionando el indice actual
                 tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+                
+                //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Trabajador modificado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            //funcion provisional para guardas datos en el excel
+            gTrabajadores.guardarTrabajadoresExcel();
+            
+                }else{
+                  //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Completar los campos de nombre y descripcion", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+              
+                }
+                }else{
+                //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Ingresa un trabajador de la Tabla", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
             }
+        }
+        catch (NumberFormatException e) {
+            //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        }
+        
         
     }//GEN-LAST:event_panelBoton2MouseClicked
 
@@ -1183,16 +1308,20 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
         
         //boton para grabar una nueva entrada
-        
-        //preguntamos si el indice seleccionado de la tabla es legal
+        try{
+            //preguntamos si el indice seleccionado de la tabla es legal
             if (tablaTrabajadores.getSelectedRow() > -1) {
                 
-                //primero obtenemos los datos de la entrada
+                                //primero obtenemos los datos de la entrada
                 String newEntrada = textoRazonEntrada.getText();
-                float newValorEntrada = Float.parseFloat(textoValorEntrada.getText()); 
+                
+                if (!newEntrada.isEmpty()) {
+                    float newValorEntrada = Float.parseFloat(textoValorEntrada.getText()); 
                         
                 String operacion = comboOperacionEntrada.getSelectedItem().toString();
                 
+                if (Float.parseFloat(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow())) >= newValorEntrada && operacion.equals("-") && newValorEntrada >= 1 || operacion.equals("+") && newValorEntrada >= 1) {
+                    
                 //hacemo que el valor no pueda quedar negativo 
                 if ( Float.parseFloat(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow())) >= newValorEntrada && operacion.equals("-") && newValorEntrada >= 1) {
                     //llamamos a la funcion de agregar entrada
@@ -1219,7 +1348,36 @@ private void cerrarSesionYRegresarLogin() {
                 
                 //colocamos la tabala seleccionando el indice actual
                 tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+                
+                //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Entrada creada exitosamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
+            //funcion provisional para guardas datos en el excel
+             gTrabajadores.guardarTrabajadoresExcel();
+            
+                }else{
+                    //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "el salario del trabajador es inferior a la entrada", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
+                }
+                  
+                }else{
+                    //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "por favor completar la razon de la nueva entrada", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
+                }
+                
+                }else{
+                //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Ingresa un Trabajador de la Tabla", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
             }
+        }
+        catch (NumberFormatException e) {
+            //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        }
+        
         
         
     }//GEN-LAST:event_PanelBoton3MouseClicked
@@ -1235,6 +1393,49 @@ private void cerrarSesionYRegresarLogin() {
     private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
 
     }//GEN-LAST:event_jTextField19ActionPerformed
+
+    private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
+        // TODO add your handling code here:
+        
+        //esta funcion nos ayudara a iniciar una nueva semana de trabajo
+        // Mostrar popup de advertencia
+                int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
+
+                // Si el usuario selecciona "Sí"
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    gTrabajadores.nuevaSemana();
+                    
+                    
+                    if (indiceActual > -1) {
+                        //ocultamos los paneles para evitar problemas
+                panelf1.setVisible(false);
+                panelf2.setVisible(false);
+                
+                //mostramos los datos de la tabla 
+                labelNombre.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
+                labelSemanaInfo.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSemanasDeTrabajo());
+                areaDescripcionNo.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
+                
+                labelSalirioSemanal.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                
+                //ahora vamos a llamar a la funcion de calcular el sueldo total
+                labelSalioTotal.setText(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow()));
+                
+                //mostramos los mismos datos de modificado 
+                textoNombreModificado.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
+                areaDescripcionModificada.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
+                textoSalarioModificado.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                
+            //colocamos la tabala seleccionando el indice actual
+            tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+        }
+                    
+                    // vaciaremos la tabla totalmente
+                modeloEntradas.setRowCount(0);
+                    
+                    gTrabajadores.guardarTrabajadoresExcel();
+                }
+    }//GEN-LAST:event_jPanel5MouseClicked
 
     /**
      * @param args the command line arguments
@@ -1372,10 +1573,16 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
@@ -1387,6 +1594,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
