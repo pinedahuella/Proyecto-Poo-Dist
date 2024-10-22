@@ -6,9 +6,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook; // Importa la clase XSSFWorkb
 import java.io.FileInputStream; // Importa la clase FileInputStream para leer archivos
 import java.io.FileOutputStream; // Importa la clase FileOutputStream para escribir en archivos
 import java.io.IOException; // Importa la clase IOException para manejar excepciones de entrada/salida
+import java.text.SimpleDateFormat;
 import java.time.LocalDate; // Importa la clase LocalDate para trabajar con fechas
 import java.time.format.DateTimeFormatter; // Importa la clase DateTimeFormatter para formatear fechas
 import java.util.Vector; // Importa la clase Vector para almacenar colecciones de objetos de manera dinámica
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 /**
  * La clase GESTIONCAMIONES gestiona una colección de camiones (Camiones).
@@ -130,7 +133,7 @@ public class GESTIONCAMIONES {
                 String tipoCombustible = getStringCellValue(row.getCell(4));
                 double kilometraje = getNumericCellValue(row.getCell(5));
                 double capacidadCarga = getNumericCellValue(row.getCell(6));
-                String nuevoAñoFabricacion = getStringCellValue(row.getCell(7));
+                String newnewnuevoAñoFabricacion = getStringCellValue(row.getCell(7));
                 
                 double costoReparacion = getNumericCellValue(row.getCell(8));
                 double costoGalon = getNumericCellValue(row.getCell(9));
@@ -139,17 +142,51 @@ public class GESTIONCAMIONES {
                 double gastoNoEspecificado = getNumericCellValue(row.getCell(12));
                 String descripcionDelGasto = getStringCellValue(row.getCell(13));
                 String tiempoEnReparacion = getStringCellValue(row.getCell(14));
-                String nuevaFechaMantenimiento = getStringCellValue(row.getCell(15));
+                String newnewnuevaFechaMantenimiento = getStringCellValue(row.getCell(15));
                 double total = getNumericCellValue(row.getCell(16));
                 double costoTotalCombustible = getNumericCellValue(row.getCell(17));
 
-                String añoFabricacion = procesarFecha(nuevoAñoFabricacion);
-                String fechaDeMantenimiento = procesarFecha(nuevaFechaMantenimiento);
+                
+                // Procesa la fecha de nacimiento desde el formato Excel.
+                String nuevoAñoFabricacion;
+                if (newnewnuevoAñoFabricacion.length() > 7) {
+                    nuevoAñoFabricacion = newnewnuevoAñoFabricacion; // Si ya es un String válido.
+                } else {
+                    int newnuevoAñoFabricacion = Integer.parseInt(newnewnuevoAñoFabricacion.split("\\.")[0]);
+                    
+                    LocalDate excelStartDate = LocalDate.of(1900, 1, 1);
+                    if (newnuevoAñoFabricacion > 59) {
+                        newnuevoAñoFabricacion--; 
+                    }
+                    
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate date = excelStartDate.plusDays(newnuevoAñoFabricacion - 1);
+                    nuevoAñoFabricacion = date.format(formatter); // Formato final de la fecha.
+                }
+                
+                
+                // Procesa la fecha de nacimiento desde el formato Excel.
+                String nuevaFechaMantenimiento;
+                if (newnewnuevaFechaMantenimiento.length() > 7) {
+                    nuevaFechaMantenimiento = newnewnuevaFechaMantenimiento; // Si ya es un String válido.
+                } else {
+                    int newnuevaFechaMantenimiento = Integer.parseInt(newnewnuevaFechaMantenimiento.split("\\.")[0]);
+                    
+                    LocalDate excelStartDate = LocalDate.of(1900, 1, 1);
+                    if (newnuevaFechaMantenimiento > 59) {
+                        newnuevaFechaMantenimiento--; 
+                    }
+                    
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate date = excelStartDate.plusDays(newnuevaFechaMantenimiento - 1);
+                    nuevaFechaMantenimiento = date.format(formatter); // Formato final de la fecha.
+                }
+                
 
                 Camiones camiones = new Camiones(placas, estado, tipoCombustible, kilometraje, capacidadCarga, 
-                                                  añoFabricacion, modelo, marca, costoReparacion, costoGalon, 
+                                                  nuevoAñoFabricacion, modelo, marca, costoReparacion, costoGalon, 
                                                   galones, costoMantenimiento, gastoNoEspecificado, 
-                                                  descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento, total);
+                                                  descripcionDelGasto, tiempoEnReparacion, nuevaFechaMantenimiento, total);
                 camiones.setCostoTotalCombustible(costoTotalCombustible);
                 this.camiones.add(camiones);
             }
@@ -158,70 +195,56 @@ public class GESTIONCAMIONES {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Procesa una fecha en formato de Excel y la convierte a una cadena con el formato "dd/MM/yyyy".
-     * 
-     * @param fecha La fecha en formato de Excel.
-     * @return La fecha procesada como cadena.
-     */
-    private String procesarFecha(String fecha) {
-        if (fecha == null || fecha.isEmpty()) {
-            return "";
-        }
-        try {
-            double fechaExcel = Double.parseDouble(fecha);
-            LocalDate localDate = LocalDate.of(1900, 1, 1).plusDays((long) fechaExcel - 2);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return localDate.format(formatter);
-        } catch (NumberFormatException e) {
-            return fecha;
-        }
+    
+    private double getNumericCellValue(Cell cell) {
+    if (cell == null) {
+        return 0;
     }
+    switch (cell.getCellType()) {
+        case NUMERIC:
+            return cell.getNumericCellValue();
+        case STRING:
+            String stringValue = cell.getStringCellValue().trim();
+            if (stringValue.equalsIgnoreCase("Ninguno") || stringValue.isEmpty()) {
+                return 0;
+            }
+            try {
+                return Double.parseDouble(stringValue);
+            } catch (NumberFormatException e) {
+                System.err.println("No se pudo convertir a número: " + stringValue);
+                return 0;
+            }
+        case BOOLEAN:
+            return cell.getBooleanCellValue() ? 1 : 0;
+        default:
+            return 0;
+    }
+}
+    
 
-    /**
-     * Obtiene el valor de una celda como cadena.
-     * 
-     * @param cell La celda a procesar.
-     * @return El valor de la celda como cadena.
-     */
+// Método para obtener el valor de una celda de tipo String
     private String getStringCellValue(Cell cell) {
         if (cell == null) {
             return "";
         }
         switch (cell.getCellType()) {
             case STRING:
-                return cell.getStringCellValue();
+                return cell.getStringCellValue().trim();
             case NUMERIC:
-                return String.valueOf(cell.getNumericCellValue());
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    return new SimpleDateFormat("yyyy-MM-dd").format(cell.getDateCellValue());
+                }
+                return String.format("%.0f", cell.getNumericCellValue());
+            case BOOLEAN:
+                return Boolean.toString(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
             default:
                 return "";
         }
     }
 
-    /**
-     * Obtiene el valor de una celda como número.
-     * 
-     * @param cell La celda a procesar.
-     * @return El valor de la celda como número.
-     */
-    private double getNumericCellValue(Cell cell) {
-        if (cell == null) {
-            return 0.0;
-        }
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                return cell.getNumericCellValue();
-            case STRING:
-                try {
-                    return Double.parseDouble(cell.getStringCellValue());
-                } catch (NumberFormatException e) {
-                    return 0.0;
-                }
-            default:
-                return 0.0;
-        }
-    }
+  
 
     /**
      * Guarda la lista de camiones en el archivo Excel.
