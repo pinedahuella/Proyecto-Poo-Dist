@@ -826,7 +826,7 @@ private void cerrarSesionYRegresarLogin() {
         textoDescripcionB.setRows(5);
         scrolgenerico.setViewportView(textoDescripcionB);
 
-        jPanel19.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel19.setBackground(new java.awt.Color(102, 153, 255));
         jPanel19.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel19MouseClicked(evt);
@@ -834,6 +834,7 @@ private void cerrarSesionYRegresarLogin() {
         });
 
         jLabel21.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel21.setForeground(new java.awt.Color(255, 255, 255));
         jLabel21.setText("MODIFICAR INFORMACION DEL CLIENTE");
 
         javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
@@ -872,7 +873,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel15Layout.createSequentialGroup()
                         .addComponent(scrolgenerico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 251, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
