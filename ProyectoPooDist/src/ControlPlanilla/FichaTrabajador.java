@@ -98,4 +98,9 @@ public class FichaTrabajador {
     public Vector<Float> getValorEntrada(){
         return this.valorEntrada;
     }
+    
+    //creamos una funcion para sumarle semana
+    public void nuevaSemanaTrabajada(){
+        this.semanasDeTrabajo++;
+    }
 }

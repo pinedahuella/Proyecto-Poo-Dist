@@ -17,6 +17,9 @@ import ControlCliente.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+//clases para calendario
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import java.util.Vector;
 
@@ -66,7 +69,6 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
         gesproductos.setCargarInvetarioExcel();
         gesclientes.cargarExcelCliente();
         gesventas.cargarExcelVentas();
-        geshistorial.cargarExcelHistoria();
         gescreditos.cargarExcelCreditos();
         
         //llenamos los vectores necesarios
@@ -215,6 +217,8 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
         labelVendido = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -496,26 +500,23 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spinCantidadB, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(spinCantidadB, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textoPrecioB, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(textoFleteB, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(textoCostoB, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(labelGanaciaVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)
-                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textoPrecioB, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                        .addComponent(textoFleteB, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(textoCostoB, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelGanaciaVenta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
@@ -623,7 +624,7 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 570, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -653,6 +654,33 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
         labelVendido.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         labelVendido.setText("Q 00.00");
 
+        jPanel3.setBackground(new java.awt.Color(51, 224, 218));
+        jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel3MouseClicked(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel10.setText("Ver historial de ventas:");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel10)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel10)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -660,16 +688,18 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(labelGanaciaGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(labelVendido, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -679,6 +709,8 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19)
                 .addComponent(jLabel22)
                 .addGap(5, 5, 5)
                 .addComponent(labelVendido)
@@ -958,14 +990,83 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
     private void jPanel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseClicked
         // TODO add your handling code here:
         
-  
+        //funcion para finalizar el dia
+        
         // Mostrar popup de advertencia
                 int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
 
                 // Si el usuario selecciona "Sí"
                 if (respuesta == JOptionPane.YES_OPTION) {
-                    Vector<Venta> vaciarVector = new Vector<>();
                     
+
+        // Obtener la fecha actual
+        Date fechaActual = new Date();
+        // Crear el formateador para la fecha
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("d 'de' MMMM 'del' yyyy");
+        // Convertir la fecha a String
+        String fechaFormateada = formatoFecha.format(fechaActual);
+        
+        
+        String siesventa = "venta";    
+        
+        //cremos un vector des string que nos ayudara a guardar el historial
+        Vector<String> his = new Vector<>();
+        
+        //creamos un for que obtendra toda la informacion del vector 
+        
+                    for (int i = 0; i < vectorventas.size(); i++) {
+
+                String cliente = gesclientes.getClientes().get(vectorventas.get(i).getIndiceCliente()).getNombre();
+                
+                    if (vectorventas.get(i).getCredito() == true && vectorventas.get(i).getCreditoActivo() == true) {
+                    siesventa = "credito";
+                }else if(vectorventas.get(i).getCredito() == true && vectorventas.get(i).getCreditoActivo() == false){
+                    siesventa = "credito / pagado";
+                }else if(vectorventas.get(i).getCredito() == false){
+                    siesventa = "venta";
+                }
+
+                String producto = vectorproductos.get(vectorventas.get(i).getIndiceProducto()).getNombre();
+                String cantidad = vectorventas.get(i).getIndiceCantidad() + " productos";
+                String precio = "Q. " + vectorventas.get(i).getPrecio();
+                double cantidadtotal = vectorventas.get(i).getIndiceCantidad() * vectorventas.get(i).getPrecio();
+                String total = "Q. " + cantidadtotal;
+                double fletetotal = vectorventas.get(i).getIndiceCantidad() * vectorventas.get(i).getPrecioFlete();
+                String flete = "Q. " + fletetotal;
+                double costototal = vectorventas.get(i).getIndiceCantidad() * vectorventas.get(i).getPrecioCosto();
+                String costo = "Q. " + costototal;
+                String ganancia = "Q. " + vectorventas.get(i).getGanancia();
+                
+                his.add(fechaFormateada);
+                his.add(cliente);
+                his.add(siesventa);
+                his.add(producto);
+                his.add(cantidad);
+                his.add(precio);
+                his.add(total);
+                his.add(flete);
+                his.add(costo);
+                his.add(ganancia);
+                
+                
+                    }
+                    
+                his.add(fechaFormateada);
+                his.add("Resumen");
+                his.add("total");
+                his.add("del");
+                his.add("dia");
+                his.add("-");
+                his.add("Q. " + gesventas.calcularVendidoGeneral());
+                his.add("Q. " + gesventas.calcularFleteGeneral());
+                his.add("Q. " + gesventas.calcularCostoGeneral());
+                his.add("Q. " + gesventas.calcularGananciaGeneral());
+                    
+                    
+                    //guardamos los datos en el historial
+                    geshistorial.guardarExcelHistoria(his);
+                    
+        //vaciamos el vector de ventas            
         gesventas.getVentas().clear();
         gesventas.guardarExcelVentas();
 
@@ -977,6 +1078,15 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
         ActualizarGananciaTotal();
                 }
     }//GEN-LAST:event_jPanel10MouseClicked
+
+    private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
+        // TODO add your handling code here:
+        
+        //funcion que nos ayuda a abrir el historial
+        FrameHistorialVenta newframe = new FrameHistorialVenta();
+        newframe.setVisible(true);
+        
+    }//GEN-LAST:event_jPanel3MouseClicked
 
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
@@ -1070,6 +1180,7 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboClienteB;
     private javax.swing.JComboBox<String> comboProductosA;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -1093,6 +1204,7 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;

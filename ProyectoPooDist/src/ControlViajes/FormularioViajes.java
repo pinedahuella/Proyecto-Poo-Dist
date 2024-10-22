@@ -31,7 +31,8 @@ import java.util.Vector;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 
@@ -1140,9 +1141,16 @@ private void redirectToFrame(String option) {
         Date newFechaCarga = fechaBCarga.getDate();
         Date newFechaDescarga = fechaBDescarga.getDate();
         
+        // Obtener la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        // Restar un día a la fecha actual
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        Date fechaActualMenosUnDia = calendar.getTime();
+        
          try {
           //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null) {
+        if (newFechaCarga != null && newFechaDescarga != null && !newFechaCarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(newFechaCarga)) {
             
             //creamos los indices de pilotos y camiones
             int newIndicePiloto = comboPilotosB.getSelectedIndex();
@@ -1252,7 +1260,7 @@ private void redirectToFrame(String option) {
         
          try {
           //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null && indiceActual  > -1) {
+        if (newFechaCarga != null && newFechaDescarga != null && indiceActual  > -1 && !newFechaDescarga.before(newFechaCarga)) {
             
             //creamos los indices de pilotos y camiones
             int newIndicePiloto = comboPilotosA.getSelectedIndex();

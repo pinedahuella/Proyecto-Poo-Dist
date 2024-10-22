@@ -408,6 +408,8 @@ private void configureButtonsByRole() {
         jLabel10 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
+        labeltPedido = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -651,6 +653,12 @@ private void configureButtonsByRole() {
                 .addGap(18, 18, 18))
         );
 
+        labeltPedido.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        labeltPedido.setText("Tipo de Pedido:");
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel14.setText("Para la Distribuidora");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -682,7 +690,11 @@ private void configureButtonsByRole() {
                                 .addGap(186, 186, 186)
                                 .addComponent(radioFinalizadoA, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(labeltPedido)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -711,7 +723,11 @@ private void configureButtonsByRole() {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboPilotoB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboCamionB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labeltPedido)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1249,10 +1265,16 @@ private void configureButtonsByRole() {
         
         Date newFechaCarga = fechaCargaA.getDate();
         Date newFechaDescarga = fechaDescargaA.getDate();
+        // Obtener la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        // Restar un día a la fecha actual
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        Date fechaActualMenosUnDia = calendar.getTime();
         
          try {
           //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null) {
+        if (newFechaCarga != null && newFechaDescarga != null && !newFechaCarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(newFechaCarga)) {
             
             //creamos los indices de pilotos y camiones
             int newIndicePiloto = comboPilotosA.getSelectedIndex();
@@ -1352,7 +1374,7 @@ private void configureButtonsByRole() {
         try {
             if (indiceGeneral > -1) {
                        //verifica que las fechas sean validas
-                if (newFechaCarga != null && newFechaDescarga != null) {
+                if (newFechaCarga != null && newFechaDescarga != null && !newFechaDescarga.before(newFechaCarga)) {
 
                     //creamos los indices de pilotos y camiones
                     int newIndicePiloto = comboPilotoB.getSelectedIndex();
@@ -1709,16 +1731,12 @@ private void configureButtonsByRole() {
     private javax.swing.JButton btnPlanillaDeTrabajadores;
     private javax.swing.JButton btnRegresarLogin;
     private javax.swing.JComboBox<String> comboCamionA;
-    private javax.swing.JComboBox<String> comboCamionA1;
     private javax.swing.JComboBox<String> comboCamionB;
     private javax.swing.JComboBox<String> comboPilotoB;
     private javax.swing.JComboBox<String> comboPilotosA;
-    private javax.swing.JComboBox<String> comboPilotosA1;
     private com.toedter.calendar.JDateChooser fechaCargaA;
-    private com.toedter.calendar.JDateChooser fechaCargaA1;
     private com.toedter.calendar.JDateChooser fechaCargaB;
     private com.toedter.calendar.JDateChooser fechaDescargaA;
-    private com.toedter.calendar.JDateChooser fechaDescargaA1;
     private com.toedter.calendar.JDateChooser fechaDescargaB;
     private javax.swing.JTabbedPane formato1;
     private javax.swing.JLabel jLabel1;
@@ -1731,12 +1749,7 @@ private void configureButtonsByRole() {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1750,10 +1763,7 @@ private void configureButtonsByRole() {
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1768,18 +1778,16 @@ private void configureButtonsByRole() {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel labelCamion;
     private javax.swing.JLabel labelFechaC;
     private javax.swing.JLabel labelFechaD;
     private javax.swing.JLabel labelPiloto;
+    private javax.swing.JLabel labeltPedido;
     private javax.swing.JRadioButton radioFinalizadoA;
     private javax.swing.JTable tablaPedidosA;
     private javax.swing.JTable tablaPedidosB;
     private javax.swing.JTable tablaProductosA;
-    private javax.swing.JTable tablaProductosA1;
     private javax.swing.JTable tablaProductosB;
     private javax.swing.JTable tablaProductosC;
     // End of variables declaration//GEN-END:variables

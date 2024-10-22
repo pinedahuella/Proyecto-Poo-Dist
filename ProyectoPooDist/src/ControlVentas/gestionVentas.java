@@ -6,6 +6,8 @@ package ControlVentas;
 
 import java.util.Vector;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -20,6 +22,7 @@ import java.io.IOException;
 public class gestionVentas {
     private Vector<Venta> ventas = new Vector<>();
     private Vector<Venta> creditos = new Vector<>();
+    private Vector<String> historial = new Vector<>();
     private String excelFilePath;
     
     //constructor 
@@ -27,9 +30,10 @@ public class gestionVentas {
         excelFilePath = "excels/ventas.xlsx";
     };
     
-    public gestionVentas(Vector<Venta> v, Vector<Venta> c){
+    public gestionVentas(Vector<Venta> v, Vector<Venta> c, Vector<String> h){
         this.ventas = v;
         this.creditos = c;
+        this.historial = h;
         excelFilePath = "excels/ventas.xlsx";
     };
 
@@ -48,6 +52,10 @@ public class gestionVentas {
         this.creditos = c;
     };
     
+    public void setHistorial(Vector<String> h){
+        this.historial = h;
+    };
+    
     //getters
     public Vector<Venta> getVentas(){
         return this.ventas;
@@ -55,6 +63,11 @@ public class gestionVentas {
     
     public Vector<Venta> getCreditos(){
         return this.creditos;
+    };
+    
+    public Vector<String> getHistorial(){
+        System.out.print("obeteniendo vector");
+        return this.historial;
     };
     
     
@@ -115,9 +128,38 @@ public class gestionVentas {
         return GananciaDelDia;
     };
     
+    public double calcularFleteGeneral(){
+        double GananciaDelDia = 0;
+        
+        for (int i = 0; i < ventas.size(); i++) {
+            if (ventas.get(i).getCredito() == false || ventas.get(i).getCreditoActivo() == false) {
+                GananciaDelDia = ventas.get(i).getPrecioFlete() * ventas.get(i).getIndiceCantidad() + GananciaDelDia;
+            }
+        }
+        
+        return GananciaDelDia;
+    };
+    
+    public double calcularCostoGeneral(){
+        double GananciaDelDia = 0;
+        
+        for (int i = 0; i < ventas.size(); i++) {
+            if (ventas.get(i).getCredito() == false || ventas.get(i).getCreditoActivo() == false) {
+                GananciaDelDia = ventas.get(i).getPrecioCosto() * ventas.get(i).getIndiceCantidad() + GananciaDelDia;
+            }
+        }
+        
+        return GananciaDelDia;
+    };
+    
     //funcion para agregar un credito a la lista de creditos
     public void addCreditoVector(Venta ven){
         creditos.add(ven);
+    }
+    
+    //funcion para agregar un valor al historia
+    public void addHistorialVector(String his){
+        historial.add(his);
     }
     
     //funcion para modificar una credito
@@ -252,13 +294,114 @@ public class gestionVentas {
     };
     
     
-    //funciones especiales para historial de excel, gargar y guardar
+    
+    //funciones especiales para historial de excel, cargar y guardar
     public void cargarExcelHistoria(){
-        
+        System.out.print("cargando Hitorial");
+        //funcion obsoleta de cargar, por rendimiento
+        /*
+         try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            // Obtener la primera hoja (índice 0)
+            Sheet sheet = workbook.getSheetAt(0);
+
+            // Recorrer todas las filas del Excel
+            for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
+                Row row = sheet.getRow(rowNum);
+                if (row == null) continue;
+
+                // Leer cada celda de la fila y convertir a String
+                String fecha = row.getCell(0).getStringCellValue();
+                String cliente = row.getCell(1).getStringCellValue();
+                String tipo = row.getCell(2).getStringCellValue();
+                String producto = row.getCell(3).getStringCellValue();
+                String cantidad = row.getCell(4).getStringCellValue();
+                String precio = row.getCell(5).getStringCellValue();
+                String total = row.getCell(6).getStringCellValue();
+                String flete = row.getCell(7).getStringCellValue();
+                String costo = row.getCell(8).getStringCellValue();
+                String ganancia = row.getCell(9).getStringCellValue();
+
+                // Agregar la entrada al Vector historial
+                historial.add(fecha);
+                historial.add(cliente);
+                historial.add(tipo);
+                historial.add(producto);
+                historial.add(cantidad);
+                historial.add(precio);
+                historial.add(total);
+                historial.add(flete);
+                historial.add(costo);
+                historial.add(ganancia);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
     };
     
-    public void guardarExcelHistoria(){
+    public void guardarExcelHistoria(Vector<String> his){
+        /*
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Historial");
+
+        // Crear la fila de encabezados
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {"Fecha", "Cliente", "Tipo", "Producto", "Cantidad", "Precio", "Total", "Flete", "Costo", "Ganancia"};
+        for (int col = 0; col < headers.length; col++) {
+            Cell cell = headerRow.createCell(col);
+            cell.setCellValue(headers[col]);
+        }
+
+        // Insertar los datos del historial en el Excel
+        int rowNum = 1; // Empieza en la fila 1 porque la 0 es el encabezado
+        for (int i = 0; i < historial.size(); i += 10) {
+            Row row = sheet.createRow(rowNum++);
+
+            for (int j = 0; j < 10; j++) {
+                Cell cell = row.createCell(j);
+                cell.setCellValue(historial.get(i + j)); // Tomar los 10 elementos correspondientes
+            }
+        }
+
+        // Guardar el archivo Excel
+        try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+            workbook.write(fos);
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */ 
         
+        //nueva funcion para guardar en el excel, mas optima
+        
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+            int lastRowNum = sheet.getLastRowNum();
+            int startRow = lastRowNum + 1; // La próxima fila vacía
+            int historiaIndex = 0;
+
+            // Escribe historias en grupos de 10
+            for (int i = startRow; historiaIndex < his.size(); i++) {
+                Row row = sheet.createRow(i);
+                for (int j = 0; j < 10 && historiaIndex < his.size(); j++) {
+                    Cell cell = row.createCell(j);
+                    cell.setCellValue(his.get(historiaIndex));
+                    historiaIndex++;
+                }
+            }
+
+            // Guardar cambios en el archivo Excel
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     };
     
     //funciones especiales para creditos de excel, gargar y guardar
