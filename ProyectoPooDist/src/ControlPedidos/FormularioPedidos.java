@@ -180,42 +180,52 @@ public class FormularioPedidos extends javax.swing.JFrame {
    
     
     private void setupComboBox() {
-        txtMenu.removeAllItems();
-        txtMenu.addItem("Seleccione una opción");
+    txtMenu.removeAllItems();
+    txtMenu.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu.addItem("Gestión de Usuarios");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu.addItem("Gestión de Usuarios");
-        txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Clientes");
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Gestión de Pedidos");
-        txtMenu.addItem("Inventario de Quintales");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Gestión de Camiones");
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -1254,6 +1264,66 @@ private void cerrarSesionYRegresarLogin() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    // Método auxiliar para verificar si un piloto está disponible
+private boolean isPilotoDisponible(int indicePiloto) {
+    // Obtener el piloto del sistema de gestión
+    Vector<Piloto> pilotos = gespilotos.getPilotos();
+    
+    if (indicePiloto >= 0 && indicePiloto < pilotos.size()) {
+        Piloto piloto = pilotos.get(indicePiloto);
+        String estado = piloto.getEstadoPiloto();
+        
+        if (!estado.equals("ACTIVO")) {
+            String mensaje = "No se puede asignar este piloto porque está " + 
+                (estado.equals("INACTIVO") ? "INACTIVO" :
+                estado.equals("ENFERMO") ? "ENFERMO" :
+                estado.equals("EN VACACIONES") ? "EN VACACIONES" :
+                estado.equals("JUBILADO") ? "JUBILADO" : "en estado no disponible");
+                
+            JOptionPane.showMessageDialog(null, mensaje, "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+
+
+// Método auxiliar para verificar si un camión está disponible
+private boolean isCamionDisponible(int indiceCamion) {
+    // Obtener la lista de camiones del sistema de gestión
+    Vector<Camiones> camiones = gescamiones.getCamiones();
+    
+    // Verificar si el índice es válido
+    if (indiceCamion >= 0 && indiceCamion < camiones.size()) {
+        // Obtener el camión en el índice dado
+        Camiones camion = camiones.get(indiceCamion);
+        
+        // Obtener el estado del camión
+        String estado = camion.getEstado();
+        
+        // Verificar si el camión está disponible (es funcional)
+        if (!estado.equals("FUNCIONAL")) {
+            // Crear el mensaje según el estado del camión
+            String mensaje = "No se puede asignar este camión porque está " + 
+                (estado.equals("DESCOMPUESTO") ? "DESCOMPUESTO" :
+                estado.equals("EN MANTENIMIENTO") ? "EN MANTENIMIENTO" :
+                estado.equals("NO DISPONIBLE") ? "NO DISPONIBLE" : "en estado no disponible");
+                
+            // Mostrar mensaje de error
+            JOptionPane.showMessageDialog(null, mensaje, "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    // Si el índice no es válido, se retorna false
+    return false;
+}
+
+
     private void jPanel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel9MouseClicked
         // TODO add your handling code here:
         
@@ -1271,14 +1341,21 @@ private void cerrarSesionYRegresarLogin() {
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         Date fechaActualMenosUnDia = calendar.getTime();
         
-         try {
+   try {
+        // Primero verificamos si el piloto está disponible
+        int newIndicePiloto = comboPilotosA.getSelectedIndex();
+        if (!isPilotoDisponible(newIndicePiloto)) {
+            return; // Si el piloto no está disponible, terminamos la ejecución
+        }
+        
+        int newIndiceCamion = comboCamionA.getSelectedIndex();
+        if (!isCamionDisponible(newIndiceCamion)) {
+        return;
+        }
           //verifica que las fechas sean validas
         if (newFechaCarga != null && newFechaDescarga != null && !newFechaCarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(newFechaCarga)) {
             
-            //creamos los indices de pilotos y camiones
-            int newIndicePiloto = comboPilotosA.getSelectedIndex();
-            int newIndiceCamion = comboCamionA.getSelectedIndex();
-            
+
             //miramos si el viaje es una compra o una venta
             boolean newcompra;
             newcompra = true;
@@ -1372,12 +1449,20 @@ private void cerrarSesionYRegresarLogin() {
         
         try {
             if (indiceGeneral > -1) {
+
+        // Primero verificamos si el piloto está disponible
+        int newIndicePiloto = comboPilotosA.getSelectedIndex();
+        if (!isPilotoDisponible(newIndicePiloto)) {
+            return; // Si el piloto no está disponible, terminamos la ejecución
+        }
+        
+        
+        int newIndiceCamion = comboCamionB.getSelectedIndex();
+        if (!isCamionDisponible(newIndiceCamion)) {
+        return;
+        }
                        //verifica que las fechas sean validas
                 if (newFechaCarga != null && newFechaDescarga != null && !newFechaDescarga.before(newFechaCarga)) {
-
-                    //creamos los indices de pilotos y camiones
-                    int newIndicePiloto = comboPilotoB.getSelectedIndex();
-                    int newIndiceCamion = comboCamionB.getSelectedIndex();
 
                     //miramos si el viaje es una compra o una venta
                     boolean newcompra;

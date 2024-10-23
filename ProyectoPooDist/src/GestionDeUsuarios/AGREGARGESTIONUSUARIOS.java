@@ -262,7 +262,7 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(txtCargoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAgregarUsuarioSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -329,7 +329,7 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -343,7 +343,7 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 811, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -365,116 +365,124 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
      * @param evt El evento de acción que desencadena este método.
      */
     private void btnAgregarUsuarioSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarUsuarioSistemaActionPerformed
-        try {
-            // Recuperar y limpiar los datos de entrada
-            String nombreUsuario = txtNombreUsuario.getText().trim();
-            String apellidoUsuario = txtApellidoUsuario.getText().trim();
-            long numeroDeDpiUsuario = Long.parseLong(txtNumeroDeDpiUsuario.getText().trim());
-            String cargoUsuario = txtCargoUsuario.getSelectedItem().toString().trim();
-            String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
-            int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuario.getText().trim());
-            String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
-            String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
-            String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
-
-            // Validar fecha de nacimiento
-            Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
-            if (fechaNacimientoUsuarioDate == null) {
-                JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
-                return;
-            }
-
-            String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
-
-            // Validar contraseña
-            if (!validarContrasena(contrasenaUsuario)) {
-                JOptionPane.showMessageDialog(this, "La contraseña no cumple con los requisitos:\n" +
-                    "- Debe tener al menos 8 caracteres\n" +
-                    "- Debe contener 'pineed'\n" +
-                    "- Debe incluir al menos una letra, un número y un carácter especial");
-                return;
-            }
-
-            // Verificar si el nombre de usuario ha sido modificado a mayúsculas
-            if (!nombreDeUsuario.equals(txtNombreDeUsuarioUsuario.getText().trim())) {
-                JOptionPane.showMessageDialog(this, "El nombre de usuario debe estar en minúsculas. Se ha convertido automáticamente.");
-            }
-
-            // Validar correo electrónico
-            if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
-                JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
-                return;
-            }
-
-            // Formatear fecha de nacimiento
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String fechaDeNacimientoUsuario = sdf.format(fechaNacimientoUsuarioDate);
-
-            // Validar campos vacíos
-            if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || cargoUsuario.isEmpty() ||
-                correoElectronicoUsuario.isEmpty() || generoUsuario.isEmpty() || nombreDeUsuario.isEmpty() ||
-                contrasenaUsuario.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
-                return;
-            }
-
-            // Validar longitud del DPI y número telefónico
-            if (String.valueOf(numeroDeDpiUsuario).length() != 13) { 
-                JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
-                return;
-            }
-            if (String.valueOf(numeroTelefonicoUsuario).length() != 8) { 
-                JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
-                return;
-            }
-
-            // Verificar si el usuario ya existe
-            for (Usuarios usuarioExistente : listaUsuarios) {
-                if (usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) { 
-                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
-                    return;
-                }
-                if (usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) { 
-                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
-                    return;
-                }
-                if (usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
-                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
-                    return;
-                }
-            }
-
-            // Crear un nuevo usuario
-            Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, apellidoUsuario, 
-                                            cargoUsuario, generoUsuario, numeroDeDpiUsuario, 
-                                            fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
-                                            correoElectronicoUsuario, estadoUsuario);
-
-            // Agregar usuario a la lista
-            listaUsuarios.add(usuario);
-            JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.");
-
-            // Limpiar los campos de entrada
-            limpiarCampos();
-
-            // Guardar usuarios en Excel
-            gestionUsuarios.setUsuarios(listaUsuarios); 
-            gestionUsuarios.guardarUsuariosEnExcel();
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
+    try {
+        // Recuperar y limpiar los datos de entrada
+        String nombreUsuario = txtNombreUsuario.getText().trim();
+        String apellidoUsuario = txtApellidoUsuario.getText().trim();
+        
+        // Validar que nombre y apellido no estén vacíos
+        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre y apellido son obligatorios.");
+            return;
         }
 
-        // Navegar a la ventana de gestión de usuarios
-        String username = this.currentUser; // Asumiendo que currentUser almacena el nombre de usuario
-        String role = this.userRole; // Asumiendo que userRole almacena el rol
-        LOGINPINEED loginFrame = this.loginFrame; // Asumiendo que loginFrame ya está disponible
+        // Generar el nombre de usuario esperado en el formato correcto
+        String nombreUsuarioEsperado = nombreUsuario.toLowerCase() + "." + 
+                                     apellidoUsuario.toLowerCase() + "&pineed";
 
-        INICIOGESTIONUSUARIOS abrir = new INICIOGESTIONUSUARIOS(username, role, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
+        // Obtener el nombre de usuario ingresado
+        String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
+
+        // Validar que el nombre de usuario coincida con el formato esperado
+        if (!nombreDeUsuario.equals(nombreUsuarioEsperado)) {
+            JOptionPane.showMessageDialog(this, 
+                "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
+                "Para sus datos, debe ser: " + nombreUsuarioEsperado);
+            return;
+        }
+
+        // Obtener y validar el número de DPI
+        String dpiText = txtNumeroDeDpiUsuario.getText().trim();
+        if (dpiText.length() != 13) {
+            JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
+            return;
+        }
+        long numeroDeDpiUsuario = Long.parseLong(dpiText);
+
+        // Obtener la contraseña y validar que coincida con el DPI
+        String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
+        if (!contrasenaUsuario.equals(dpiText)) {
+            JOptionPane.showMessageDialog(this, "La contraseña debe ser igual al número de DPI.");
+            return;
+        }
+
+        // Continuar con el resto de las validaciones
+        String cargoUsuario = txtCargoUsuario.getSelectedItem().toString().trim();
+        String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
+        int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuario.getText().trim());
+        String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
+        String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
+
+        // Validar fecha de nacimiento
+        Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
+        if (fechaNacimientoUsuarioDate == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
+            return;
+        }
+
+        // Validar correo electrónico
+        if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
+            return;
+        }
+
+        // Formatear fecha de nacimiento
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaDeNacimientoUsuario = sdf.format(fechaNacimientoUsuarioDate);
+
+        // Validar longitud del número telefónico
+        if (String.valueOf(numeroTelefonicoUsuario).length() != 8) { 
+            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
+            return;
+        }
+
+        // Verificar si el usuario ya existe
+        for (Usuarios usuarioExistente : listaUsuarios) {
+            if (usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) { 
+                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+                return;
+            }
+            if (usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) { 
+                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+                return;
+            }
+            if (usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+                return;
+            }
+        }
+
+        // Crear un nuevo usuario
+        Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, apellidoUsuario, 
+                                        cargoUsuario, generoUsuario, numeroDeDpiUsuario, 
+                                        fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
+                                        correoElectronicoUsuario, estadoUsuario);
+
+        // Agregar usuario a la lista
+        listaUsuarios.add(usuario);
+        JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.");
+
+        // Limpiar los campos de entrada
+        limpiarCampos();
+
+        // Guardar usuarios en Excel
+        gestionUsuarios.setUsuarios(listaUsuarios); 
+        gestionUsuarios.guardarUsuariosEnExcel();
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
+    }
+
+    // Navegar a la ventana de gestión de usuarios
+    String username = this.currentUser;
+    String role = this.userRole;
+    LOGINPINEED loginFrame = this.loginFrame;
+
+    INICIOGESTIONUSUARIOS abrir = new INICIOGESTIONUSUARIOS(username, role, loginFrame);
+    abrir.setVisible(true);
+    this.setVisible(false);
     }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
 
     // Indica si la contraseña es visible o no. Inicialmente, está oculta.

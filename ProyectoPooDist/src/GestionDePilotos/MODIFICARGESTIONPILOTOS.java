@@ -124,7 +124,12 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
         });
 
         txtEstadoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEUTRO", "ENFERMO", "EN CASA", "EN VACACIONES", "EN VIAJE" }));
+        txtEstadoPilotoModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO", "INACTIVO" }));
+        txtEstadoPilotoModificarModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEstadoPilotoModificarModificarActionPerformed(evt);
+            }
+        });
 
         txtNumeroTelefonicoPilotoModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtNumeroTelefonicoPilotoModificarModificar.addActionListener(new java.awt.event.ActionListener() {
@@ -393,6 +398,10 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
     private void txtNumeroTelefonicoPilotoModificarModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroTelefonicoPilotoModificarModificarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNumeroTelefonicoPilotoModificarModificarActionPerformed
+
+    private void txtEstadoPilotoModificarModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoPilotoModificarModificarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEstadoPilotoModificarModificarActionPerformed
 
     /**
      * @param args the command line arguments

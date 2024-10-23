@@ -172,42 +172,52 @@ public class FrameClientes extends javax.swing.JFrame {
     }
    
     private void setupComboBox() {
-        txtMenu1.removeAllItems();
-        txtMenu1.addItem("Seleccione una opción");
+    txtMenu1.removeAllItems();
+    txtMenu1.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu1.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu1.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu1.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu1.addItem("Gestión de Usuarios");
+    txtMenu1.addItem("Gestión de Pilotos");
+    txtMenu1.addItem("Gestión de Clientes");
+    txtMenu1.addItem("Gestión de Ventas");
+    txtMenu1.addItem("Gestión de Pedidos");
+    txtMenu1.addItem("Inventario de Quintales");
+    txtMenu1.addItem("Planilla de Trabajadores");
+    txtMenu1.addItem("Gestión de Camiones");
+    txtMenu1.addItem("Calendario");
+    txtMenu1.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu1.addItem("Gestión de Ventas");
+    txtMenu1.addItem("Gestión de Clientes");
+    txtMenu1.addItem("Gestión de Camiones");
+    txtMenu1.addItem("Gestión de Pedidos");
+    txtMenu1.addItem("Gestión de Pilotos");
+    txtMenu1.addItem("Calendario");
+    txtMenu1.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu1.addItem("Gestión de Usuarios");
-        txtMenu1.addItem("Gestión de Pilotos");
-        txtMenu1.addItem("Gestión de Clientes");
-        txtMenu1.addItem("Gestión de Ventas");
-        txtMenu1.addItem("Gestión de Pedidos");
-        txtMenu1.addItem("Inventario de Quintales");
-        txtMenu1.addItem("Planilla de Trabajadores");
-        txtMenu1.addItem("Gestión de Camiones");
-        txtMenu1.addItem("Calendario");
-        txtMenu1.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu1.addItem("Gestión de Ventas");
-        txtMenu1.addItem("Planilla de Trabajadores");
-        txtMenu1.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu1.addItem("Calendario");
+    txtMenu1.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -698,16 +708,16 @@ private void cerrarSesionYRegresarLogin() {
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(jLabel6)
-                .addContainerGap())
+                .addGap(16, 16, 16))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel6)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelAgregarClienteLayout = new javax.swing.GroupLayout(panelAgregarCliente);

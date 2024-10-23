@@ -331,11 +331,11 @@
                 </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="5">
-                    <StringItem index="0" value="NEUTRO"/>
+                    <StringItem index="0" value="ACTIVO"/>
                     <StringItem index="1" value="ENFERMO"/>
-                    <StringItem index="2" value="EN CASA"/>
-                    <StringItem index="3" value="EN VACACIONES"/>
-                    <StringItem index="4" value="EN VIAJE"/>
+                    <StringItem index="2" value="EN VACACIONES"/>
+                    <StringItem index="3" value="JUBILADO"/>
+                    <StringItem index="4" value="INACTIVO"/>
                   </StringArray>
                 </Property>
               </Properties>

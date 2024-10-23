@@ -105,42 +105,52 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     
  
 private void setupComboBox() {
-        txtMenu.removeAllItems();
-        txtMenu.addItem("Seleccione una opción");
+    txtMenu.removeAllItems();
+    txtMenu.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu.addItem("Gestión de Usuarios");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu.addItem("Gestión de Usuarios");
-        txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Clientes");
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Gestión de Pedidos");
-        txtMenu.addItem("Inventario de Quintales");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Gestión de Camiones");
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {

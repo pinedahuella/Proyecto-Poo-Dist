@@ -1,6 +1,8 @@
 package Login;
 
 // Importación de clases necesarias para la funcionalidad de inicio de sesión
+import GestionDePilotos.GESTIONPILOTOS;
+import GestionDePilotos.Piloto;
 import InicioApp.INICIOPINEED;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import Login.GESTIONLOGIN;
@@ -23,14 +25,17 @@ import java.awt.Color;
 public class LOGINPINEED extends javax.swing.JFrame {
     // Atributos
     private GESTIONUSUARIOS gestionUsuarios; // Gestión de usuarios
+    private GESTIONPILOTOS gestionPilotos; // Gestión de usuarios
     private Map<String, Integer> intentosFallidos; // Mapa para rastrear intentos fallidos de inicio de sesión
 
     // Constructor de la clase LOGINPINEED
     public LOGINPINEED() {
-        initComponents();
+initComponents();
         setResizable(false);
         gestionUsuarios = new GESTIONUSUARIOS();
+        gestionPilotos = new GESTIONPILOTOS();
         gestionUsuarios.cargarUsuariosDesdeExcel();
+        gestionPilotos.cargarPilotosDesdeExcel();
         intentosFallidos = new HashMap<>();
 
         // Iniciar en pantalla completa ajustada a la resolución de la pantalla
@@ -330,60 +335,71 @@ public class LOGINPINEED extends javax.swing.JFrame {
     
     // Acción del botón para iniciar sesión
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
-        String nombreUsuario = txtNombreUsuario.getText(); // Obtiene el nombre de usuario ingresado
-        String contraseña = new String(txtContraseñaUsuario.getPassword()); // Obtiene la contraseña ingresada
+String nombreUsuario = txtNombreUsuario.getText();
+        String contraseña = new String(txtContraseñaUsuario.getPassword());
 
-        // Verificar si el nombre de usuario contiene mayúsculas
         if (!nombreUsuario.equals(nombreUsuario.toLowerCase())) {
-            mostrarMensajeError("El nombre de usuario debe estar en minúsculas. Por favor, corríjalo e intente de nuevo.");
+            mostrarMensajeError("El nombre de usuario debe estar en minúsculas."
+                    + "Usando el formato: nombre.apellido&pineed "
+                    + "Por favor, corríjalo e intente de nuevo.");
             return;
         }
 
-        Usuarios usuario = buscarUsuario(nombreUsuario); // Busca el usuario
+        // Primero verificar si es un piloto
+        Piloto piloto = buscarPiloto(nombreUsuario);
+        if (piloto != null) {
+            validarLoginPiloto(piloto, nombreUsuario, contraseña);
+            return;
+        }
 
+        // Si no es piloto, continuar con la validación de usuario normal
+        Usuarios usuario = buscarUsuario(nombreUsuario);
         if (usuario == null) {
             mostrarMensajeError("Usuario no encontrado.");
             return;
         }
 
-        // Verifica si el usuario está bloqueado
+        // Verifica si el usuario no-administrador está bloqueado
         if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
             mostrarMensajeError("Usuario bloqueado. Contacte al administrador.");
             return;
         }
 
-        // Verifica si la contraseña es correcta
         if (contraseña.equals(usuario.getContrasenaUsuario())) {
-            LocalDateTime tiempoEntrada = LocalDateTime.now(); // Obtiene la hora de entrada
+            LocalDateTime tiempoEntrada = LocalDateTime.now();
             String rol = usuario.getCargo();
             GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
-            gestionLogin.cargarLoginsDesdeExcel(); // Carga los registros de login
+            gestionLogin.cargarLoginsDesdeExcel();
 
-            // Crea un nuevo registro de login
             Login nuevoLogin = new Login(
                 tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
                 "",
                 nombreUsuario,
                 rol
             );
-            gestionLogin.setUnLogin(nuevoLogin); // Guarda el nuevo login
+            gestionLogin.setUnLogin(nuevoLogin);
 
-            // Abre la ventana de inicio
-            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this); 
+            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
             abrir.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                    LOGINPINEED.this.setVisible(true); // Muestra nuevamente la ventana de login
+                    LOGINPINEED.this.setVisible(true);
                 }
             });
-            abrir.setVisible(true); // Muestra la ventana de inicio
-            this.setVisible(false); // Oculta la ventana de login
-            intentosFallidos.remove(nombreUsuario); // Elimina los intentos fallidos para este usuario
+            abrir.setVisible(true);
+            this.setVisible(false);
+            intentosFallidos.remove(nombreUsuario);
         } else {
-            int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1; // Aumenta el contador de intentos
+            // Si es administrador, solo mostrar mensaje de error sin contar intentos
+            if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+                mostrarMensajeError("Contraseña incorrecta. Los administradores tienen intentos ilimitados.");
+                return;
+            }
+
+            // Para usuarios no-administradores, aplicar la lógica de intentos
+            int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
             intentosFallidos.put(nombreUsuario, intentos);
 
-            // Bloquea al usuario si alcanza el límite de intentos fallidos
             if (intentos >= 3) {
                 bloquearUsuario(usuario);
                 mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos.");
@@ -394,6 +410,67 @@ public class LOGINPINEED extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIngresarPineedActionPerformed
 
     
+      // Añadir método para buscar piloto
+    private Piloto buscarPiloto(String nombreUsuario) {
+        // El formato esperado es "nombre.apellido&pineed"
+        if (!nombreUsuario.endsWith("&pineed")) {
+            return null;
+        }
+        
+        String[] partes = nombreUsuario.replace("&pineed", "").split("\\.");
+        if (partes.length != 2) {
+            return null;
+        }
+        
+        String nombre = partes[0];
+        String apellido = partes[1];
+        
+        for (Piloto p : gestionPilotos.getPilotos()) {
+            if (p.getNombrePiloto().toLowerCase().equals(nombre) &&
+                p.getApellidoPiloto().toLowerCase().equals(apellido)) {
+                return p;
+            }
+        }
+        return null;
+    }
+    
+    // Añadir método para validar login de piloto
+    private void validarLoginPiloto(Piloto piloto, String nombreUsuario, String contraseña) {
+        // En este ejemplo, usamos el DPI como contraseña
+        String dpiComoString = String.valueOf(piloto.getNumeroDeDpi());
+        
+        if (contraseña.equals(dpiComoString)) {
+            LocalDateTime tiempoEntrada = LocalDateTime.now();
+            String rol = "PILOTO"; // Rol específico para pilotos
+            
+            GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+            gestionLogin.cargarLoginsDesdeExcel();
+
+            Login nuevoLogin = new Login(
+                tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
+                "",
+                nombreUsuario,
+                rol
+            );
+            gestionLogin.setUnLogin(nuevoLogin);
+
+            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
+            abrir.setVisible(true);
+            this.setVisible(false);
+            intentosFallidos.remove(nombreUsuario);
+        } else {
+            int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
+            intentosFallidos.put(nombreUsuario, intentos);
+
+            if (intentos >= 3) {
+                piloto.setEstadoPiloto("bloqueado");
+                gestionPilotos.actualizarPiloto(piloto);
+                mostrarMensajeError("Piloto bloqueado por múltiples intentos fallidos.");
+            } else {
+                mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
+            }
+        }
+    }
         
     private boolean isPasswordVisible = false; // Controla la visibilidad de la contraseña
 

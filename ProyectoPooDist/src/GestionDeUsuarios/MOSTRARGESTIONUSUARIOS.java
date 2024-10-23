@@ -100,7 +100,6 @@ private void cargarDatosUsuario() {
         jScrollPane6 = new javax.swing.JScrollPane();
         tblRegistroUsuarios = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
-        btnMostrarContraseña = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -124,17 +123,6 @@ private void cargarDatosUsuario() {
         jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 18)); // NOI18N
         jLabel6.setText("INFORMACIÓN DEL USUARIO");
 
-        btnMostrarContraseña.setBackground(new java.awt.Color(204, 153, 255));
-        btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        btnMostrarContraseña.setForeground(new java.awt.Color(255, 255, 255));
-        btnMostrarContraseña.setText("MOSTRAR CONTRASEÑA");
-        btnMostrarContraseña.setBorder(null);
-        btnMostrarContraseña.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarContraseñaActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
         jPanel15Layout.setHorizontalGroup(
@@ -143,27 +131,20 @@ private void cargarDatosUsuario() {
                 .addContainerGap()
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addGap(0, 48, Short.MAX_VALUE)
-                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(47, 47, 47))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
-                                .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                        .addGap(0, 52, Short.MAX_VALUE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43))))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap(29, Short.MAX_VALUE)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -197,24 +178,6 @@ private void cargarDatosUsuario() {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private boolean isPasswordVisible = false;
-
-    private void btnMostrarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarContraseñaActionPerformed
-int passwordRowIndex = 1; // Assuming "Contraseña" is at index 1 in the table
-    
-    if (!isPasswordVisible) {
-        // Show the actual password
-        modeloUsuarios.setValueAt(usuarioActual.getContrasenaUsuario(), passwordRowIndex, 1);
-        btnMostrarContraseña.setText("OCULTAR CONTRASEÑA");
-    } else {
-        // Hide the password by showing "*****"
-        modeloUsuarios.setValueAt("*****", passwordRowIndex, 1);
-        btnMostrarContraseña.setText("MOSTRAR CONTRASEÑA");
-    }
-    
-    isPasswordVisible = !isPasswordVisible;
-    }//GEN-LAST:event_btnMostrarContraseñaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -252,7 +215,6 @@ int passwordRowIndex = 1; // Assuming "Contraseña" is at index 1 in the table
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnMostrarContraseña;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;

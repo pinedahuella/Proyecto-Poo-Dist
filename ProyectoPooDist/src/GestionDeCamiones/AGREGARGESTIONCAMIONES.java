@@ -210,7 +210,7 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
         jLabel18.setText("ESTADO");
 
         txtEstadoCamiones.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoCamiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "En viaje", "Libre", "Descompuesto", "Funcional" }));
+        txtEstadoCamiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FUNCIONAL", "DESCOMPUESTO", "EN MANTENIMIENTO", "NO DISPONIBLE" }));
         txtEstadoCamiones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtEstadoCamionesActionPerformed(evt);

@@ -1,6 +1,8 @@
 package GestionDeCamiones;
 
 // Importación de clases necesarias para el funcionamiento de la aplicación
+import ControlViajes.FechaCalendario;
+import ControlViajes.GestionCalendario;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
@@ -9,7 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Vector;
 import static org.apache.poi.ss.usermodel.CellType.*;
-
+import java.util.HashMap;
+import java.util.Map;
 /**
  * La clase GESTIONCAMIONES gestiona una colección de camiones (Camiones).
  * Proporciona funcionalidad para agregar, actualizar, eliminar y cargar datos 
@@ -20,6 +23,7 @@ public class GESTIONCAMIONES {
 
     private Vector<Camiones> camiones = new Vector<>();
     private String excelFilePath;
+    private boolean isUpdatingCalendar = false; // Add flag to prevent recursive calls
 
     /**
      * Constructor por defecto que inicializa la ruta del archivo Excel.
@@ -36,6 +40,7 @@ public class GESTIONCAMIONES {
     public GESTIONCAMIONES(Vector<Camiones> camiones) {
         this.camiones = camiones;
         excelFilePath = "excels/CAMIONES.xlsx";
+        
     }
 
     /**
@@ -145,85 +150,301 @@ private String procesarFecha(String fechaExcel) {
     }
 }
 
-public void eliminarCamion(String placas) {
-    for (Camiones camion : camiones) {
-        if (camion.getPlacas().equals(placas)) {
-            camion.setActivo(false);  // Solo marca como inactivo
-            break;
+
+    /**
+     * Reordena los índices de los camiones activos y actualiza las referencias en el calendario
+     */
+    private void reordenarIndices() {
+        try {
+            // 1. Crear un mapa del índice viejo al nuevo
+            Map<Integer, Integer> mapaIndices = new HashMap<>();
+            int nuevoIndice = 0;
+            
+            // Primero crear el mapeo de índices viejos a nuevos
+            for (int i = 0; i < camiones.size(); i++) {
+                if (camiones.get(i).isActivo()) {
+                    mapaIndices.put(i, nuevoIndice);
+                    nuevoIndice++;
+                }
+            }
+
+            // 2. Actualizar las fechas en el calendario con los nuevos índices
+            GestionCalendario gestionCalendario = new GestionCalendario();
+            gestionCalendario.cargarFechasExcel();
+            Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
+            boolean seRealizaronCambios = false;
+
+            for (FechaCalendario fecha : fechas) {
+                if (fecha.getActivo()) {
+                    Integer nuevoIndiceCamion = mapaIndices.get(fecha.getIndiceCamion());
+                    if (nuevoIndiceCamion != null) {
+                        fecha.setIndiceCamion(nuevoIndiceCamion);
+                        seRealizaronCambios = true;
+                    }
+                }
+            }
+
+            // Si se realizaron cambios, guardar el calendario actualizado
+            if (seRealizaronCambios) {
+                gestionCalendario.setFechasDeCalendario(fechas);
+                gestionCalendario.guardarFecharExcel();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al reordenar índices: " + e.getMessage());
+            e.printStackTrace();
         }
     }
-    guardarCamionesEnExcel();
+
+    /**
+     * Método modificado de eliminarCamion para incluir reordenamiento de índices
+     */
+    public void eliminarCamion(String placas) {
+        boolean camionEncontrado = false;
+        int indiceCamion = -1;
+        
+        // Encontrar el camión y marcarlo como inactivo
+        for (int i = 0; i < camiones.size(); i++) {
+            if (camiones.get(i).getPlacas().equals(placas)) {
+                camiones.get(i).setActivo(false);
+                camionEncontrado = true;
+                indiceCamion = i;
+                break;
+            }
+        }
+        
+        if (camionEncontrado) {
+            // Primero desactivar las fechas asociadas al camión
+            actualizarCalendarioPorCamion(indiceCamion);
+            
+            // Luego reordenar los índices
+            reordenarIndices();
+            
+            // Finalmente guardar los cambios en el archivo de camiones
+            guardarCamionesEnExcel();
+        }
+    }
+
+
+private void actualizarCalendarioPorCamion(int indiceCamionAEliminar) {
+    try {
+        System.out.println("Iniciando actualización del calendario para camión índice: " + indiceCamionAEliminar);
+        
+        // Creamos una instancia de GestionCalendario
+        GestionCalendario gestionCalendario = new GestionCalendario();
+        
+        // Cargamos las fechas actuales
+        gestionCalendario.cargarFechasExcel();
+        Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
+        
+        System.out.println("Total de fechas en calendario: " + fechas.size());
+        
+        // Contador para verificar cambios
+        int cambiosRealizados = 0;
+        
+        // Recorremos todas las fechas y desactivamos las que usan este camión
+        for (int i = 0; i < fechas.size(); i++) {
+            FechaCalendario fecha = fechas.get(i);
+            if (fecha.getIndiceCamion() == indiceCamionAEliminar) {
+                System.out.println("Encontrada fecha con camión a eliminar: Índice " + i + 
+                                 ", Fecha C: " + fecha.getFechaC() +
+                                 ", Estado actual activo: " + fecha.getActivo());
+                
+                fecha.setActivo(false);
+                fechas.set(i, fecha); // Aseguramos que el cambio se guarda en el vector
+                cambiosRealizados++;
+            }
+        }
+        
+        System.out.println("Cambios realizados: " + cambiosRealizados);
+        
+        if (cambiosRealizados > 0) {
+            // Actualizamos el vector de fechas
+            gestionCalendario.setFechasDeCalendario(fechas);
+            
+            // Guardamos los cambios en el Excel
+            gestionCalendario.guardarFecharExcel();
+            System.out.println("Cambios guardados en el archivo Excel");
+        }
+        
+    } catch (Exception e) {
+        System.err.println("Error al actualizar el calendario: " + e.getMessage());
+        e.printStackTrace();
+    }
 }
 
-    public void cargarCamionesDesdeExcel() {
+// Método auxiliar para imprimir el estado actual del calendario
+public void imprimirEstadoCalendario() {
+    try {
+        GestionCalendario gestionCalendario = new GestionCalendario();
+        gestionCalendario.cargarFechasExcel();
+        Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
+        
+        System.out.println("\n=== Estado actual del calendario ===");
+        for (int i = 0; i < fechas.size(); i++) {
+            FechaCalendario fecha = fechas.get(i);
+            System.out.println(String.format(
+                "Índice: %d, Camión: %d, Fecha: %s, Activo: %b",
+                i,
+                fecha.getIndiceCamion(),
+                fecha.getFechaC(),
+                fecha.getActivo()
+            ));
+        }
+        System.out.println("===================================\n");
+    } catch (Exception e) {
+        System.err.println("Error al imprimir estado del calendario: " + e.getMessage());
+    }
+}
+
+private void actualizarIndicesEnCalendario(Vector<Camiones> todosLosCamiones) {
+        // Prevent recursive calls
+        if (isUpdatingCalendar) {
+            return;
+        }
+        
+        try {
+            isUpdatingCalendar = true;
+            
+            // Crear mapa de placas a nuevo índice
+            Map<String, Integer> mapaPlacasIndice = new HashMap<>();
+            int nuevoIndice = 0;
+            
+            // Primero mapear las placas de camiones activos a sus nuevos índices
+            for (Camiones camion : todosLosCamiones) {
+                if (camion.isActivo()) {
+                    mapaPlacasIndice.put(camion.getPlacas(), nuevoIndice);
+                    nuevoIndice++;
+                }
+            }
+            
+            // Cargar y actualizar el calendario
+            GestionCalendario gestionCalendario = new GestionCalendario();
+            Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
+            boolean seRealizaronCambios = false;
+            
+            // Crear mapa de índice viejo a nuevo
+            Map<Integer, Integer> mapaIndices = new HashMap<>();
+            for (int i = 0; i < todosLosCamiones.size(); i++) {
+                Camiones camion = todosLosCamiones.get(i);
+                Integer nuevoIndiceCamion = mapaPlacasIndice.get(camion.getPlacas());
+                if (nuevoIndiceCamion != null) {
+                    mapaIndices.put(i, nuevoIndiceCamion);
+                }
+            }
+            
+            // Actualizar los índices en las fechas
+            for (FechaCalendario fecha : fechas) {
+                if (fecha.getActivo()) {
+                    Integer nuevoIndiceCamion = mapaIndices.get(fecha.getIndiceCamion());
+                    if (nuevoIndiceCamion != null) {
+                        fecha.setIndiceCamion(nuevoIndiceCamion);
+                        seRealizaronCambios = true;
+                    }
+                }
+            }
+            
+            // Guardar los cambios si se realizaron modificaciones
+            if (seRealizaronCambios) {
+                gestionCalendario.setFechasDeCalendario(fechas);
+                gestionCalendario.guardarFecharExcel();
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error al actualizar índices en calendario: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            isUpdatingCalendar = false;
+        }
+    }
+
+public void cargarCamionesDesdeExcel() {
     camiones.clear();
+    Vector<Camiones> todosLosCamiones = new Vector<>();
+    
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
 
         Sheet sheet = workbook.getSheetAt(0);
+        int indiceActual = 0; // Índice para camiones activos
 
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) {
+            if (row.getRowNum() == 0) { // Saltar la fila de encabezados
                 continue;
             }
 
-            String placas = getStringCellValue(row.getCell(0));
-            String modelo = getStringCellValue(row.getCell(1));
-            String marca = getStringCellValue(row.getCell(2));
-            String estado = getStringCellValue(row.getCell(3));
-            String tipoCombustible = getStringCellValue(row.getCell(4));
-            double kilometraje = getNumericCellValue(row.getCell(5));
-            double capacidadCarga = getNumericCellValue(row.getCell(6));
-            String añoFabricacion = procesarFecha(getStringCellValue(row.getCell(7)));
-            double costoReparacion = getNumericCellValue(row.getCell(8));
-            double costoGalon = getNumericCellValue(row.getCell(9));
-            double galones = getNumericCellValue(row.getCell(10));
-            double costoMantenimiento = getNumericCellValue(row.getCell(11));
-            double gastoNoEspecificado = getNumericCellValue(row.getCell(12));
-            String descripcionDelGasto = getStringCellValue(row.getCell(13));
-            String tiempoEnReparacion = getStringCellValue(row.getCell(14));
-            String fechaDeMantenimiento = procesarFecha(getStringCellValue(row.getCell(15)));
-            double total = getNumericCellValue(row.getCell(16));
-            double costoTotalCombustible = getNumericCellValue(row.getCell(17));
-            boolean activo = true;
-            
-            // Si existe la columna de activo, leerla
-            if (row.getCell(18) != null) {
-                activo = row.getCell(18).getBooleanCellValue();
-            }
+            try {
+                // Leer todos los campos del Excel
+                String placas = getStringCellValue(row.getCell(0));
+                String modelo = getStringCellValue(row.getCell(1));
+                String marca = getStringCellValue(row.getCell(2));
+                String estado = getStringCellValue(row.getCell(3));
+                String tipoCombustible = getStringCellValue(row.getCell(4));
+                double kilometraje = getNumericCellValue(row.getCell(5));
+                double capacidadCarga = getNumericCellValue(row.getCell(6));
+                String añoFabricacion = procesarFecha(getStringCellValue(row.getCell(7)));
+                double costoReparacion = getNumericCellValue(row.getCell(8));
+                double costoGalon = getNumericCellValue(row.getCell(9));
+                double galones = getNumericCellValue(row.getCell(10));
+                double costoMantenimiento = getNumericCellValue(row.getCell(11));
+                double gastoNoEspecificado = getNumericCellValue(row.getCell(12));
+                String descripcionDelGasto = getStringCellValue(row.getCell(13));
+                String tiempoEnReparacion = getStringCellValue(row.getCell(14));
+                String fechaDeMantenimiento = procesarFecha(getStringCellValue(row.getCell(15)));
+                double total = getNumericCellValue(row.getCell(16));
+                double costoTotalCombustible = getNumericCellValue(row.getCell(17));
+                boolean activo = true;
 
-            Camiones camion = new Camiones(
-                placas, 
-                estado, 
-                tipoCombustible, 
-                kilometraje, 
-                capacidadCarga, 
-                añoFabricacion, 
-                modelo, 
-                marca, 
-                activo, 
-                costoReparacion, 
-                costoGalon, 
-                galones, 
-                costoMantenimiento, 
-                gastoNoEspecificado, 
-                descripcionDelGasto, 
-                tiempoEnReparacion, 
-                fechaDeMantenimiento, 
-                total,
-                costoTotalCombustible
-            );
-            
-            // Solo agregar al vector si está activo
-            if (activo) {
-                this.camiones.add(camion);
+                // Verificar si existe la columna de activo
+                if (row.getCell(18) != null) {
+                    activo = row.getCell(18).getBooleanCellValue();
+                }
+
+                // Crear el objeto Camiones
+                Camiones camion = new Camiones(
+                    placas,
+                    estado,
+                    tipoCombustible,
+                    kilometraje,
+                    capacidadCarga,
+                    añoFabricacion,
+                    modelo,
+                    marca,
+                    activo,
+                    costoReparacion,
+                    costoGalon,
+                    galones,
+                    costoMantenimiento,
+                    gastoNoEspecificado,
+                    descripcionDelGasto,
+                    tiempoEnReparacion,
+                    fechaDeMantenimiento,
+                    total,
+                    costoTotalCombustible
+                );
+
+                // Agregar a la lista correspondiente
+                if (activo) {
+                    camiones.add(camion); // Agregar a la lista de activos
+                    indiceActual++; // Incrementar el índice solo para camiones activos
+                }
+                todosLosCamiones.add(camion); // Agregar a la lista completa
+            } catch (Exception e) {
+                System.err.println("Error al procesar la fila " + row.getRowNum() + ": " + e.getMessage());
+                e.printStackTrace();
             }
         }
 
+        // Actualizar el calendario con los nuevos índices
+        actualizarIndicesEnCalendario(todosLosCamiones);
+
     } catch (IOException e) {
+        System.err.println("Error al leer el archivo Excel: " + e.getMessage());
         e.printStackTrace();
     }
 }
+
+
 
 
     /**
@@ -270,10 +491,7 @@ public void eliminarCamion(String placas) {
         }
     }
 
-    /**
-     * Guarda la lista de camiones en el archivo Excel.
-     */
-    public void guardarCamionesEnExcel() {
+public void guardarCamionesEnExcel() {
     try {
         // Primero, cargar todos los registros existentes (incluyendo inactivos)
         Vector<Camiones> todosLosCamiones = new Vector<>();

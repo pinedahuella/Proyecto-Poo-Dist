@@ -112,4 +112,21 @@ public class GestionPedido {
             e.printStackTrace();
         }
     };
+    
+    //funcion para modificar indice
+    public void actualizarIndiceCalendario(int indceEiminado){
+        
+        int indiceAelmininar = -1;
+        for (int i = 0; i < pedidos.size(); i++) {
+            
+            if (pedidos.get(i).getIndiceViaje() == indceEiminado) {
+                indiceAelmininar = i;
+            }else if(pedidos.get(i).getIndiceViaje() > indceEiminado){
+                pedidos.get(i).setIndiceViaje(pedidos.get(i).getIndiceViaje()-1);
+            }
+        }
+        if (indiceAelmininar > -1) {
+            pedidos.remove(indiceAelmininar);
+        }
+    }
 }

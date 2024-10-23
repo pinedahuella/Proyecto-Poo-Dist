@@ -42,6 +42,7 @@ import java.util.Calendar;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.IDateEvaluator;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -104,137 +105,177 @@ public class FormularioViajes extends javax.swing.JFrame {
      * Creates new form FormularioViajes
      */
     public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
-        initComponents();
-        setResizable(false); // Desactivar el cambio de tamaño
-        //iniciamos el indice a 0;
-        indice = 0;
+    initComponents();
+    setResizable(false); // Desactivar el cambio de tamaño
+    
+    // Hide components if user is PILOTO
+    if (role.equalsIgnoreCase("PILOTO")) {
+        jPanel6.setVisible(false);
+        jLabel2.setVisible(false);
+        fechaBCarga.setVisible(false);
+        jLabel3.setVisible(false);
+        fechaBDescarga.setVisible(false);
+        jLabel4.setVisible(false);
+        comboPilotosB.setVisible(false);
+        jLabel5.setVisible(false);
+        comboCamionesB.setVisible(false);
+// Ocultar la tabla y su contenedor (JScrollPane)
+        tablaProductosB.setVisible(false);
+        Container parentContainer = tablaProductosB.getParent();
+        while (parentContainer != null) {
+            if (parentContainer instanceof JScrollPane) {
+                parentContainer.setVisible(false);
+                break;
+            }
+            parentContainer = parentContainer.getParent();
+        }
+        jLabel11.setVisible(false);
+        comboTViajeB.setVisible(false);
+        jLabel10.setVisible(false);
+        jPanel12.setVisible(false);
+        jPanel7.setVisible(false);
+        jPanel9.setVisible(false);
+        jPanel10.setVisible(false);
+        jPanel8.setVisible(false);
+        jPanel11.setVisible(false);
+    }
+
+    //iniciamos el indice a 0;
+    indice = 0;
+    
+    //ocultamos el boton de modificar un viaje
+    botonModificarViajes.setVisible(false);
+    //ocultamos el radio button de finalizar un pedido
+    radioFinalizarViaje.setVisible(false);
+    
+    //iniciamos el indiceActual a -1
+    indiceActual = -1;
+    
+    //creamos los objetos de gestion
+    gescalendario = new GestionCalendario();
+    gesproductos = new gestionProductos();
+    gespilotos = new GESTIONPILOTOS();
+    gescamiones = new GESTIONCAMIONES();
+    
+    //cargamos los valores del excel del las gestiones
+    gescalendario.cargarFechasExcel();
+    gesproductos.setCargarInvetarioExcel();
+    gespilotos.cargarPilotosDesdeExcel();
+    gescamiones.cargarCamionesDesdeExcel();
+    
+    //tabla productosA creamos la tabla
+    String ids [] = {"productos", "cantidades"};
+    modeloProductosA.setColumnIdentifiers(ids);
+    tablaProductosA.setModel(modeloProductosA);
+    
+    modeloProductosB.setColumnIdentifiers(ids);
+    tablaProductosB.setModel(modeloProductosB);
+    
+    //inicamos los vectores
+    FechaTablaNew = gescalendario.getFechasDeCalendario(); 
+    System.out.println("se ha cargado ");
+    
+    //inicializamos las tablas con los elementos del inventario
+    if (gesproductos.getProductos() != null) {
+        productosTablaNew = gesproductos.getProductos();
         
-        //ocultamos el boton de modificar un viaje
-        botonModificarViajes.setVisible(false);
-        //ocultamos el radio button de finalizar un pedido
-        radioFinalizarViaje.setVisible(false);
-        
-        //iniciamos el indiceActual a -1
-        indiceActual = -1;
-        
-        //creamos los objetos de gestion
-        gescalendario = new GestionCalendario();
-        gesproductos = new gestionProductos();
-        gespilotos = new GESTIONPILOTOS();
-        gescamiones = new GESTIONCAMIONES();
-        
-        //cargamos los valores del excel del las gestiones
-        gescalendario.cargarFechasExcel();
-        gesproductos.setCargarInvetarioExcel();
-        gespilotos.cargarPilotosDesdeExcel();
-        gescamiones.cargarCamionesDesdeExcel();
-        
-        //tabla productosA creamos la tabla
-        String ids [] = {"productos", "cantidades"};
-        modeloProductosA.setColumnIdentifiers(ids);
-        tablaProductosA.setModel(modeloProductosA);
-        
-        modeloProductosB.setColumnIdentifiers(ids);
-        tablaProductosB.setModel(modeloProductosB);
-        
-        
-        //inicamos los vectores
-        
-        FechaTablaNew = gescalendario.getFechasDeCalendario(); 
-        System.out.println("se ha cargado ");
-        
-        
-        //inicializamos las tablas con los elementos del inventario
-        if (gesproductos.getProductos() != null) {
-            productosTablaNew = gesproductos.getProductos();
-            
-            for (Producto prod : productosTablaNew) {
+        for (Producto prod : productosTablaNew) {
             modeloProductosA.addRow(new Object[]{prod.getNombre(), "0"});
             modeloProductosB.addRow(new Object[]{prod.getNombre(), "0"});
-            }
         }
-        
-        //actualizamos los combo box de pilotos y camiones
-        if (gespilotos.getPilotos() != null) {
-            Vector<Piloto> pilotonew = gespilotos.getPilotos();
-            
-            //vector para agregar los pilotos al comobobox
-            for (int i = 0; i < pilotonew.size(); i++) {
-                comboPilotosB.addItem(pilotonew.get(i).getNombrePiloto());
-                comboPilotosA.addItem(pilotonew.get(i).getNombrePiloto());
-            }
-        }
-        
-        if (gescamiones.getCamiones() != null) {
-            Vector<Camiones> camionesnew = gescamiones.getCamiones();
-            
-            //vector para agregar los pilotos al comobobox
-            for (int i = 0; i < camionesnew.size(); i++) {
-                comboCamionesB.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
-                comoboCamionesA.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
-            }
-        }
-        
-        //hacemos que el calendario se cargue
-        CalendarioGeneral.getDayChooser().addDateEvaluator(marcador);
-        ActualizarCalendario();
-        
-        //llenamos la lista de fechas
-        ActualizarComboListaPedidos();
-            
-        iniciarBucleEnHilo(); 
-        this.currentUser = username;
-        this.userRole = role;
-        this.loginFrame = loginFrame;
-        addWindowListener();
-        setupComboBox();  // Añade esta línea
-
-            this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-    this.setVisible(true);
-        SwingUtilities.invokeLater(() -> {
-            this.requestFocusInWindow();
-        });
     }
+    
+    //actualizamos los combo box de pilotos y camiones
+    if (gespilotos.getPilotos() != null) {
+        Vector<Piloto> pilotonew = gespilotos.getPilotos();
+        
+        //vector para agregar los pilotos al comobobox
+        for (int i = 0; i < pilotonew.size(); i++) {
+            comboPilotosB.addItem(pilotonew.get(i).getNombrePiloto());
+            comboPilotosA.addItem(pilotonew.get(i).getNombrePiloto());
+        }
+    }
+    
+    if (gescamiones.getCamiones() != null) {
+        Vector<Camiones> camionesnew = gescamiones.getCamiones();
+        
+        //vector para agregar los pilotos al comobobox
+        for (int i = 0; i < camionesnew.size(); i++) {
+            comboCamionesB.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
+            comoboCamionesA.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
+        }
+    }
+    
+    //hacemos que el calendario se cargue
+    CalendarioGeneral.getDayChooser().addDateEvaluator(marcador);
+    ActualizarCalendario();
+    
+    //llenamos la lista de fechas
+    ActualizarComboListaPedidos();
+            
+    iniciarBucleEnHilo(); 
+    this.currentUser = username;
+    this.userRole = role;
+    this.loginFrame = loginFrame;
+    addWindowListener();
+    setupComboBox();  // Añade esta línea
+
+    this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+    this.setVisible(true);
+    SwingUtilities.invokeLater(() -> {
+        this.requestFocusInWindow();
+    });
+}
     
    
 
 private void setupComboBox() {
-        txtMenu.removeAllItems();
-        txtMenu.addItem("Seleccione una opción");
+    txtMenu.removeAllItems();
+    txtMenu.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu.addItem("Gestión de Usuarios");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu.addItem("Gestión de Usuarios");
-        txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Clientes");
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Gestión de Pedidos");
-        txtMenu.addItem("Inventario de Quintales");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Gestión de Camiones");
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -987,10 +1028,10 @@ private void cerrarSesionYRegresarLogin() {
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+            .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1144,34 +1185,95 @@ private void cerrarSesionYRegresarLogin() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+// Método auxiliar para verificar si un piloto está disponible
+private boolean isPilotoDisponible(int indicePiloto) {
+    // Obtener el piloto del sistema de gestión
+    Vector<Piloto> pilotos = gespilotos.getPilotos();
+    
+    if (indicePiloto >= 0 && indicePiloto < pilotos.size()) {
+        Piloto piloto = pilotos.get(indicePiloto);
+        String estado = piloto.getEstadoPiloto();
+        
+        if (!estado.equals("ACTIVO")) {
+            String mensaje = "No se puede asignar este piloto porque está " + 
+                (estado.equals("INACTIVO") ? "INACTIVO" :
+                estado.equals("ENFERMO") ? "ENFERMO" :
+                estado.equals("EN VACACIONES") ? "DE VACACIONES" :
+                estado.equals("JUBILADO") ? "JUBILADO" : "en estado no disponible");
+                
+            JOptionPane.showMessageDialog(null, mensaje, "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+
+
+
+// Método auxiliar para verificar si un camión está disponible
+private boolean isCamionDisponible(int indiceCamion) {
+    // Obtener la lista de camiones del sistema de gestión
+    Vector<Camiones> camiones = gescamiones.getCamiones();
+    
+    // Verificar si el índice es válido
+    if (indiceCamion >= 0 && indiceCamion < camiones.size()) {
+        // Obtener el camión en el índice dado
+        Camiones camion = camiones.get(indiceCamion);
+        
+        // Obtener el estado del camión
+        String estado = camion.getEstado();
+        
+        // Verificar si el camión está disponible (es funcional)
+        if (!estado.equals("FUNCIONAL")) {
+            // Crear el mensaje según el estado del camión
+            String mensaje = "No se puede asignar este camión porque está " + 
+                (estado.equals("DESCOMPUESTO") ? "DESCOMPUESTO" :
+                estado.equals("EN MANTENIMIENTO") ? "EN MANTENIMIENTO" :
+                estado.equals("NO DISPONIBLE") ? "NO DISPONIBLE" : "en estado no disponible");
+                
+            // Mostrar mensaje de error
+            JOptionPane.showMessageDialog(null, mensaje, "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    // Si el índice no es válido, se retorna false
+    return false;
+}
+
+
     private void jPanel12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel12MouseClicked
-        // TODO add your handling code here:
+SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    Date newFechaCarga = fechaBCarga.getDate();
+    Date newFechaDescarga = fechaBDescarga.getDate();
+    
+    // Obtener la fecha actual
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.DAY_OF_MONTH, -1);
+    Date fechaActualMenosUnDia = calendar.getTime();
+    
+    try {
+        // Primero verificamos si el piloto está disponible
+        int newIndicePiloto = comboPilotosB.getSelectedIndex();
+        if (!isPilotoDisponible(newIndicePiloto)) {
+            return; // Si el piloto no está disponible, terminamos la ejecución
+        }
         
-        //funcion para crear un nuevo pedido
-        
-        //leemos los datos primero:
-        
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        
-        Date newFechaCarga = fechaBCarga.getDate();
-        Date newFechaDescarga = fechaBDescarga.getDate();
-        
-        // Obtener la fecha actual
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        // Restar un día a la fecha actual
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        Date fechaActualMenosUnDia = calendar.getTime();
-        
-         try {
-          //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null && !newFechaCarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(newFechaCarga)) {
-            
-            //creamos los indices de pilotos y camiones
-            int newIndicePiloto = comboPilotosB.getSelectedIndex();
             int newIndiceCamion = comboCamionesB.getSelectedIndex();
-            
-            
+        if (!isCamionDisponible(newIndiceCamion)) {
+        return;
+        }
+        //verifica que las fechas sean validas
+        if (newFechaCarga != null && newFechaDescarga != null && 
+            !newFechaCarga.before(fechaActualMenosUnDia) && 
+            !newFechaDescarga.before(fechaActualMenosUnDia) && 
+            !newFechaDescarga.before(newFechaCarga)) {
+
             //miramos si el viaje es una compra o una venta
             boolean newcompra;
             
@@ -1265,22 +1367,29 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_radioFinalizarViajeActionPerformed
 
     private void botonModificarViajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonModificarViajesMouseClicked
-        // TODO add your handling code here:
+ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    Date newFechaCarga = fechaCargaA.getDate();
+    Date newFechaDescarga = fechaDescargaA.getDate();
+    
+    try {
+        // Primero verificamos si el piloto está disponible
+        int newIndicePiloto = comboPilotosA.getSelectedIndex();
+        if (!isPilotoDisponible(newIndicePiloto)) {
+            return; // Si el piloto no está disponible, terminamos la ejecución
+        }
         
-        //funcion para modificar un viaje
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         
-        Date newFechaCarga = fechaCargaA.getDate();
-        Date newFechaDescarga = fechaDescargaA.getDate();
+        int newIndiceCamion = comoboCamionesA.getSelectedIndex();
+        if (!isCamionDisponible(newIndiceCamion)) {
+        return;
+        }
         
-         try {
-          //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null && indiceActual  > -1 && !newFechaDescarga.before(newFechaCarga)) {
+        //verifica que las fechas sean validas
+        if (newFechaCarga != null && newFechaDescarga != null && 
+            indiceActual > -1 && !newFechaDescarga.before(newFechaCarga)) {
             
-            //creamos los indices de pilotos y camiones
-            int newIndicePiloto = comboPilotosA.getSelectedIndex();
-            int newIndiceCamion = comoboCamionesA.getSelectedIndex();
-            
+  
             
             //leemos las fechas antiguas
             Date oldFechaCarga = FechaTablaNew.get(indiceActual).getFechaC();

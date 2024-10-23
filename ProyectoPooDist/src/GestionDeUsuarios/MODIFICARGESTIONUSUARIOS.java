@@ -222,15 +222,11 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnModificarUsuariosSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -246,49 +242,45 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtEstadoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                                .addComponent(txtEstadoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtFechaDeNacimientoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtCorreoElectronicoUsuarioModificarModificar))
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(144, 144, 144)
-                                .addComponent(txtContraseñaUsuarioModificarModificar))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtFechaDeNacimientoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel18)
-                                        .addGap(52, 52, 52)
-                                        .addComponent(txtNumeroDeDpiUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(jLabel18)
+                                .addGap(52, 52, 52)
+                                .addComponent(txtNumeroDeDpiUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(285, 296, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel10))
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtNombreDeUsuarioUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel5Layout.createSequentialGroup()
-                                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(txtNombreUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel5Layout.createSequentialGroup()
-                                            .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(txtApellidoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNombreUsuarioModificarModificar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtApellidoUsuarioModificarModificar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombreDeUsuarioUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(54, 54, 54)
+                                .addComponent(txtContraseñaUsuarioModificarModificar)))
                         .addGap(14, 14, 14)
                         .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(202, 202, 202))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnModificarUsuariosSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,15 +294,16 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
                     .addComponent(jLabel19)
                     .addComponent(txtApellidoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNombreDeUsuarioUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtContraseñaUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtNombreDeUsuarioUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtContraseñaUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -319,11 +312,11 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(txtCargoUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtFechaDeNacimientoUsuarioModificarModificar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtGeneroUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16))
@@ -376,22 +369,53 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnModificarUsuariosSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarUsuariosSistemaActionPerformed
-        try {
+    try {
+        // Recuperar y limpiar los datos de entrada
         String nombreUsuario = txtNombreUsuarioModificarModificar.getText().trim();
         String apellidoUsuario = txtApellidoUsuarioModificarModificar.getText().trim();
-        long numeroDeDpiUsuario = Long.parseLong(txtNumeroDeDpiUsuarioModificarModificar.getText().trim());
+        
+        // Validar que nombre y apellido no estén vacíos
+        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre y apellido son obligatorios.");
+            return;
+        }
+
+        // Generar el nombre de usuario esperado en el formato correcto
+        String nombreUsuarioEsperado = nombreUsuario.toLowerCase() + "." + 
+                                     apellidoUsuario.toLowerCase() + "&pineed";
+
+        // Obtener el nombre de usuario ingresado
+        String nombreDeUsuario = txtNombreDeUsuarioUsuarioModificarModificar.getText().trim().toLowerCase();
+
+        // Validar que el nombre de usuario coincida con el formato esperado
+        if (!nombreDeUsuario.equals(nombreUsuarioEsperado)) {
+            JOptionPane.showMessageDialog(this, 
+                "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
+                "Para sus datos, debe ser: " + nombreUsuarioEsperado);
+            return;
+        }
+
+        // Obtener y validar el número de DPI
+        String dpiText = txtNumeroDeDpiUsuarioModificarModificar.getText().trim();
+        if (dpiText.length() != 13) {
+            JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
+            return;
+        }
+        long numeroDeDpiUsuario = Long.parseLong(dpiText);
+
+        // Obtener la contraseña y validar que coincida con el DPI
+        String contrasenaUsuario = txtContraseñaUsuarioModificarModificar.getText().trim();
+        if (!contrasenaUsuario.equals(dpiText)) {
+            JOptionPane.showMessageDialog(this, "La contraseña debe ser igual al número de DPI.");
+            return;
+        }
+
+        // Continuar con el resto de las validaciones
         String cargoUsuario = txtCargoUsuarioModificarModificar.getSelectedItem().toString().trim();
         String correoElectronicoUsuario = txtCorreoElectronicoUsuarioModificarModificar.getText().trim();
         int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuarioModificarModificar.getText().trim());
         String generoUsuario = txtGeneroUsuarioModificarModificar.getSelectedItem().toString().trim();
-        String nombreDeUsuario = txtNombreDeUsuarioUsuarioModificarModificar.getText().trim().toLowerCase();
-        String contrasenaUsuario = txtContraseñaUsuarioModificarModificar.getText().trim();
         String estadoUsuario = txtEstadoUsuarioModificarModificar.getSelectedItem().toString().trim();
-
-        // Verificar si el nombre de usuario ha sido modificado a mayúsculas
-        if (!nombreDeUsuario.equals(txtNombreDeUsuarioUsuarioModificarModificar.getText().trim())) {
-            JOptionPane.showMessageDialog(this, "El nombre de usuario debe estar en minúsculas. Se ha convertido automáticamente.");
-        }
 
         Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuarioModificarModificar.getDate();
         if (fechaNacimientoUsuarioDate == null) {
@@ -414,72 +438,60 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
             return;
         }
 
-        if (String.valueOf(numeroDeDpiUsuario).length() != 13) {
-            JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
-            return;
-        }
-
         if (String.valueOf(numeroTelefonicoUsuario).length() != 8) {
             JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
             return;
         }
 
-        // Validate password
-        if (!validarContrasena(contrasenaUsuario)) {
-            JOptionPane.showMessageDialog(this, "La contraseña no cumple con los requisitos:\n" +
-                "- Debe tener al menos 8 caracteres\n" +
-                "- Debe contener 'pineed'\n" +
-                "- Debe incluir al menos una letra, un número y un carácter especial");
-            return;
-        }
+        // Verificar si los datos únicos han cambiado
+        boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
+        boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
+        boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
 
-            boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
-            boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
-            boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
-
-            for (Usuarios usuarioExistente : listaUsuarios) {
-                if (usuarioExistente != usuarioActual) {
-                    if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
-                        JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
-                        return;
-                    }
-                    if (telefonoCambiado && usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) {
-                        JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
-                        return;
-                    }
-                    if (correoCambiado && usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
-                        JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
-                        return;
-                    }
+        // Verificar duplicados solo si los datos únicos han cambiado
+        for (Usuarios usuarioExistente : listaUsuarios) {
+            if (usuarioExistente != usuarioActual) {
+                if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+                    return;
+                }
+                if (telefonoCambiado && usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+                    return;
+                }
+                if (correoCambiado && usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+                    return;
                 }
             }
-
-            usuarioActual.setNombreUsuario(nombreDeUsuario);
-            usuarioActual.setContrasenaUsuario(contrasenaUsuario);
-            usuarioActual.setNombre(nombreUsuario);
-            usuarioActual.setApellido(apellidoUsuario);
-            usuarioActual.setCargo(cargoUsuario);
-            usuarioActual.setGenero(generoUsuario);
-            usuarioActual.setNumeroDPI(numeroDeDpiUsuario);
-            usuarioActual.setFechaNacimiento(fechaDeNacimientoUsuario);
-            usuarioActual.setNumeroTelefono(numeroTelefonicoUsuario);
-            usuarioActual.setCorreoElectronico(correoElectronicoUsuario);
-            usuarioActual.setEstado(estadoUsuario);
-
-            gestionUsuarios.actualizarUsuario(usuarioActual);
-
-            JOptionPane.showMessageDialog(this, "Usuario modificado exitosamente.");
-
-            ventanaPrincipal.actualizarTabla();
-
-            ventanaPrincipal.setVisible(true);
-            this.dispose();
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al modificar usuario: " + e.getMessage());
         }
+
+        // Actualizar los datos del usuario
+        usuarioActual.setNombreUsuario(nombreDeUsuario);
+        usuarioActual.setContrasenaUsuario(contrasenaUsuario);
+        usuarioActual.setNombre(nombreUsuario);
+        usuarioActual.setApellido(apellidoUsuario);
+        usuarioActual.setCargo(cargoUsuario);
+        usuarioActual.setGenero(generoUsuario);
+        usuarioActual.setNumeroDPI(numeroDeDpiUsuario);
+        usuarioActual.setFechaNacimiento(fechaDeNacimientoUsuario);
+        usuarioActual.setNumeroTelefono(numeroTelefonicoUsuario);
+        usuarioActual.setCorreoElectronico(correoElectronicoUsuario);
+        usuarioActual.setEstado(estadoUsuario);
+
+        gestionUsuarios.actualizarUsuario(usuarioActual);
+
+        JOptionPane.showMessageDialog(this, "Usuario modificado exitosamente.");
+
+        ventanaPrincipal.actualizarTabla();
+        ventanaPrincipal.setVisible(true);
+        this.dispose();
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al modificar usuario: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnModificarUsuariosSistemaActionPerformed
 
 

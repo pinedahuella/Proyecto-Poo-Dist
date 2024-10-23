@@ -114,42 +114,52 @@ public class FrameInventario extends javax.swing.JFrame {
     }
     
 private void setupComboBox() {
-        txtMenu3.removeAllItems();
-        txtMenu3.addItem("Seleccione una opción");
+    txtMenu3.removeAllItems();
+    txtMenu3.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu3.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu3.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu3.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu3.addItem("Gestión de Usuarios");
+    txtMenu3.addItem("Gestión de Pilotos");
+    txtMenu3.addItem("Gestión de Clientes");
+    txtMenu3.addItem("Gestión de Ventas");
+    txtMenu3.addItem("Gestión de Pedidos");
+    txtMenu3.addItem("Inventario de Quintales");
+    txtMenu3.addItem("Planilla de Trabajadores");
+    txtMenu3.addItem("Gestión de Camiones");
+    txtMenu3.addItem("Calendario");
+    txtMenu3.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu3.addItem("Gestión de Ventas");
+    txtMenu3.addItem("Gestión de Clientes");
+    txtMenu3.addItem("Gestión de Camiones");
+    txtMenu3.addItem("Gestión de Pedidos");
+    txtMenu3.addItem("Gestión de Pilotos");
+    txtMenu3.addItem("Calendario");
+    txtMenu3.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu3.addItem("Gestión de Usuarios");
-        txtMenu3.addItem("Gestión de Pilotos");
-        txtMenu3.addItem("Gestión de Clientes");
-        txtMenu3.addItem("Gestión de Ventas");
-        txtMenu3.addItem("Gestión de Pedidos");
-        txtMenu3.addItem("Inventario de Quintales");
-        txtMenu3.addItem("Planilla de Trabajadores");
-        txtMenu3.addItem("Gestión de Camiones");
-        txtMenu3.addItem("Calendario");
-        txtMenu3.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu3.addItem("Gestión de Ventas");
-        txtMenu3.addItem("Planilla de Trabajadores");
-        txtMenu3.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu3.addItem("Calendario");
+    txtMenu3.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -483,9 +493,9 @@ private void cerrarSesionYRegresarLogin() {
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
+                .addGap(15, 15, 15)
                 .addComponent(txtMenu3, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -555,7 +565,7 @@ private void cerrarSesionYRegresarLogin() {
             panelp4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelp4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panelp4Layout.setVerticalGroup(
@@ -1049,7 +1059,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 11, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1069,11 +1079,11 @@ private void cerrarSesionYRegresarLogin() {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(PanelB4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(botonParaActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(panelp4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(botonParaActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(panelp4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 15, Short.MAX_VALUE))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1115,7 +1125,7 @@ private void cerrarSesionYRegresarLogin() {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 23, Short.MAX_VALUE))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

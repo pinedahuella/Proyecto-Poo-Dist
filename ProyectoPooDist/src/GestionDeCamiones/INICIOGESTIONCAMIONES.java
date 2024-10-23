@@ -89,42 +89,52 @@ private LOGINPINEED loginFrame;
     }
 
     private void setupComboBox() {
-        txtMenu.removeAllItems();
-        txtMenu.addItem("Seleccione una opción");
+    txtMenu.removeAllItems();
+    txtMenu.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu.addItem("Gestión de Usuarios");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu.addItem("Gestión de Usuarios");
-        txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Clientes");
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Gestión de Pedidos");
-        txtMenu.addItem("Inventario de Quintales");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Gestión de Camiones");
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -328,10 +338,10 @@ private void cerrarSesionYRegresarLogin() {
         agregarCamion = new javax.swing.JButton();
         mostrarCamion = new javax.swing.JButton();
         editarCamion = new javax.swing.JButton();
-        eliminarCamion = new javax.swing.JButton();
         garageCamiones = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
+        eliminarUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -427,17 +437,6 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        eliminarCamion.setBackground(new java.awt.Color(85, 111, 169));
-        eliminarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        eliminarCamion.setForeground(new java.awt.Color(255, 255, 255));
-        eliminarCamion.setText("ELIMINAR");
-        eliminarCamion.setBorder(null);
-        eliminarCamion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eliminarCamionActionPerformed(evt);
-            }
-        });
-
         garageCamiones.setBackground(new java.awt.Color(85, 111, 169));
         garageCamiones.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         garageCamiones.setForeground(new java.awt.Color(255, 255, 255));
@@ -476,6 +475,17 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        eliminarUsuario.setBackground(new java.awt.Color(85, 111, 169));
+        eliminarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        eliminarUsuario.setForeground(new java.awt.Color(255, 255, 255));
+        eliminarUsuario.setText("ELIMINAR");
+        eliminarUsuario.setBorder(null);
+        eliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarUsuarioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -483,6 +493,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane4)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -495,16 +506,15 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane4))
+                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
@@ -518,12 +528,12 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4)))
@@ -687,32 +697,6 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_editarCamionActionPerformed
 
      /**
-     * Elimina el camión seleccionado después de confirmar la acción.
-     * Si no hay un camión seleccionado, muestra un mensaje solicitando que se seleccione uno.
-     *
-     * @param evt el evento que activó esta acción
-     */
-    private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
-    int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 0);
-
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar este camión con placas: " + placasSeleccionadas + "?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                gestionCamiones.eliminarCamion(placasSeleccionadas);
-                actualizarTabla();
-                JOptionPane.showMessageDialog(this, "Camión eliminado correctamente.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para eliminar.");
-        }
-    }//GEN-LAST:event_eliminarCamionActionPerformed
-
-     /**
      * Abre la ventana de gestión del garaje de camiones.
      * Pasa los detalles del usuario actual a la nueva ventana.
      *
@@ -731,6 +715,26 @@ private void cerrarSesionYRegresarLogin() {
     private void txtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenuActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMenuActionPerformed
+
+    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
+    int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 0);
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas borrar este camión con placas: " + placasSeleccionadas + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                gestionCamiones.eliminarCamion(placasSeleccionadas);
+                actualizarTabla();
+                JOptionPane.showMessageDialog(this, "Camión eliminado correctamente.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para eliminar.");
+        }
+    }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
      /**
      * Actualiza la tabla de camiones recargando los datos desde Excel.
@@ -815,7 +819,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JButton agregarCamion;
     private javax.swing.JButton buscarCamion;
     private javax.swing.JButton editarCamion;
-    private javax.swing.JButton eliminarCamion;
+    private javax.swing.JButton eliminarUsuario;
     private javax.swing.JButton garageCamiones;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;

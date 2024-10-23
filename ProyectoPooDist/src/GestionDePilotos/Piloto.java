@@ -11,12 +11,13 @@ public class Piloto {
     private String generoPiloto;
     private String fechaDeNacimiento;
     private String estadoPiloto;
-    
+    private boolean activo;
+
 
 
     public Piloto() {}
 
-    public Piloto(String nombrePiloto, String apellidoPiloto, long numeroDeDpi, String tipoLicencia, String correoElectronicoPiloto, int numeroTelefonicoPiloto, String generoPiloto, String fechaDeNacimiento, String estadoPiloto) {
+    public Piloto(String nombrePiloto, String apellidoPiloto, long numeroDeDpi, String tipoLicencia, String correoElectronicoPiloto, int numeroTelefonicoPiloto, String generoPiloto, String fechaDeNacimiento, String estadoPiloto, boolean activo) {
         this.nombrePiloto = nombrePiloto;
         this.apellidoPiloto = apellidoPiloto;
         this.numeroDeDpi = numeroDeDpi;
@@ -26,6 +27,7 @@ public class Piloto {
         this.generoPiloto = generoPiloto;
         this.fechaDeNacimiento = fechaDeNacimiento;
         this.estadoPiloto = estadoPiloto;
+        this.activo = true;
     }
 
     public String getNombrePiloto() {
@@ -92,7 +94,6 @@ public class Piloto {
         this.fechaDeNacimiento = fechaDeNacimiento;
     }
 
-
     public String getEstadoPiloto() {
         return estadoPiloto;
     }
@@ -101,8 +102,16 @@ public class Piloto {
         this.estadoPiloto = estadoPiloto;
     }
 
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     @Override
     public String toString() {
-        return "Piloto{" + "nombrePiloto=" + nombrePiloto + ", apellidoPiloto=" + apellidoPiloto + ", numeroDeDpi=" + numeroDeDpi + ", tipoLicencia=" + tipoLicencia + ", correoElectronicoPiloto=" + correoElectronicoPiloto + ", numeroTelefonicoPiloto=" + numeroTelefonicoPiloto + ", generoPiloto=" + generoPiloto + ", fechaDeNacimiento=" + fechaDeNacimiento + ", estadoPiloto=" + estadoPiloto + '}';
+        return "Piloto{" + "nombrePiloto=" + nombrePiloto + ", apellidoPiloto=" + apellidoPiloto + ", numeroDeDpi=" + numeroDeDpi + ", tipoLicencia=" + tipoLicencia + ", correoElectronicoPiloto=" + correoElectronicoPiloto + ", numeroTelefonicoPiloto=" + numeroTelefonicoPiloto + ", generoPiloto=" + generoPiloto + ", fechaDeNacimiento=" + fechaDeNacimiento + ", estadoPiloto=" + estadoPiloto + ", activo=" + activo + '}';
     }
 }

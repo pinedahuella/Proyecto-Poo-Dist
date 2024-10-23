@@ -155,7 +155,7 @@ private void cargarDatosCamion() {
         jLabel13.setText("KILOMETRAJE");
 
         txtEstadoCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoCamionModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "En viaje", "Libre", "Descompuesto", "Funcional" }));
+        txtEstadoCamionModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FUNCIONAL", "DESCOMPUESTO", "EN MANTENIMIENTO", "NO DISPONIBLE" }));
         txtEstadoCamionModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtEstadoCamionModificarActionPerformed(evt);

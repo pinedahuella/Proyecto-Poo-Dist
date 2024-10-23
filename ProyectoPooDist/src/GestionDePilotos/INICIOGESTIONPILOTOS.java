@@ -45,42 +45,52 @@ public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
     
     
 private void setupComboBox() {
-        txtMenu.removeAllItems();
-        txtMenu.addItem("Seleccione una opción");
+    txtMenu.removeAllItems();
+    txtMenu.addItem("Seleccione una opción");
 
-        if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
-            addAdminOptions();
-        } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
-            addSecretariaOptions();
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu.getSelectedItem();
+            redirectToFrame(selectedOption);
         }
+    });
+}
 
-        txtMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String selectedOption = (String) txtMenu.getSelectedItem();
-                redirectToFrame(selectedOption);
-            }
-        });
-    }
+private void addAdminOptions() {
+    txtMenu.addItem("Gestión de Usuarios");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
+private void addSecretariaOptions() {
+    txtMenu.addItem("Gestión de Ventas");
+    txtMenu.addItem("Gestión de Clientes");
+    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Pedidos");
+    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
 
-    private void addAdminOptions() {
-        txtMenu.addItem("Gestión de Usuarios");
-        txtMenu.addItem("Gestión de Pilotos");
-        txtMenu.addItem("Gestión de Clientes");
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Gestión de Pedidos");
-        txtMenu.addItem("Inventario de Quintales");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Gestión de Camiones");
-        txtMenu.addItem("Calendario");
-        txtMenu.addItem("Cerrar Sesión");
-    }
-
-    private void addSecretariaOptions() {
-        txtMenu.addItem("Gestión de Ventas");
-        txtMenu.addItem("Planilla de Trabajadores");
-        txtMenu.addItem("Cerrar Sesión");
-    }
+private void addPilotOptions() {
+    txtMenu.addItem("Calendario");
+    txtMenu.addItem("Cerrar Sesión");
+}
     
 private void redirectToFrame(String option) {
     switch (option) {
@@ -332,12 +342,12 @@ private void cerrarSesionYRegresarLogin() {
         tblRegistroPilotos = new javax.swing.JTable();
         txtNombrePilotoBuscar = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        eliminarPiloto = new javax.swing.JButton();
         editarPiloto = new javax.swing.JButton();
         mostrarPiloto = new javax.swing.JButton();
         agregarPiloto = new javax.swing.JButton();
         refrescarPiloto = new javax.swing.JButton();
         buscarPiloto = new javax.swing.JButton();
+        eliminarPiloto = new javax.swing.JButton();
         txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -378,17 +388,6 @@ private void cerrarSesionYRegresarLogin() {
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("NOMBRE");
-
-        eliminarPiloto.setBackground(new java.awt.Color(85, 111, 169));
-        eliminarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        eliminarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        eliminarPiloto.setText("ELIMINAR");
-        eliminarPiloto.setBorder(null);
-        eliminarPiloto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eliminarPilotoActionPerformed(evt);
-            }
-        });
 
         editarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         editarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -445,6 +444,17 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        eliminarPiloto.setBackground(new java.awt.Color(85, 111, 169));
+        eliminarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        eliminarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        eliminarPiloto.setText("ELIMINAR");
+        eliminarPiloto.setBorder(null);
+        eliminarPiloto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarPilotoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -461,13 +471,13 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eliminarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(agregarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(mostrarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(eliminarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(editarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1145, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -543,27 +553,6 @@ private void cerrarSesionYRegresarLogin() {
     private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
 
     }//GEN-LAST:event_jTextField19ActionPerformed
-
-    private void eliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPilotoActionPerformed
-int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            String nombreSeleccionado = (String) tblRegistroPilotos.getValueAt(filaSeleccionada, 0);
-            String apellidoSeleccionado = (String) tblRegistroPilotos.getValueAt(filaSeleccionada, 1);
-
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar este piloto: " + nombreSeleccionado + " " + apellidoSeleccionado + "?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                gestionPilotos.eliminarPiloto(nombreSeleccionado, apellidoSeleccionado);
-                actualizarTabla();
-                JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto para eliminar.");
-        }
-    }//GEN-LAST:event_eliminarPilotoActionPerformed
 
     private void editarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarPilotoActionPerformed
         int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
@@ -663,6 +652,29 @@ String username = this.currentUser; // Assuming currentUser holds the username
         txtNombrePilotoBuscar.setText("");
     }//GEN-LAST:event_buscarPilotoActionPerformed
 
+    private void eliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPilotoActionPerformed
+    int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
+    if (filaSeleccionada >= 0) {
+        // Retrieve DPI as a String from the table
+        Object dpiObject = tblRegistroPilotos.getValueAt(filaSeleccionada, 2);
+        String numeroDeDpiSeleccionado = dpiObject.toString();
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Estás seguro de que deseas borrar este piloto con DPI: " + numeroDeDpiSeleccionado + "?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Use the DPI to delete the pilot
+            gestionPilotos.eliminarPiloto(numeroDeDpiSeleccionado);
+            actualizarTabla();
+            JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto para eliminar.");
+    }
+    }//GEN-LAST:event_eliminarPilotoActionPerformed
+
     
     
     
@@ -689,20 +701,9 @@ String username = this.currentUser; // Assuming currentUser holds the username
         gestionPilotos.cargarPilotosDesdeExcel();
         listaPilotos = gestionPilotos.getPilotos();
         modeloPilotos.setRowCount(0);
-        for (Piloto piloto : listaPilotos) {
-            modeloPilotos.addRow(new Object[]{
-                piloto.getNombrePiloto(),
-                piloto.getApellidoPiloto(),
-                piloto.getNumeroDeDpi(),
-                piloto.getTipoLicencia(),
-                piloto.getNumeroTelefonicoPiloto(),
-                piloto.getEstadoPiloto(),
-                piloto.getCorreoElectronicoPiloto(),
-                piloto.getGeneroPiloto(),
-                piloto.getFechaDeNacimiento()
-            });
+        cargarPilotosEnTabla();
         }
-    }
+    
     
     
     
