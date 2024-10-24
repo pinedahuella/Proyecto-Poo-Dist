@@ -195,35 +195,110 @@ private String procesarFecha(String fechaExcel) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Método modificado de eliminarCamion para incluir reordenamiento de índices
-     */
-    public void eliminarCamion(String placas) {
-        boolean camionEncontrado = false;
-        int indiceCamion = -1;
+public void eliminarCamion(String placas) {
+    boolean camionEncontrado = false;
+    int indiceCamion = -1;
+    
+    // Encontrar el camión y su índice actual
+    for (int i = 0; i < camiones.size(); i++) {
+        if (camiones.get(i).getPlacas().equals(placas) && camiones.get(i).isActivo()) {
+            camiones.get(i).setActivo(false);
+            // Actualizar el estado a INACTIVO
+            camiones.get(i).setEstado("INACTIVO");
+            camionEncontrado = true;
+            indiceCamion = i;
+            break;
+        }
+    }
+    
+    if (camionEncontrado) {
+        // Desactivar el camión en el calendario antes de reordenar índices
+        desactivarFechasDelCamion(indiceCamion);
         
-        // Encontrar el camión y marcarlo como inactivo
-        for (int i = 0; i < camiones.size(); i++) {
-            if (camiones.get(i).getPlacas().equals(placas)) {
-                camiones.get(i).setActivo(false);
-                camionEncontrado = true;
-                indiceCamion = i;
+        // Guardar los cambios en el archivo de camiones
+        guardarCamionesEnExcel();
+        
+        // Recargar los camiones para actualizar índices
+        cargarCamionesDesdeExcel();
+    }
+}
+
+// Método para activar un camión
+public void activarCamion(String placas) {
+    try (FileInputStream fis = new FileInputStream(excelFilePath);
+         Workbook workbook = new XSSFWorkbook(fis)) {
+        
+        Sheet sheet = workbook.getSheetAt(0);
+        boolean camionActualizado = false;
+        
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Skip header
+            
+            Cell placasCell = row.getCell(0);
+            if (placasCell != null && placas.equals(getStringCellValue(placasCell))) {
+                // Actualizar estado a FUNCIONAL
+                Cell estadoCell = row.getCell(3); // Columna del estado
+                if (estadoCell == null) {
+                    estadoCell = row.createCell(3);
+                }
+                estadoCell.setCellValue("FUNCIONAL");
+                
+                // Actualizar columna activo
+                Cell activoCell = row.getCell(18);
+                if (activoCell == null) {
+                    activoCell = row.createCell(18);
+                }
+                activoCell.setCellValue(true);
+                
+                camionActualizado = true;
                 break;
             }
         }
         
-        if (camionEncontrado) {
-            // Primero desactivar las fechas asociadas al camión
-            actualizarCalendarioPorCamion(indiceCamion);
-            
-            // Luego reordenar los índices
-            reordenarIndices();
-            
-            // Finalmente guardar los cambios en el archivo de camiones
-            guardarCamionesEnExcel();
+        if (camionActualizado) {
+            // Guardar los cambios en el archivo
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
+            // Recargar los camiones
+            cargarCamionesDesdeExcel();
         }
+    } catch (IOException e) {
+        System.err.println("Error al activar el camión: " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Error al activar el camión", e);
     }
+}
+
+private void desactivarFechasDelCamion(int indiceCamion) {
+    try {
+        GestionCalendario gestionCalendario = new GestionCalendario();
+        gestionCalendario.cargarFechasExcel();
+        
+        // Obtener todas las fechas
+        Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
+        boolean seRealizaronCambios = false;
+        
+        // Desactivar todas las fechas asociadas al camión
+        for (FechaCalendario fecha : fechas) {
+            if (fecha.getIndiceCamion() == indiceCamion && fecha.getActivo()) {
+                fecha.setActivo(false);
+                seRealizaronCambios = true;
+            }
+        }
+        
+        // Si se realizaron cambios, guardar el calendario actualizado
+        if (seRealizaronCambios) {
+            gestionCalendario.setFechasDeCalendario(fechas);
+            gestionCalendario.guardarFecharExcel();
+        }
+    } catch (Exception e) {
+        System.err.println("Error al desactivar fechas del camión: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
+
 
 
 private void actualizarCalendarioPorCamion(int indiceCamionAEliminar) {
@@ -360,22 +435,18 @@ private void actualizarIndicesEnCalendario(Vector<Camiones> todosLosCamiones) {
 
 public void cargarCamionesDesdeExcel() {
     camiones.clear();
-    Vector<Camiones> todosLosCamiones = new Vector<>();
     
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
 
         Sheet sheet = workbook.getSheetAt(0);
-        int indiceActual = 0; // Índice para camiones activos
-
+        
+        // Primero cargar todos los camiones
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) { // Saltar la fila de encabezados
-                continue;
-            }
-
-            try {
-                // Leer todos los campos del Excel
-                String placas = getStringCellValue(row.getCell(0));
+            if (row.getRowNum() == 0) continue; // Skip header
+            
+            // Leer datos del camión
+            String placas = getStringCellValue(row.getCell(0));
                 String modelo = getStringCellValue(row.getCell(1));
                 String marca = getStringCellValue(row.getCell(2));
                 String estado = getStringCellValue(row.getCell(3));
@@ -400,6 +471,7 @@ public void cargarCamionesDesdeExcel() {
                     activo = row.getCell(18).getBooleanCellValue();
                 }
 
+                if (activo) {
                 // Crear el objeto Camiones
                 Camiones camion = new Camiones(
                     placas,
@@ -422,22 +494,10 @@ public void cargarCamionesDesdeExcel() {
                     total,
                     costoTotalCombustible
                 );
-
-                // Agregar a la lista correspondiente
-                if (activo) {
-                    camiones.add(camion); // Agregar a la lista de activos
-                    indiceActual++; // Incrementar el índice solo para camiones activos
-                }
-                todosLosCamiones.add(camion); // Agregar a la lista completa
-            } catch (Exception e) {
-                System.err.println("Error al procesar la fila " + row.getRowNum() + ": " + e.getMessage());
-                e.printStackTrace();
+                camiones.add(camion);
             }
         }
-
-        // Actualizar el calendario con los nuevos índices
-        actualizarIndicesEnCalendario(todosLosCamiones);
-
+        
     } catch (IOException e) {
         System.err.println("Error al leer el archivo Excel: " + e.getMessage());
         e.printStackTrace();

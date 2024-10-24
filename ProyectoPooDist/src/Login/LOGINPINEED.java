@@ -336,50 +336,24 @@ initComponents();
     // Acción del botón para iniciar sesión
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
 String nombreUsuario = txtNombreUsuario.getText();
-        String contraseña = new String(txtContraseñaUsuario.getPassword());
+    String contraseña = new String(txtContraseñaUsuario.getPassword());
 
-        if (!nombreUsuario.equals(nombreUsuario.toLowerCase())) {
-            mostrarMensajeError("El nombre de usuario debe estar en minúsculas."
-                    + "Usando el formato: nombre.apellido&pineed "
-                    + "Por favor, corríjalo e intente de nuevo.");
-            return;
-        }
-
-        // Primero verificar si es un piloto
-        Piloto piloto = buscarPiloto(nombreUsuario);
-        if (piloto != null) {
-            validarLoginPiloto(piloto, nombreUsuario, contraseña);
-            return;
-        }
-
-        // Si no es piloto, continuar con la validación de usuario normal
-        Usuarios usuario = buscarUsuario(nombreUsuario);
-        if (usuario == null) {
-            mostrarMensajeError("Usuario no encontrado.");
-            return;
-        }
-
-        // Verifica si el usuario no-administrador está bloqueado
-        if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-            mostrarMensajeError("Usuario bloqueado. Contacte al administrador.");
-            return;
-        }
-
-        if (contraseña.equals(usuario.getContrasenaUsuario())) {
+    // Verificar primero si es el administrador especial
+    if (nombreUsuario.equals("administrador.admin&pineed")) {
+        if (contraseña.equals("1110101000001")) {
             LocalDateTime tiempoEntrada = LocalDateTime.now();
-            String rol = usuario.getCargo();
             GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
             gestionLogin.cargarLoginsDesdeExcel();
-
+            
             Login nuevoLogin = new Login(
                 tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
                 "",
                 nombreUsuario,
-                rol
+                "ADMINISTRADOR"
             );
             gestionLogin.setUnLogin(nuevoLogin);
-
-            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
+            
+            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, "ADMINISTRADOR", this);
             abrir.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent windowEvent) {
@@ -388,25 +362,84 @@ String nombreUsuario = txtNombreUsuario.getText();
             });
             abrir.setVisible(true);
             this.setVisible(false);
-            intentosFallidos.remove(nombreUsuario);
+            return;
         } else {
-            // Si es administrador, solo mostrar mensaje de error sin contar intentos
-            if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-                mostrarMensajeError("Contraseña incorrecta. Los administradores tienen intentos ilimitados.");
-                return;
-            }
-
-            // Para usuarios no-administradores, aplicar la lógica de intentos
-            int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
-            intentosFallidos.put(nombreUsuario, intentos);
-
-            if (intentos >= 3) {
-                bloquearUsuario(usuario);
-                mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos.");
-            } else {
-                mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
-            }
+            mostrarMensajeError("Contraseña incorrecta.");
+            return;
         }
+    }
+
+    // Validación de formato minúsculas
+    if (!nombreUsuario.equals(nombreUsuario.toLowerCase())) {
+        mostrarMensajeError("El nombre de usuario debe estar en minúsculas."
+                + "Usando el formato: nombre.apellido&pineed "
+                + "Primer Nombre y Primer Apellido"
+                + "Por favor, corríjalo e intente de nuevo.");
+        return;
+    }
+
+    // Verificar si es un piloto
+    Piloto piloto = buscarPiloto(nombreUsuario);
+    if (piloto != null) {
+        validarLoginPiloto(piloto, nombreUsuario, contraseña);
+        return;
+    }
+
+    // Validación de usuario normal
+    Usuarios usuario = buscarUsuario(nombreUsuario);
+    if (usuario == null) {
+        mostrarMensajeError("Usuario no encontrado.");
+        return;
+    }
+
+    // Verificación de usuario bloqueado
+    if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+        mostrarMensajeError("Usuario bloqueado. Contacte al administrador: +502 5754-5388");
+        return;
+    }
+
+    if (contraseña.equals(usuario.getContrasenaUsuario())) {
+        LocalDateTime tiempoEntrada = LocalDateTime.now();
+        String rol = usuario.getCargo();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+
+        Login nuevoLogin = new Login(
+            tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
+            "",
+            nombreUsuario,
+            rol
+        );
+        gestionLogin.setUnLogin(nuevoLogin);
+
+        INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
+        abrir.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                LOGINPINEED.this.setVisible(true);
+            }
+        });
+        abrir.setVisible(true);
+        this.setVisible(false);
+        intentosFallidos.remove(nombreUsuario);
+    } else {
+        // Si es administrador normal, solo mostrar mensaje de error sin contar intentos
+        if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+            mostrarMensajeError("Contraseña incorrecta.");
+            return;
+        }
+        
+        // Para usuarios no-administradores, aplicar la lógica de intentos
+        int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
+        intentosFallidos.put(nombreUsuario, intentos);
+
+        if (intentos >= 3) {
+            bloquearUsuario(usuario);
+            mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos.");
+        } else {
+            mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
+        }
+    }
     }//GEN-LAST:event_btnIngresarPineedActionPerformed
 
     

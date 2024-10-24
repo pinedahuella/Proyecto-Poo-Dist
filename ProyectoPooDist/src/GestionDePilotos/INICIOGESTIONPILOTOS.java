@@ -30,18 +30,52 @@ import javax.swing.SwingUtilities;
 
 
 public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
-    public GESTIONPILOTOS gestionPilotos;
-    public Vector<Piloto> listaPilotos = new Vector<>();
-        private String currentUser;
-    private String userRole;
+protected GESTIONPILOTOS gestionPilotos;
+    private Vector<Piloto> listaPilotos;
+    private DefaultTableModel modeloPilotos = new DefaultTableModel();
     private LOGINPINEED loginFrame;
-    
-    DefaultTableModel modeloPilotos = new DefaultTableModel() {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
+    private String currentUser;
+    private String userRole;
+
+
+     // Agregar un método getter para gestionPilotos
+    public GESTIONPILOTOS getGestionPilotos() {
+        return gestionPilotos;
+    }
+
+
+private void cargarPilotosActivos() {
+        modeloPilotos.setRowCount(0); // Clear existing rows
+        
+        if (listaPilotos != null) {
+            for (Piloto piloto : listaPilotos) {
+                // Double check active status
+                if (piloto.isActivo()) {
+                    Object[] fila = new Object[6];
+                    fila[0] = piloto.getNombrePiloto();
+                    fila[1] = piloto.getApellidoPiloto();
+                    fila[2] = piloto.getNumeroDeDpi();
+                    fila[3] = piloto.getTipoLicencia();
+                    fila[4] = piloto.getNumeroTelefonicoPiloto();
+                    fila[5] = piloto.getEstadoPiloto();
+                    modeloPilotos.addRow(fila);
+                }
+            }
         }
-    };
+    }
+    
+    // Method to refresh the table (call this after any changes to pilots)
+    public void refreshTable() {
+        gestionPilotos.cargarPilotosDesdeExcel();
+        listaPilotos = new Vector<>();
+        for (Piloto piloto : gestionPilotos.getPilotos()) {
+            if (piloto.isActivo()) {
+                listaPilotos.add(piloto);
+            }
+        }
+        cargarPilotosActivos();
+    }
+    
     
     
 private void setupComboBox() {
@@ -277,40 +311,58 @@ private void cerrarSesionYRegresarLogin() {
         System.exit(0);
     }
 
-
-    public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame) {
+public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame) {
+        // Initialize base frame components first
         initComponents();
-        setResizable(false); // Desactivar el cambio de tamaño
-        gestionPilotos = new GESTIONPILOTOS();
-        gestionPilotos.cargarPilotosDesdeExcel();
+            gestionPilotos = new GESTIONPILOTOS();
+
+        // Set frame properties
+        setResizable(false);
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         
+        // Initialize instance variables
+        this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+        this.gestionPilotos = new GESTIONPILOTOS();
+        
+        // Initialize table model and set columns
+        modeloPilotos = new DefaultTableModel();
         String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Teléfono", "Estado"};
         modeloPilotos.setColumnIdentifiers(columnas);
         
-        if (gestionPilotos.getPilotos() != null) {
-            listaPilotos = gestionPilotos.getPilotos();
-        }
-        
+        // Configure table properties
         tblRegistroPilotos.setModel(modeloPilotos);
         tblRegistroPilotos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRegistroPilotos.getTableHeader().setReorderingAllowed(false);
         tblRegistroPilotos.getTableHeader().setResizingAllowed(false);
         tblRegistroPilotos.setRowSelectionAllowed(true);
         tblRegistroPilotos.setColumnSelectionAllowed(false);
-        cargarPilotosEnTabla();
-        this.currentUser = username;
-        this.userRole = role;
-        this.loginFrame = loginFrame;
+        
+        // Load and filter active pilots
+        gestionPilotos.cargarPilotosDesdeExcel();
+        if (gestionPilotos.getPilotos() != null) {
+            listaPilotos = new Vector<>();
+            for (Piloto piloto : gestionPilotos.getPilotos()) {
+                if (piloto.isActivo()) {  // Only add active pilots
+                    listaPilotos.add(piloto);
+                }
+            }
+        }
+        
+        // Load pilots into table
+        cargarPilotosActivos();
+        
+        // Additional setup
         addWindowListener();
-        setupComboBox();  // Añade esta línea
-                this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        setupComboBox();
+        
+        // Final frame setup
         this.setVisible(true);
         SwingUtilities.invokeLater(() -> {
             this.requestFocusInWindow();
         });
     }
-    
-    
     
         
 
@@ -348,6 +400,7 @@ private void cerrarSesionYRegresarLogin() {
         refrescarPiloto = new javax.swing.JButton();
         buscarPiloto = new javax.swing.JButton();
         eliminarPiloto = new javax.swing.JButton();
+        ActivosPilotos = new javax.swing.JButton();
         txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -455,13 +508,24 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        ActivosPilotos.setBackground(new java.awt.Color(0, 153, 153));
+        ActivosPilotos.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        ActivosPilotos.setForeground(new java.awt.Color(255, 255, 255));
+        ActivosPilotos.setText("ACTIVAR PILOTOS ELIMINADOS");
+        ActivosPilotos.setBorder(null);
+        ActivosPilotos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ActivosPilotosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -478,15 +542,25 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(mostrarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ActivosPilotos, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ActivosPilotos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -653,27 +727,49 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }//GEN-LAST:event_buscarPilotoActionPerformed
 
     private void eliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPilotoActionPerformed
-    int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
+int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
     if (filaSeleccionada >= 0) {
-        // Retrieve DPI as a String from the table
-        Object dpiObject = tblRegistroPilotos.getValueAt(filaSeleccionada, 2);
-        String numeroDeDpiSeleccionado = dpiObject.toString();
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-            "¿Estás seguro de que deseas borrar este piloto con DPI: " + numeroDeDpiSeleccionado + "?",
-            "Confirmar eliminación",
-            JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            // Use the DPI to delete the pilot
-            gestionPilotos.eliminarPiloto(numeroDeDpiSeleccionado);
-            actualizarTabla();
-            JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
+        try {
+            // Retrieve DPI and convert it to long
+            Object dpiObject = tblRegistroPilotos.getValueAt(filaSeleccionada, 2);
+            long numeroDeDpiSeleccionado = Long.parseLong(dpiObject.toString());
+            
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas borrar este piloto con DPI: " + numeroDeDpiSeleccionado + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+                
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Now passing a long value
+                gestionPilotos.eliminarPiloto(numeroDeDpiSeleccionado);
+                actualizarTabla();
+                JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error: El DPI no tiene un formato válido.",
+                "Error de formato",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al eliminar el piloto: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto para eliminar.");
     }
     }//GEN-LAST:event_eliminarPilotoActionPerformed
+
+    private void ActivosPilotosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivosPilotosActionPerformed
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
+
+        PILOTOSINACTIVOS abrir = new PILOTOSINACTIVOS(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_ActivosPilotosActionPerformed
 
     
     
@@ -753,6 +849,7 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ActivosPilotos;
     private javax.swing.JButton agregarPiloto;
     private javax.swing.JButton buscarPiloto;
     private javax.swing.JButton editarPiloto;

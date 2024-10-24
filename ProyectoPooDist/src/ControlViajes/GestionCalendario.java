@@ -13,9 +13,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import ControlPedidos.*;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 /**
  * Clase que gestiona el calendario de viajes y fechas
@@ -91,45 +95,34 @@ public class GestionCalendario {
      * Solo carga fechas activas con camiones activos
      */
     public void cargarFechasExcel() {
+        
+        int indiceactual = 0;
+ 
     fechasDeCalendario.clear();
     
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
-        
-        int indiceactual = 0;
+
         Sheet sheet = workbook.getSheetAt(0);
-        
-        //cargamos los pedidos
+          //cargamos los pedidos
         GestionPedido gespedidos = new GestionPedido();
         gespedidos.CargaDeExcel();
         
-        // Cargar la lista de camiones activos
+        // Cargar camiones activos y sus índices
         GESTIONCAMIONES gestionCamiones = new GESTIONCAMIONES();
         gestionCamiones.cargarCamionesDesdeExcel();
         Vector<Camiones> camionesActivos = gestionCamiones.getCamiones();
         
-        // Crear un conjunto de índices de camiones activos
-        Vector<Integer> indicesCamionesActivos = new Vector<>();
+        // Crear mapa de índices válidos de camiones
+        Map<Integer, Boolean> indicesCamionesValidos = new HashMap<>();
         for (int i = 0; i < camionesActivos.size(); i++) {
-            indicesCamionesActivos.add(i);
+            indicesCamionesValidos.put(i, true);
         }
         
-        // Cargar la lista de pilotos activos
-            GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
-        gestionPilotos.cargarPilotosDesdeExcel(); // Corregido: nombre correcto del método
-        Vector<Piloto> pilotosActivos = gestionPilotos.getPilotos();
-        
-        // Crear un conjunto de índices de pilotos activos
-        Vector<Integer> indicesPilotosActivos = new Vector<>();
-        for (int i = 0; i < pilotosActivos.size(); i++) { // Corregido: usar tamaño de pilotosActivos
-            indicesPilotosActivos.add(i);
-        }
-        
+        // Procesar cada fila del calendario
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) { // Saltar encabezados
-                continue;
-            }
-
+            if (row.getRowNum() == 0) continue; // Skip header
+            
             try {
                 Date fechac = leerFechaCelda(row.getCell(0));
                 Date fechad = leerFechaCelda(row.getCell(1));
@@ -137,31 +130,27 @@ public class GestionCalendario {
                 int indiceCamion = (int) row.getCell(3).getNumericCellValue();
                 boolean activo = row.getCell(4).getBooleanCellValue();
                 boolean compra = row.getCell(5).getBooleanCellValue();
-
-                // Solo procesar si la fecha está activa y tanto el camión como el piloto están activos
-                if (indicesCamionesActivos.contains(indiceCamion) 
-                    && indicesPilotosActivos.contains(indicePiloto)) {
+                
+                // Solo cargar la fecha si:
+                // 1. Está activa
+                // 2. El índice del camión es válido
+                // 3. El camión referenciado está activo
+                if (activo && indicesCamionesValidos.containsKey(indiceCamion)) {
                     Vector<Integer> indiceProductos = new Vector<>();
                     Vector<Integer> indiceCantidad = new Vector<>();
-
+                    
                     // Leer productos y cantidades
                     for (int i = 6; i < row.getLastCellNum(); i += 2) {
                         Cell productoCell = row.getCell(i);
                         Cell cantidadCell = row.getCell(i + 1);
-
+                        
                         if (productoCell != null && productoCell.getCellType() == CellType.NUMERIC) {
                             indiceProductos.add((int) productoCell.getNumericCellValue());
-                            
-                            if (cantidadCell != null && cantidadCell.getCellType() == CellType.NUMERIC) {
-                                indiceCantidad.add((int) cantidadCell.getNumericCellValue());
-                            } else {
-                                indiceCantidad.add(0);
-                            }
-                        } else {
-                            break; // No más productos
+                            indiceCantidad.add(cantidadCell != null ? 
+                                (int) cantidadCell.getNumericCellValue() : 0);
                         }
                     }
-
+                    
                     FechaCalendario fechaCalendario = new FechaCalendario(
                         fechac, fechad, indicePiloto, indiceCamion,
                         indiceProductos, indiceCantidad, activo, compra
@@ -288,25 +277,7 @@ public class GestionCalendario {
         }
     }
     
-    /**
-     * Desactiva todas las fechas asociadas a un camión
-     * @param indiceCamion Índice del camión a desactivar
-     */
-    public void desactivarFechasPorCamion(int indiceCamion) {
-        boolean cambiosRealizados = false;
-        
-        for (FechaCalendario fecha : fechasDeCalendario) {
-            if (fecha.getIndiceCamion() == indiceCamion && fecha.getActivo()) {
-                fecha.setActivo(false);
-                cambiosRealizados = true;
-            }
-        }
-        
-        if (cambiosRealizados) {
-            guardarFecharExcel();
-        }
-    }
-    
+
     /**
      * Verifica si existe alguna fecha activa para un camión específico
      * @param indiceCamion Índice del camión a verificar
@@ -321,22 +292,6 @@ public class GestionCalendario {
         return false;
     }
 
-
-
-    public void desactivarFechasPorPiloto(int indicePiloto) {
-        boolean cambiosRealizados = false;
-        
-        for (FechaCalendario fecha : fechasDeCalendario) {
-            if (fecha.getIndicePiloto() == indicePiloto && fecha.getActivo()) {
-                fecha.setActivo(false);
-                cambiosRealizados = true;
-            }
-        }
-        
-        if (cambiosRealizados) {
-            guardarFecharExcel();
-        }
-    }
 
     public boolean existenFechasActivasPorPiloto(int indicePiloto) {
         for (FechaCalendario fecha : fechasDeCalendario) {

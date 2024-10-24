@@ -13,9 +13,9 @@
     import ControlViajes.FechaCalendario;
 
     public class GESTIONPILOTOS {
-        private Vector<Piloto> pilotos = new Vector<>();
-        private String excelFilePath;
-        private boolean isUpdatingCalendar = false;
+private Vector<Piloto> pilotos = new Vector<>();
+    private String excelFilePath;
+    private boolean isUpdatingCalendar = false;
 
         public GESTIONPILOTOS() {
             excelFilePath = "excels/PINEED.xlsx";
@@ -86,28 +86,156 @@
             }
         }
 
-        public void eliminarPiloto(String dpi) {
-        try {
-            long dpiLong = Long.parseLong(dpi);
-            boolean pilotoEncontrado = false;
-            int indicePiloto = -1;
-
-            for (int i = 0; i < pilotos.size(); i++) {
-                if (pilotos.get(i).getNumeroDeDpi() == dpiLong) {
-                    pilotos.get(i).setActivo(false);
-                    pilotoEncontrado = true;
-                    indicePiloto = i;
-                    break;
+        
+     public void activarPiloto(long dpi) {
+    try {
+        // Primero verificar si el piloto existe y está inactivo
+        boolean pilotoEncontrado = false;
+        Piloto pilotoAActivar = null;
+        
+        for (Piloto piloto : pilotos) {
+            if (piloto.getNumeroDeDpi() == dpi && !piloto.isActivo()) {
+                pilotoAActivar = piloto;
+                pilotoEncontrado = true;
+                break;
+            }
+        }
+        
+        if (!pilotoEncontrado) {
+            throw new IllegalStateException("No se encontró un piloto inactivo con el DPI: " + dpi);
+        }
+        
+        // Activar el piloto en memoria
+        pilotoAActivar.setActivo(true);
+        pilotoAActivar.setEstadoPiloto("ACTIVO");
+        
+        // Actualizar el archivo Excel
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            
+            Sheet sheet = workbook.getSheetAt(0);
+            boolean actualizadoEnExcel = false;
+            
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header
+                
+                Cell dpiCell = row.getCell(2);
+                if (dpiCell != null) {
+                    long dpiFila = (long) dpiCell.getNumericCellValue();
+                    if (dpiFila == dpi) {
+                        // Actualizar estado a ACTIVO
+                        Cell estadoCell = row.getCell(8);
+                        if (estadoCell == null) {
+                            estadoCell = row.createCell(8);
+                        }
+                        estadoCell.setCellValue("ACTIVO");
+                        
+                        // Actualizar columna activo
+                        Cell activoCell = row.getCell(9);
+                        if (activoCell == null) {
+                            activoCell = row.createCell(9);
+                        }
+                        activoCell.setCellValue(true);
+                        
+                        actualizadoEnExcel = true;
+                        break;
+                    }
                 }
             }
-
-            if (pilotoEncontrado) {
-                actualizarCalendarioPorPiloto(indicePiloto);
-                reordenarIndices();
-                guardarPilotosEnExcel();
+            
+            if (!actualizadoEnExcel) {
+                throw new IllegalStateException("No se pudo actualizar el piloto en el archivo Excel");
             }
-        } catch (NumberFormatException e) {
-            System.err.println("Error: DPI inválido - " + e.getMessage());
+            
+            // Guardar los cambios en el archivo
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
+            
+            // Recargar los pilotos para actualizar índices
+            cargarPilotosDesdeExcel();
+            
+            // Reordenar índices después de la activación
+            reordenarIndices();
+            
+        } catch (IOException e) {
+            throw new RuntimeException("Error al acceder al archivo Excel: " + e.getMessage(), e);
+        }
+        
+    } catch (Exception e) {
+        System.err.println("Error al activar el piloto: " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Error al activar el piloto: " + e.getMessage(), e);
+    }
+}
+     
+     
+     
+    public void eliminarPiloto(long dpi) {
+        boolean pilotoEncontrado = false;
+        int indicePiloto = -1;
+        
+        // Find the pilot and their current index
+        for (int i = 0; i < pilotos.size(); i++) {
+            if (pilotos.get(i).getNumeroDeDpi() == dpi && pilotos.get(i).isActivo()) {
+                pilotos.get(i).setActivo(false);
+                pilotos.get(i).setEstadoPiloto("INACTIVO");
+                pilotoEncontrado = true;
+                indicePiloto = i;
+                break;
+            }
+        }
+        
+        if (pilotoEncontrado) {
+            // Update the Excel file to maintain all pilots (both active and inactive)
+            try (FileInputStream fis = new FileInputStream(excelFilePath);
+                 Workbook workbook = new XSSFWorkbook(fis)) {
+                
+                Sheet sheet = workbook.getSheetAt(0);
+                boolean excelUpdated = false;
+                
+                for (Row row : sheet) {
+                    if (row.getRowNum() == 0) continue; // Skip header
+                    
+                    Cell dpiCell = row.getCell(2);
+                    if (dpiCell != null) {
+                        long dpiFila = (long) dpiCell.getNumericCellValue();
+                        if (dpiFila == dpi) {
+                            // Update status to INACTIVO
+                            Cell estadoCell = row.getCell(8);
+                            if (estadoCell == null) {
+                                estadoCell = row.createCell(8);
+                            }
+                            estadoCell.setCellValue("INACTIVO");
+                            
+                            // Update active column to false
+                            Cell activoCell = row.getCell(9);
+                            if (activoCell == null) {
+                                activoCell = row.createCell(9);
+                            }
+                            activoCell.setCellValue(false);
+                            
+                            excelUpdated = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (excelUpdated) {
+                    try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                        workbook.write(fos);
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Error updating Excel file: " + e.getMessage());
+                e.printStackTrace();
+            }
+            
+            // Update calendar for the removed pilot
+            actualizarCalendarioPorPiloto(indicePiloto);
+            
+            // Reload pilots to update indices
+            cargarPilotosDesdeExcel();
         }
     }
 
@@ -229,61 +357,56 @@ public void actualizarPiloto(Piloto pilotoActualizado) {
             }
         }
 
-        public void cargarPilotosDesdeExcel() {
-            pilotos.clear();
-            Vector<Piloto> todosPilotos = new Vector<>();
+public void cargarPilotosDesdeExcel() {
+    pilotos.clear();
+    
+    try (FileInputStream fis = new FileInputStream(excelFilePath);
+         Workbook workbook = new XSSFWorkbook(fis)) {
 
-            try (FileInputStream fis = new FileInputStream(excelFilePath);
-                 Workbook workbook = new XSSFWorkbook(fis)) {
+        Sheet sheet = workbook.getSheetAt(0);
+        
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Skip header
 
-                Sheet sheet = workbook.getSheetAt(0);
-                int indiceActual = 0;
-
-                for (Row row : sheet) {
-                    if (row.getRowNum() == 0) {
-                        continue;
-                    }
-
-                    try {
-                        String nombrePiloto = getStringCellValue(row.getCell(0));
-                        String apellidoPiloto = getStringCellValue(row.getCell(1));
-                        long numeroDeDpi = getNumericCellValue(row.getCell(2));
-                        String tipoLicencia = getStringCellValue(row.getCell(3));
-                        String correoElectronicoPiloto = getStringCellValue(row.getCell(4));
-                        int numeroTelefonicoPiloto = (int) getNumericCellValue(row.getCell(5));
-                        String generoPiloto = getStringCellValue(row.getCell(6));
-                        String fechaDeNacimiento = procesarFecha(getStringCellValue(row.getCell(7)));
-                        String estadoPiloto = getStringCellValue(row.getCell(8));
-                        boolean activo = true;
-
-                        if (row.getCell(9) != null) {
-                            activo = row.getCell(9).getBooleanCellValue();
-                        }
-
-                        Piloto piloto = new Piloto(
-                            nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia,
-                            correoElectronicoPiloto, numeroTelefonicoPiloto, generoPiloto,
-                            fechaDeNacimiento, estadoPiloto, activo
-                        );
-
-                        if (activo) {
-                            pilotos.add(piloto);
-                            indiceActual++;
-                        }
-                        todosPilotos.add(piloto);
-                    } catch (Exception e) {
-                        System.err.println("Error al procesar la fila " + row.getRowNum() + ": " + e.getMessage());
-                        e.printStackTrace();
-                    }
+            try {
+                // Get the status and active fields first
+                String estadoPiloto = getStringCellValue(row.getCell(8));
+                boolean activo = true; // Default value
+                
+                // Check the active column (index 9)
+                if (row.getCell(9) != null) {
+                    activo = row.getCell(9).getBooleanCellValue();
                 }
+                
+                // Only process the row if both conditions are met
+                if (activo && "ACTIVO".equals(estadoPiloto.toUpperCase())) {
+                    String nombrePiloto = getStringCellValue(row.getCell(0));
+                    String apellidoPiloto = getStringCellValue(row.getCell(1));
+                    long numeroDeDpi = getNumericCellValue(row.getCell(2));
+                    String tipoLicencia = getStringCellValue(row.getCell(3));
+                    String correoElectronicoPiloto = getStringCellValue(row.getCell(4));
+                    int numeroTelefonicoPiloto = (int) getNumericCellValue(row.getCell(5));
+                    String generoPiloto = getStringCellValue(row.getCell(6));
+                    String fechaDeNacimiento = procesarFecha(getStringCellValue(row.getCell(7)));
 
-                actualizarIndicesEnCalendario(todosPilotos);
+                    Piloto piloto = new Piloto(
+                        nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia,
+                        correoElectronicoPiloto, numeroTelefonicoPiloto, generoPiloto,
+                        fechaDeNacimiento, estadoPiloto, activo
+                    );
 
-            } catch (IOException e) {
-                System.err.println("Error al leer el archivo Excel: " + e.getMessage());
-                e.printStackTrace();
+                    pilotos.add(piloto);
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error processing row " + row.getRowNum() + ": " + e.getMessage());
             }
         }
+    } catch (IOException e) {
+        System.err.println("Error reading Excel file: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 
         private String procesarFecha(String fechaExcel) {
             if (fechaExcel == null || fechaExcel.isEmpty()) {
