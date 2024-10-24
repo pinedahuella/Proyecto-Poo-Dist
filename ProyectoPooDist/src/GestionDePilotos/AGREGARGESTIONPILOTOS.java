@@ -152,7 +152,7 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         jLabel18.setText("ESTADO DEL PILOTO");
 
         txtEstadoPiloto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO", "INACTIVO" }));
+        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
         txtNumeroTelefonicoPiloto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtNumeroTelefonicoPiloto.addActionListener(new java.awt.event.ActionListener() {

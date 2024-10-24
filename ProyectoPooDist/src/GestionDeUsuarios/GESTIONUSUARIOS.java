@@ -1,6 +1,5 @@
 package GestionDeUsuarios;
 
-// Importación de clases necesarias para la funcionalidad de inicio de sesión
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
@@ -9,6 +8,9 @@ import java.io.IOException;
 import java.util.Vector;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
@@ -17,18 +19,15 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
  * Permite cargar, guardar, actualizar y eliminar usuarios.
  */
 public class GESTIONUSUARIOS {
-
-    // Vector que almacena los usuarios.
-    public Vector<Usuarios> usuarios = new Vector<>();
-    
-    // Ruta del archivo Excel donde se almacenan los usuarios.
-    private String excelFilePath;
+    private Vector<Usuarios> usuarios;
+    private final String excelFilePath;
 
     /**
      * Constructor por defecto que inicializa la ruta del archivo Excel.
      */
     public GESTIONUSUARIOS() {
-        excelFilePath = "excels/USUARIOS.xlsx";
+        this.usuarios = new Vector<>();
+        this.excelFilePath = "excels/USUARIOS.xlsx";
     }
 
     /**
@@ -38,200 +37,213 @@ public class GESTIONUSUARIOS {
      */
     public GESTIONUSUARIOS(Vector<Usuarios> usrs) {
         this.usuarios = usrs;
-        excelFilePath = "excels/USUARIOS.xlsx";
+        this.excelFilePath = "excels/USUARIOS.xlsx";
     }
 
-    /**
-     * Establece la lista de usuarios.
-     * 
-     * @param usuario Vector de usuarios a establecer.
-     */
-    public void setUsuarios(Vector<Usuarios> usuario) {
-        this.usuarios = usuario;
+    // Getters y Setters
+    public void setUsuarios(Vector<Usuarios> usuarios) {
+        this.usuarios = usuarios;
     }
 
-    /**
-     * Devuelve la lista de usuarios.
-     * 
-     * @return Vector de usuarios.
-     */
     public Vector<Usuarios> getUsuarios() {
         return this.usuarios;
     }
 
     /**
-     * Agrega un nuevo usuario al vector de usuarios.
-     * 
-     * @param usuario Usuario a agregar.
+     * Agrega un nuevo usuario al sistema
+     * @param usuario Usuario a agregar
      */
-    public void setUnUsuario(Usuarios usuario) {
+    public void agregarUsuario(Usuarios usuario) {
         this.usuarios.add(usuario);
+        guardarUsuariosEnExcel();
     }
 
     /**
-     * Actualiza un usuario existente o lo agrega si no se encuentra.
-     * 
-     * @param usuarioActualizado Usuario con la información actualizada.
+     * Actualiza un usuario existente o lo agrega si no existe
+     * @param usuarioActualizado Usuario con la información actualizada
      */
     public void actualizarUsuario(Usuarios usuarioActualizado) {
         boolean encontrado = false;
         for (int i = 0; i < usuarios.size(); i++) {
-            // Compara el número de DPI para encontrar el usuario.
             if (usuarios.get(i).getNumeroDPI() == usuarioActualizado.getNumeroDPI()) {
-                usuarios.set(i, usuarioActualizado); // Actualiza el usuario.
+                usuarios.set(i, usuarioActualizado);
                 encontrado = true;
                 break;
             }
         }
-        // Si no se encontró, agrega el usuario nuevo.
         if (!encontrado) {
             usuarios.add(usuarioActualizado);
-        }
-        guardarUsuariosEnExcel(); // Guarda la lista de usuarios en Excel.
-        cargarUsuariosDesdeExcel(); // Carga la lista de usuarios desde Excel.
+        }   
+        guardarUsuariosEnExcel();
+        cargarUsuariosDesdeExcel();
     }
 
     /**
-     * Elimina un usuario basado en su nombre y apellido.
-     * 
-     * @param nombre Nombre del usuario a eliminar.
-     * @param apellido Apellido del usuario a eliminar.
+     * Elimina un usuario del sistema
+     * @param dpi DPI del usuario a eliminar
      */
-    public void eliminarUsuario(String nombre, String apellido) {
-        // Elimina el usuario si coincide el nombre y apellido.
-        usuarios.removeIf(usuario -> usuario.getNombre().equals(nombre) && usuario.getApellido().equals(apellido));
-        guardarUsuariosEnExcel(); // Guarda la lista actualizada en Excel.
-        cargarUsuariosDesdeExcel(); // Carga la lista de usuarios desde Excel.
-    }
+ public void eliminarUsuario(long dpi) {
+    try {
+        boolean usuarioEncontrado = false;
+        Set<String> estadosValidos = new HashSet<>(Arrays.asList(
+            "ACTIVO",
+            "ENFERMO",
+            "EN VACACIONES",
+            "BLOQUEADO",
+            "JUBILADO"
+        ));
+        
+        // Buscar y marcar el usuario como inactivo en memoria
+        for (Usuarios usuario : usuarios) {
+            if (usuario.getNumeroDPI() == dpi && estadosValidos.contains(usuario.getEstado())) {
+                usuario.setEstado("INACTIVO");
+                usuarioEncontrado = true;
+                break;
+            }
+        }
+        
+        if (!usuarioEncontrado) {
+            throw new IllegalStateException("No se encontró un usuario válido con el DPI: " + dpi);
+        }
 
+        actualizarEstadoEnExcel(dpi, "INACTIVO", false);
+        cargarUsuariosDesdeExcel();
+        
+    } catch (Exception e) {
+        System.err.println("Error al eliminar el usuario: " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Error al eliminar el usuario: " + e.getMessage(), e);
+    }
+}
+
+public void reactivarUsuario(long dpi) {
+    try {
+        boolean usuarioEncontrado = false;
+        
+        // Buscar y reactivar el usuario en memoria
+        for (Usuarios usuario : usuarios) {
+            if (usuario.getNumeroDPI() == dpi && "INACTIVO".equals(usuario.getEstado())) {
+                usuario.setEstado("ACTIVO");
+                usuarioEncontrado = true;
+                break;
+            }
+        }
+        
+        if (!usuarioEncontrado) {
+            throw new IllegalStateException("No se encontró un usuario inactivo con el DPI: " + dpi);
+        }
+
+        actualizarEstadoEnExcel(dpi, "ACTIVO", true);
+        cargarUsuariosDesdeExcel();
+        
+    } catch (Exception e) {
+        System.err.println("Error al reactivar el usuario: " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Error al reactivar el usuario: " + e.getMessage(), e);
+    }
+}
     /**
-     * Carga los usuarios desde un archivo Excel y los almacena en el vector.
+     * Carga los usuarios desde el archivo Excel
      */
     public void cargarUsuariosDesdeExcel() {
-        usuarios.clear(); // Limpia la lista de usuarios antes de cargar.
-
+        usuarios.clear();
+        
         try (FileInputStream fis = new FileInputStream(excelFilePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheetAt(0); // Obtiene la primera hoja.
-
+            Sheet sheet = workbook.getSheetAt(0);
+            
             for (Row row : sheet) {
-                // Salta la primera fila que contiene los encabezados.
-                if (row.getRowNum() == 0) { 
-                    continue;
-                }
+                if (row.getRowNum() == 0) continue;
 
-                // Obtiene los datos de las celdas y los convierte a String.
                 String nombreUsuario = getStringCellValue(row.getCell(0));
                 String contrasenaUsuario = getStringCellValue(row.getCell(1));
                 String nombre = getStringCellValue(row.getCell(2));
                 String apellido = getStringCellValue(row.getCell(3));
                 String cargo = getStringCellValue(row.getCell(4));
                 String genero = getStringCellValue(row.getCell(5));
-                String numeroDPI = getStringCellValue(row.getCell(6)); 
-                String newnewfechaNacimiento = getStringCellValue(row.getCell(7)); 
-                String numeroTelefono = getStringCellValue(row.getCell(8));
+                long numeroDPI = getNumericCellValue(row.getCell(6));
+                String fechaNacimiento = procesarFecha(getStringCellValue(row.getCell(7)));
+                int numeroTelefono = (int)getNumericCellValue(row.getCell(8));
                 String correoElectronico = getStringCellValue(row.getCell(9));
-                String estado = getStringCellValue(row.getCell(10)); 
+                String estado = getStringCellValue(row.getCell(10));
                 
-                // Procesa la fecha de nacimiento desde el formato Excel.
-                String fechaNacimiento;
-                if (newnewfechaNacimiento.length() > 7) {
-                    fechaNacimiento = newnewfechaNacimiento; // Si ya es un String válido.
-                } else {
-                    int newfechaNacimiento = Integer.parseInt(newnewfechaNacimiento.split("\\.")[0]);
-                    
-                    LocalDate excelStartDate = LocalDate.of(1900, 1, 1);
-                    if (newfechaNacimiento > 59) {
-                        newfechaNacimiento--; 
-                    }
-                    
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    LocalDate date = excelStartDate.plusDays(newfechaNacimiento - 1);
-                    fechaNacimiento = date.format(formatter); // Formato final de la fecha.
-                }
-                
-                // Crea un nuevo objeto Usuarios y lo agrega al vector.
                 Usuarios usuario = new Usuarios(
                     nombreUsuario, contrasenaUsuario, nombre, apellido, cargo, genero,
-                    Long.parseLong(numeroDPI), fechaNacimiento, Integer.parseInt(numeroTelefono), correoElectronico, estado
+                    numeroDPI, fechaNacimiento, numeroTelefono, correoElectronico, estado
                 );
                 usuarios.add(usuario);
             }
-
         } catch (IOException e) {
-            e.printStackTrace(); // Manejo de excepciones al cargar.
+            System.err.println("Error al cargar usuarios desde Excel: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Obtiene el valor de una celda como String.
-     * 
-     * @param cell Celda de la que se obtendrá el valor.
-     * @return Valor de la celda como String.
-     */
-    private String getStringCellValue(Cell cell) {
-        if (cell == null) {
-            return "";
-        }
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                return String.format("%.0f", cell.getNumericCellValue());
-            default:
-                return "";
-        }
-    }
-
-    /**
-     * Obtiene el valor de una celda como número (long).
-     * 
-     * @param cell Celda de la que se obtendrá el valor numérico.
-     * @return Valor de la celda como long.
-     */
-    private long getNumericCellValue(Cell cell) {
-        if (cell == null) {
-            return 0;
-        }
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                return (long) cell.getNumericCellValue();
-            case STRING:
-                try {
-                    return Long.parseLong(cell.getStringCellValue());
-                } catch (NumberFormatException e) {
-                    return 0; // Manejo de excepciones para conversiones fallidas.
+    
+        private void actualizarEstadoEnExcel(long dpi, String estado, boolean activo) {
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            
+            Sheet sheet = workbook.getSheetAt(0);
+            boolean excelActualizado = false;
+            
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue;
+                
+                Cell dpiCell = row.getCell(6);
+                if (dpiCell != null && getNumericCellValue(dpiCell) == dpi) {
+                    // Actualizar estado (columna 10)
+                    Cell estadoCell = row.getCell(10);
+                    if (estadoCell == null) {
+                        estadoCell = row.createCell(10);
+                    }
+                    estadoCell.setCellValue(estado);
+                    
+                    // Actualizar campo activo (columna 11)
+                    Cell activoCell = row.getCell(11);
+                    if (activoCell == null) {
+                        activoCell = row.createCell(11);
+                    }
+                    activoCell.setCellValue(activo);
+                    
+                    excelActualizado = true;
+                    break;
                 }
-            default:
-                return 0;
+            }
+            
+            if (!excelActualizado) {
+                throw new IllegalStateException("No se pudo actualizar el usuario en el archivo Excel");
+            }
+            
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
+            
+        } catch (IOException e) {
+            throw new RuntimeException("Error al acceder al archivo Excel: " + e.getMessage(), e);
         }
     }
-
+        
     /**
-     * Guarda la lista de usuarios en un archivo Excel.
+     * Guarda los usuarios en el archivo Excel
      */
     public void guardarUsuariosEnExcel() {
-        try (Workbook workbook = new XSSFWorkbook();
-             FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Usuarios");
 
-            Sheet sheet = workbook.createSheet("Usuarios"); // Crea una nueva hoja.
-
-            // Crea la fila de encabezados.
+            // Crear encabezados
             Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Nombre de Usuario");
-            headerRow.createCell(1).setCellValue("Contraseña");
-            headerRow.createCell(2).setCellValue("Nombre");
-            headerRow.createCell(3).setCellValue("Apellido");
-            headerRow.createCell(4).setCellValue("Cargo");
-            headerRow.createCell(5).setCellValue("Género");
-            headerRow.createCell(6).setCellValue("Número de DPI");
-            headerRow.createCell(7).setCellValue("Fecha de Nacimiento");
-            headerRow.createCell(8).setCellValue("Número Telefónico");
-            headerRow.createCell(9).setCellValue("Correo Electrónico");
-            headerRow.createCell(10).setCellValue("Estado");
+            String[] headers = {
+                "Nombre Usuario", "Contraseña", "Nombre", "Apellido", "Cargo",
+                "Género", "DPI", "Fecha Nacimiento", "Teléfono", "Correo", "Estado"
+            };
+            
+            for (int i = 0; i < headers.length; i++) {
+                headerRow.createCell(i).setCellValue(headers[i]);
+            }
 
-            // Escribe cada usuario en una nueva fila.
+            // Guardar datos de usuarios
             int rowCount = 1;
             for (Usuarios usuario : usuarios) {
                 Row row = sheet.createRow(rowCount++);
@@ -248,10 +260,90 @@ public class GESTIONUSUARIOS {
                 row.createCell(10).setCellValue(usuario.getEstado());
             }
 
-            // Escribe los datos en el archivo.
-            workbook.write(fos);
+            // Guardar archivo
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
         } catch (IOException e) {
-            e.printStackTrace(); // Manejo de excepciones al guardar.
+            System.err.println("Error al guardar usuarios en Excel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Procesa una fecha desde el formato Excel a dd/MM/yyyy
+     */
+    private String procesarFecha(String fechaExcel) {
+        if (fechaExcel == null || fechaExcel.isEmpty()) {
+            return "";
+        }
+
+        try {
+            DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            try {
+                LocalDate.parse(fechaExcel, formateador);
+                return fechaExcel;
+            } catch (Exception e) {
+                // Continuar con el proceso para número
+            }
+
+            double numeroExcel;
+            if (fechaExcel.contains(".")) {
+                numeroExcel = Double.parseDouble(fechaExcel);
+            } else {
+                numeroExcel = Integer.parseInt(fechaExcel);
+            }
+
+            int dias = (int) numeroExcel;
+            LocalDate fechaInicioExcel = LocalDate.of(1900, 1, 1);
+
+            if (dias > 59) {
+                dias--;
+            }
+
+            LocalDate fecha = fechaInicioExcel.plusDays(dias - 1);
+            return fecha.format(formateador);
+
+        } catch (NumberFormatException e) {
+            return fechaExcel;
+        }
+    }
+
+    /**
+     * Obtiene el valor de una celda como String
+     */
+    private String getStringCellValue(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.format("%.0f", cell.getNumericCellValue());
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Obtiene el valor de una celda como número
+     */
+    private long getNumericCellValue(Cell cell) {
+        if (cell == null) {
+            return 0;
+        }
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                return (long) cell.getNumericCellValue();
+            case STRING:
+                try {
+                    return Long.parseLong(cell.getStringCellValue());
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            default:
+                return 0;
         }
     }
 }

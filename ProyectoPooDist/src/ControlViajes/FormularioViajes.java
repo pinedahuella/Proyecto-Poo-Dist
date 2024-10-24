@@ -1231,7 +1231,7 @@ private boolean isCamionDisponible(int indiceCamion) {
             String mensaje = "No se puede asignar este camión porque está " + 
                 (estado.equals("DESCOMPUESTO") ? "DESCOMPUESTO" :
                 estado.equals("EN MANTENIMIENTO") ? "EN MANTENIMIENTO" :
-                estado.equals("NO DISPONIBLE") ? "NO DISPONIBLE" : "en estado no disponible");
+                estado.equals("INACTIVO") ? "INACTIVO" : "en estado no disponible");
                 
             // Mostrar mensaje de error
             JOptionPane.showMessageDialog(null, mensaje, "Error de Validación", JOptionPane.WARNING_MESSAGE);

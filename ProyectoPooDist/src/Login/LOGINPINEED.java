@@ -381,6 +381,28 @@ String nombreUsuario = txtNombreUsuario.getText();
     // Verificar si es un piloto
     Piloto piloto = buscarPiloto(nombreUsuario);
     if (piloto != null) {
+        // Verificar estado del piloto
+        if (!piloto.getEstadoPiloto().equalsIgnoreCase("ACTIVO")) {
+            String mensaje = "Acceso denegado. ";
+            switch (piloto.getEstadoPiloto().toUpperCase()) {
+                case "BLOQUEADO":
+                    mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
+                    break;
+                case "ENFERMO":
+                    mensaje += "Su cuenta está suspendida por enfermedad.";
+                    break;
+                case "EN VACACIONES":
+                    mensaje += "Su cuenta está suspendida por vacaciones.";
+                    break;
+                case "JUBILADO":
+                    mensaje += "Su cuenta está inactiva por jubilación.";
+                    break;
+                default:
+                    mensaje += "Su cuenta no está activa.";
+            }
+            mostrarMensajeError(mensaje);
+            return;
+        }
         validarLoginPiloto(piloto, nombreUsuario, contraseña);
         return;
     }
@@ -392,9 +414,67 @@ String nombreUsuario = txtNombreUsuario.getText();
         return;
     }
 
-    // Verificación de usuario bloqueado
-    if (usuario.getEstado().equalsIgnoreCase("bloqueado") && !usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-        mostrarMensajeError("Usuario bloqueado. Contacte al administrador: +502 5754-5388");
+   // Verificar estado del usuario
+if (!usuario.getEstado().equalsIgnoreCase("ACTIVO")) {
+    // Para administradores, permitir acceso si están en ACTIVO o EN VACACIONES
+    if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+        if (usuario.getEstado().equalsIgnoreCase("EN VACACIONES")) {
+            // Permitir acceso pero mostrar advertencia
+            JOptionPane.showMessageDialog(
+                this,
+                "Advertencia: Está ingresando durante su período de vacaciones.",
+                "Advertencia",
+                JOptionPane.WARNING_MESSAGE
+            );
+            // Continuar con el proceso de login
+            return;
+        } else if (!usuario.getEstado().equalsIgnoreCase("ACTIVO")) {
+            mostrarMensajeError("Acceso denegado. Su cuenta de administrador está " + 
+                              usuario.getEstado().toLowerCase() + ".");
+            return;
+        }
+    } else {
+        // Para usuarios normales, mostrar mensaje según el estado
+        String mensaje = "Acceso denegado. ";
+        switch (usuario.getEstado().toUpperCase()) {
+            case "BLOQUEADO":
+                mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
+                break;
+            case "ENFERMO":
+                mensaje += "Su cuenta está suspendida por enfermedad.";
+                break;
+            case "EN VACACIONES":
+                mensaje += "Su cuenta está suspendida por vacaciones.";
+                break;
+            case "JUBILADO":
+                mensaje += "Su cuenta está inactiva por jubilación.";
+                break;
+            default:
+                mensaje += "Su cuenta no está activa.";
+        }
+        mostrarMensajeError(mensaje);
+        return;
+    }
+        
+        // Para usuarios normales, mostrar mensaje según el estado
+        String mensaje = "Acceso denegado. ";
+        switch (usuario.getEstado().toUpperCase()) {
+            case "BLOQUEADO":
+                mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
+                break;
+            case "ENFERMO":
+                mensaje += "Su cuenta está suspendida por enfermedad.";
+                break;
+            case "EN VACACIONES":
+                mensaje += "Su cuenta está suspendida por vacaciones.";
+                break;
+            case "JUBILADO":
+                mensaje += "Su cuenta está inactiva por jubilación.";
+                break;
+            default:
+                mensaje += "Su cuenta no está activa.";
+        }
+        mostrarMensajeError(mensaje);
         return;
     }
 
@@ -423,7 +503,7 @@ String nombreUsuario = txtNombreUsuario.getText();
         this.setVisible(false);
         intentosFallidos.remove(nombreUsuario);
     } else {
-        // Si es administrador normal, solo mostrar mensaje de error sin contar intentos
+        // Si es administrador, solo mostrar mensaje de error sin contar intentos
         if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
             mostrarMensajeError("Contraseña incorrecta.");
             return;
@@ -435,7 +515,7 @@ String nombreUsuario = txtNombreUsuario.getText();
 
         if (intentos >= 3) {
             bloquearUsuario(usuario);
-            mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos.");
+            mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos. Contacte al administrador: +502 5754-5388");
         } else {
             mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
         }

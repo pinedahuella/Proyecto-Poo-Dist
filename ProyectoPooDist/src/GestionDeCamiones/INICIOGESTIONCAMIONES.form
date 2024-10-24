@@ -87,14 +87,9 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jScrollPane4" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel4" min="-2" pref="63" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtMarcaCamionBuscar1" min="-2" pref="234" max="-2" attributes="0"/>
-                                  <EmptySpace pref="130" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
                                   <Component id="buscarCamion" min="-2" pref="95" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="refrescarCamion" min="-2" pref="95" max="-2" attributes="0"/>
@@ -109,13 +104,23 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="garageCamiones" min="-2" pref="95" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="jTextField19" min="-2" pref="433" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="ActivarCamiones" min="-2" pref="253" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabel4" min="-2" pref="63" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="txtMarcaCamionBuscar1" min="-2" pref="234" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Component id="jTextField19" min="-2" pref="433" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="ActivarCamiones" min="-2" pref="253" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jScrollPane4" min="-2" pref="1135" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace pref="22" max="32767" attributes="0"/>
                           <Component id="jPanel7" min="-2" pref="195" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -124,31 +129,26 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                                  <Component id="jTextField19" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="ActivarCamiones" min="-2" pref="28" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="jTextField19" min="-2" max="-2" attributes="0"/>
+                              <Component id="ActivarCamiones" min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="98" max="32767" attributes="0"/>
+                          <EmptySpace pref="88" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="txtMarcaCamionBuscar1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="agregarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="editarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="mostrarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="garageCamiones" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="editarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="agregarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="mostrarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="eliminarUsuario" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="refrescarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="buscarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                          <Component id="jScrollPane4" min="-2" pref="526" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jScrollPane4" min="-2" pref="561" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Component id="jPanel7" alignment="0" pref="752" max="32767" attributes="0"/>
                   </Group>

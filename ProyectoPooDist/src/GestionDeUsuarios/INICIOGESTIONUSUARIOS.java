@@ -34,6 +34,9 @@ import java.awt.event.ActionListener;  // Para manejar eventos de acción
 import java.awt.event.ActionEvent;  // Para representar eventos de acción
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -52,10 +55,45 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
             return false;
         }
     };
+      
+    public INICIOGESTIONUSUARIOS(String username, String role, LOGINPINEED loginFrame) {
+        initComponents();
+        setResizable(false);
+        gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        
+        String[] columnas = {"Nombre", "Apellido", "DPI", "Cargo", "Teléfono", "Estado"};
+        modeloUsuarios.setColumnIdentifiers(columnas);
+        
+        if (gestionUsuarios.getUsuarios() != null) {
+            listaUsuarios = gestionUsuarios.getUsuarios();
+        }
+        
+        tblRegistroUsuarios.setModel(modeloUsuarios);
+        tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRegistroUsuarios.getTableHeader().setReorderingAllowed(false);
+        tblRegistroUsuarios.getTableHeader().setResizingAllowed(false);
+        tblRegistroUsuarios.setRowSelectionAllowed(true);
+        tblRegistroUsuarios.setColumnSelectionAllowed(false);
+        
+        cargarUsuariosEnTabla();
+        this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+        addWindowListener();
+        setupComboBox();
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            this.requestFocusInWindow();
+        });
+    }
+    
+    
     
 private void setupComboBox() {
-    txtMenu1.removeAllItems();
-    txtMenu1.addItem("Seleccione una opción");
+    txtMenu2.removeAllItems();
+    txtMenu2.addItem("Seleccione una opción");
 
     if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
         addAdminOptions();
@@ -65,40 +103,40 @@ private void setupComboBox() {
         addPilotOptions();
     }
 
-    txtMenu1.addActionListener(new ActionListener() {
+    txtMenu2.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            String selectedOption = (String) txtMenu1.getSelectedItem();
+            String selectedOption = (String) txtMenu2.getSelectedItem();
             redirectToFrame(selectedOption);
         }
     });
 }
 
 private void addAdminOptions() {
-    txtMenu1.addItem("Gestión de Usuarios");
-    txtMenu1.addItem("Gestión de Pilotos");
-    txtMenu1.addItem("Gestión de Clientes");
-    txtMenu1.addItem("Gestión de Ventas");
-    txtMenu1.addItem("Gestión de Pedidos");
-    txtMenu1.addItem("Inventario de Quintales");
-    txtMenu1.addItem("Planilla de Trabajadores");
-    txtMenu1.addItem("Gestión de Camiones");
-    txtMenu1.addItem("Calendario");
-    txtMenu1.addItem("Cerrar Sesión");
+    txtMenu2.addItem("Gestión de Usuarios");
+    txtMenu2.addItem("Gestión de Pilotos");
+    txtMenu2.addItem("Gestión de Clientes");
+    txtMenu2.addItem("Gestión de Ventas");
+    txtMenu2.addItem("Gestión de Pedidos");
+    txtMenu2.addItem("Inventario de Quintales");
+    txtMenu2.addItem("Planilla de Trabajadores");
+    txtMenu2.addItem("Gestión de Camiones");
+    txtMenu2.addItem("Calendario");
+    txtMenu2.addItem("Cerrar Sesión");
 }
 
 private void addSecretariaOptions() {
-    txtMenu1.addItem("Gestión de Ventas");
-    txtMenu1.addItem("Gestión de Clientes");
-    txtMenu1.addItem("Gestión de Camiones");
-    txtMenu1.addItem("Gestión de Pedidos");
-    txtMenu1.addItem("Gestión de Pilotos");
-    txtMenu1.addItem("Calendario");
-    txtMenu1.addItem("Cerrar Sesión");
+    txtMenu2.addItem("Gestión de Ventas");
+    txtMenu2.addItem("Gestión de Clientes");
+    txtMenu2.addItem("Gestión de Camiones");
+    txtMenu2.addItem("Gestión de Pedidos");
+    txtMenu2.addItem("Gestión de Pilotos");
+    txtMenu2.addItem("Calendario");
+    txtMenu2.addItem("Cerrar Sesión");
 }
 
 private void addPilotOptions() {
-    txtMenu1.addItem("Calendario");
-    txtMenu1.addItem("Cerrar Sesión");
+    txtMenu2.addItem("Calendario");
+    txtMenu2.addItem("Cerrar Sesión");
 }
     
 private void redirectToFrame(String option) {
@@ -287,63 +325,46 @@ private void cerrarSesionYRegresarLogin() {
     }
 
     
-    public INICIOGESTIONUSUARIOS(String username, String role, LOGINPINEED loginFrame) {
-        initComponents();
-        setResizable(false); // Desactivar el cambio de tamaño
-        gestionUsuarios = new GESTIONUSUARIOS();
-        gestionUsuarios.cargarUsuariosDesdeExcel();
-        
-        String[] columnas = {"Nombre", "Apellido", "DPI", "Cargo", "Teléfono", "Estado"};
-        modeloUsuarios.setColumnIdentifiers(columnas);
-        
-        if (gestionUsuarios.getUsuarios() != null) {
-            listaUsuarios = gestionUsuarios.getUsuarios();
-        }
-        
-        tblRegistroUsuarios.setModel(modeloUsuarios);
-        tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tblRegistroUsuarios.getTableHeader().setReorderingAllowed(false);
-        tblRegistroUsuarios.getTableHeader().setResizingAllowed(false);
-        tblRegistroUsuarios.setRowSelectionAllowed(true);
-        tblRegistroUsuarios.setColumnSelectionAllowed(false);
-        
-        cargarUsuariosEnTabla();
-        this.currentUser = username;
-        this.userRole = role;
-        this.loginFrame = loginFrame;
-        addWindowListener();
-        setupComboBox();  // Añade esta línea
-            this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-    this.setVisible(true);
-        SwingUtilities.invokeLater(() -> {
-            this.requestFocusInWindow();
-        });
-    }
     
-   
        
-       
-private void cargarUsuariosEnTabla() {
-    for (Usuarios usuario : listaUsuarios) {
-        modeloUsuarios.addRow(new Object[]{
-            
-            usuario.getNombre(),
-            usuario.getApellido(),
-            usuario.getNumeroDPI(),
-            usuario.getCargo(),
-            usuario.getNumeroTelefono(),
-            usuario.getEstado(),
-            usuario.getCorreoElectronico(),
-            usuario.getGenero(),
-            usuario.getFechaNacimiento(),
-            usuario.getNombreUsuario(),
-            usuario.getContrasenaUsuario(),
-            
+     // Cambiar el método de private a public
+    public void actualizarTabla() {
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        listaUsuarios = gestionUsuarios.getUsuarios();
+        cargarUsuariosEnTabla();
+    }
 
-        });
+   public void cargarUsuariosEnTabla() {
+    // Limpiar la tabla antes de cargar los datos
+    modeloUsuarios.setRowCount(0);
+    
+    // Definir los estados válidos que queremos mostrar
+    Set<String> estadosValidos = new HashSet<>(Arrays.asList(
+        "ACTIVO",
+        "ENFERMO",
+        "EN VACACIONES",
+        "BLOQUEADO",
+        "JUBILADO"
+    ));
+    
+    // Iterar sobre la lista de usuarios
+    for (Usuarios usuario : listaUsuarios) {
+        // Verificar si el estado del usuario está en la lista de estados válidos
+        if (estadosValidos.contains(usuario.getEstado())) {
+            Object[] fila = new Object[]{
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            };
+            modeloUsuarios.addRow(fila);
+        }
     }
 }
-
+  
+    
 
 private void abrirVentanaModificar(Usuarios usuario) {
     
@@ -361,35 +382,13 @@ private void abrirVentanaMostrar(Usuarios usuario) {
         ventanaMostrar.setVisible(true);
     }
     
-public void actualizarTabla() {
-        gestionUsuarios.cargarUsuariosDesdeExcel();
-        listaUsuarios = gestionUsuarios.getUsuarios();
-        modeloUsuarios.setRowCount(0); // Limpiar la tabla
-        for (Usuarios usuario : listaUsuarios) {
-            modeloUsuarios.addRow(new Object[]{
-            usuario.getNombre(),
-            usuario.getApellido(),
-            usuario.getNumeroDPI(),
-            usuario.getCargo(),
-            usuario.getNumeroTelefono(),
-            usuario.getEstado(),
-            usuario.getCorreoElectronico(),
-            usuario.getGenero(),
-            usuario.getFechaNacimiento(),
-            usuario.getNombreUsuario(),
-            usuario.getContrasenaUsuario(),
-            });
-        }
-    }
-    
+ 
 
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jTextField19 = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -402,15 +401,12 @@ public void actualizarTabla() {
         refrescarUsuario = new javax.swing.JButton();
         entradasUsuario = new javax.swing.JButton();
         buscarUsuario = new javax.swing.JButton();
-        jPanel16 = new javax.swing.JPanel();
-        txtMenu1 = new javax.swing.JComboBox<>();
         eliminarUsuario = new javax.swing.JButton();
+        ActivosPilotos = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        txtMenu2 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(32, 67, 99));
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -511,32 +507,6 @@ public void actualizarTabla() {
             }
         });
 
-        jPanel16.setBackground(new java.awt.Color(32, 67, 99));
-
-        txtMenu1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtMenu1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtMenu1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-        jPanel16.setLayout(jPanel16Layout);
-        jPanel16Layout.setHorizontalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-        jPanel16Layout.setVerticalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(724, Short.MAX_VALUE))
-        );
-
         eliminarUsuario.setBackground(new java.awt.Color(85, 111, 169));
         eliminarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         eliminarUsuario.setForeground(new java.awt.Color(255, 255, 255));
@@ -548,101 +518,157 @@ public void actualizarTabla() {
             }
         });
 
+        ActivosPilotos.setBackground(new java.awt.Color(0, 153, 153));
+        ActivosPilotos.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        ActivosPilotos.setForeground(new java.awt.Color(255, 255, 255));
+        ActivosPilotos.setText("REGRESAR A USUARIOS ACTIVOS");
+        ActivosPilotos.setBorder(null);
+        ActivosPilotos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ActivosPilotosActionPerformed(evt);
+            }
+        });
+
+        jPanel8.setBackground(new java.awt.Color(32, 67, 99));
+        jPanel8.setPreferredSize(new java.awt.Dimension(194, 34));
+
+        txtMenu2.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMenu2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addComponent(txtMenu2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtMenu2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(122, 122, 122)
-                        .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(agregarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(entradasUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(9, Short.MAX_VALUE))
+                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(448, 448, 448)
+                        .addComponent(ActivosPilotos, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(agregarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(entradasUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(editarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ActivosPilotos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(82, 82, 82)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(agregarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(entradasUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(mostrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
-            .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(entradasUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ActivosPilotosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivosPilotosActionPerformed
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
+
+        USUARIOSINACTIVOS abrir = new USUARIOSINACTIVOS(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_ActivosPilotosActionPerformed
+
+    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
+int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            // Obtener el DPI del usuario seleccionado
+            long dpiSeleccionado = Long.parseLong(tblRegistroUsuarios.getValueAt(filaSeleccionada, 2).toString());
+            
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas borrar este usuario con DPI: " + dpiSeleccionado + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+                
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    // Eliminar el usuario
+                    gestionUsuarios.eliminarUsuario(dpiSeleccionado);
+                    
+                    // Actualizar la tabla inmediatamente después de la eliminación
+                    actualizarTabla();
+                    
+                    JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                        "Error al eliminar el usuario: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.");
+        }
+    }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
         if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
@@ -754,30 +780,9 @@ public void actualizarTabla() {
 
     }//GEN-LAST:event_jTextField19ActionPerformed
 
-    private void txtMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenu1ActionPerformed
+    private void txtMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenu2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtMenu1ActionPerformed
-
-    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
-        int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            String nombreSeleccionado = (String) tblRegistroUsuarios.getValueAt(filaSeleccionada, 0);
-            String apellidoSeleccionado = (String) tblRegistroUsuarios.getValueAt(filaSeleccionada, 1);
-
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar este usuario: " + nombreSeleccionado + " " + apellidoSeleccionado + "?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                gestionUsuarios.eliminarUsuario(nombreSeleccionado, apellidoSeleccionado);
-                actualizarTabla();
-                JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.");
-        }
-    }//GEN-LAST:event_eliminarUsuarioActionPerformed
+    }//GEN-LAST:event_txtMenu2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -823,22 +828,21 @@ public void actualizarTabla() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ActivosPilotos;
     private javax.swing.JButton agregarUsuario;
     private javax.swing.JButton buscarUsuario;
     private javax.swing.JButton editarUsuario;
     private javax.swing.JButton eliminarUsuario;
     private javax.swing.JButton entradasUsuario;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
     private javax.swing.JButton mostrarUsuario;
     private javax.swing.JButton refrescarUsuario;
     private javax.swing.JTable tblRegistroUsuarios;
-    private javax.swing.JComboBox<String> txtMenu1;
+    private javax.swing.JComboBox<String> txtMenu2;
     private javax.swing.JTextField txtNombreUsuarioBuscar;
     // End of variables declaration//GEN-END:variables
 }
