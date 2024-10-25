@@ -24,6 +24,7 @@ import GestionDeUsuarios.Usuarios;
 import Login.GESTIONLOGIN;
 import Login.LOGINPINEED;
 import Login.Login;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -32,30 +33,36 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
 import java.awt.event.ActionListener;  // Para manejar eventos de acción
 import java.awt.event.ActionEvent;  // Para representar eventos de acción
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 
 public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
     public GESTIONUSUARIOS gestionUsuarios;
     public Vector<Usuarios> listaUsuarios = new Vector<>();
+    // Nueva lista para mantener los usuarios filtrados
+    private Vector<Usuarios> listaUsuariosFiltrados = new Vector<>();
     private String currentUser;
     private String userRole;
     private LOGINPINEED loginFrame;
-    
+
     DefaultTableModel modeloUsuarios = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
-      
+
     public INICIOGESTIONUSUARIOS(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         setResizable(false);
@@ -68,13 +75,23 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
         if (gestionUsuarios.getUsuarios() != null) {
             listaUsuarios = gestionUsuarios.getUsuarios();
         }
-        
+
+        setupTextField(txtNombreUsuarioBuscar, "Ingresa Nombre del Usuario a buscar");
+
         tblRegistroUsuarios.setModel(modeloUsuarios);
         tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRegistroUsuarios.getTableHeader().setReorderingAllowed(false);
         tblRegistroUsuarios.getTableHeader().setResizingAllowed(false);
         tblRegistroUsuarios.setRowSelectionAllowed(true);
         tblRegistroUsuarios.setColumnSelectionAllowed(false);
+        
+        // Ajustar anchos de columnas
+        tblRegistroUsuarios.getColumnModel().getColumn(0).setPreferredWidth(150); // Ancho para columna "Nombre"
+        tblRegistroUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150); // Ancho para columna "Apellido"
+        tblRegistroUsuarios.getColumnModel().getColumn(2).setPreferredWidth(100); // Ancho para columna "DPI"
+        tblRegistroUsuarios.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para columna "Cargo"
+        tblRegistroUsuarios.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para columna "Teléfono"
+        tblRegistroUsuarios.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Estado"
         
         cargarUsuariosEnTabla();
         this.currentUser = username;
@@ -88,7 +105,78 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
             this.requestFocusInWindow();
         });
     }
+
+    // Cambiar el método de private a public
+    public void actualizarTabla() {
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        listaUsuarios = gestionUsuarios.getUsuarios();
+        cargarUsuariosEnTabla();
+    }
+
+    public void cargarUsuariosEnTabla() {
+        modeloUsuarios.setRowCount(0);
+        listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
+        
+        Set<String> estadosValidos = new HashSet<>(Arrays.asList(
+            "ACTIVO",
+            "ENFERMO",
+            "EN VACACIONES",
+            "BLOQUEADO",
+            "JUBILADO"
+        ));
+        
+        for (Usuarios usuario : listaUsuarios) {
+            if (estadosValidos.contains(usuario.getEstado())) {
+                Object[] fila = new Object[]{
+                    usuario.getNombre(),
+                    usuario.getApellido(),
+                    usuario.getNumeroDPI(),
+                    usuario.getCargo(),
+                    usuario.getNumeroTelefono(),
+                    usuario.getEstado()
+                };
+                modeloUsuarios.addRow(fila);
+                listaUsuariosFiltrados.add(usuario); // Añadimos el usuario a la lista filtrada
+            }
+        }
+    }
+
     
+
+
+
+        // Método para configurar el campo de texto con placeholder
+    private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(java.awt.Color.GRAY);
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                // Limpia el placeholder al enfocar
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(java.awt.Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // Restablece el placeholder si el campo está vacío
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(java.awt.Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
+    }
+
+    // Método para limpiar los campos incluyendo el campo de búsqueda
+    public void limpiarCampos() {
+        // ... otros campos que ya limpias ...
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setForeground(java.awt.Color.GRAY);
+    }
     
     
 private void setupComboBox() {
@@ -326,45 +414,7 @@ private void cerrarSesionYRegresarLogin() {
 
     
     
-       
-     // Cambiar el método de private a public
-    public void actualizarTabla() {
-        gestionUsuarios.cargarUsuariosDesdeExcel();
-        listaUsuarios = gestionUsuarios.getUsuarios();
-        cargarUsuariosEnTabla();
-    }
-
-   public void cargarUsuariosEnTabla() {
-    // Limpiar la tabla antes de cargar los datos
-    modeloUsuarios.setRowCount(0);
-    
-    // Definir los estados válidos que queremos mostrar
-    Set<String> estadosValidos = new HashSet<>(Arrays.asList(
-        "ACTIVO",
-        "ENFERMO",
-        "EN VACACIONES",
-        "BLOQUEADO",
-        "JUBILADO"
-    ));
-    
-    // Iterar sobre la lista de usuarios
-    for (Usuarios usuario : listaUsuarios) {
-        // Verificar si el estado del usuario está en la lista de estados válidos
-        if (estadosValidos.contains(usuario.getEstado())) {
-            Object[] fila = new Object[]{
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getNumeroDPI(),
-                usuario.getCargo(),
-                usuario.getNumeroTelefono(),
-                usuario.getEstado()
-            };
-            modeloUsuarios.addRow(fila);
-        }
-    }
-}
-  
-    
+ 
 
 private void abrirVentanaModificar(Usuarios usuario) {
     
@@ -671,70 +721,59 @@ int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
     }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-        if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
+if (txtNombreUsuarioBuscar.getText().trim().isEmpty() || 
+            txtNombreUsuarioBuscar.getText().equals("Ingresa Nombre del Usuario a buscar")) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
             return;
         }
 
-        String nombreBuscado = txtNombreUsuarioBuscar.getText().trim();
+        String nombreBuscado = normalizarTexto(txtNombreUsuarioBuscar.getText().trim());
         modeloUsuarios.setRowCount(0);
+        listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
         boolean hayCoincidencias = false;
 
-        for (Usuarios usuarios : listaUsuarios) {
-            boolean coincide = true;
+        for (Usuarios usuario : listaUsuarios) {
+            String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
 
-            if (!nombreBuscado.isEmpty() && !usuarios.getNombre().equalsIgnoreCase(nombreBuscado)) {
-                coincide = false;
-            }
-
-            if (coincide) {
-                modeloUsuarios.addRow(new Object[]{
-                    usuarios.getNombre(),
-                    usuarios.getApellido(),
-                    usuarios.getNumeroDPI(),
-                    usuarios.getCargo(),
-                    usuarios.getNumeroTelefono(),
-                    usuarios.getEstado(),
-                    usuarios.getCorreoElectronico(),
-                    usuarios.getGenero(),
-                    usuarios.getFechaNacimiento(),
-                    usuarios.getNombreUsuario(),
-                    usuarios.getContrasenaUsuario(),
-                });
-                hayCoincidencias = true;
-            }
-        }
-
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-            for (Usuarios usuario : listaUsuarios) {
+            if (nombreUsuarioNormalizado.contains(nombreBuscado)) {
                 modeloUsuarios.addRow(new Object[]{
                     usuario.getNombre(),
                     usuario.getApellido(),
                     usuario.getNumeroDPI(),
                     usuario.getCargo(),
                     usuario.getNumeroTelefono(),
-                    usuario.getEstado(),
-                    usuario.getCorreoElectronico(),
-                    usuario.getGenero(),
-                    usuario.getFechaNacimiento(),
-                    usuario.getNombreUsuario(),
-                    usuario.getContrasenaUsuario(),
+                    usuario.getEstado()
                 });
-            }
-        } else {
-            tblRegistroUsuarios.setVisible(true);
-            if (tblRegistroUsuarios.getRowCount() > 0) {
-                tblRegistroUsuarios.setRowSelectionInterval(0, 0);
+                listaUsuariosFiltrados.add(usuario); // Añadimos el usuario encontrado a la lista filtrada
+                hayCoincidencias = true;
             }
         }
 
-        txtNombreUsuarioBuscar.setText("");
+        if (!hayCoincidencias) {
+            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+            cargarUsuariosEnTabla(); // Volver a cargar todos los usuarios
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+            txtNombreUsuarioBuscar.setForeground(Color.GRAY);
+        });
     }//GEN-LAST:event_buscarUsuarioActionPerformed
 
+    // Método para normalizar texto eliminando tildes y convirtiendo a minúsculas
+private String normalizarTexto(String texto) {
+    String textoNormalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);
+    return textoNormalizado.replaceAll("\\p{InCombiningDiacriticalMarks}+", "").toLowerCase();
+}
+
     private void entradasUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entradasUsuarioActionPerformed
-        INGRESOGESTIONUSUARIOS abrir = new  INGRESOGESTIONUSUARIOS();
+                String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INGRESOGESTIONUSUARIOS abrir = new  INGRESOGESTIONUSUARIOS(username, role, loginFrame);
         abrir.setVisible(true);
+
     }//GEN-LAST:event_entradasUsuarioActionPerformed
 
     private void refrescarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarUsuarioActionPerformed
@@ -750,7 +789,8 @@ int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
     private void mostrarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarUsuarioActionPerformed
         int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            Usuarios usuarioSeleccionado = listaUsuarios.get(filaSeleccionada);
+            // Usamos la lista filtrada en lugar de la lista original
+            Usuarios usuarioSeleccionado = listaUsuariosFiltrados.get(filaSeleccionada);
             abrirVentanaMostrar(usuarioSeleccionado);
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para mostrar su información.");
@@ -758,13 +798,19 @@ int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
     }//GEN-LAST:event_mostrarUsuarioActionPerformed
 
     private void editarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarUsuarioActionPerformed
-        int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            Usuarios usuarioSeleccionado = listaUsuarios.get(filaSeleccionada);
+    int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+    if (filaSeleccionada >= 0) {
+        // Obtener el usuario directamente de la lista filtrada
+        Usuarios usuarioSeleccionado = listaUsuariosFiltrados.get(filaSeleccionada);
+        
+        if (usuarioSeleccionado != null) {
             abrirVentanaModificar(usuarioSeleccionado);
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario para modificar.");
+            JOptionPane.showMessageDialog(this, "No se encontró el usuario seleccionado.");
         }
+    } else {
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario para modificar.");
+    }
     }//GEN-LAST:event_editarUsuarioActionPerformed
 
     private void agregarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarUsuarioActionPerformed

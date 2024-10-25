@@ -51,10 +51,6 @@
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jTextField19" min="-2" pref="433" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                               <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
@@ -73,9 +69,14 @@
                               </Group>
                               <Component id="jPanel8" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Component id="jTextField19" min="-2" pref="433" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="buscarPiloto" min="-2" pref="279" max="-2" attributes="0"/>
                       </Group>
                   </Group>
+                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -84,7 +85,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTextField19" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jTextField19" min="-2" max="-2" attributes="0"/>
+                      <Component id="buscarPiloto" min="-2" pref="28" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
@@ -100,8 +104,7 @@
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="jPanel2" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="panelf1" max="32767" attributes="0"/>
@@ -110,8 +113,9 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="jPanel2" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
               </Group>
               <Component id="jPanel4" pref="755" max="32767" attributes="0"/>
           </Group>
@@ -240,9 +244,9 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="textoSalario" max="32767" attributes="0"/>
+                                              <Component id="txtSalarioSemanalAgregar" max="32767" attributes="0"/>
                                           </Group>
-                                          <Component id="textoNombre" min="-2" pref="220" max="-2" attributes="0"/>
+                                          <Component id="txtNombreDelTrabajadorAgregar" min="-2" pref="220" max="-2" attributes="0"/>
                                           <Component id="jLabel1" alignment="0" min="-2" pref="136" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -284,10 +288,10 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="textoNombre" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtNombreDelTrabajadorAgregar" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="textoSalario" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtSalarioSemanalAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -438,7 +442,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTextArea" name="areaDescripcionT">
+                <Component class="javax.swing.JTextArea" name="txtPeque&#xf1;aDescripcionAgregar">
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -457,7 +461,7 @@
                 <Property name="text" type="java.lang.String" value="Nombre Del Trabajador"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoNombre">
+            <Component class="javax.swing.JTextField" name="txtNombreDelTrabajadorAgregar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -480,7 +484,7 @@
                 <Property name="text" type="java.lang.String" value="Semanas de trabajo:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoSalario">
+            <Component class="javax.swing.JTextField" name="txtSalarioSemanalAgregar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -518,7 +522,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="textoNombreModificado" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtNombreDelTrabajadorModificar" alignment="0" max="32767" attributes="0"/>
                           <Component id="jScrollPane4" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel4" min="-2" pref="136" max="-2" attributes="0"/>
@@ -530,7 +534,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="textoSalarioModificado" min="-2" pref="147" max="-2" attributes="0"/>
+                                      <Component id="txtSalarioSemanalModificado" min="-2" pref="147" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="panelBoton2" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -546,13 +550,13 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="textoNombreModificado" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtNombreDelTrabajadorModificar" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane4" pref="118" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="textoSalarioModificado" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtSalarioSemanalModificado" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="panelBoton2" min="-2" max="-2" attributes="0"/>
@@ -614,7 +618,7 @@
                 <Property name="text" type="java.lang.String" value="Nombre Del Trabajador"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoNombreModificado">
+            <Component class="javax.swing.JTextField" name="txtNombreDelTrabajadorModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -628,7 +632,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTextArea" name="areaDescripcionModificada">
+                <Component class="javax.swing.JTextArea" name="txtPeque&#xf1;aDescripcionModificar">
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -647,7 +651,7 @@
                 <Property name="text" type="java.lang.String" value="Salario Semanal"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoSalarioModificado">
+            <Component class="javax.swing.JTextField" name="txtSalarioSemanalModificado">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -710,8 +714,8 @@
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="textoValorEntrada" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="textoRazonEntrada" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="txtValorDeLaEntrada" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="txtRazon" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
@@ -743,7 +747,7 @@
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="textoValorEntrada" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtValorDeLaEntrada" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -753,9 +757,9 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="textoRazonEntrada" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtRazon" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="75" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="22" max="32767" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane5" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -805,7 +809,7 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="19" max="32767" attributes="0"/>
                           <Component id="jPanel13" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -827,7 +831,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="19" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -915,7 +919,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTextArea" name="areaDescripcionNo">
+                    <Component class="javax.swing.JTextArea" name="txtDescripcionNuevaEntrada">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="columns" type="int" value="20"/>
@@ -1066,7 +1070,7 @@
                 <Property name="text" type="java.lang.String" value="Operaci&#xf3;n"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoValorEntrada">
+            <Component class="javax.swing.JTextField" name="txtValorDeLaEntrada">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -1097,7 +1101,7 @@
                 <Property name="text" type="java.lang.String" value="Raz&#xf3;n"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="textoRazonEntrada">
+            <Component class="javax.swing.JTextField" name="txtRazon">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -1298,9 +1302,8 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="jLabel20" min="-2" pref="115" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
+                      <Component id="jLabel20" min="-2" pref="192" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1322,11 +1325,31 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Eliminar Trabajador"/>
+                <Property name="text" type="java.lang.String" value="       ELIMINAR AL TRABAJADOR"/>
               </Properties>
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="buscarPiloto">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="99" green="99" red="0" type="rgb"/>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Nirmala UI" size="12" style="1"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="ACTIVAR TRABAJADORES ELIMINADOS"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="null"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buscarPilotoActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

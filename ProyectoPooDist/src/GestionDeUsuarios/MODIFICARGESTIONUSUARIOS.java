@@ -4,10 +4,22 @@ import Login.LOGINPINEED;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
@@ -36,7 +48,7 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
                 this.gestionUsuarios = ventanaPrincipal.gestionUsuarios;
                 this.listaUsuarios = gestionUsuarios.getUsuarios();
             }
-
+configurarCamposDeTextoConPlaceholdersUsuarios();
             this.usuarioActual = usuario;
             if (usuario != null) {
                 cargarDatosUsuario();
@@ -46,50 +58,142 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
     
     private void cargarDatosUsuario() {
         if (usuarioActual != null) {
+            // Cargar datos y asegurar que estén en negro
             txtNombreUsuarioModificarModificar.setText(usuarioActual.getNombre());
+            txtNombreUsuarioModificarModificar.setForeground(Color.BLACK);
+
             txtApellidoUsuarioModificarModificar.setText(usuarioActual.getApellido());
+            txtApellidoUsuarioModificarModificar.setForeground(Color.BLACK);
+
             txtNumeroDeDpiUsuarioModificarModificar.setText(String.valueOf(usuarioActual.getNumeroDPI()));
+            txtNumeroDeDpiUsuarioModificarModificar.setForeground(Color.BLACK);
+
             txtCorreoElectronicoUsuarioModificarModificar.setText(usuarioActual.getCorreoElectronico());
+            txtCorreoElectronicoUsuarioModificarModificar.setForeground(Color.BLACK);
+
             txtNumeroTelefonicoUsuarioModificarModificar.setText(String.valueOf(usuarioActual.getNumeroTelefono()));
+            txtNumeroTelefonicoUsuarioModificarModificar.setForeground(Color.BLACK);
+
+            txtNombreDeUsuarioUsuarioModificarModificar.setText(usuarioActual.getNombreUsuario());
+            txtNombreDeUsuarioUsuarioModificarModificar.setForeground(Color.BLACK);
+
+            txtContraseñaUsuarioModificarModificar.setText(usuarioActual.getContrasenaUsuario());
+            txtContraseñaUsuarioModificarModificar.setForeground(Color.BLACK);
+            txtContraseñaUsuarioModificarModificar.setEchoChar('•');
+
+            // Configurar ComboBoxes
             txtGeneroUsuarioModificarModificar.setSelectedItem(usuarioActual.getGenero());
             txtCargoUsuarioModificarModificar.setSelectedItem(usuarioActual.getCargo());
-            txtNombreDeUsuarioUsuarioModificarModificar.setText(usuarioActual.getNombreUsuario());
-            txtContraseñaUsuarioModificarModificar.setText(usuarioActual.getContrasenaUsuario());
             txtEstadoUsuarioModificarModificar.setSelectedItem(usuarioActual.getEstado());
-            
+
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 Date fechaNacimiento = sdf.parse(usuarioActual.getFechaNacimiento());
                 txtFechaDeNacimientoUsuarioModificarModificar.setDate(fechaNacimiento);
+                ((JTextField) txtFechaDeNacimientoUsuarioModificarModificar.getDateEditor().getUiComponent()).setForeground(Color.BLACK);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al cargar la fecha de nacimiento: " + e.getMessage());
             }
         }
     }
     
+ private void configurarCamposDeTextoConPlaceholdersUsuarios() {
+    setupTextField(txtNombreUsuarioModificarModificar, "Ingrese el nombre");
+    setupTextField(txtApellidoUsuarioModificarModificar, "Ingrese el apellido");
+    setupTextField(txtNumeroDeDpiUsuarioModificarModificar, "Ingrese el DPI");
+    setupTextField(txtCorreoElectronicoUsuarioModificarModificar, "Ingrese el correo electrónico");
+    setupTextField(txtNumeroTelefonicoUsuarioModificarModificar, "Ingrese el teléfono");
+    setupTextField(txtNombreDeUsuarioUsuarioModificarModificar, "Ingrese el nombre de usuario");
+    setupPasswordField(txtContraseñaUsuarioModificarModificar, "Ingrese la contraseña");
+    setupDateChooser(txtFechaDeNacimientoUsuarioModificarModificar, "dd/MM/yyyy");
+}
+
+// Método para configurar el campo de texto con placeholder
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(java.awt.Color.GRAY);
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(java.awt.Color.BLACK);
+            }
+        }
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(java.awt.Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el campo de contraseña con placeholder
+private void setupPasswordField(JPasswordField passwordField, String placeholder) {
+    passwordField.setText(placeholder);
+    passwordField.setForeground(java.awt.Color.GRAY);
+    passwordField.setEchoChar((char) 0); // Para mostrar el placeholder
+
+    passwordField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
+                passwordField.setText("");
+                passwordField.setForeground(java.awt.Color.BLACK);
+                passwordField.setEchoChar('•'); // Mostrar puntos cuando se escribe
+            }
+        }
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (passwordField.getPassword().length == 0) {
+                passwordField.setForeground(java.awt.Color.GRAY);
+                passwordField.setText(placeholder);
+                passwordField.setEchoChar((char) 0); // Mostrar el placeholder
+            }
+        }
+    });
+}
+
+// Método para configurar el DateChooser con placeholder
+private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    editor.setText(placeholder);
+    editor.setForeground(java.awt.Color.GRAY);
     
-    private void limpiarCamposUsuario() {
-    txtNombreUsuarioModificarModificar.setText("");
-    txtApellidoUsuarioModificarModificar.setText("");
-    txtNumeroDeDpiUsuarioModificarModificar.setText("");
-    txtCorreoElectronicoUsuarioModificarModificar.setText("");
-    txtNumeroTelefonicoUsuarioModificarModificar.setText("");
-    txtGeneroUsuarioModificarModificar.setSelectedIndex(0);
-    txtFechaDeNacimientoUsuarioModificarModificar.setDate(null);
-    txtEstadoUsuarioModificarModificar.setSelectedIndex(0);
-    txtContraseñaUsuarioModificarModificar.setText("");
-    txtEstadoUsuarioModificarModificar.setSelectedIndex(0);
-} 
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (dateChooser.getDate() == null) {
+                editor.setText("");
+                editor.setForeground(java.awt.Color.BLACK);
+            }
+        }
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder);
+                editor.setForeground(java.awt.Color.GRAY);
+            }
+        }
+    });
+}
     
-            public void addWindowListener() {
+    
+    /**
+     * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
+     */
+    public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
+                cerrarSesionYSalir(); // Cierra sesión y sale
             }
         });
     }
-     
+    
+
 
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {

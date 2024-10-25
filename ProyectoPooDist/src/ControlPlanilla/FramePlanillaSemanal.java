@@ -18,6 +18,7 @@ import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
 import Login.Login;
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
@@ -28,6 +29,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.JButton;
 
 public class FramePlanillaSemanal extends javax.swing.JFrame {
@@ -95,6 +98,7 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         
         //llamamos a un bucle infinito
         iniciarBucleEnHilo();
+        configurarCamposTrabajador();
           this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
@@ -109,6 +113,101 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     
     
  
+    // Método para configurar el placeholder en campos de texto
+private void setupTextFieldTrabajador(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el placeholder en campos de texto de área
+private void setupTextAreaTrabajador(JTextArea textArea, String placeholder) {
+    textArea.setText(placeholder);
+    textArea.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textArea.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textArea.getText().equals(placeholder)) {
+                textArea.setText("");
+                textArea.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textArea.getText().isEmpty()) {
+                textArea.setForeground(Color.GRAY);
+                textArea.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar todos los campos de trabajador con placeholders
+private void configurarCamposTrabajador() {
+    setupTextFieldTrabajador(txtNombreDelTrabajadorAgregar, "Ingrese nombre del trabajador");
+    setupTextFieldTrabajador(txtNombreDelTrabajadorModificar, "Ingrese ombre del trabajador");
+    setupTextAreaTrabajador(txtPequeñaDescripcionAgregar, "Ingrese una pequeña descripción");
+    setupTextAreaTrabajador(txtPequeñaDescripcionModificar, "Ingrese una pequeña descripción");
+    setupTextFieldTrabajador(txtRazon, "Ingrese la razón");
+    setupTextFieldTrabajador(txtSalarioSemanalAgregar, "Ingrese salario semanal");
+    setupTextFieldTrabajador(txtSalarioSemanalModificado, "Ingrese salario semanal");
+    setupTextFieldTrabajador(txtValorDeLaEntrada, "Ingrese el valor de la entrada");
+    setupTextAreaTrabajador(txtDescripcionNuevaEntrada, "Ingrese la descripción nueva entrada"); // Placeholder para la descripción nueva entrada
+}
+
+// Método para limpiar y restablecer los placeholders de los campos de trabajador
+public void limpiarCamposTrabajador() {
+    txtNombreDelTrabajadorAgregar.setText("Ingrese nombre del trabajador");
+    txtNombreDelTrabajadorAgregar.setForeground(Color.GRAY);
+
+    txtNombreDelTrabajadorModificar.setText("Ingrese nombre del trabajador");
+    txtNombreDelTrabajadorModificar.setForeground(Color.GRAY);
+
+    txtPequeñaDescripcionAgregar.setText("Ingrese una pequeña descripción");
+    txtPequeñaDescripcionAgregar.setForeground(Color.GRAY);
+
+    txtPequeñaDescripcionModificar.setText("Ingrese una pequeña descripción");
+    txtPequeñaDescripcionModificar.setForeground(Color.GRAY);
+
+    txtRazon.setText("Ingrese la razón");
+    txtRazon.setForeground(Color.GRAY);
+
+    txtSalarioSemanalAgregar.setText("Ingrese salario semanal");
+    txtSalarioSemanalAgregar.setForeground(Color.GRAY);
+
+    txtSalarioSemanalModificado.setText("Ingrese salario semanal");
+    txtSalarioSemanalModificado.setForeground(Color.GRAY);
+
+    txtValorDeLaEntrada.setText("Ingrese el valor de la entrada");
+    txtValorDeLaEntrada.setForeground(Color.GRAY);
+
+    txtDescripcionNuevaEntrada.setText("Ingrese la descripción nueva entrada"); // Limpiar el campo de descripción
+    txtDescripcionNuevaEntrada.setForeground(Color.GRAY);
+}
+
 private void setupComboBox() {
     txtMenu.removeAllItems();
     txtMenu.addItem("Seleccione una opción");
@@ -389,23 +488,23 @@ private void cerrarSesionYRegresarLogin() {
         jPanel11 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        areaDescripcionT = new javax.swing.JTextArea();
+        txtPequeñaDescripcionAgregar = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
-        textoNombre = new javax.swing.JTextField();
+        txtNombreDelTrabajadorAgregar = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        textoSalario = new javax.swing.JTextField();
+        txtSalarioSemanalAgregar = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         labelSemanas = new javax.swing.JLabel();
         panelf2 = new javax.swing.JPanel();
         panelBoton2 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        textoNombreModificado = new javax.swing.JTextField();
+        txtNombreDelTrabajadorModificar = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
-        areaDescripcionModificada = new javax.swing.JTextArea();
+        txtPequeñaDescripcionModificar = new javax.swing.JTextArea();
         jLabel13 = new javax.swing.JLabel();
-        textoSalarioModificado = new javax.swing.JTextField();
+        txtSalarioSemanalModificado = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
@@ -413,7 +512,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel15 = new javax.swing.JPanel();
         labelNombre = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        areaDescripcionNo = new javax.swing.JTextArea();
+        txtDescripcionNuevaEntrada = new javax.swing.JTextArea();
         panelBotonModificar = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -427,10 +526,10 @@ private void cerrarSesionYRegresarLogin() {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        textoValorEntrada = new javax.swing.JTextField();
+        txtValorDeLaEntrada = new javax.swing.JTextField();
         comboOperacionEntrada = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
-        textoRazonEntrada = new javax.swing.JTextField();
+        txtRazon = new javax.swing.JTextField();
         PanelBoton3 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jTextField19 = new javax.swing.JTextField();
@@ -441,6 +540,7 @@ private void cerrarSesionYRegresarLogin() {
         botonguardarDatos = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
+        buscarPiloto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -591,15 +691,15 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap())
         );
 
-        areaDescripcionT.setColumns(20);
-        areaDescripcionT.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        areaDescripcionT.setRows(5);
-        jScrollPane2.setViewportView(areaDescripcionT);
+        txtPequeñaDescripcionAgregar.setColumns(20);
+        txtPequeñaDescripcionAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPequeñaDescripcionAgregar.setRows(5);
+        jScrollPane2.setViewportView(txtPequeñaDescripcionAgregar);
 
         jLabel1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel1.setText("Nombre Del Trabajador");
 
-        textoNombre.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelTrabajadorAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel2.setText("Pequeña Descripción");
@@ -607,7 +707,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel14.setText("Semanas de trabajo:");
 
-        textoSalario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtSalarioSemanalAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel15.setText("Salario Semanal");
@@ -631,8 +731,8 @@ private void cerrarSesionYRegresarLogin() {
                                     .addGroup(panelf1Layout.createSequentialGroup()
                                         .addComponent(jLabel15)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textoSalario))
-                                    .addComponent(textoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtSalarioSemanalAgregar))
+                                    .addComponent(txtNombreDelTrabajadorAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())
@@ -662,10 +762,10 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombreDelTrabajadorAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(11, 11, 11)
                         .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(textoSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSalarioSemanalAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel15)))
                     .addGroup(panelf1Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
@@ -716,17 +816,17 @@ private void cerrarSesionYRegresarLogin() {
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("Nombre Del Trabajador");
 
-        textoNombreModificado.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelTrabajadorModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        areaDescripcionModificada.setColumns(20);
-        areaDescripcionModificada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        areaDescripcionModificada.setRows(5);
-        jScrollPane4.setViewportView(areaDescripcionModificada);
+        txtPequeñaDescripcionModificar.setColumns(20);
+        txtPequeñaDescripcionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPequeñaDescripcionModificar.setRows(5);
+        jScrollPane4.setViewportView(txtPequeñaDescripcionModificar);
 
         jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel13.setText("Salario Semanal");
 
-        textoSalarioModificado.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtSalarioSemanalModificado.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         javax.swing.GroupLayout panelf2Layout = new javax.swing.GroupLayout(panelf2);
         panelf2.setLayout(panelf2Layout);
@@ -735,7 +835,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(textoNombreModificado, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNombreDelTrabajadorModificar, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelf2Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -746,7 +846,7 @@ private void cerrarSesionYRegresarLogin() {
                             .addGroup(panelf2Layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(textoSalarioModificado, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtSalarioSemanalModificado, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(panelBoton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -756,13 +856,13 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textoNombreModificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtNombreDelTrabajadorModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(textoSalarioModificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSalarioSemanalModificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelBoton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -822,11 +922,11 @@ private void cerrarSesionYRegresarLogin() {
         labelNombre.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         labelNombre.setText("Nombre");
 
-        areaDescripcionNo.setEditable(false);
-        areaDescripcionNo.setColumns(20);
-        areaDescripcionNo.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        areaDescripcionNo.setRows(5);
-        jScrollPane3.setViewportView(areaDescripcionNo);
+        txtDescripcionNuevaEntrada.setEditable(false);
+        txtDescripcionNuevaEntrada.setColumns(20);
+        txtDescripcionNuevaEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtDescripcionNuevaEntrada.setRows(5);
+        jScrollPane3.setViewportView(txtDescripcionNuevaEntrada);
 
         panelBotonModificar.setBackground(new java.awt.Color(85, 111, 169));
         panelBotonModificar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -883,7 +983,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(19, Short.MAX_VALUE)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
@@ -900,7 +1000,7 @@ private void cerrarSesionYRegresarLogin() {
                             .addComponent(jLabel16)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(labelSemanaInfo))))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -938,7 +1038,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel11.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel11.setText("Operación");
 
-        textoValorEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtValorDeLaEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         comboOperacionEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         comboOperacionEntrada.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "+", "-" }));
@@ -946,7 +1046,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel12.setText("Razón");
 
-        textoRazonEntrada.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtRazon.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         PanelBoton3.setBackground(new java.awt.Color(85, 111, 169));
         PanelBoton3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1015,8 +1115,8 @@ private void cerrarSesionYRegresarLogin() {
                                 .addGap(72, 72, 72))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(textoValorEntrada, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(textoRazonEntrada, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(txtValorDeLaEntrada, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtRazon, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addGap(30, 30, 30))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1039,7 +1139,7 @@ private void cerrarSesionYRegresarLogin() {
                         .addGap(3, 3, 3)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(textoValorEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtValorDeLaEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
@@ -1047,8 +1147,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(textoRazonEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 75, Short.MAX_VALUE))
+                            .addComponent(txtRazon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 22, Short.MAX_VALUE))
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1149,21 +1249,31 @@ private void cerrarSesionYRegresarLogin() {
         jLabel20.setBackground(new java.awt.Color(255, 255, 255));
         jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setText("Eliminar Trabajador");
+        jLabel20.setText("       ELIMINAR AL TRABAJADOR");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 6, Short.MAX_VALUE)
+                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
         );
+
+        buscarPiloto.setBackground(new java.awt.Color(0, 153, 153));
+        buscarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        buscarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        buscarPiloto.setText("ACTIVAR TRABAJADORES ELIMINADOS");
+        buscarPiloto.setBorder(null);
+        buscarPiloto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarPilotoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1173,9 +1283,6 @@ private void cerrarSesionYRegresarLogin() {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1189,15 +1296,21 @@ private void cerrarSesionYRegresarLogin() {
                                 .addComponent(panelf1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(panelf2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(24, 24, 24)))
+                            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(24, 24, 24)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -1209,15 +1322,15 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(panelf1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelf2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(31, 31, 31))
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(84, 84, 84))
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
         );
 
@@ -1255,10 +1368,10 @@ private void cerrarSesionYRegresarLogin() {
         try{
             //primero obtenemos los datos ingresador por el usuario 
         
-        String newnombre = textoNombre.getText();
-        float newsalario = Float.parseFloat(textoSalario.getText());
+        String newnombre = txtNombreDelTrabajadorAgregar.getText();
+        float newsalario = Float.parseFloat(txtSalarioSemanalAgregar.getText());
         int newsemanas = 0;
-        String newDescripcion = areaDescripcionT.getText();
+        String newDescripcion = txtPequeñaDescripcionAgregar.getText();
         
         if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newsalario > 0) {
                    //crearemos el objeto trabajador provisional
@@ -1271,9 +1384,9 @@ private void cerrarSesionYRegresarLogin() {
         cargarInvetrioTabla();
         
         //ponemos todos los texto en blanco
-        textoNombre.setText("");
-        textoSalario.setText("");
-        areaDescripcionT.setText("");
+        txtNombreDelTrabajadorAgregar.setText("");
+        txtSalarioSemanalAgregar.setText("");
+        txtPequeñaDescripcionAgregar.setText("");
         
         //ocultamos los paneles para evitar problemas
         panelf1.setVisible(false);
@@ -1328,9 +1441,9 @@ private void cerrarSesionYRegresarLogin() {
             if (indiceActual > -1) {
                 
                 //primeor obtenemos los valores del trabajador 
-                String newnombre = textoNombreModificado.getText();
-                String newDescripcion = areaDescripcionModificada.getText();
-                float newSalario = Float.parseFloat(textoSalarioModificado.getText());
+                String newnombre = txtNombreDelTrabajadorModificar.getText();
+                String newDescripcion = txtPequeñaDescripcionModificar.getText();
+                float newSalario = Float.parseFloat(txtSalarioSemanalModificado.getText());
                 float salarioAntiguo = gTrabajadores.getSalariTotalEnNumeros(indiceActual);
                 
                 if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newSalario > 0 && newSalario > salarioAntiguo) {
@@ -1355,7 +1468,7 @@ private void cerrarSesionYRegresarLogin() {
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
                 labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(indiceActual).getDescripcion());
+                txtDescripcionNuevaEntrada.setText(tTrabajador.get(indiceActual).getDescripcion());
                 
                 labelSalirioSemanal.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
@@ -1363,9 +1476,9 @@ private void cerrarSesionYRegresarLogin() {
                 labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
                 //mostramos los mismos datos de modificado 
-                textoNombreModificado.setText(tTrabajador.get(indiceActual).getNombre());
-                areaDescripcionModificada.setText(tTrabajador.get(indiceActual).getDescripcion());
-                textoSalarioModificado.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
+                txtNombreDelTrabajadorModificar.setText(tTrabajador.get(indiceActual).getNombre());
+                txtPequeñaDescripcionModificar.setText(tTrabajador.get(indiceActual).getDescripcion());
+                txtSalarioSemanalModificado.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
                 //actualizamos la tabla
                 cargarInvetrioTabla();
@@ -1406,10 +1519,10 @@ private void cerrarSesionYRegresarLogin() {
             if (indiceActual > -1) {
                 
                                 //primero obtenemos los datos de la entrada
-                String newEntrada = textoRazonEntrada.getText();
+                String newEntrada = txtRazon.getText();
                 
                 if (!newEntrada.isEmpty()) {
-                float newValorEntrada = Float.parseFloat(textoValorEntrada.getText()); 
+                float newValorEntrada = Float.parseFloat(txtValorDeLaEntrada.getText()); 
                         
                 String operacion = comboOperacionEntrada.getSelectedItem().toString();
                 
@@ -1427,7 +1540,7 @@ private void cerrarSesionYRegresarLogin() {
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
                 labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(indiceActual).getDescripcion());
+                txtDescripcionNuevaEntrada.setText(tTrabajador.get(indiceActual).getDescripcion());
                 
                 labelSalirioSemanal.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
@@ -1507,7 +1620,7 @@ private void cerrarSesionYRegresarLogin() {
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
                 labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(indiceActual).getDescripcion());
+                txtDescripcionNuevaEntrada.setText(tTrabajador.get(indiceActual).getDescripcion());
                 
                 labelSalirioSemanal.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
@@ -1515,9 +1628,9 @@ private void cerrarSesionYRegresarLogin() {
                 labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
                 //mostramos los mismos datos de modificado 
-                textoNombreModificado.setText(tTrabajador.get(indiceActual).getNombre());
-                areaDescripcionModificada.setText(tTrabajador.get(indiceActual).getDescripcion());
-                textoSalarioModificado.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
+                txtNombreDelTrabajadorModificar.setText(tTrabajador.get(indiceActual).getNombre());
+                txtPequeñaDescripcionModificar.setText(tTrabajador.get(indiceActual).getDescripcion());
+                txtSalarioSemanalModificado.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
             //colocamos la tabala seleccionando el indice actual
             tablaTrabajadores.setRowSelectionInterval(indiceActualTabla, indiceActualTabla);
@@ -1547,7 +1660,7 @@ private void cerrarSesionYRegresarLogin() {
                 //mostramos los datos de la tabla 
                 labelNombre.setText("");
                 labelSemanaInfo.setText("");
-                areaDescripcionNo.setText("");
+                txtDescripcionNuevaEntrada.setText("");
                 
                 labelSalirioSemanal.setText("");
                 
@@ -1555,9 +1668,9 @@ private void cerrarSesionYRegresarLogin() {
                 labelSalioTotal.setText("");
                 
                 //mostramos los mismos datos de modificado 
-                textoNombreModificado.setText("");
-                areaDescripcionModificada.setText("");
-                textoSalarioModificado.setText("");
+                txtNombreDelTrabajadorModificar.setText("");
+                txtPequeñaDescripcionModificar.setText("");
+                txtSalarioSemanalModificado.setText("");
                 
                 //actualizamos la tabla
                 cargarInvetrioTabla();
@@ -1583,6 +1696,15 @@ private void cerrarSesionYRegresarLogin() {
             }
                 }
     }//GEN-LAST:event_jPanel6MouseClicked
+
+    private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
+
+        FrameHistorialTrabajadores abrir = new FrameHistorialTrabajadores(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+    }//GEN-LAST:event_buscarPilotoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1652,7 +1774,7 @@ private void cerrarSesionYRegresarLogin() {
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceSeleccionado).getNombre());
                 labelSemanaInfo.setText("" + tTrabajador.get(indiceSeleccionado).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(indiceSeleccionado).getDescripcion());
+                txtDescripcionNuevaEntrada.setText(tTrabajador.get(indiceSeleccionado).getDescripcion());
                 
                 labelSalirioSemanal.setText("" + tTrabajador.get(indiceSeleccionado).getSalarioSemanal());
                 
@@ -1660,9 +1782,9 @@ private void cerrarSesionYRegresarLogin() {
                 labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceSeleccionado));
                 
                 //mostramos los mismos datos de modificado 
-                textoNombreModificado.setText(tTrabajador.get(indiceSeleccionado).getNombre());
-                areaDescripcionModificada.setText(tTrabajador.get(indiceSeleccionado).getDescripcion());
-                textoSalarioModificado.setText("" + tTrabajador.get(indiceSeleccionado).getSalarioSemanal());
+                txtNombreDelTrabajadorModificar.setText(tTrabajador.get(indiceSeleccionado).getNombre());
+                txtPequeñaDescripcionModificar.setText(tTrabajador.get(indiceSeleccionado).getDescripcion());
+                txtSalarioSemanalModificado.setText("" + tTrabajador.get(indiceSeleccionado).getSalarioSemanal());
                 
                 //actualizamos la tabla de entradas
                 modificarTabladeEtradas(indicesVectores.get(tablaTrabajadores.getSelectedRow()));
@@ -1712,10 +1834,8 @@ private void cerrarSesionYRegresarLogin() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelBoton3;
-    private javax.swing.JTextArea areaDescripcionModificada;
-    private javax.swing.JTextArea areaDescripcionNo;
-    private javax.swing.JTextArea areaDescripcionT;
     private javax.swing.JPanel botonguardarDatos;
+    private javax.swing.JButton buscarPiloto;
     private javax.swing.JComboBox<String> comboOperacionEntrada;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1769,12 +1889,15 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JPanel panelf2;
     private javax.swing.JTable tablaEtnradas;
     private javax.swing.JTable tablaTrabajadores;
-    private javax.swing.JTextField textoNombre;
-    private javax.swing.JTextField textoNombreModificado;
-    private javax.swing.JTextField textoRazonEntrada;
-    private javax.swing.JTextField textoSalario;
-    private javax.swing.JTextField textoSalarioModificado;
-    private javax.swing.JTextField textoValorEntrada;
+    private javax.swing.JTextArea txtDescripcionNuevaEntrada;
     private javax.swing.JComboBox<String> txtMenu;
+    private javax.swing.JTextField txtNombreDelTrabajadorAgregar;
+    private javax.swing.JTextField txtNombreDelTrabajadorModificar;
+    private javax.swing.JTextArea txtPequeñaDescripcionAgregar;
+    private javax.swing.JTextArea txtPequeñaDescripcionModificar;
+    private javax.swing.JTextField txtRazon;
+    private javax.swing.JTextField txtSalarioSemanalAgregar;
+    private javax.swing.JTextField txtSalarioSemanalModificado;
+    private javax.swing.JTextField txtValorDeLaEntrada;
     // End of variables declaration//GEN-END:variables
 }

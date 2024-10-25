@@ -6,10 +6,15 @@ import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
@@ -33,53 +38,63 @@ public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
      * @param role Rol del usuario actual
      * @param loginFrame Objeto de la clase LOGINPINEED
      */
-    public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
-        initComponents(); // Inicialización de componentes de la interfaz gráfica
-        setResizable(false); // Desactivar el cambio de tamaño
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); // Cerrar solo esta ventana
 
-        this.currentUser = username; // Asignar el nombre del usuario
-        this.userRole = role; // Asignar el rol del usuario
-        this.loginFrame = loginFrame; // Asignar el objeto de inicio de sesión
+public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
+    initComponents();
+    setResizable(false);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        if (ventanaPrincipal != null) {
-            this.ventanaPrincipal = ventanaPrincipal; // Asignar la ventana principal
-            this.gestionCamiones = ventanaPrincipal.gestionCamiones; // Asignar el objeto de gestión de camiones
-            this.listaCamiones = gestionCamiones.getCamiones(); // Obtener la lista de camiones
-        }
+    this.currentUser = username;
+    this.userRole = role;
+    this.loginFrame = loginFrame;
 
-        if (camion != null) {
-            this.camionActual = camion; // Asignar el camión actual
-            cargarDatosCamion(); // Cargar los datos del camión en los campos de entrada
-        }
+    if (ventanaPrincipal != null) {
+        this.ventanaPrincipal = ventanaPrincipal;
+        this.gestionCamiones = ventanaPrincipal.gestionCamiones;
+        this.listaCamiones = gestionCamiones.getCamiones();
     }
 
-/**
- * Método para cargar los datos del camión en los campos de entrada.
- */
+    // Primero configuramos los placeholders y listeners
+    configurarCamposDeTextoConPlaceholdersCamiones();
+
+    if (camion != null) {
+        this.camionActual = camion;
+        cargarDatosCamion();
+    }
+}
+
 private void cargarDatosCamion() {
     if (camionActual != null) {
-        txtPlacaCamionesModificar.setText(camionActual.getPlacas());
-        txtModeloCamionModificar.setText(camionActual.getModelo());
-        txtMarcaCamionModificar.setText(camionActual.getMarca());
-        txtEstadoCamionModificar.setSelectedItem(camionActual.getEstado());
-        txtTipoCombustibleCamionModificar.setSelectedItem(camionActual.getTipoCombustible());
-        txtKilometrajeCamionModificar.setText(String.valueOf(camionActual.getKilometraje()));
-        txtCapacidadDeCargaCamionModificar.setText(String.valueOf(camionActual.getCapacidadCarga()));
+        // Cargar datos y asegurar que estén en negro
+        txtPlacasCamionesModificar.setText(camionActual.getPlacas());
+        txtPlacasCamionesModificar.setForeground(Color.BLACK);
+
+        txtModeloCamionesModificar.setText(camionActual.getModelo());
+        txtModeloCamionesModificar.setForeground(Color.BLACK);
+
+        txtMarcaCamionesModificar.setText(camionActual.getMarca());
+        txtMarcaCamionesModificar.setForeground(Color.BLACK);
+
+        txtEstadoCamionesModificar.setSelectedItem(camionActual.getEstado());
+        txtTipoCombustibleCamionesModificar.setSelectedItem(camionActual.getTipoCombustible());
+
+        txtKilometrajeCamionesModificar.setText(String.valueOf(camionActual.getKilometraje()));
+        txtKilometrajeCamionesModificar.setForeground(Color.BLACK);
+
+        txtCapacidadDeCargaCamionesModificar.setText(String.valueOf(camionActual.getCapacidadCarga()));
+        txtCapacidadDeCargaCamionesModificar.setForeground(Color.BLACK);
 
         try {
-            // Cambiar el formato de fecha para que acepte el formato dd/MM/yyyy
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            // Parsear la fecha del camión
             Date fechaFabricacion = sdf.parse(camionActual.getAñoFabricacion());
-            // Establecer la fecha en el JDateChooser
-            txtAñoDeFabricacionCamionModificar.setDate(fechaFabricacion);
+            txtAñoDeFabricacionCamionesModificar.setDate(fechaFabricacion);
+            ((JTextField) txtAñoDeFabricacionCamionesModificar.getDateEditor().getUiComponent()).setForeground(Color.BLACK);
         } catch (Exception e) {
             try {
-                // Si falla el primer intento, intentar parsear solo el año
                 SimpleDateFormat sdfAño = new SimpleDateFormat("yyyy");
                 Date fechaFabricacion = sdfAño.parse(camionActual.getAñoFabricacion());
-                txtAñoDeFabricacionCamionModificar.setDate(fechaFabricacion);
+                txtAñoDeFabricacionCamionesModificar.setDate(fechaFabricacion);
+                ((JTextField) txtAñoDeFabricacionCamionesModificar.getDateEditor().getUiComponent()).setForeground(Color.BLACK);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, 
                     "Error al cargar la fecha de fabricación: " + e.getMessage());
@@ -88,21 +103,97 @@ private void cargarDatosCamion() {
     }
 }
 
-    /**
-     * Método para limpiar los campos de entrada.
-     */
-    private void limpiarCamposCamion() {
-        txtPlacaCamionesModificar.setText("");
-        txtModeloCamionModificar.setText("");
-        txtMarcaCamionModificar.setText("");
-        txtEstadoCamionModificar.setSelectedIndex(0);
-        txtTipoCombustibleCamionModificar.setSelectedIndex(0);
-        txtKilometrajeCamionModificar.setText("");
-        txtCapacidadDeCargaCamionModificar.setText("");
-        txtAñoDeFabricacionCamionModificar.setDate(null);
-    }
+private void setupTextFieldCamiones(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY);
 
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (textField.getText().trim().isEmpty()) {
+                textField.setText(placeholder);
+                textField.setForeground(Color.GRAY);
+            }
+        }
+    });
+}
+
+private void configurarCamposDeTextoConPlaceholdersCamiones() {
+    setupTextFieldCamiones(txtPlacasCamionesModificar, "Ingrese las placas");
+    setupTextFieldCamiones(txtMarcaCamionesModificar, "Ingrese la marca");
+    setupTextFieldCamiones(txtModeloCamionesModificar, "Ingrese el modelo");
+    setupTextFieldCamiones(txtKilometrajeCamionesModificar, "Ingrese el kilometraje");
+    setupTextFieldCamiones(txtCapacidadDeCargaCamionesModificar, "Ingrese la capacidad de carga");
+    setupDateChooser(txtAñoDeFabricacionCamionesModificar, "dd/MM/yyyy");
+}
+
+// Método para configurar el placeholder en JDateChooser
+private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
+    dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
+    dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
+
+    // Obtener el editor de fecha como JTextField
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+
+    // Inicializar con el placeholder
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+
+    // Añadir un listener para manejar el enfoque
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (dateChooser.getDate() == null) {
+                editor.setText(""); // Limpia el texto al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+}
+
+
+    /**
+     * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
+     */
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir(); // Cierra sesión y sale
+            }
+        });
+    }
     
+
+
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+    
+    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -111,19 +202,19 @@ private void cargarDatosCamion() {
         jPanel5 = new javax.swing.JPanel();
         btnModificarCamionesSistema = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
-        txtTipoCombustibleCamionModificar = new javax.swing.JComboBox<>();
+        txtTipoCombustibleCamionesModificar = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        txtEstadoCamionModificar = new javax.swing.JComboBox<>();
-        txtAñoDeFabricacionCamionModificar = new com.toedter.calendar.JDateChooser();
-        txtCapacidadDeCargaCamionModificar = new javax.swing.JTextField();
+        txtEstadoCamionesModificar = new javax.swing.JComboBox<>();
+        txtAñoDeFabricacionCamionesModificar = new com.toedter.calendar.JDateChooser();
+        txtCapacidadDeCargaCamionesModificar = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        txtModeloCamionModificar = new javax.swing.JTextField();
+        txtModeloCamionesModificar = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
-        txtPlacaCamionesModificar = new javax.swing.JTextField();
-        txtKilometrajeCamionModificar = new javax.swing.JTextField();
-        txtMarcaCamionModificar = new javax.swing.JTextField();
+        txtPlacasCamionesModificar = new javax.swing.JTextField();
+        txtKilometrajeCamionesModificar = new javax.swing.JTextField();
+        txtMarcaCamionesModificar = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
 
@@ -145,8 +236,8 @@ private void cargarDatosCamion() {
         jLabel18.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel18.setText("ESTADO");
 
-        txtTipoCombustibleCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtTipoCombustibleCamionModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disel", "Gasolina", "Eléctrico", "Híbrido", "Hidrógeno", "Gas Licuado de Petróleo", " " }));
+        txtTipoCombustibleCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtTipoCombustibleCamionesModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disel", "Gasolina", "Eléctrico", "Híbrido", "Hidrógeno", "Gas Licuado de Petróleo", " " }));
 
         jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel3.setText("MARCA");
@@ -154,18 +245,18 @@ private void cargarDatosCamion() {
         jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel13.setText("KILOMETRAJE");
 
-        txtEstadoCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoCamionModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FUNCIONAL", "DESCOMPUESTO", "EN MANTENIMIENTO" }));
-        txtEstadoCamionModificar.addActionListener(new java.awt.event.ActionListener() {
+        txtEstadoCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtEstadoCamionesModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FUNCIONAL", "DESCOMPUESTO", "EN MANTENIMIENTO" }));
+        txtEstadoCamionesModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEstadoCamionModificarActionPerformed(evt);
+                txtEstadoCamionesModificarActionPerformed(evt);
             }
         });
 
-        txtAñoDeFabricacionCamionModificar.setDateFormatString("dd/MM/yyyy");
-        txtAñoDeFabricacionCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtAñoDeFabricacionCamionesModificar.setDateFormatString("dd/MM/yyyy");
+        txtAñoDeFabricacionCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        txtCapacidadDeCargaCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtCapacidadDeCargaCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel12.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel12.setText("CAPACIDAD DE CARGA");
@@ -173,16 +264,16 @@ private void cargarDatosCamion() {
         jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel15.setText("AÑO DE FABRICACION");
 
-        txtModeloCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtModeloCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel16.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel16.setText("PLACA");
 
-        txtPlacaCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPlacasCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        txtKilometrajeCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtKilometrajeCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        txtMarcaCamionModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMarcaCamionesModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel10.setText("MODELO");
@@ -205,34 +296,34 @@ private void cargarDatosCamion() {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtPlacaCamionesModificar))
+                        .addComponent(txtPlacasCamionesModificar))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtMarcaCamionModificar)
-                            .addComponent(txtModeloCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtMarcaCamionesModificar)
+                            .addComponent(txtModeloCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtAñoDeFabricacionCamionModificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtAñoDeFabricacionCamionesModificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCapacidadDeCargaCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTipoCombustibleCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtCapacidadDeCargaCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTipoCombustibleCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel5Layout.createSequentialGroup()
                             .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(txtEstadoCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtEstadoCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel5Layout.createSequentialGroup()
                             .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtKilometrajeCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtKilometrajeCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -241,35 +332,35 @@ private void cargarDatosCamion() {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtMarcaCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMarcaCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(txtModeloCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtModeloCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
-                    .addComponent(txtPlacaCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPlacasCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtAñoDeFabricacionCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtAñoDeFabricacionCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(txtCapacidadDeCargaCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCapacidadDeCargaCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(txtTipoCombustibleCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTipoCombustibleCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtKilometrajeCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtKilometrajeCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
-                    .addComponent(txtEstadoCamionModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEstadoCamionesModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(128, 128, 128)
                 .addComponent(btnModificarCamionesSistema, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                 .addContainerGap())
@@ -309,15 +400,15 @@ private void cargarDatosCamion() {
     private void btnModificarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCamionesSistemaActionPerformed
         try {
             // Obtener datos de los campos de entrada
-            String placas = txtPlacaCamionesModificar.getText().trim();
-            String modelo = txtModeloCamionModificar.getText().trim();
-            String marca = txtMarcaCamionModificar.getText().trim();
-            String estado = txtEstadoCamionModificar.getSelectedItem().toString().trim();
-            String tipoCombustible = txtTipoCombustibleCamionModificar.getSelectedItem().toString().trim();
-            double kilometraje = Double.parseDouble(txtKilometrajeCamionModificar.getText().trim());
-            double capacidadCarga = Double.parseDouble(txtCapacidadDeCargaCamionModificar.getText().trim());
+            String placas = txtPlacasCamionesModificar.getText().trim();
+            String modelo = txtModeloCamionesModificar.getText().trim();
+            String marca = txtMarcaCamionesModificar.getText().trim();
+            String estado = txtEstadoCamionesModificar.getSelectedItem().toString().trim();
+            String tipoCombustible = txtTipoCombustibleCamionesModificar.getSelectedItem().toString().trim();
+            double kilometraje = Double.parseDouble(txtKilometrajeCamionesModificar.getText().trim());
+            double capacidadCarga = Double.parseDouble(txtCapacidadDeCargaCamionesModificar.getText().trim());
 
-            Date añoFabricacionDate = txtAñoDeFabricacionCamionModificar.getDate();
+            Date añoFabricacionDate = txtAñoDeFabricacionCamionesModificar.getDate();
             if (añoFabricacionDate == null) {
                 JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de fabricación válida.");
                 return;
@@ -386,9 +477,9 @@ private void cargarDatosCamion() {
         }
     }//GEN-LAST:event_btnModificarCamionesSistemaActionPerformed
 
-    private void txtEstadoCamionModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionModificarActionPerformed
+    private void txtEstadoCamionesModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionesModificarActionPerformed
 
-    }//GEN-LAST:event_txtEstadoCamionModificarActionPerformed
+    }//GEN-LAST:event_txtEstadoCamionesModificarActionPerformed
 
     
     /**
@@ -478,13 +569,13 @@ private void cargarDatosCamion() {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
-    private com.toedter.calendar.JDateChooser txtAñoDeFabricacionCamionModificar;
-    private javax.swing.JTextField txtCapacidadDeCargaCamionModificar;
-    private javax.swing.JComboBox<String> txtEstadoCamionModificar;
-    private javax.swing.JTextField txtKilometrajeCamionModificar;
-    private javax.swing.JTextField txtMarcaCamionModificar;
-    private javax.swing.JTextField txtModeloCamionModificar;
-    private javax.swing.JTextField txtPlacaCamionesModificar;
-    private javax.swing.JComboBox<String> txtTipoCombustibleCamionModificar;
+    private com.toedter.calendar.JDateChooser txtAñoDeFabricacionCamionesModificar;
+    private javax.swing.JTextField txtCapacidadDeCargaCamionesModificar;
+    private javax.swing.JComboBox<String> txtEstadoCamionesModificar;
+    private javax.swing.JTextField txtKilometrajeCamionesModificar;
+    private javax.swing.JTextField txtMarcaCamionesModificar;
+    private javax.swing.JTextField txtModeloCamionesModificar;
+    private javax.swing.JTextField txtPlacasCamionesModificar;
+    private javax.swing.JComboBox<String> txtTipoCombustibleCamionesModificar;
     // End of variables declaration//GEN-END:variables
 }

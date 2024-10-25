@@ -16,8 +16,11 @@ import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import Login.GESTIONLOGIN;
 import Login.LOGINPINEED;
 import Login.Login;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -167,6 +170,7 @@ public class FrameClientes extends javax.swing.JFrame {
         
         //iniciamos el bucle infinito
        iniciarBucleEnHilo();
+           configurarCamposCliente(); // Configura los campos con placeholders
         this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
@@ -179,6 +183,101 @@ public class FrameClientes extends javax.swing.JFrame {
         });
     }
    
+    
+    // Método para configurar el placeholder en campos de texto
+private void setupTextFieldCliente(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el placeholder en campos de texto de área
+private void setupTextAreaCliente(JTextArea textArea, String placeholder) {
+    textArea.setText(placeholder);
+    textArea.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textArea.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textArea.getText().equals(placeholder)) {
+                textArea.setText("");
+                textArea.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textArea.getText().isEmpty()) {
+                textArea.setForeground(Color.GRAY);
+                textArea.setText(placeholder);
+            }
+        }
+    });
+}
+
+
+
+// Método para configurar todos los campos de cliente con placeholders
+private void configurarCamposCliente() {
+    setupTextFieldCliente(txtNombreDelClienteAñadir, "Ingrese el nombre del cliente");
+    setupTextFieldCliente(txtNombreDelClienteModificar, "Ingrese el nombre del cliente");
+    setupTextAreaCliente(txtDescripcionDelClienteAñadir, "Ingrese la descripción del cliente");
+    setupTextAreaCliente(txtDescripcionDelClienteModificar, "Ingrese la descripción del cliente");
+    setupTextFieldCliente(txtFleteModificarCredito, "Ingrese precio");
+    setupTextFieldCliente(txtPrecioCostoModificarCredito, "Ingrese precio");
+    setupTextFieldCliente(txtPrecioModificarCredito, "Ingrese precio");
+}
+
+
+
+
+// Método para limpiar y restablecer los placeholders de los campos de cliente
+public void limpiarCamposCliente() {
+    txtNombreDelClienteAñadir.setText("Ingrese el nombre del cliente");
+    txtNombreDelClienteAñadir.setForeground(Color.GRAY);
+
+    txtNombreDelClienteModificar.setText("Ingrese el nombre del cliente");
+    txtNombreDelClienteModificar.setForeground(Color.GRAY);
+
+    txtDescripcionDelClienteAñadir.setText("Ingrese la descripción del cliente");
+    txtDescripcionDelClienteAñadir.setForeground(Color.GRAY);
+
+    txtDescripcionDelClienteModificar.setText("Ingrese la descripción del cliente");
+    txtDescripcionDelClienteModificar.setForeground(Color.GRAY);
+
+    txtFleteModificarCredito.setText("Ingrese precio");
+    txtFleteModificarCredito.setForeground(Color.GRAY);
+
+    txtPrecioCostoModificarCredito.setText("Ingrese precio");
+    txtPrecioCostoModificarCredito.setForeground(Color.GRAY);
+
+    txtPrecioModificarCredito.setText("Ingrese precio");
+    txtPrecioModificarCredito.setForeground(Color.GRAY);
+}
+
+
+
     private void setupComboBox() {
     txtMenu1.removeAllItems();
     txtMenu1.addItem("Seleccione una opción");
@@ -533,9 +632,9 @@ private void cerrarSesionYRegresarLogin() {
         jPanel7 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        textoNombreA = new javax.swing.JTextField();
+        txtNombreDelClienteAñadir = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        textoDescripcionA = new javax.swing.JTextArea();
+        txtDescripcionDelClienteAñadir = new javax.swing.JTextArea();
         jPanel10 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
@@ -544,10 +643,10 @@ private void cerrarSesionYRegresarLogin() {
         jPanel13 = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        textoNombreB = new javax.swing.JTextField();
+        txtNombreDelClienteModificar = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         scrolgenerico = new javax.swing.JScrollPane();
-        textoDescripcionB = new javax.swing.JTextArea();
+        txtDescripcionDelClienteModificar = new javax.swing.JTextArea();
         jPanel19 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -570,12 +669,13 @@ private void cerrarSesionYRegresarLogin() {
         jLabel17 = new javax.swing.JLabel();
         labelProducto = new javax.swing.JLabel();
         radioActivo = new javax.swing.JRadioButton();
-        textoPrecio = new javax.swing.JTextField();
-        textoFlete = new javax.swing.JTextField();
-        textoCosto = new javax.swing.JTextField();
+        txtPrecioModificarCredito = new javax.swing.JTextField();
+        txtFleteModificarCredito = new javax.swing.JTextField();
+        txtPrecioCostoModificarCredito = new javax.swing.JTextField();
         jPanel20 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         labelCatidad = new javax.swing.JLabel();
+        buscarPiloto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -613,17 +713,17 @@ private void cerrarSesionYRegresarLogin() {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addComponent(jLabel1)
-                .addGap(26, 26, 26))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTextField19.setEditable(false);
@@ -721,12 +821,12 @@ private void cerrarSesionYRegresarLogin() {
         jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel3.setText("Descripción Del Cliente");
 
-        textoNombreA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelClienteAñadir.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        textoDescripcionA.setColumns(20);
-        textoDescripcionA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        textoDescripcionA.setRows(5);
-        jScrollPane2.setViewportView(textoDescripcionA);
+        txtDescripcionDelClienteAñadir.setColumns(20);
+        txtDescripcionDelClienteAñadir.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtDescripcionDelClienteAñadir.setRows(5);
+        jScrollPane2.setViewportView(txtDescripcionDelClienteAñadir);
 
         jPanel10.setBackground(new java.awt.Color(102, 153, 255));
         jPanel10.setPreferredSize(new java.awt.Dimension(131, 28));
@@ -746,7 +846,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(17, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(16, 16, 16))
         );
@@ -768,7 +868,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelAgregarClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textoNombreA, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreDelClienteAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelAgregarClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelAgregarClienteLayout.createSequentialGroup()
@@ -793,7 +893,7 @@ private void cerrarSesionYRegresarLogin() {
                                 .addGap(35, 35, 35)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textoNombreA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtNombreDelClienteAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 9, Short.MAX_VALUE))
                     .addGroup(panelAgregarClienteLayout.createSequentialGroup()
                         .addContainerGap()
@@ -864,15 +964,15 @@ private void cerrarSesionYRegresarLogin() {
         jLabel7.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel7.setText("Nombre Del Cliente");
 
-        textoNombreB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelClienteModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel8.setText("Descripción del Cliente");
 
-        textoDescripcionB.setColumns(20);
-        textoDescripcionB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        textoDescripcionB.setRows(5);
-        scrolgenerico.setViewportView(textoDescripcionB);
+        txtDescripcionDelClienteModificar.setColumns(20);
+        txtDescripcionDelClienteModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtDescripcionDelClienteModificar.setRows(5);
+        scrolgenerico.setViewportView(txtDescripcionDelClienteModificar);
 
         jPanel19.setBackground(new java.awt.Color(102, 153, 255));
         jPanel19.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -890,7 +990,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel19Layout.setHorizontalGroup(
             jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel19Layout.createSequentialGroup()
-                .addContainerGap(10, Short.MAX_VALUE)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addComponent(jLabel21)
                 .addGap(26, 26, 26))
         );
@@ -910,9 +1010,9 @@ private void cerrarSesionYRegresarLogin() {
         });
 
         jLabel4.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Eliminar Cliente");
+        jLabel4.setText("ELIMINAR CLIENTE");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -940,7 +1040,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textoNombreB, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreDelClienteModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -971,7 +1071,7 @@ private void cerrarSesionYRegresarLogin() {
                                 .addComponent(jLabel8))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(textoNombreB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtNombreDelClienteModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(scrolgenerico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1082,11 +1182,11 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        textoPrecio.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioModificarCredito.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        textoFlete.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFleteModificarCredito.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        textoCosto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioCostoModificarCredito.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jPanel20.setBackground(new java.awt.Color(102, 153, 255));
         jPanel20.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1154,17 +1254,17 @@ private void cerrarSesionYRegresarLogin() {
                                         .addGroup(jPanel11Layout.createSequentialGroup()
                                             .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(textoCosto))
+                                            .addComponent(txtPrecioCostoModificarCredito))
                                         .addComponent(radioActivo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                                 .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel11Layout.createSequentialGroup()
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(textoPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPrecioModificarCredito, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel11Layout.createSequentialGroup()
                                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textoFlete, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(txtFleteModificarCredito, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
             .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1201,15 +1301,15 @@ private void cerrarSesionYRegresarLogin() {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textoPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtPrecioModificarCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textoFlete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtFleteModificarCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textoCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtPrecioCostoModificarCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addComponent(radioActivo)
                                 .addGap(29, 29, 29))
@@ -1222,20 +1322,33 @@ private void cerrarSesionYRegresarLogin() {
                         .addContainerGap())))
         );
 
+        buscarPiloto.setBackground(new java.awt.Color(0, 153, 153));
+        buscarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        buscarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        buscarPiloto.setText("HISTORIAL CLIENTE");
+        buscarPiloto.setBorder(null);
+        buscarPiloto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarPilotoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(32, 32, 32)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
-                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1251,10 +1364,12 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1301,8 +1416,8 @@ private void cerrarSesionYRegresarLogin() {
         //funcion que nos ayudara a crear un nuevo cliente
         //primero leemos la inforacion
         
-        String newname = textoNombreA.getText();
-        String newdescripcion = textoDescripcionA.getText();
+        String newname = txtNombreDelClienteAñadir.getText();
+        String newdescripcion = txtDescripcionDelClienteAñadir.getText();
         
         //preguntamos si la informacion no esta vacia
         if (!newname.equals("") && !newdescripcion.equals("")) {
@@ -1322,8 +1437,8 @@ private void cerrarSesionYRegresarLogin() {
             actualizaTablaCliente();
             
             //resestablecemos toda la inforcion nuevamente
-            textoNombreA.setText("");
-            textoDescripcionA.setText("");
+            txtNombreDelClienteAñadir.setText("");
+            txtDescripcionDelClienteAñadir.setText("");
             
             //ocultamos el panel de agregar clientes
             panelAgregarCliente.setVisible(false);
@@ -1351,8 +1466,8 @@ private void cerrarSesionYRegresarLogin() {
         //primero pregutnamos si el indice de la tabla es valido
         
         if (indiceGeneralClientes > -1) {
-            String newname = textoNombreB.getText();
-        String newdescripcion = textoDescripcionB.getText();
+            String newname = txtNombreDelClienteModificar.getText();
+        String newdescripcion = txtDescripcionDelClienteModificar.getText();
         
         //preguntamos si la informacion no esta vacia
         if (!newname.equals("") && !newdescripcion.equals("")) {
@@ -1488,9 +1603,9 @@ private void cerrarSesionYRegresarLogin() {
                 
 
                 //leemos los precios
-                float newprecio = Float.parseFloat(textoPrecio.getText());
-                float newflete = Float.parseFloat(textoFlete.getText());
-                float newcosto = Float.parseFloat(textoCosto.getText());
+                float newprecio = Float.parseFloat(txtPrecioModificarCredito.getText());
+                float newflete = Float.parseFloat(txtFleteModificarCredito.getText());
+                float newcosto = Float.parseFloat(txtPrecioCostoModificarCredito.getText());
                 
                 //vemos si es un credito o no
                 boolean newcredito = true;
@@ -1532,9 +1647,9 @@ private void cerrarSesionYRegresarLogin() {
                 //vaciamos los campos de informacion
                 labelProducto.setText("N/A");
                 labelCatidad.setText("0");
-                textoPrecio.setText("");
-                textoFlete.setText("");
-                textoCosto.setText("");
+                txtPrecioModificarCredito.setText("");
+                txtFleteModificarCredito.setText("");
+                txtPrecioCostoModificarCredito.setText("");
                 radioActivo.setSelected(false);
                 
                 //definimos nuevament el indice general en -1 
@@ -1591,16 +1706,16 @@ private void cerrarSesionYRegresarLogin() {
         if (respuesta == JOptionPane.YES_OPTION) {
            if (indiceGeneralClientes > -1) {
                    //rellenamos las informacion correspondiente            
-                textoNombreB.setText("");
-                textoDescripcionB.setText("");
+                txtNombreDelClienteModificar.setText("");
+                txtDescripcionDelClienteModificar.setText("");
 
                 
                 labelProducto.setText("N/A");
                 labelCatidad.setText("0");
                 
-                textoPrecio.setText("");
-                textoFlete.setText("");
-                textoCosto.setText("");
+                txtPrecioModificarCredito.setText("");
+                txtFleteModificarCredito.setText("");
+                txtPrecioCostoModificarCredito.setText("");
                 
                 radioActivo.setSelected(false);
                 
@@ -1632,6 +1747,15 @@ private void cerrarSesionYRegresarLogin() {
         }
     }//GEN-LAST:event_jPanel2MouseClicked
 
+    private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
+   String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
+
+        FrameHistorialClientes abrir = new FrameHistorialClientes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+    }//GEN-LAST:event_buscarPilotoActionPerformed
+
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
         //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
@@ -1656,8 +1780,8 @@ private void cerrarSesionYRegresarLogin() {
                  indiceGeneralClientes = indiceSeleccionadoClientes;
                  
                  //mostramos la informacion necesaria en los campos de visualizacion
-                 textoNombreB.setText(vectorclientes.get(indiceGeneralClientes).getNombre());
-                 textoDescripcionB.setText(vectorclientes.get(indiceGeneralClientes).getDescripcion());
+                 txtNombreDelClienteModificar.setText(vectorclientes.get(indiceGeneralClientes).getNombre());
+                 txtDescripcionDelClienteModificar.setText(vectorclientes.get(indiceGeneralClientes).getDescripcion());
                  
                  //actualizamos la tabla de creditos
                  actualizarTablaCreditos();
@@ -1690,9 +1814,9 @@ private void cerrarSesionYRegresarLogin() {
                      //mostramos la informacion pertinente
                      labelProducto.setText(vectorproductos.get(vectorcreditos.get(indiceGeneralCreditos).getIndiceProducto()).getNombre());
                      labelCatidad.setText("" + vectorcreditos.get(indiceGeneralCreditos).getIndiceCantidad());
-                     textoPrecio.setText("" + vectorcreditos.get(indiceGeneralCreditos).getPrecio());
-                     textoFlete.setText("" + vectorcreditos.get(indiceGeneralCreditos).getPrecioFlete());
-                     textoCosto.setText("" + vectorcreditos.get(indiceGeneralCreditos).getPrecioCosto());
+                     txtPrecioModificarCredito.setText("" + vectorcreditos.get(indiceGeneralCreditos).getPrecio());
+                     txtFleteModificarCredito.setText("" + vectorcreditos.get(indiceGeneralCreditos).getPrecioFlete());
+                     txtPrecioCostoModificarCredito.setText("" + vectorcreditos.get(indiceGeneralCreditos).getPrecioCosto());
                  }
              }
 
@@ -1758,6 +1882,7 @@ private void cerrarSesionYRegresarLogin() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buscarPiloto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1807,13 +1932,13 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JTable tablaCreditos;
     private javax.swing.JTable tablaCreditosFinalizados;
     private javax.swing.JTable tablaProductos;
-    private javax.swing.JTextField textoCosto;
-    private javax.swing.JTextArea textoDescripcionA;
-    private javax.swing.JTextArea textoDescripcionB;
-    private javax.swing.JTextField textoFlete;
-    private javax.swing.JTextField textoNombreA;
-    private javax.swing.JTextField textoNombreB;
-    private javax.swing.JTextField textoPrecio;
+    private javax.swing.JTextArea txtDescripcionDelClienteAñadir;
+    private javax.swing.JTextArea txtDescripcionDelClienteModificar;
+    private javax.swing.JTextField txtFleteModificarCredito;
     private javax.swing.JComboBox<String> txtMenu1;
+    private javax.swing.JTextField txtNombreDelClienteAñadir;
+    private javax.swing.JTextField txtNombreDelClienteModificar;
+    private javax.swing.JTextField txtPrecioCostoModificarCredito;
+    private javax.swing.JTextField txtPrecioModificarCredito;
     // End of variables declaration//GEN-END:variables
 }

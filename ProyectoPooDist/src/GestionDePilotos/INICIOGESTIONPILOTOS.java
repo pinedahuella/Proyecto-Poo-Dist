@@ -19,6 +19,7 @@ import GestionDeUsuarios.Usuarios;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
 import Login.Login;
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
@@ -27,27 +28,111 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
 import java.awt.event.ActionListener;  // Para manejar eventos de acción
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
-protected GESTIONPILOTOS gestionPilotos;
+    protected GESTIONPILOTOS gestionPilotos;
     private Vector<Piloto> listaPilotos;
+    private Vector<Piloto> pilotosFiltrados; // Lista para mantener los resultados actuales de la tabla
     private DefaultTableModel modeloPilotos = new DefaultTableModel();
     private LOGINPINEED loginFrame;
     private String currentUser;
     private String userRole;
 
+    public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame) {
+        // Initialize base frame components first 
+        initComponents();
+        gestionPilotos = new GESTIONPILOTOS();
 
-     // Agregar un método getter para gestionPilotos
+        // Set frame properties 
+        setResizable(false);
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre del Piloto a buscar");
+
+        // Initialize instance variables 
+        this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+
+        // Initialize table model and set columns 
+        modeloPilotos = new DefaultTableModel();
+        String[] columnas = {"No.", "Nombre", "Apellido", "DPI", "Licencia", "Teléfono", "Estado"}; 
+        modeloPilotos.setColumnIdentifiers(columnas); 
+
+        // Configure table properties 
+        tblRegistroPilotos.setModel(modeloPilotos);
+        tblRegistroPilotos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRegistroPilotos.getTableHeader().setReorderingAllowed(false);
+        tblRegistroPilotos.getTableHeader().setResizingAllowed(false);
+        tblRegistroPilotos.setRowSelectionAllowed(true);
+        tblRegistroPilotos.setColumnSelectionAllowed(false);
+        
+        // Ajustar anchos de columnas
+        tblRegistroPilotos.getColumnModel().getColumn(0).setPreferredWidth(30); // Ancho para columna "No."
+        tblRegistroPilotos.getColumnModel().getColumn(1).setPreferredWidth(150); // Ancho para columna "Nombre"
+        tblRegistroPilotos.getColumnModel().getColumn(2).setPreferredWidth(150); // Ancho para columna "Apellido"
+        tblRegistroPilotos.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para columna "DPI"
+        tblRegistroPilotos.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para columna "Licencia"
+        tblRegistroPilotos.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Teléfono"
+        tblRegistroPilotos.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para columna "Estado"
+        
+        // Load pilots without filtering
+        gestionPilotos.cargarPilotosDesdeExcel(); 
+        listaPilotos = gestionPilotos.getPilotos(); 
+        
+        cargarPilotosEnTabla(); 
+        // Additional setup 
+        addWindowListener(); 
+        setupComboBox(); 
+        
+        // Final frame setup 
+        this.setVisible(true); 
+        SwingUtilities.invokeLater(() -> { 
+            this.requestFocusInWindow(); 
+        }); 
+    }
+
+    // Agregar un método getter para gestionPilotos
     public GESTIONPILOTOS getGestionPilotos() {
         return gestionPilotos;
     }
-    
-    
+
+    private void cargarPilotosEnTabla() {
+        modeloPilotos.setRowCount(0);
+        pilotosFiltrados = new Vector<>(); // Inicializar la lista filtrada
+        
+        Set<String> estadosValidos = new HashSet<>(Arrays.asList(
+            "ACTIVO",
+            "ENFERMO",
+            "EN VACACIONES",
+            "BLOQUEADO",
+            "JUBILADO"
+        ));
+        
+        int indice = 1; // Inicializar el índice
+        for (Piloto piloto : listaPilotos) {
+            if (estadosValidos.contains(piloto.getEstadoPiloto())) {
+                pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
+                modeloPilotos.addRow(new Object[]{
+                    indice++, // Añadir el índice
+                    piloto.getNombrePiloto(),
+                    piloto.getApellidoPiloto(),
+                    piloto.getNumeroDeDpi(),
+                    piloto.getTipoLicencia(),
+                    piloto.getNumeroTelefonicoPiloto(),
+                    piloto.getEstadoPiloto()
+                });
+            }
+        }
+    }
     
 private void setupComboBox() {
     txtMenu.removeAllItems();
@@ -282,50 +367,40 @@ private void cerrarSesionYRegresarLogin() {
         System.exit(0);
     }
 
-public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame) { 
-        // Initialize base frame components first 
-        initComponents(); 
-        gestionPilotos = new GESTIONPILOTOS(); 
- 
-        // Set frame properties 
-        setResizable(false); 
-        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); 
-         
-        // Initialize instance variables 
-        this.currentUser = username; 
-        this.userRole = role; 
-        this.loginFrame = loginFrame; 
-        this.gestionPilotos = new GESTIONPILOTOS(); 
-         
-        // Initialize table model and set columns 
-        modeloPilotos = new DefaultTableModel(); 
-        String[] columnas = {"Nombre", "Apellido", "DPI", "Licencia", "Teléfono", "Estado"}; 
-        modeloPilotos.setColumnIdentifiers(columnas); 
-         
-        // Configure table properties 
-        tblRegistroPilotos.setModel(modeloPilotos); 
-        tblRegistroPilotos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); 
-        tblRegistroPilotos.getTableHeader().setReorderingAllowed(false); 
-        tblRegistroPilotos.getTableHeader().setResizingAllowed(false); 
-        tblRegistroPilotos.setRowSelectionAllowed(true); 
-        tblRegistroPilotos.setColumnSelectionAllowed(false); 
-         
-        // Load pilots without filtering
-        gestionPilotos.cargarPilotosDesdeExcel(); 
-        listaPilotos = gestionPilotos.getPilotos(); 
-         
-        cargarPilotosEnTabla(); 
-        // Additional setup 
-        addWindowListener(); 
-        setupComboBox(); 
-         
-        // Final frame setup 
-        this.setVisible(true); 
-        SwingUtilities.invokeLater(() -> { 
-            this.requestFocusInWindow(); 
-        }); 
+
+
+ // Método para configurar el campo de texto con placeholder
+    private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                // Limpia el placeholder al enfocar
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // Restablece el placeholder si el campo está vacío
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
     }
 
+    // Método para limpiar los campos incluyendo el campo de búsqueda
+    public void limpiarCampos() {
+        // ... otros campos que ya limpias ...
+        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+        txtNombrePilotoBuscar.setForeground(Color.GRAY);
+    }
     
             public void actualizarTabla() {
         gestionPilotos.cargarPilotosDesdeExcel();
@@ -333,41 +408,6 @@ public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame
         cargarPilotosEnTabla();
         }
     
-    
-
-    private void cargarPilotosEnTabla() {
-
- modeloPilotos.setRowCount(0);
-    
-    // Definir los estados válidos que queremos mostrar
-    Set<String> estadosValidos = new HashSet<>(Arrays.asList(
-        "ACTIVO",
-        "ENFERMO",
-        "EN VACACIONES",
-        "BLOQUEADO",
-        "JUBILADO"
-    ));
-    // Iterar sobre la lista de usuarios
-    for (Piloto piloto : listaPilotos) {
-        // Verificar si el estado del usuario está en la lista de estados válidos
-        if (estadosValidos.contains(piloto.getEstadoPiloto())) {
-                        Object[] fila = new Object[]{
-
-                piloto.getNombrePiloto(),
-                piloto.getApellidoPiloto(),
-                piloto.getNumeroDeDpi(),
-                piloto.getTipoLicencia(),
-                piloto.getNumeroTelefonicoPiloto(),
-                piloto.getEstadoPiloto(),
-                piloto.getCorreoElectronicoPiloto(),
-                piloto.getGeneroPiloto(),
-                piloto.getFechaDeNacimiento()
-            };
-            modeloPilotos.addRow(fila);
-        }
-    }
-}
-  
     
 
     @SuppressWarnings("unchecked")
@@ -602,9 +642,10 @@ public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void editarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarPilotoActionPerformed
-        int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
+int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            Piloto pilotoSeleccionado = listaPilotos.get(filaSeleccionada);
+            // Usar la lista filtrada en lugar de la lista completa
+            Piloto pilotoSeleccionado = pilotosFiltrados.get(filaSeleccionada);
             abrirVentanaModificar(pilotoSeleccionado);
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un piloto para modificar.");
@@ -612,12 +653,14 @@ public INICIOGESTIONPILOTOS(String username, String role, LOGINPINEED loginFrame
     }//GEN-LAST:event_editarPilotoActionPerformed
 
     private void mostrarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarPilotoActionPerformed
-        int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            Piloto pilotoSeleccionado = listaPilotos.get(filaSeleccionada);
+int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
+        if (filaSeleccionada >= 0 && filaSeleccionada < pilotosFiltrados.size()) {
+            // Usar la lista filtrada para obtener el piloto correcto
+            Piloto pilotoSeleccionado = pilotosFiltrados.get(filaSeleccionada);
             abrirVentanaMostrar(pilotoSeleccionado);
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un piloto para mostrar su información.");
+            JOptionPane.showMessageDialog(this, 
+                "Por favor, selecciona un piloto válido para mostrar su información.");
         }
     }//GEN-LAST:event_mostrarPilotoActionPerformed
 
@@ -642,33 +685,34 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }//GEN-LAST:event_refrescarPilotoActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-        if (txtNombrePilotoBuscar.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
+        if (txtNombrePilotoBuscar.getText().trim().isEmpty() || 
+            txtNombrePilotoBuscar.getText().equals("Ingresa Nombre del Piloto a buscar")) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre para buscar.");
             return;
         }
 
         String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
-        modeloPilotos.setRowCount(0);
+        modeloPilotos.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
+        pilotosFiltrados = new Vector<>(); // Reset lista filtrada
         boolean hayCoincidencias = false;
 
+        String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+
+        int indice = 1; // Inicializamos el índice para la numeración
+
         for (Piloto piloto : listaPilotos) {
-            boolean coincide = true;
+            String nombrePilotoNormalizado = normalizarTexto(piloto.getNombrePiloto());
 
-            if (!nombreBuscado.isEmpty() && !piloto.getNombrePiloto().equalsIgnoreCase(nombreBuscado)) {
-                coincide = false;
-            }
-
-            if (coincide) {
+            if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
+                pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
                 modeloPilotos.addRow(new Object[]{
+                    indice++, // Añadimos el índice
                     piloto.getNombrePiloto(),
                     piloto.getApellidoPiloto(),
                     piloto.getNumeroDeDpi(),
                     piloto.getTipoLicencia(),
                     piloto.getNumeroTelefonicoPiloto(),
-                    piloto.getEstadoPiloto(),
-                    piloto.getCorreoElectronicoPiloto(),
-                    piloto.getGeneroPiloto(),
-                    piloto.getFechaDeNacimiento()
+                    piloto.getEstadoPiloto()
                 });
                 hayCoincidencias = true;
             }
@@ -676,55 +720,63 @@ String username = this.currentUser; // Assuming currentUser holds the username
 
         if (!hayCoincidencias) {
             JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-            for (Piloto piloto : listaPilotos) {
-                modeloPilotos.addRow(new Object[]{
-                    piloto.getNombrePiloto(),
-                    piloto.getApellidoPiloto(),
-                    piloto.getNumeroDeDpi(),
-                    piloto.getTipoLicencia(),
-                    piloto.getNumeroTelefonicoPiloto(),
-                    piloto.getEstadoPiloto(),
-                    piloto.getCorreoElectronicoPiloto(),
-                    piloto.getGeneroPiloto(),
-                    piloto.getFechaDeNacimiento()
-                });
-            }
-        } else {
-            tblRegistroPilotos.setVisible(true);
-            if (tblRegistroPilotos.getRowCount() > 0) {
-                tblRegistroPilotos.setRowSelectionInterval(0, 0);
-            }
+            // Restaurar la tabla completa
+            cargarPilotosEnTabla();
         }
 
-        txtNombrePilotoBuscar.setText("");
+        if (tblRegistroPilotos.getRowCount() > 0) {
+            tblRegistroPilotos.setRowSelectionInterval(0, 0);
+        }
+
+        // Restaurar el placeholder
+        SwingUtilities.invokeLater(() -> {
+            txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+            txtNombrePilotoBuscar.setForeground(Color.GRAY);
+        });
     }//GEN-LAST:event_buscarPilotoActionPerformed
+
+    
+    // Método para normalizar el texto
+private String normalizarTexto(String texto) {
+    // Normalizar y eliminar tildes y caracteres especiales
+    String textoNormalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);
+    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+    return pattern.matcher(textoNormalizado).replaceAll("").toLowerCase(); // Devuelve el texto sin acentos y en minúsculas
+}
+
 
     private void eliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPilotoActionPerformed
 int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
-            // Retrieve DPI and convert it to long
-            Object dpiObject = tblRegistroPilotos.getValueAt(filaSeleccionada, 2);
-            long numeroDeDpiSeleccionado = Long.parseLong(dpiObject.toString());
-            
+            // Cambiar el índice a 3 para obtener el DPI correcto
+            Object dpiObject = tblRegistroPilotos.getValueAt(filaSeleccionada, 3);
+            String dpiString = dpiObject.toString().trim();
+
+            // Verificar si el DPI tiene 13 dígitos
+            if (dpiString.length() != 13) {
+                throw new NumberFormatException("El DPI debe tener 13 dígitos.");
+            }
+
+            long numeroDeDpiSeleccionado = Long.parseLong(dpiString);
+
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de que deseas borrar este piloto con DPI: " + numeroDeDpiSeleccionado + "?",
                 "Confirmar eliminación",
                 JOptionPane.YES_NO_OPTION);
-                
+
             if (confirm == JOptionPane.YES_OPTION) {
-                // Now passing a long value
                 gestionPilotos.eliminarPiloto(numeroDeDpiSeleccionado);
                 actualizarTabla();
                 JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error: El DPI no tiene un formato válido.",
+            JOptionPane.showMessageDialog(this,
+                "Error: El DPI no tiene un formato válido. " + e.getMessage(),
                 "Error de formato",
                 JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
+            JOptionPane.showMessageDialog(this,
                 "Error al eliminar el piloto: " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);

@@ -11,8 +11,12 @@ import Login.GESTIONLOGIN; // Importa la clase GESTIONLOGIN para gestionar la l�
 import Login.LOGINPINEED; // Importa la clase LOGINPINEED para manejar la interfaz de inicio de sesión
 import Login.Login; // Importa la clase Login que probablemente maneja la autenticación de usuarios
 import com.toedter.calendar.JDateChooser; // Importa la clase JDateChooser para seleccionar fechas de manera visual
+import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.Color;
 import java.awt.event.ActionEvent; // Importa la clase ActionEvent para manejar eventos de acción
 import java.awt.event.ActionListener; // Importa la interfaz ActionListener para escuchar eventos de acción
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.SimpleDateFormat; // Importa la clase SimpleDateFormat para formatear fechas
 import java.util.Date; // Importa la clase Date para manejar fechas y horas
 import java.util.Vector; // Importa la clase Vector para almacenar datos en una lista dinámica
@@ -26,7 +30,9 @@ import java.text.ParseException; // Importa la clase ParseException para manejar
 import java.util.List; // Importa la interfaz List para manejar listas de objetos
 import java.util.ArrayList; // Importa la clase ArrayList para crear listas dinámicas
 import javax.swing.JFrame; // Importa la clase JFrame para crear ventanas de aplicación
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities; // Importa la clase SwingUtilities para realizar tareas en el hilo de eventos de Swing
+
 
 
 public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
@@ -384,6 +390,119 @@ private void cerrarSesionYRegresarLogin() {
         System.exit(0);
     }
 
+    
+    // Método para configurar el placeholder en campos de texto
+private void setupTextFieldGastos(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el JDateChooser con un placeholder en gris
+private void setupDateChooserWithPlaceholderGastos(JDateChooser dateChooser, String placeholder) {
+    dateChooser.setDateFormatString("dd/MM/yyyy");
+    dateChooser.setDate(null); // Inicialmente vacío
+
+    JTextFieldDateEditor editor = (JTextFieldDateEditor) dateChooser.getDateEditor();
+    editor.setForeground(Color.GRAY); // Color gris para el texto del placeholder
+    editor.setText(placeholder); // Texto del placeholder
+
+    // Listener para manejar el enfoque y el texto del placeholder
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (editor.getText().equals(placeholder)) {
+                editor.setText(""); // Limpia el texto del placeholder al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (editor.getText().isEmpty()) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+
+    // Listener para actualizar el color cuando el usuario selecciona una fecha
+    dateChooser.getDateEditor().addPropertyChangeListener("date", evt -> {
+        if (dateChooser.getDate() != null) {
+            editor.setForeground(Color.BLACK); // Cambia a negro al seleccionar una fecha
+        } else {
+            editor.setForeground(Color.GRAY); // Vuelve al gris si no hay fecha
+            editor.setText(placeholder); // Restaura el placeholder
+        }
+    });
+}
+
+// Método para configurar todos los campos de gastos con placeholders
+private void configurarCamposDeTextoConPlaceholdersGastos() {
+    setupTextFieldGastos(txtActualizarTiempoReparacion, "Ingrese el tiempo de reparación");
+    setupTextFieldGastos(txtCostoDeMantenimiento, "Ingrese el costo de mantenimiento");
+    setupTextFieldGastos(txtCostoDeReparacionGasto, "Ingrese el costo de reparación");
+    setupTextFieldGastos(txtCostoGalonGasto, "Ingrese el costo por galón");
+    setupTextFieldGastos(txtDescripcionDelGastoGasto, "Ingrese la descripción del gasto");
+    setupTextFieldGastos(txtGastoNoEspecificadoGasto, "Ingrese el gasto no especificado");
+    setupTextFieldGastos(txtMarcaCamionBuscar, "Ingrese la marca del camión a buscar");
+    setupTextFieldGastos(txtNumeroDeGalonesGasto, "Ingrese el número de galones");
+    setupDateChooserWithPlaceholderGastos(txtTiempoMantenimientoGasto, "dd/MM/yyyy"); // Configura el JDateChooser con placeholder
+}
+
+// Método para limpiar y restablecer los placeholders de los campos de gastos
+public void limpiarCamposGastos() {
+    txtActualizarTiempoReparacion.setText("Ingrese el tiempo de reparación");
+    txtActualizarTiempoReparacion.setForeground(Color.GRAY);
+
+    txtCostoDeMantenimiento.setText("Ingrese el costo de mantenimiento");
+    txtCostoDeMantenimiento.setForeground(Color.GRAY);
+
+    txtCostoDeReparacionGasto.setText("Ingrese el costo de reparación");
+    txtCostoDeReparacionGasto.setForeground(Color.GRAY);
+
+    txtCostoGalonGasto.setText("Ingrese el costo por galón");
+    txtCostoGalonGasto.setForeground(Color.GRAY);
+
+    txtDescripcionDelGastoGasto.setText("Ingrese la descripción del gasto");
+    txtDescripcionDelGastoGasto.setForeground(Color.GRAY);
+
+    txtGastoNoEspecificadoGasto.setText("Ingrese el gasto no especificado");
+    txtGastoNoEspecificadoGasto.setForeground(Color.GRAY);
+
+    txtMarcaCamionBuscar.setText("Ingrese la marca del camión a buscar");
+    txtMarcaCamionBuscar.setForeground(Color.GRAY);
+
+    txtNumeroDeGalonesGasto.setText("Ingrese el número de galones");
+    txtNumeroDeGalonesGasto.setForeground(Color.GRAY);
+
+    // Restablece el JDateChooser al estado del placeholder
+    setupDateChooserWithPlaceholderGastos(txtTiempoMantenimientoGasto, "dd/MM/yyyy");
+}
+
+
+
+
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -421,6 +540,7 @@ private void cerrarSesionYRegresarLogin() {
         txtNumeroDeGalonesGasto = new javax.swing.JTextField();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblRegistroCamiones = new javax.swing.JTable();
+        eliminarCamion1 = new javax.swing.JButton();
         txtMenu = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -447,7 +567,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
         jLabel4.setText("MARCA");
 
-        buscarCamion.setBackground(new java.awt.Color(85, 111, 169));
+        buscarCamion.setBackground(new java.awt.Color(0, 102, 255));
         buscarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         buscarCamion.setForeground(new java.awt.Color(255, 255, 255));
         buscarCamion.setText("BUSCAR");
@@ -458,10 +578,10 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        actualizarCamion.setBackground(new java.awt.Color(85, 111, 169));
+        actualizarCamion.setBackground(new java.awt.Color(0, 102, 255));
         actualizarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         actualizarCamion.setForeground(new java.awt.Color(255, 255, 255));
-        actualizarCamion.setText("ACTUALIZAR");
+        actualizarCamion.setText("ACTUALIZAR ESTADO DEL CAMION");
         actualizarCamion.setBorder(null);
         actualizarCamion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -469,10 +589,10 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        agregarCamion.setBackground(new java.awt.Color(85, 111, 169));
+        agregarCamion.setBackground(new java.awt.Color(0, 102, 255));
         agregarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         agregarCamion.setForeground(new java.awt.Color(255, 255, 255));
-        agregarCamion.setText("AGREGAR");
+        agregarCamion.setText("AGREGAR FACTURA");
         agregarCamion.setBorder(null);
         agregarCamion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -480,10 +600,10 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        eliminarCamion.setBackground(new java.awt.Color(85, 111, 169));
+        eliminarCamion.setBackground(new java.awt.Color(0, 102, 255));
         eliminarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         eliminarCamion.setForeground(new java.awt.Color(255, 255, 255));
-        eliminarCamion.setText("ELIMINAR");
+        eliminarCamion.setText("ELIMINAR FACTURA");
         eliminarCamion.setBorder(null);
         eliminarCamion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -589,6 +709,17 @@ private void cerrarSesionYRegresarLogin() {
         ));
         jScrollPane6.setViewportView(tblRegistroCamiones);
 
+        eliminarCamion1.setBackground(new java.awt.Color(0, 153, 153));
+        eliminarCamion1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        eliminarCamion1.setForeground(new java.awt.Color(255, 255, 255));
+        eliminarCamion1.setText("REGRESAR A GESTION DE CAMIONES");
+        eliminarCamion1.setBorder(null);
+        eliminarCamion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarCamion1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -596,11 +727,13 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(475, 475, 475)
+                .addComponent(eliminarCamion1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap(34, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                 .addGap(27, 27, 27)
@@ -638,37 +771,44 @@ private void cerrarSesionYRegresarLogin() {
                                         .addGap(18, 18, 18)
                                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel14)
-                                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel14)
+                                        .addGap(12, 12, 12))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtActualizarEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGap(2, 2, 2)
-                                        .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(2, 2, 2))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(25, 25, 25))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1116, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(34, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eliminarCamion1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1103,6 +1243,16 @@ private void cerrarSesionYRegresarLogin() {
 
     }//GEN-LAST:event_txtCostoDeMantenimientoActionPerformed
 
+    private void eliminarCamion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamion1ActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_eliminarCamion1ActionPerformed
+
     
     
 
@@ -1317,6 +1467,7 @@ private boolean validarFormatoTiempoReparacion(String tiempo) {
     private javax.swing.JButton agregarCamion;
     private javax.swing.JButton buscarCamion;
     private javax.swing.JButton eliminarCamion;
+    private javax.swing.JButton eliminarCamion1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

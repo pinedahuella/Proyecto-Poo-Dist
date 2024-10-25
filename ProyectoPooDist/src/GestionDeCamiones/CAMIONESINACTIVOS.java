@@ -27,7 +27,11 @@ import static org.apache.poi.ss.usermodel.CellType.FORMULA;
 import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.JTextField;
+import javax.swing.table.TableModel;
 
 public class CAMIONESINACTIVOS extends javax.swing.JFrame {
     
@@ -52,7 +56,8 @@ public class CAMIONESINACTIVOS extends javax.swing.JFrame {
         setResizable(false);
         inicializarTabla();
         cargarDatos(); // Añadimos esta llamada que faltaba
-        
+                setupTextField(txtMarcaCamionBuscar, "Ingresa Marca del Camión a buscar");
+
         // Configuración de la interfaz
         addWindowListener();
         setupComboBox();
@@ -71,106 +76,154 @@ public class CAMIONESINACTIVOS extends javax.swing.JFrame {
         });
     }
 
+// Método para configurar el campo de texto con placeholder
+    private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
 
-    private void inicializarTabla() {
-        String[] columnas = {
-            "Placas", "Modelo", "Marca", "Estado", 
-            "Tipo de Combustible", "Kilometraje"
-        };
-        
-        modeloCamiones = new DefaultTableModel(columnas, 0) {
+        textField.addFocusListener(new FocusAdapter() {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
+            public void focusGained(FocusEvent e) {
+                // Limpia el placeholder al enfocar
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
             }
-        };
-        
-        tblRegistroCamiones1.setModel(modeloCamiones);
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // Restablece el placeholder si el campo está vacío
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
     }
 
-    private void cargarDatos() {
-        try {
-            System.out.println("Iniciando carga de datos de camiones inactivos...");
-            listaCamionesInactivos = new Vector<>();
-            int totalCamiones = 0;
-            int camionesInactivos = 0;
+    // Método para limpiar los campos incluyendo el campo de búsqueda
+    public void limpiarCampos() {
+        // ... otros campos que ya limpias ...
+        txtMarcaCamionBuscar.setText("Ingresa Marca del Camión a buscar");
+        txtMarcaCamionBuscar.setForeground(Color.GRAY);
+    }
+
+  // Modificar inicializarTabla para incluir la columna "No."
+private void inicializarTabla() {
+    String[] columnas = {
+        "No.", "Marca", "Modelo", "Placas", "Estado", 
+        "Tipo de Combustible", "Kilometraje"
+    };
+    
+    modeloCamiones = new DefaultTableModel(columnas, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    
+    tblRegistroCamiones1.setModel(modeloCamiones);
+    
+    // Configurar el ancho de la columna "No."
+    tblRegistroCamiones1.getColumnModel().getColumn(0).setPreferredWidth(30);
+}
+
+  // Método cargarDatos corregido
+private void cargarDatos() {
+    try {
+        System.out.println("Iniciando carga de datos de camiones inactivos...");
+        listaCamionesInactivos = new Vector<>();
+        int totalCamiones = 0;
+        int camionesInactivos = 0;
+        
+        try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
+             Workbook workbook = new XSSFWorkbook(fis)) {
             
-            try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
-                 Workbook workbook = new XSSFWorkbook(fis)) {
-                
-                Sheet sheet = workbook.getSheetAt(0);
-                Row headerRow = sheet.getRow(0);
-                int activoColumnIndex = -1;
-                
-                // Encontrar el índice de la columna "Activo"
-                for (int i = 0; i < headerRow.getLastCellNum(); i++) {
-                    if ("Activo".equals(headerRow.getCell(i).getStringCellValue())) {
-                        activoColumnIndex = i;
-                        System.out.println("Columna 'Activo' encontrada en índice: " + i);
-                        break;
-                    }
-                }
-                
-                if (activoColumnIndex == -1) {
-                    throw new RuntimeException("No se encontró la columna 'Activo' en el Excel");
-                }
-                
-                // Limpiar la tabla antes de cargar nuevos datos
-                modeloCamiones.setRowCount(0);
-                
-                // Iterar sobre todas las filas excepto el encabezado
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    Row row = sheet.getRow(i);
-                    if (row != null) {
-                        totalCamiones++;
-                        Cell activoCell = row.getCell(activoColumnIndex);
-                        boolean activo = true;
-                        
-                        if (activoCell != null) {
-                            if (activoCell.getCellType() == CellType.BOOLEAN) {
-                                activo = activoCell.getBooleanCellValue();
-                            } else if (activoCell.getCellType() == CellType.STRING) {
-                                activo = Boolean.parseBoolean(activoCell.getStringCellValue());
-                            }
-                        }
-                        
-                        // Si el camión está marcado como inactivo (falso)
-                        if (!activo) {
-                            camionesInactivos++;
-                            Object[] fila = new Object[6];
-                            fila[0] = getCellValueAsString(row.getCell(0));
-                            fila[1] = getCellValueAsString(row.getCell(1));
-                            fila[2] = getCellValueAsString(row.getCell(2));
-                            fila[3] = getCellValueAsString(row.getCell(3));
-                            fila[4] = getCellValueAsString(row.getCell(4));
-                            fila[5] = getCellValueAsString(row.getCell(5));
-                            
-                            modeloCamiones.addRow(fila);
-                            
-                            Camiones camion = new Camiones(
-                                (String) fila[0], (String) fila[3], (String) fila[4],
-                                Double.parseDouble(fila[5].toString()), 0.0, "",
-                                (String) fila[1], (String) fila[2], false,
-                                0.0, 0.0, 0.0, 0.0, 0.0, "", "", "", 0.0, 0.0
-                            );
-                            listaCamionesInactivos.add(camion);
-                            System.out.println("Camión inactivo agregado: " + camion.getPlacas());
-                        }
-                    }
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headerRow = sheet.getRow(0);
+            int activoColumnIndex = -1;
+            
+            // Encontrar el índice de la columna "Activo"
+            for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+                if ("Activo".equals(headerRow.getCell(i).getStringCellValue())) {
+                    activoColumnIndex = i;
+                    System.out.println("Columna 'Activo' encontrada en índice: " + i);
+                    break;
                 }
             }
             
-            System.out.println("Total de camiones procesados: " + totalCamiones);
-            System.out.println("Camiones inactivos encontrados: " + camionesInactivos);
+            if (activoColumnIndex == -1) {
+                throw new RuntimeException("No se encontró la columna 'Activo' en el Excel");
+            }
             
-        } catch (Exception e) {
-            System.err.println("Error al cargar los datos de camiones inactivos: " + e.getMessage());
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, 
-                "Error al cargar los datos de camiones inactivos: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
+            // Limpiar la tabla antes de cargar nuevos datos
+            modeloCamiones.setRowCount(0);
+            
+            int rowIndex = 1;
+            
+            // Iterar sobre todas las filas excepto el encabezado
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    totalCamiones++;
+                    Cell activoCell = row.getCell(activoColumnIndex);
+                    boolean activo = true;
+                    
+                    if (activoCell != null) {
+                        if (activoCell.getCellType() == CellType.BOOLEAN) {
+                            activo = activoCell.getBooleanCellValue();
+                        } else if (activoCell.getCellType() == CellType.STRING) {
+                            activo = Boolean.parseBoolean(activoCell.getStringCellValue());
+                        }
+                    }
+                    
+                    // Si el camión está marcado como inactivo (falso)
+                    if (!activo) {
+                        camionesInactivos++;
+                        String marca = getCellValueAsString(row.getCell(2));  // Marca
+                        String modelo = getCellValueAsString(row.getCell(1)); // Modelo
+                        String placas = getCellValueAsString(row.getCell(0)); // Placas
+                        String estado = getCellValueAsString(row.getCell(3)); // Estado
+                        String tipoCombustible = getCellValueAsString(row.getCell(4)); // Tipo Combustible
+                        String kilometraje = getCellValueAsString(row.getCell(5)); // Kilometraje
+
+                        Object[] fila = new Object[7];
+                        fila[0] = rowIndex++;    // No.
+                        fila[1] = marca;         // Marca
+                        fila[2] = modelo;        // Modelo
+                        fila[3] = placas;        // Placas
+                        fila[4] = estado;        // Estado
+                        fila[5] = tipoCombustible; // Tipo Combustible
+                        fila[6] = kilometraje;   // Kilometraje
+                        
+                        modeloCamiones.addRow(fila);
+                        
+                        // Crear objeto Camiones con los valores correctos
+                        Camiones camion = new Camiones(
+                            marca, estado, tipoCombustible,
+                            Double.parseDouble(kilometraje), 0.0, "",
+                            modelo, placas, false,
+                            0.0, 0.0, 0.0, 0.0, 0.0, "", "", "", 0.0, 0.0
+                        );
+                        listaCamionesInactivos.add(camion);
+                        System.out.println("Camión inactivo agregado: " + camion.getMarca() + " - " + camion.getPlacas());
+                    }
+                }
+            }
         }
+        
+        System.out.println("Total de camiones procesados: " + totalCamiones);
+        System.out.println("Camiones inactivos encontrados: " + camionesInactivos);
+        
+    } catch (Exception e) {
+        System.err.println("Error al cargar los datos de camiones inactivos: " + e.getMessage());
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, 
+            "Error al cargar los datos de camiones inactivos: " + e.getMessage(),
+            "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
     
     private String getCellValueAsString(Cell cell) {
         if (cell == null) {
@@ -436,7 +489,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel3 = new javax.swing.JPanel();
         jTextField19 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtMarcaCamionBuscar1 = new javax.swing.JTextField();
+        txtMarcaCamionBuscar = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblRegistroCamiones1 = new javax.swing.JTable();
         buscarCamion = new javax.swing.JButton();
@@ -464,7 +517,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("MARCA");
 
-        txtMarcaCamionBuscar1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMarcaCamionBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         tblRegistroCamiones1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroCamiones1.setModel(new javax.swing.table.DefaultTableModel(
@@ -554,7 +607,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -573,7 +626,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(ActivosCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(ActivarCamionEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -602,42 +655,63 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-        if (txtMarcaCamionBuscar1.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Por favor, ingresa la marca del camión para buscar.");
-            return;
-        }
+String placeholder = "Ingresa Marca del Camión a buscar";
+    String textoActual = txtMarcaCamionBuscar.getText().trim();
+    
+    // Verificar si el texto es el placeholder o está vacío
+    if (textoActual.isEmpty() || textoActual.equals(placeholder)) {
+        JOptionPane.showMessageDialog(this,
+            "Por favor, ingresa la marca del camión para buscar.");
+        return;
+    }
 
-        String marcaBuscada = txtMarcaCamionBuscar1.getText().trim().toLowerCase();
-        modeloCamiones.setRowCount(0);
-        boolean hayCoincidencias = false;
+    // Primero recargar todos los datos para asegurar que tenemos la lista completa
+    cargarDatos();
 
-        Vector<Camiones> todosLosCamiones = gestionCamiones.getCamiones();
-
-        for (Camiones camion : todosLosCamiones) {
-            if (!camion.isActivo() &&
-                camion.getMarca().toLowerCase().contains(marcaBuscada)) {
-
-                Object[] fila = {
-                    camion.getPlacas(),
-                    camion.getModelo(),
-                    camion.getMarca(),
-                    camion.getEstado(),
-                    camion.getTipoCombustible(),
-                    camion.getKilometraje()
-                };
-                modeloCamiones.addRow(fila);
-                hayCoincidencias = true;
+    // Obtener el texto de búsqueda y convertirlo a minúsculas
+    String marcaBuscada = textoActual.toLowerCase();
+    
+    // Filtrar en la tabla completa
+    TableModel modelo = tblRegistroCamiones1.getModel();
+    int rowCount = modelo.getRowCount();
+    Vector<Object[]> filasFiltradas = new Vector<>();
+    boolean encontrado = false;
+    
+    // Recorrer todas las filas de la tabla
+    for (int i = 0; i < rowCount; i++) {
+        // La marca está en la columna 1
+        String marcaEnTabla = String.valueOf(modelo.getValueAt(i, 1)).toLowerCase();
+        if (marcaEnTabla.contains(marcaBuscada)) {
+            encontrado = true;
+            // Guardar toda la fila
+            Object[] fila = new Object[7];
+            for (int j = 0; j < 7; j++) {
+                fila[j] = modelo.getValueAt(i, j);
             }
+            filasFiltradas.add(fila);
         }
-
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this,
-                "No se encontraron camiones inactivos de la marca especificada.");
-            cargarDatos(); // Volver a mostrar todos los inactivos
+    }
+    
+    // Si se encontraron coincidencias, mostrarlas
+    if (encontrado) {
+        modeloCamiones.setRowCount(0);
+        int nuevoIndice = 1;
+        for (Object[] fila : filasFiltradas) {
+            // Actualizar el número de índice
+            fila[0] = nuevoIndice++;
+            modeloCamiones.addRow(fila);
         }
-
-        txtMarcaCamionBuscar1.setText("");
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "No se encontraron camiones con la marca especificada.");
+        cargarDatos(); // Volver a mostrar todos los camiones
+    }
+    
+    // Resetear el campo de búsqueda
+    SwingUtilities.invokeLater(() -> {
+        txtMarcaCamionBuscar.setText(placeholder);
+        txtMarcaCamionBuscar.setForeground(Color.GRAY);
+    });
     }//GEN-LAST:event_buscarCamionActionPerformed
 
     private void txtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenuActionPerformed
@@ -688,7 +762,8 @@ private void cerrarSesionYRegresarLogin() {
 int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
-            String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 0);
+            // Cambiamos el índice de 0 a 3 porque ahora las placas están en la columna 3
+            String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 3);
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de que deseas reactivar el camión con placas: " +
                 placasSeleccionadas + "?",
@@ -775,7 +850,7 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
     private javax.swing.JTable tblRegistroCamiones1;
-    private javax.swing.JTextField txtMarcaCamionBuscar1;
+    private javax.swing.JTextField txtMarcaCamionBuscar;
     private javax.swing.JComboBox<String> txtMenu;
     // End of variables declaration//GEN-END:variables
 }

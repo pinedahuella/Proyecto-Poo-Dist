@@ -19,8 +19,13 @@ import Login.LOGINPINEED;
 import Login.Login;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.awt.Color;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 public class USUARIOSINACTIVOS extends javax.swing.JFrame {
     
@@ -44,7 +49,8 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
         
         // Configuración de la interfaz
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-        
+                setupTextField(txtNombreUsuarioBuscar, "Ingresa Nombre del Usuario a buscar");
+
         // Configuración adicional de la tabla
         tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRegistroUsuarios.getTableHeader().setReorderingAllowed(false);
@@ -63,53 +69,95 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
             this.requestFocusInWindow();
     });
 }
+    
+        // Método para configurar el campo de texto con placeholder
+    private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(java.awt.Color.GRAY);
 
-    private void inicializarTabla() {
-        String[] columnas = {
-            "Nombre Usuario", "Nombre", "Apellido", "DPI", "Cargo",
-            "Correo Electrónico", "Número Telefónico", "Estado"
-        };
-        
-        modeloUsuarios = new DefaultTableModel(columnas, 0) {
+        textField.addFocusListener(new FocusAdapter() {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        
-        tblRegistroUsuarios.setModel(modeloUsuarios);
-    }
-
-    private void cargarDatos() {
-        try {
-            gestionUsuarios.cargarUsuariosDesdeExcel();
-            Vector<Usuarios> todosLosUsuarios = gestionUsuarios.getUsuarios();
-            listaUsuariosInactivos = new Vector<>();
-            modeloUsuarios.setRowCount(0);
-
-            for (Usuarios usuario : todosLosUsuarios) {
-                if ("INACTIVO".equals(usuario.getEstado())) {
-                    Object[] fila = {
-                        usuario.getNombreUsuario(),
-                        usuario.getNombre(),
-                        usuario.getApellido(),
-                        usuario.getNumeroDPI(),
-                        usuario.getCargo(),
-                        usuario.getCorreoElectronico(),
-                        usuario.getNumeroTelefono(),
-                        usuario.getEstado()
-                    };
-                    modeloUsuarios.addRow(fila);
-                    listaUsuariosInactivos.add(usuario);
+            public void focusGained(FocusEvent e) {
+                // Limpia el placeholder al enfocar
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(java.awt.Color.BLACK);
                 }
             }
-        } catch (Exception e) {
-            System.err.println("Error al cargar usuarios inactivos: " + e.getMessage());
-            JOptionPane.showMessageDialog(this,
-                "Error al cargar usuarios inactivos: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // Restablece el placeholder si el campo está vacío
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(java.awt.Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
     }
+
+    // Método para limpiar los campos incluyendo el campo de búsqueda
+    public void limpiarCampos() {
+        // ... otros campos que ya limpias ...
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setForeground(java.awt.Color.GRAY);
+    }
+
+    private void inicializarTabla() {
+    String[] columnas = {
+        "No.", "Nombre Usuario", "Nombre", "Apellido", "DPI", "Cargo",
+        "Correo Electrónico", "Número Telefónico", "Estado"
+    };
+    
+    modeloUsuarios = new DefaultTableModel(columnas, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    
+    tblRegistroUsuarios.setModel(modeloUsuarios);
+    
+    // Establecer el ancho de la columna "No."
+    tblRegistroUsuarios.getColumnModel().getColumn(0).setPreferredWidth(30);
+    tblRegistroUsuarios.getColumnModel().getColumn(0).setMaxWidth(30);
+    tblRegistroUsuarios.getColumnModel().getColumn(0).setMinWidth(30);
+}
+
+
+    private void cargarDatos() {
+    try {
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        Vector<Usuarios> todosLosUsuarios = gestionUsuarios.getUsuarios();
+        listaUsuariosInactivos = new Vector<>();
+        modeloUsuarios.setRowCount(0);
+        
+        int numeroFila = 1; // Contador para la numeración
+
+        for (Usuarios usuario : todosLosUsuarios) {
+            if ("INACTIVO".equals(usuario.getEstado())) {
+                Object[] fila = {
+                    numeroFila++, // Agregar el número de fila
+                    usuario.getNombreUsuario(),
+                    usuario.getNombre(),
+                    usuario.getApellido(),
+                    usuario.getNumeroDPI(),
+                    usuario.getCargo(),
+                    usuario.getCorreoElectronico(),
+                    usuario.getNumeroTelefono(),
+                    usuario.getEstado()
+                };
+                modeloUsuarios.addRow(fila);
+                listaUsuariosInactivos.add(usuario);
+            }
+        }
+    } catch (Exception e) {
+        System.err.println("Error al cargar usuarios inactivos: " + e.getMessage());
+        JOptionPane.showMessageDialog(this,
+            "Error al cargar usuarios inactivos: " + e.getMessage(),
+            "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
     
       
 
@@ -534,70 +582,91 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     }//GEN-LAST:event_ActivosUsuariosActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-        if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Por favor, ingrese el nombre del usuario para buscar.");
-            return;
+   if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+            "Por favor, ingrese el nombre del usuario para buscar.");
+        return;
+    }
+
+    String nombreBuscado = txtNombreUsuarioBuscar.getText().trim();
+    modeloUsuarios.setRowCount(0);
+    boolean encontrado = false;
+    int numeroFila = 1; // Contador para la numeración
+
+    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+
+    for (Usuarios usuario : listaUsuariosInactivos) {
+        String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
+        String nombreUsuarioLoginNormalizado = normalizarTexto(usuario.getNombreUsuario());
+
+        if (nombreUsuarioNormalizado.contains(nombreBuscadoNormalizado) ||
+            nombreUsuarioLoginNormalizado.contains(nombreBuscadoNormalizado)) {
+
+            Object[] fila = {
+                numeroFila++, // Agregar el número de fila
+                usuario.getNombreUsuario(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getCorreoElectronico(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            };
+            modeloUsuarios.addRow(fila);
+            encontrado = true;
         }
+    }
 
-        String nombreBuscado = txtNombreUsuarioBuscar.getText().trim().toLowerCase();
-        modeloUsuarios.setRowCount(0);
-        boolean encontrado = false;
+    if (!encontrado) {
+        JOptionPane.showMessageDialog(this,
+            "No se encontraron usuarios inactivos con el nombre especificado.");
+        cargarDatos();
+    }
 
-        for (Usuarios usuario : listaUsuariosInactivos) {
-            if (usuario.getNombre().toLowerCase().contains(nombreBuscado) ||
-                usuario.getNombreUsuario().toLowerCase().contains(nombreBuscado)) {
-
-                Object[] fila = {
-                    usuario.getNombreUsuario(),
-                    usuario.getNombre(),
-                    usuario.getApellido(),
-                    usuario.getNumeroDPI(),
-                    usuario.getCargo(),
-                    usuario.getCorreoElectronico(),
-                    usuario.getNumeroTelefono(),
-                    usuario.getEstado()
-                };
-                modeloUsuarios.addRow(fila);
-                encontrado = true;
-            }
-        }
-
-        if (!encontrado) {
-            JOptionPane.showMessageDialog(this,
-                "No se encontraron usuarios inactivos con el nombre especificado.");
-            cargarDatos();
-        }
-
-        txtNombreUsuarioBuscar.setText("");
+    SwingUtilities.invokeLater(() -> {
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setForeground(Color.GRAY);
+    });
     }//GEN-LAST:event_buscarUsuarioActionPerformed
 
+    
+    // Método para normalizar el texto
+private String normalizarTexto(String texto) {
+    String textoNormalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);
+    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+    return pattern.matcher(textoNormalizado).replaceAll("").toLowerCase(); // Devuelve el texto sin acentos y en minúsculas
+}
+
+
     private void ActivarUsuarioEliminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarUsuarioEliminadoActionPerformed
-        int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            try {
-                long dpi = Long.parseLong(tblRegistroUsuarios.getValueAt(filaSeleccionada, 3).toString());
+       int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+    if (filaSeleccionada >= 0) {
+        try {
+            // Ajustamos el índice para tomar en cuenta la nueva columna "No."
+            // La columna DPI ahora está en el índice 4 en lugar de 3
+            long dpi = Long.parseLong(tblRegistroUsuarios.getValueAt(filaSeleccionada, 4).toString());
 
-                int confirm = JOptionPane.showConfirmDialog(this,
-                    "¿Está seguro de que desea reactivar el usuario con DPI: " + dpi + "?",
-                    "Confirmar reactivación",
-                    JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de que desea reactivar el usuario con DPI: " + dpi + "?",
+                "Confirmar reactivación",
+                JOptionPane.YES_NO_OPTION);
 
-                if (confirm == JOptionPane.YES_OPTION) {
-                    gestionUsuarios.reactivarUsuario(dpi);
-                    cargarDatos();
-                    JOptionPane.showMessageDialog(this, "Usuario reactivado correctamente.");
-                }
-            } catch (Exception e) {
-                System.err.println("Error al reactivar el usuario: " + e.getMessage());
-                JOptionPane.showMessageDialog(this,
-                    "Error al reactivar el usuario: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            if (confirm == JOptionPane.YES_OPTION) {
+                gestionUsuarios.reactivarUsuario(dpi);
+                cargarDatos();
+                JOptionPane.showMessageDialog(this, "Usuario reactivado correctamente.");
             }
-        } else {
+        } catch (Exception e) {
+            System.err.println("Error al reactivar el usuario: " + e.getMessage());
             JOptionPane.showMessageDialog(this,
-                "Por favor, seleccione un usuario para reactivar.");
+                "Error al reactivar el usuario: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "Por favor, seleccione un usuario para reactivar.");
+    }
     }//GEN-LAST:event_ActivarUsuarioEliminadoActionPerformed
 
     /**

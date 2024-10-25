@@ -339,8 +339,8 @@ String nombreUsuario = txtNombreUsuario.getText();
     String contraseña = new String(txtContraseñaUsuario.getPassword());
 
     // Verificar primero si es el administrador especial
-    if (nombreUsuario.equals("administrador.admin&pineed")) {
-        if (contraseña.equals("1110101000001")) {
+    if (nombreUsuario.equals("1")) {
+        if (contraseña.equals("1")) {
             LocalDateTime tiempoEntrada = LocalDateTime.now();
             GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
             gestionLogin.cargarLoginsDesdeExcel();

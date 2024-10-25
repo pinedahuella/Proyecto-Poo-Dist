@@ -5,10 +5,16 @@ import GestionDePilotos.INICIOGESTIONPILOTOS;
 import GestionDePilotos.Piloto;
 import Login.LOGINPINEED;
 import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
@@ -34,6 +40,9 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         if (gestionPilotos.getPilotos() != null) {
             listaPilotos = gestionPilotos.getPilotos();
         }
+        
+            configurarCamposDeTextoConPlaceholders(); // Configura los placeholders en los campos de texto
+
 
         cargarPilotosEnTabla();
         this.currentUser = username;
@@ -59,17 +68,161 @@ public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
         }
     }
 
-    private void limpiarCampos() {
-        txtNombrePiloto.setText("");
-        txtApellidoPiloto.setText("");
-        txtNumeroDeDpiPiloto.setText("");
-        txtTipoDeLicenciaPiloto.setSelectedIndex(0);
-        txtCorreoElectronicoPiloto.setText("");
-        txtNumeroTelefonicoPiloto.setText("");
-        txtGeneroPiloto.setSelectedIndex(0);
-        txtFechaDeNacimientoPiloto.setDate(null);
-        txtEstadoPiloto.setSelectedIndex(0);
+    // Método para configurar el placeholder en campos de texto
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el placeholder en campos de contraseña
+private void setupPasswordField(JPasswordField passwordField, String placeholder) {
+    passwordField.setText(placeholder);
+    passwordField.setForeground(Color.GRAY);
+    passwordField.setEchoChar((char) 0); // Muestra el texto del placeholder
+
+    passwordField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
+                passwordField.setText("");
+                passwordField.setForeground(Color.BLACK);
+                passwordField.setEchoChar('•'); // Carácter para ocultar la contraseña
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (passwordField.getPassword().length == 0) {
+                passwordField.setText(placeholder);
+                passwordField.setForeground(Color.GRAY);
+                passwordField.setEchoChar((char) 0); // Muestra el texto del placeholder
+            }
+        }
+    });
+}
+
+
+
+// Método para configurar todos los campos con placeholders
+private void configurarCamposDeTextoConPlaceholders() {
+    setupTextField(txtNombrePiloto, "Ingrese el nombre");
+    setupTextField(txtApellidoPiloto, "Ingrese el apellido");
+    setupTextField(txtNumeroDeDpiPiloto, "Ingrese el número de DPI");
+    setupTextField(txtCorreoElectronicoPiloto, "Ingrese el correo electrónico");
+    setupTextField(txtNumeroTelefonicoPiloto, "Ingrese el número telefónico");
+    setupDateChooserWithPlaceholder(txtFechaDeNacimientoPiloto, "dd/MM/yyyy"); // Configura el JDateChooser con placeholder
+}
+
+
+
+    
+    // Método para configurar el JDateChooser con un placeholder en gris
+private void setupDateChooserWithPlaceholder(JDateChooser dateChooser, String placeholder) {
+  dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
+    dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
+
+    // Obtener el editor de fecha como JTextField
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    
+    // Inicializar con el placeholder
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+    
+    // Añadir un listener para manejar el enfoque
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Si no hay fecha seleccionada, establecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(""); // Limpia el texto al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Si no hay fecha seleccionada, restablecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+}
+
+
+// Método para limpiar y restablecer los placeholders
+public void limpiarCampos() {
+    txtNombrePiloto.setText("Ingrese el nombre");
+    txtNombrePiloto.setForeground(Color.GRAY);
+
+    txtApellidoPiloto.setText("Ingrese el apellido");
+    txtApellidoPiloto.setForeground(Color.GRAY);
+
+    txtNumeroDeDpiPiloto.setText("Ingrese el número de DPI");
+    txtNumeroDeDpiPiloto.setForeground(Color.GRAY);
+
+
+
+    txtCorreoElectronicoPiloto.setText("Ingrese el correo electrónico");
+    txtCorreoElectronicoPiloto.setForeground(Color.GRAY);
+
+    txtNumeroTelefonicoPiloto.setText("Ingrese el número telefónico");
+    txtNumeroTelefonicoPiloto.setForeground(Color.GRAY);
+
+
+    // Restablece el JDateChooser al estado del placeholder
+        setupDateChooserWithPlaceholder(txtFechaDeNacimientoPiloto, "dd/MM/yyyy"); // Configura el JDateChooser con placeholder
+}
+
+
+   /**
+     * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
+     */
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir(); // Cierra sesión y sale
+            }
+        });
     }
+    
+
+
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+    
+    
     
     
     @SuppressWarnings("unchecked")

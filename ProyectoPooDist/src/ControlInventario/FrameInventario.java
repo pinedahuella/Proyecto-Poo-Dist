@@ -24,6 +24,8 @@ import java.util.Set;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
@@ -90,7 +92,7 @@ public class FrameInventario extends javax.swing.JFrame {
         
         //con este for llenaremos la tabla con los elemetos del vector
         for (Producto prod : productosdeinvetario) {
-            comboProductoM.addItem(prod.getNombre());
+            txtProductoModificar.addItem(prod.getNombre());
             comoboProductoC2.addItem(prod.getNombre());
 
         }
@@ -101,6 +103,7 @@ public class FrameInventario extends javax.swing.JFrame {
         
         //llamamos a un bucle infinito
         iniciarBucleEnHilo();
+        configurarCamposProducto();
         this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
@@ -113,6 +116,74 @@ public class FrameInventario extends javax.swing.JFrame {
         });
     }
     
+// Método para limpiar y restablecer los placeholders de los campos de producto
+public void limpiarCamposProducto() {
+    txtNombreDelProductoAgregar.setText("Ingrese el nombre del producto");
+    txtNombreDelProductoAgregar.setForeground(Color.GRAY);
+
+    txtNombreDelProveedorAgregar.setText("Ingrese el nombre del proveedor");
+    txtNombreDelProveedorAgregar.setForeground(Color.GRAY);
+
+    txtPrecioCostoAgregar.setText("Ingrese precio");
+    txtPrecioCostoAgregar.setForeground(Color.GRAY);
+
+    txtPrecioCostoModificar.setText("Ingrese precio");
+    txtPrecioCostoModificar.setForeground(Color.GRAY);
+
+    txtNombreDelProveedorModificar.setText("Ingrese el nombre del producto");
+    txtNombreDelProveedorModificar.setForeground(Color.GRAY);
+
+    txtPrecioFleteAgregar.setText("Ingrese precio");
+    txtPrecioFleteAgregar.setForeground(Color.GRAY);
+
+    txtPrecioFleteModificar.setText("Ingrese precio");
+    txtPrecioFleteModificar.setForeground(Color.GRAY);
+
+    txtNombreProductoModificar.setText("Ingrese el nombre del producto");
+    txtNombreProductoModificar.setForeground(Color.GRAY);
+}
+
+// Método para configurar todos los campos de producto con placeholders
+private void configurarCamposProducto() {
+    setupTextField(txtNombreDelProductoAgregar, "Ingrese el nombre del producto");
+    setupTextField(txtNombreDelProveedorAgregar, "Ingrese el nombre del proveedor");
+    setupTextField(txtPrecioCostoAgregar, "Ingrese precio");
+    setupTextField(txtPrecioCostoModificar, "Ingrese precio");
+    setupTextField(txtNombreDelProveedorModificar, "Ingrese el nombre del producto");
+    setupTextField(txtPrecioFleteAgregar, "Ingrese precio");
+    setupTextField(txtPrecioFleteModificar, "Ingrese precio");
+    setupTextField(txtNombreProductoModificar, "Ingrese el nombre del producto");
+}
+
+
+
+// Método para configurar el placeholder en campos de texto
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+
 private void setupComboBox() {
     txtMenu3.removeAllItems();
     txtMenu3.addItem("Seleccione una opción");
@@ -365,15 +436,15 @@ private void cerrarSesionYRegresarLogin() {
     //funcion que nos ayudara a actulizar los dos combo box
     private void actualizarCombobox(){
         
-        comboProductoM.removeAllItems();
+        txtProductoModificar.removeAllItems();
         comoboProductoC2.removeAllItems();
         
-        comboProductoM.addItem("None");
+        txtProductoModificar.addItem("None");
         comoboProductoC2.addItem("None");
         
         //con este for llenaremos nuevamente los combo box
         for (Producto prod : productosdeinvetario) {
-            comboProductoM.addItem(prod.getNombre());
+            txtProductoModificar.addItem(prod.getNombre());
             comoboProductoC2.addItem(prod.getNombre());
         }
     };
@@ -409,28 +480,28 @@ private void cerrarSesionYRegresarLogin() {
         jLabel2 = new javax.swing.JLabel();
         panelAgregarProducto = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
-        textProductoN = new javax.swing.JTextField();
-        textProductoP = new javax.swing.JTextField();
+        txtNombreDelProductoAgregar = new javax.swing.JTextField();
+        txtNombreDelProveedorAgregar = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        textProductoPC = new javax.swing.JTextField();
+        txtPrecioCostoAgregar = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        textProductoPF = new javax.swing.JTextField();
+        txtPrecioFleteAgregar = new javax.swing.JTextField();
         spinnerCantidad = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         panelp2 = new javax.swing.JPanel();
-        textoModificadoNombre = new javax.swing.JTextField();
+        txtNombreProductoModificar = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        textoModificadoProveedor = new javax.swing.JTextField();
+        txtNombreDelProveedorModificar = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        textoModificadoPC = new javax.swing.JTextField();
+        txtPrecioCostoModificar = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        textoModificadoPF = new javax.swing.JTextField();
+        txtPrecioFleteModificar = new javax.swing.JTextField();
         panelModificarProducto = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         spinnerModificadoCantidad = new javax.swing.JSpinner();
-        comboProductoM = new javax.swing.JComboBox<>();
+        txtProductoModificar = new javax.swing.JComboBox<>();
         jLabel14 = new javax.swing.JLabel();
         botonParaActualizar = new javax.swing.JPanel();
         panelp3 = new javax.swing.JPanel();
@@ -703,26 +774,26 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        textProductoN.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        textProductoN.addActionListener(new java.awt.event.ActionListener() {
+        txtNombreDelProductoAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelProductoAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textProductoNActionPerformed(evt);
+                txtNombreDelProductoAgregarActionPerformed(evt);
             }
         });
 
-        textProductoP.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelProveedorAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 51));
         jLabel4.setText("Precio Costo");
 
-        textProductoPC.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioCostoAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 51));
         jLabel5.setText("Precio Flete");
 
-        textProductoPF.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioFleteAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         spinnerCantidad.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         spinnerCantidad.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
@@ -741,24 +812,24 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(panelp1Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textProductoN, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtNombreDelProductoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelp1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textProductoP))
-                    .addGroup(panelp1Layout.createSequentialGroup()
+                        .addComponent(txtNombreDelProveedorAgregar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelp1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textProductoPC, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtPrecioCostoAgregar))
                     .addGroup(panelp1Layout.createSequentialGroup()
                         .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3))
                         .addGap(9, 9, 9)
-                        .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(spinnerCantidad, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                            .addComponent(textProductoPF))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spinnerCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPrecioFleteAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(14, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelp1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelAgregarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -769,20 +840,20 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(panelp1Layout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textProductoN, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreDelProductoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(29, 29, 29)
                 .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(textProductoP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreDelProveedorAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addComponent(textProductoPC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPrecioCostoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(textProductoPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPrecioFleteAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(panelp1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -795,7 +866,7 @@ private void cerrarSesionYRegresarLogin() {
         panelp2.setBackground(new java.awt.Color(204, 204, 255));
         panelp2.setPreferredSize(new java.awt.Dimension(487, 181));
 
-        textoModificadoNombre.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreProductoModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 51));
@@ -805,10 +876,10 @@ private void cerrarSesionYRegresarLogin() {
         jLabel7.setForeground(new java.awt.Color(0, 0, 51));
         jLabel7.setText("Nombre Del provedor");
 
-        textoModificadoProveedor.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        textoModificadoProveedor.addActionListener(new java.awt.event.ActionListener() {
+        txtNombreDelProveedorModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelProveedorModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textoModificadoProveedorActionPerformed(evt);
+                txtNombreDelProveedorModificarActionPerformed(evt);
             }
         });
 
@@ -816,13 +887,13 @@ private void cerrarSesionYRegresarLogin() {
         jLabel8.setForeground(new java.awt.Color(0, 0, 51));
         jLabel8.setText("Precio Costo");
 
-        textoModificadoPC.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioCostoModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 51));
         jLabel9.setText("Precio Flete");
 
-        textoModificadoPF.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioFleteModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         panelModificarProducto.setBackground(new java.awt.Color(102, 153, 255));
         panelModificarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -859,8 +930,8 @@ private void cerrarSesionYRegresarLogin() {
         spinnerModificadoCantidad.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         spinnerModificadoCantidad.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
-        comboProductoM.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        comboProductoM.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None" }));
+        txtProductoModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtProductoModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None" }));
 
         jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(0, 0, 51));
@@ -872,32 +943,37 @@ private void cerrarSesionYRegresarLogin() {
             panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelp2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(panelp2Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textoModificadoPC, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelp2Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textoModificadoProveedor))
-                    .addGroup(panelp2Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textoModificadoNombre))
-                    .addGroup(panelp2Layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(comboProductoM, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelp2Layout.createSequentialGroup()
                         .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(spinnerModificadoCantidad, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                            .addComponent(textoModificadoPF))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(panelp2Layout.createSequentialGroup()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombreDelProveedorModificar))
+                            .addGroup(panelp2Layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombreProductoModificar)))
+                        .addGap(14, 14, 14))
+                    .addGroup(panelp2Layout.createSequentialGroup()
+                        .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelp2Layout.createSequentialGroup()
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtProductoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelp2Layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtPrecioCostoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelp2Layout.createSequentialGroup()
+                                .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spinnerModificadoCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPrecioFleteModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelp2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelModificarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -908,23 +984,23 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(panelp2Layout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboProductoM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtProductoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
                 .addGap(28, 28, 28)
                 .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(textoModificadoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreProductoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(textoModificadoProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreDelProveedorModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textoModificadoPC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPrecioCostoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addGap(29, 29, 29)
                 .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textoModificadoPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPrecioFleteModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
                 .addGap(28, 28, 28)
                 .addGroup(panelp2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1156,7 +1232,7 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
         
         //primer boton
-        
+   
         panelB1.setBackground(colorazulclaro);
         PanelB2.setBackground(colorazuloscurlo);
         PanelB3.setBackground(colorazuloscurlo);
@@ -1164,13 +1240,14 @@ private void cerrarSesionYRegresarLogin() {
         panelp1.setVisible(true);
         panelp2.setVisible(false);
         panelp3.setVisible(false);
+        
+        limpiarCamposProducto();
     }//GEN-LAST:event_panelB1MouseClicked
 
     private void PanelB2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelB2MouseClicked
         // TODO add your handling code here:
         
         //segundo boton
-        
         panelB1.setBackground(colorazuloscurlo);
         PanelB2.setBackground(colorazulclaro);
         PanelB3.setBackground(colorazuloscurlo);
@@ -1178,13 +1255,14 @@ private void cerrarSesionYRegresarLogin() {
         panelp1.setVisible(false);
         panelp2.setVisible(true);
         panelp3.setVisible(false);
+        limpiarCamposProducto();
+
     }//GEN-LAST:event_PanelB2MouseClicked
 
     private void PanelB3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelB3MouseClicked
         // TODO add your handling code here:
         
         //tercer boton
-        
         panelB1.setBackground(colorazuloscurlo);
         PanelB2.setBackground(colorazuloscurlo);
         PanelB3.setBackground(colorazulclaro);
@@ -1192,12 +1270,14 @@ private void cerrarSesionYRegresarLogin() {
         panelp1.setVisible(false);
         panelp2.setVisible(false);
         panelp3.setVisible(true);
+        limpiarCamposProducto();
+
     }//GEN-LAST:event_PanelB3MouseClicked
 
     private void PanelB4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelB4MouseClicked
         // TODO add your handling code here:
-        
-        panelp4.setVisible(true);
+panelp4.setVisible(true);
+                limpiarCamposProducto();
     }//GEN-LAST:event_PanelB4MouseClicked
 
     private void panelAgregarProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAgregarProductoMouseClicked
@@ -1206,10 +1286,10 @@ private void cerrarSesionYRegresarLogin() {
         //boton para agregar un producto
         try{
             //obtenemos los datos del usuario
-        String newnombre = textProductoN.getText();
-        String newproveedor = textProductoP.getText();
-        float newPrecioCosto = Float.parseFloat(textProductoPC.getText());
-        float newPrecioFlete = Float.parseFloat(textProductoPF.getText());
+        String newnombre = txtNombreDelProductoAgregar.getText();
+        String newproveedor = txtNombreDelProveedorAgregar.getText();
+        float newPrecioCosto = Float.parseFloat(txtPrecioCostoAgregar.getText());
+        float newPrecioFlete = Float.parseFloat(txtPrecioFleteAgregar.getText());
         
             if (!newnombre.isEmpty() && !newproveedor.isEmpty() && newPrecioCosto > 0 && newPrecioFlete > 0) {
                 
@@ -1226,15 +1306,15 @@ private void cerrarSesionYRegresarLogin() {
         cargarInvetrioTabla();
         
         //agregamos el quintal al comobo box de modifica y de cantidades.
-        comboProductoM.addItem(newnombre);
+        txtProductoModificar.addItem(newnombre);
         comoboProductoC2.addItem(newnombre);
         
         //dejamos todos los campos en blanco 
-        textProductoN.setText("");
-        textProductoP.setText("");
+        txtNombreDelProductoAgregar.setText("");
+        txtNombreDelProveedorAgregar.setText("");
         
-        textProductoPC.setText("");
-        textProductoPF.setText("");
+        txtPrecioCostoAgregar.setText("");
+        txtPrecioFleteAgregar.setText("");
         
         spinnerCantidad.setValue(0);
         
@@ -1260,63 +1340,41 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_panelAgregarProductoMouseClicked
 
     private void panelModificarProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelModificarProductoMouseClicked
-        // TODO add your handling code here:
-        
-        //boton para modificar un elemento
-        
-        try{
-            //leemos el combo box de modificar producto
-        String comboA = comboProductoM.getSelectedItem().toString();
+        try {
+        String comboA = txtProductoModificar.getSelectedItem().toString();
             
-        //aqui preguntamos si ese valor es vali o no
         if (comboA.equals("None")) {
-             System.out.println("no paso nada");
-             //mostramos mesaje 
             JOptionPane.showMessageDialog(null, "seleccione un producto", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
-        }else{
-                
-            //obtenemos los datos del usuario
-            String newnombre = textoModificadoNombre.getText();
-            String newproveedor = textoModificadoProveedor.getText();
-            
-            float newPrecioCosto = Float.parseFloat(textoModificadoPC.getText());
-            float newPrecioFlete = Float.parseFloat(textoModificadoPF.getText());
+        } else {
+            String newnombre = txtNombreProductoModificar.getText();
+            String newproveedor = txtNombreDelProveedorModificar.getText();
+            float newPrecioCosto = Float.parseFloat(txtPrecioCostoModificar.getText());
+            float newPrecioFlete = Float.parseFloat(txtPrecioFleteModificar.getText());
             
             if (!newnombre.isEmpty() && !newproveedor.isEmpty() && newPrecioCosto > 0 && newPrecioFlete > 0) {
+                int newExistencias = (Integer) spinnerModificadoCantidad.getValue();
+
+                Tproductos.actualizarProducto(txtProductoModificar.getSelectedIndex() - 1, 
+                    newnombre, newproveedor, newExistencias, newPrecioCosto, newPrecioFlete);
+
+                cargarInvetrioTabla();
+                actualizarCombobox();
+                Tproductos.getCargarInvetarioExcel();
                 
-
-            int newExistencias = (Integer) spinnerModificadoCantidad.getValue();
-
-
-            //llamamos a la funcion de modificar un elemento del vector
-            Tproductos.actualizarProducto( comboProductoM.getSelectedIndex() - 1, newnombre, newproveedor, newExistencias, newPrecioCosto, newPrecioFlete);
-
-            //actualizamo la tabla
-            cargarInvetrioTabla();
-
-            //actualizamos los comobo box
-            actualizarCombobox();
-            
-            //funcion para guardar todos los quintales actuales
-            Tproductos.getCargarInvetarioExcel();
-            
-            //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "producto modificado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
-       
-            }else{
-               //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "complete el nombre y proveedor, ingrese precios validos", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
-        
+                // Restaurar placeholders después de modificar
+                configurarCamposProducto();
+                
+                JOptionPane.showMessageDialog(null, "producto modificado correctamente", 
+                    "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            } else {
+                JOptionPane.showMessageDialog(null, "complete el nombre y proveedor, ingrese precios validos", 
+                    "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
             }
-            
         }
-        }
-        catch (NumberFormatException e) {
-            //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
-        }
-        
-        
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", 
+            "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+    }
     }//GEN-LAST:event_panelModificarProductoMouseClicked
 
     private void panelExistenciasProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelExistenciasProductosMouseClicked
@@ -1390,17 +1448,17 @@ private void cerrarSesionYRegresarLogin() {
 
     }//GEN-LAST:event_jTextField19ActionPerformed
 
-    private void textoModificadoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoModificadoProveedorActionPerformed
+    private void txtNombreDelProveedorModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreDelProveedorModificarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textoModificadoProveedorActionPerformed
+    }//GEN-LAST:event_txtNombreDelProveedorModificarActionPerformed
 
     private void txtMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenu3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMenu3ActionPerformed
 
-    private void textProductoNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textProductoNActionPerformed
+    private void txtNombreDelProductoAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreDelProductoAgregarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textProductoNActionPerformed
+    }//GEN-LAST:event_txtNombreDelProductoAgregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1446,66 +1504,56 @@ private void cerrarSesionYRegresarLogin() {
         });
     }
     
-    private void iniciarBucleEnHilo() {
-        //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
-        Thread hiloBucle = new Thread(() -> {
+private void iniciarBucleEnHilo() {
+    Thread hiloBucle = new Thread(() -> {
+        while (true) {
+            String comboA = txtProductoModificar.getSelectedItem().toString();
             
-         while (true) {
-             
-             //leemos el combo box de modificar producto
-            String comboA = comboProductoM.getSelectedItem().toString();
-            
-            //aqui preguntamos si ese valor es vali o no
             if (comboA.equals("None")) {
-                indiceActual = 0;
-                
-                textoModificadoNombre.setText("");
-                textoModificadoProveedor.setText("");
-                textoModificadoPC.setText("");
-                 textoModificadoPF.setText("");
-                    
-                spinnerModificadoCantidad.setValue(0);
-                    
-            }else{
-                
-                //ingresamo los datos del producto a modificar dentro de los field text
-                if (indiceActual != comboProductoM.getSelectedIndex()) {
-                    
-                    textoModificadoNombre.setText(productosdeinvetario.get(comboProductoM.getSelectedIndex() - 1).getNombre());
-                    textoModificadoProveedor.setText(productosdeinvetario.get(comboProductoM.getSelectedIndex() - 1).getProveedor());
-                    textoModificadoPC.setText("" + productosdeinvetario.get(comboProductoM.getSelectedIndex() - 1).getPrecioCosto());
-                    textoModificadoPF.setText("" + productosdeinvetario.get(comboProductoM.getSelectedIndex() - 1).getPrecioFlete());
-                    
-                    spinnerModificadoCantidad.setValue(productosdeinvetario.get(comboProductoM.getSelectedIndex() - 1).getExistencias());
-                    
-                    indiceActual = comboProductoM.getSelectedIndex();
+                if (indiceActual != 0) {
+                    indiceActual = 0;
+                    SwingUtilities.invokeLater(() -> {
+                        // Restaurar placeholders
+                        configurarCamposProducto();
+                    });
                 }
-                
+            } else {
+                int selectedIndex = txtProductoModificar.getSelectedIndex();
+                if (indiceActual != selectedIndex) {
+                    indiceActual = selectedIndex;
+                    final Producto productoSeleccionado = productosdeinvetario.get(selectedIndex - 1);
+                    
+                    SwingUtilities.invokeLater(() -> {
+                        // Establecer valores con color negro
+                        setTextWithBlackColor(txtNombreProductoModificar, productoSeleccionado.getNombre());
+                        setTextWithBlackColor(txtNombreDelProveedorModificar, productoSeleccionado.getProveedor());
+                        setTextWithBlackColor(txtPrecioCostoModificar, String.valueOf(productoSeleccionado.getPrecioCosto()));
+                        setTextWithBlackColor(txtPrecioFleteModificar, String.valueOf(productoSeleccionado.getPrecioFlete()));
+                        spinnerModificadoCantidad.setValue(productoSeleccionado.getExistencias());
+                    });
+                }
             }
-             
             
-            //limita los recursos del bucle
             try {
-                    // Pausa el hilo por 100ms para reducir el consumo de recursos
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                 e.printStackTrace();
-                }
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
+        }
+    });
+    hiloBucle.start();
+}
 
-        // Iniciar el hilo
-        hiloBucle.start();
-
-    }
-
+private void setTextWithBlackColor(JTextField field, String text) {
+    field.setForeground(Color.BLACK);
+    field.setText(text);
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelB2;
     private javax.swing.JPanel PanelB3;
     private javax.swing.JPanel PanelB4;
     private javax.swing.JPanel botonParaActualizar;
     private javax.swing.JComboBox<String> comboOperacion;
-    private javax.swing.JComboBox<String> comboProductoM;
     private javax.swing.JComboBox<String> comoboProductoC2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1546,14 +1594,15 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JSpinner spinnerCantidad;
     private javax.swing.JSpinner spinnerModificadoCantidad;
     private javax.swing.JTable tablaInventario;
-    private javax.swing.JTextField textProductoN;
-    private javax.swing.JTextField textProductoP;
-    private javax.swing.JTextField textProductoPC;
-    private javax.swing.JTextField textProductoPF;
-    private javax.swing.JTextField textoModificadoNombre;
-    private javax.swing.JTextField textoModificadoPC;
-    private javax.swing.JTextField textoModificadoPF;
-    private javax.swing.JTextField textoModificadoProveedor;
     private javax.swing.JComboBox<String> txtMenu3;
+    private javax.swing.JTextField txtNombreDelProductoAgregar;
+    private javax.swing.JTextField txtNombreDelProveedorAgregar;
+    private javax.swing.JTextField txtNombreDelProveedorModificar;
+    private javax.swing.JTextField txtNombreProductoModificar;
+    private javax.swing.JTextField txtPrecioCostoAgregar;
+    private javax.swing.JTextField txtPrecioCostoModificar;
+    private javax.swing.JTextField txtPrecioFleteAgregar;
+    private javax.swing.JTextField txtPrecioFleteModificar;
+    private javax.swing.JComboBox<String> txtProductoModificar;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,10 +4,22 @@ import Login.LOGINPINEED;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import GestionDePilotos.GESTIONPILOTOS;
 import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
@@ -26,7 +38,6 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
 
 
 
-    
     public MODIFICARGESTIONPILOTOS(Piloto piloto, INICIOGESTIONPILOTOS ventanaPrincipal, String username, String role, LOGINPINEED loginFrame) {
     initComponents();
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -40,48 +51,157 @@ public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
         this.gestionPilotos = ventanaPrincipal.gestionPilotos;
         this.listaPilotos = gestionPilotos.getPilotos();
     }
-    
+
+    // Configurar placeholders
+    configurarCamposDeTextoConPlaceholders();
+
     if (piloto != null) {
         this.pilotoActual = piloto;
         cargarDatosPiloto();
     }
 }
 
-    
-    private void cargarDatosPiloto() {
-        if (pilotoActual != null) {
-            txtNombrePilotoModificarModificar.setText(pilotoActual.getNombrePiloto());
-            txtApellidoPilotoModificarModificar.setText(pilotoActual.getApellidoPiloto());
-            txtNumeroDeDpiPilotoModificarModificar.setText(String.valueOf(pilotoActual.getNumeroDeDpi()));
-            txtTipoDeLicenciaPilotoModificarModificar.setSelectedItem(pilotoActual.getTipoLicencia());
-            txtCorreoElectronicoPilotoModificarModificar.setText(pilotoActual.getCorreoElectronicoPiloto());
-            txtNumeroTelefonicoPilotoModificarModificar.setText(String.valueOf(pilotoActual.getNumeroTelefonicoPiloto()));
-            txtGeneroPilotoModificarModificar.setSelectedItem(pilotoActual.getGeneroPiloto());
-            txtEstadoPilotoModificarModificar.setSelectedItem(pilotoActual.getEstadoPiloto());
-            
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                Date fechaNacimiento = sdf.parse(pilotoActual.getFechaDeNacimiento());
-                txtFechaDeNacimientoPilotoModificarModificar.setDate(fechaNacimiento);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al cargar la fecha de nacimiento: " + e.getMessage());
-            }
+// Método para cargar datos del piloto actual
+private void cargarDatosPiloto() {
+    if (pilotoActual != null) {
+        txtNombrePilotoModificarModificar.setText(pilotoActual.getNombrePiloto());
+        txtNombrePilotoModificarModificar.setForeground(Color.BLACK);
+
+        txtApellidoPilotoModificarModificar.setText(pilotoActual.getApellidoPiloto());
+        txtApellidoPilotoModificarModificar.setForeground(Color.BLACK);
+
+        txtNumeroDeDpiPilotoModificarModificar.setText(String.valueOf(pilotoActual.getNumeroDeDpi()));
+        txtNumeroDeDpiPilotoModificarModificar.setForeground(Color.BLACK);
+
+        txtCorreoElectronicoPilotoModificarModificar.setText(pilotoActual.getCorreoElectronicoPiloto());
+        txtCorreoElectronicoPilotoModificarModificar.setForeground(Color.BLACK);
+
+        txtNumeroTelefonicoPilotoModificarModificar.setText(String.valueOf(pilotoActual.getNumeroTelefonicoPiloto()));
+        txtNumeroTelefonicoPilotoModificarModificar.setForeground(Color.BLACK);
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date fechaNacimiento = sdf.parse(pilotoActual.getFechaDeNacimiento());
+            txtFechaDeNacimientoPilotoModificarModificar.setDate(fechaNacimiento);
+            JTextField editor = (JTextField) txtFechaDeNacimientoPilotoModificarModificar.getDateEditor().getUiComponent();
+            editor.setForeground(Color.BLACK);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar la fecha de nacimiento: " + e.getMessage());
         }
     }
+}
+
+// Configuración de placeholder para JTextField
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY);
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (textField.getText().isEmpty()) {
+                textField.setText(placeholder);
+                textField.setForeground(Color.GRAY);
+            }
+        }
+    });
+}
+
+// Configuración de placeholder en JDateChooser
+private void setupDateChooserWithPlaceholder(JDateChooser dateChooser, String placeholder) {
+    dateChooser.setDateFormatString("dd/MM/yyyy");
+    dateChooser.setDate(null);
+
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (dateChooser.getDate() == null) {
+                editor.setText("");
+                editor.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder);
+                editor.setForeground(Color.GRAY);
+            }
+        }
+    });
+}
+
+// Configuración de todos los campos con placeholders
+private void configurarCamposDeTextoConPlaceholders() {
+    setupTextField(txtNombrePilotoModificarModificar, "Ingrese el nombre");
+    setupTextField(txtApellidoPilotoModificarModificar, "Ingrese el apellido");
+    setupTextField(txtNumeroDeDpiPilotoModificarModificar, "Ingrese el número de DPI");
+    setupTextField(txtCorreoElectronicoPilotoModificarModificar, "Ingrese el correo electrónico");
+    setupTextField(txtNumeroTelefonicoPilotoModificarModificar, "Ingrese el número telefónico");
+    setupDateChooserWithPlaceholder(txtFechaDeNacimientoPilotoModificarModificar, "dd/MM/yyyy");
+}
+
+// Método para limpiar y restablecer los placeholders
+public void limpiarCampos() {
+    txtNombrePilotoModificarModificar.setText("Ingrese el nombre");
+    txtNombrePilotoModificarModificar.setForeground(Color.GRAY);
+
+    txtApellidoPilotoModificarModificar.setText("Ingrese el apellido");
+    txtApellidoPilotoModificarModificar.setForeground(Color.GRAY);
+
+    txtNumeroDeDpiPilotoModificarModificar.setText("Ingrese el número de DPI");
+    txtNumeroDeDpiPilotoModificarModificar.setForeground(Color.GRAY);
+
+    txtCorreoElectronicoPilotoModificarModificar.setText("Ingrese el correo electrónico");
+    txtCorreoElectronicoPilotoModificarModificar.setForeground(Color.GRAY);
+
+    txtNumeroTelefonicoPilotoModificarModificar.setText("Ingrese el número telefónico");
+    txtNumeroTelefonicoPilotoModificarModificar.setForeground(Color.GRAY);
+
+    setupDateChooserWithPlaceholder(txtFechaDeNacimientoPilotoModificarModificar, "dd/MM/yyyy");
+}
+
+
+
+
+     /**
+     * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
+     */
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir(); // Cierra sesión y sale
+            }
+        });
+    }
     
-    private void limpiarCamposPiloto() {
-        txtNombrePilotoModificarModificar.setText("");
-        txtApellidoPilotoModificarModificar.setText("");
-        txtNumeroDeDpiPilotoModificarModificar.setText("");
-        txtTipoDeLicenciaPilotoModificarModificar.setSelectedIndex(0);
-        txtCorreoElectronicoPilotoModificarModificar.setText("");
-        txtNumeroTelefonicoPilotoModificarModificar.setText("");
-        txtGeneroPilotoModificarModificar.setSelectedIndex(0);
-        txtFechaDeNacimientoPilotoModificarModificar.setDate(null);
-        txtEstadoPilotoModificarModificar.setSelectedIndex(0);
+
+
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
     }
     
     
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

@@ -31,8 +31,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.IDateEvaluator;
+import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -151,12 +155,12 @@ public class FormularioPedidos extends javax.swing.JFrame {
         Vector<Camiones> camionesnew = gescamiones.getCamiones();
         //vector para agregar los pilotos al comobobox
         for (int i = 0; i < pilotonew.size(); i++) {
-            comboPilotosA.addItem(pilotonew.get(i).getNombrePiloto());
-            comboPilotoB.addItem(pilotonew.get(i).getNombrePiloto());
+            txtPilotoAgregar.addItem(pilotonew.get(i).getNombrePiloto());
+            txtPilotoModificar.addItem(pilotonew.get(i).getNombrePiloto());
         }
         for (int i = 0; i < camionesnew.size(); i++) { 
-            comboCamionA.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
-            comboCamionB.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
+            txtTransportePesadoAgregar.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
+            txtTransportePesadoModificar.addItem(camionesnew.get(i).getMarca() + " " +camionesnew.get(i).getModelo());
         }
         
         
@@ -166,6 +170,7 @@ public class FormularioPedidos extends javax.swing.JFrame {
 
        //iniciamos el bucle infinito
         iniciarBucleEnHilo(); 
+        configurarDateChoosersConPlaceholders();
         this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
@@ -178,7 +183,56 @@ public class FormularioPedidos extends javax.swing.JFrame {
         });
     }
    
+    private void setupDateChooserWithPlaceholder(JDateChooser dateChooser, String placeholder) {
+    dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
+    dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
+
+    // Obtener el editor de fecha como JTextField
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
     
+    // Inicializar con el placeholder
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+    
+    // Añadir un listener para manejar el enfoque
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Si no hay fecha seleccionada, establecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(""); // Limpia el texto al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Si no hay fecha seleccionada, restablecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+}
+
+// Método para configurar todos los JDateChooser con placeholders
+private void configurarDateChoosersConPlaceholders() {
+    setupDateChooserWithPlaceholder(txtFechaDeCargaAgregar, "dd/MM/yyyy");
+    setupDateChooserWithPlaceholder(txtFechaDeCargaModificar, "dd/MM/yyyy");
+    setupDateChooserWithPlaceholder(txtFechaDeDescargaAgregar, "dd/MM/yyyy");
+    setupDateChooserWithPlaceholder(txtFechaDeDescargaModificar, "dd/MM/yyyy");
+}
+
+// Método para limpiar y restablecer los placeholders de los JDateChooser
+public void limpiarDateChoosers() {
+    
+        ((JTextField) txtFechaDeCargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+        ((JTextField) txtFechaDeCargaModificar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+        ((JTextField) txtFechaDeDescargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+        ((JTextField) txtFechaDeDescargaModificar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+}
+
     private void setupComboBox() {
     txtMenu.removeAllItems();
     txtMenu.addItem("Seleccione una opción");
@@ -516,12 +570,12 @@ private void cerrarSesionYRegresarLogin() {
         
        
             //igualamos las fechas
-             fechaCargaB.setDate(null);    
-             fechaDescargaB.setDate(null);
+             txtFechaDeCargaModificar.setDate(null);    
+             txtFechaDeDescargaModificar.setDate(null);
                 
             //igualamos el combo box de pilotos y camiones
-            comboPilotoB.setSelectedIndex(0);
-            comboCamionB.setSelectedIndex(0);
+            txtPilotoModificar.setSelectedIndex(0);
+            txtTransportePesadoModificar.setSelectedIndex(0);
                 
             modeloProductosB.setRowCount(0);
             modeloProductosC.setRowCount(0);
@@ -564,11 +618,11 @@ private void cerrarSesionYRegresarLogin() {
         radioFinalizadoA = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        fechaDescargaB = new com.toedter.calendar.JDateChooser();
-        fechaCargaB = new com.toedter.calendar.JDateChooser();
+        txtFechaDeDescargaModificar = new com.toedter.calendar.JDateChooser();
+        txtFechaDeCargaModificar = new com.toedter.calendar.JDateChooser();
         jLabel9 = new javax.swing.JLabel();
-        comboPilotoB = new javax.swing.JComboBox<>();
-        comboCamionB = new javax.swing.JComboBox<>();
+        txtPilotoModificar = new javax.swing.JComboBox<>();
+        txtTransportePesadoModificar = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
@@ -598,12 +652,12 @@ private void cerrarSesionYRegresarLogin() {
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        fechaCargaA = new com.toedter.calendar.JDateChooser();
-        fechaDescargaA = new com.toedter.calendar.JDateChooser();
+        txtFechaDeCargaAgregar = new com.toedter.calendar.JDateChooser();
+        txtFechaDeDescargaAgregar = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        comboPilotosA = new javax.swing.JComboBox<>();
-        comboCamionA = new javax.swing.JComboBox<>();
+        txtPilotoAgregar = new javax.swing.JComboBox<>();
+        txtTransportePesadoAgregar = new javax.swing.JComboBox<>();
         jPanel9 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jTextField19 = new javax.swing.JTextField();
@@ -684,9 +738,9 @@ private void cerrarSesionYRegresarLogin() {
         jLabel9.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel9.setText("Piloto");
 
-        comboPilotoB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPilotoModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        comboCamionB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtTransportePesadoModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel10.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel10.setText("Transporte Pesado");
@@ -774,16 +828,16 @@ private void cerrarSesionYRegresarLogin() {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(comboPilotoB, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(fechaCargaB, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtPilotoModificar, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtFechaDeCargaModificar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(fechaDescargaB, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtFechaDeDescargaModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel8)
                                     .addComponent(jLabel10)
-                                    .addComponent(comboCamionB, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtTransportePesadoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(labeltPedido)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -805,19 +859,19 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fechaCargaB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFechaDeCargaModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fechaDescargaB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFechaDeDescargaModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel10)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboPilotoB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboCamionB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPilotoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTransportePesadoModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labeltPedido)
@@ -1038,9 +1092,9 @@ private void cerrarSesionYRegresarLogin() {
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("Fecha De Descarga");
 
-        fechaCargaA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFechaDeCargaAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        fechaDescargaA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFechaDeDescargaAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel5.setText("Piloto");
@@ -1048,9 +1102,9 @@ private void cerrarSesionYRegresarLogin() {
         jLabel6.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel6.setText("Transporte Pesado");
 
-        comboPilotosA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPilotoAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        comboCamionA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtTransportePesadoAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jPanel9.setBackground(new java.awt.Color(102, 153, 255));
         jPanel9.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1098,15 +1152,15 @@ private void cerrarSesionYRegresarLogin() {
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(comboPilotosA, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(fechaCargaA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)))
+                                        .addComponent(txtPilotoAgregar, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtFechaDeCargaAgregar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(comboCamionA, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtTransportePesadoAgregar, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(jPanel3Layout.createSequentialGroup()
                                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel4)
-                                            .addComponent(fechaDescargaA, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtFechaDeDescargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel6))
                                         .addGap(0, 0, Short.MAX_VALUE))))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -1129,16 +1183,16 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fechaCargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fechaDescargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaDeCargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaDeDescargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboCamionA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPilotoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTransportePesadoAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1364,8 +1418,8 @@ private boolean isCamionDisponible(int indiceCamion) {
         //leemos las fechas primero primero:  
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         
-        Date newFechaCarga = fechaCargaA.getDate();
-        Date newFechaDescarga = fechaDescargaA.getDate();
+        Date newFechaCarga = txtFechaDeCargaAgregar.getDate();
+        Date newFechaDescarga = txtFechaDeDescargaAgregar.getDate();
         // Obtener la fecha actual
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -1375,12 +1429,12 @@ private boolean isCamionDisponible(int indiceCamion) {
         
    try {
         // Primero verificamos si el piloto está disponible
-        int newIndicePiloto = comboPilotosA.getSelectedIndex();
+        int newIndicePiloto = txtPilotoAgregar.getSelectedIndex();
         if (!isPilotoDisponible(newIndicePiloto)) {
             return; // Si el piloto no está disponible, terminamos la ejecución
         }
         
-        int newIndiceCamion = comboCamionA.getSelectedIndex();
+        int newIndiceCamion = txtTransportePesadoAgregar.getSelectedIndex();
         if (!isCamionDisponible(newIndiceCamion)) {
         return;
         }
@@ -1437,8 +1491,8 @@ private boolean isCamionDisponible(int indiceCamion) {
                 //reiniciamos todos los elemento necesario
                 ActualizarTablaA();
                 
-                comboPilotosA.setSelectedIndex(0);
-                comboCamionA.setSelectedIndex(0);
+                txtPilotoAgregar.setSelectedIndex(0);
+                txtTransportePesadoAgregar.setSelectedIndex(0);
 
                 //actualizamos la tabla general de pedidos
                 actualizarTablaDePedidos();
@@ -1451,7 +1505,8 @@ private boolean isCamionDisponible(int indiceCamion) {
                 
                 //mostramos mesaje para acetar que este bien
                 JOptionPane.showMessageDialog(null, "Datos agregados de forma correcta", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
-  
+                                    limpiarDateChoosers();
+
 
             }else{
                //mostramos mesaje para acetar que este bien
@@ -1476,8 +1531,8 @@ private boolean isCamionDisponible(int indiceCamion) {
         //leemos las fechas primero primero:  
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         
-        Date newFechaCarga = fechaCargaB.getDate();
-        Date newFechaDescarga = fechaDescargaB.getDate();
+        Date newFechaCarga = txtFechaDeCargaModificar.getDate();
+        Date newFechaDescarga = txtFechaDeDescargaModificar.getDate();
         
         try {
             if (indiceGeneral > -1) {
@@ -1498,13 +1553,13 @@ private boolean isCamionDisponible(int indiceCamion) {
         Date nuevaFecha = calendar.getTime();
                         
         // Primero verificamos si el piloto está disponible
-        int newIndicePiloto = comboPilotoB.getSelectedIndex();
+        int newIndicePiloto = txtPilotoModificar.getSelectedIndex();
         if (!isPilotoDisponible(newIndicePiloto)) {
             return; // Si el piloto no está disponible, terminamos la ejecución
         }
         
         
-        int newIndiceCamion = comboCamionB.getSelectedIndex();
+        int newIndiceCamion = txtTransportePesadoModificar.getSelectedIndex();
         if (!isCamionDisponible(newIndiceCamion)) {
         return;
         }
@@ -1586,7 +1641,7 @@ private boolean isCamionDisponible(int indiceCamion) {
 
                         //mostramos mesaje para acetar que este bien
                         JOptionPane.showMessageDialog(null, "Datos agregados se modificaron correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
-
+                                            limpiarDateChoosers();
 
                     }else{
                        //mostramos mesaje para acetar que este bien
@@ -1679,12 +1734,12 @@ private boolean isCamionDisponible(int indiceCamion) {
                  //agregamos todos los valores necesarios
                  
                  //igualamos las fechas
-                fechaCargaB.setDate(FechaTablaNew.get(indiceDelPedido).getFechaC());    
-                fechaDescargaB.setDate(FechaTablaNew.get(indiceDelPedido).getFechaD());
+                txtFechaDeCargaModificar.setDate(FechaTablaNew.get(indiceDelPedido).getFechaC());    
+                txtFechaDeDescargaModificar.setDate(FechaTablaNew.get(indiceDelPedido).getFechaD());
                 
                 //igualamos el combo box de pilotos y camiones
-                comboPilotoB.setSelectedIndex(FechaTablaNew.get(indiceDelPedido).getIndicePiloto());
-                comboCamionB.setSelectedIndex(FechaTablaNew.get(indiceDelPedido).getIndiceCamion());
+                txtPilotoModificar.setSelectedIndex(FechaTablaNew.get(indiceDelPedido).getIndicePiloto());
+                txtTransportePesadoModificar.setSelectedIndex(FechaTablaNew.get(indiceDelPedido).getIndiceCamion());
                 
                 //actualizamos la tabla de productos 
                 ActualizarTablaB();
@@ -1788,14 +1843,6 @@ private boolean isCamionDisponible(int indiceCamion) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> comboCamionA;
-    private javax.swing.JComboBox<String> comboCamionB;
-    private javax.swing.JComboBox<String> comboPilotoB;
-    private javax.swing.JComboBox<String> comboPilotosA;
-    private com.toedter.calendar.JDateChooser fechaCargaA;
-    private com.toedter.calendar.JDateChooser fechaCargaB;
-    private com.toedter.calendar.JDateChooser fechaDescargaA;
-    private com.toedter.calendar.JDateChooser fechaDescargaB;
     private javax.swing.JTabbedPane formato1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1849,6 +1896,14 @@ private boolean isCamionDisponible(int indiceCamion) {
     private javax.swing.JTable tablaProductosA;
     private javax.swing.JTable tablaProductosB;
     private javax.swing.JTable tablaProductosC;
+    private com.toedter.calendar.JDateChooser txtFechaDeCargaAgregar;
+    private com.toedter.calendar.JDateChooser txtFechaDeCargaModificar;
+    private com.toedter.calendar.JDateChooser txtFechaDeDescargaAgregar;
+    private com.toedter.calendar.JDateChooser txtFechaDeDescargaModificar;
     private javax.swing.JComboBox<String> txtMenu;
+    private javax.swing.JComboBox<String> txtPilotoAgregar;
+    private javax.swing.JComboBox<String> txtPilotoModificar;
+    private javax.swing.JComboBox<String> txtTransportePesadoAgregar;
+    private javax.swing.JComboBox<String> txtTransportePesadoModificar;
     // End of variables declaration//GEN-END:variables
 }

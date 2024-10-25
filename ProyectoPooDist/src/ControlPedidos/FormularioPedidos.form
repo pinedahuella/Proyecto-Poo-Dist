@@ -198,18 +198,18 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                                      <Component id="comboPilotoB" alignment="0" max="32767" attributes="0"/>
-                                                      <Component id="fechaCargaB" alignment="0" min="-2" pref="149" max="-2" attributes="0"/>
+                                                      <Component id="txtPilotoModificar" alignment="0" max="32767" attributes="0"/>
+                                                      <Component id="txtFechaDeCargaModificar" alignment="0" min="-2" pref="149" max="-2" attributes="0"/>
                                                   </Group>
                                                   <Component id="jLabel7" alignment="0" min="-2" pref="94" max="-2" attributes="0"/>
                                                   <Component id="jLabel9" alignment="0" min="-2" pref="94" max="-2" attributes="0"/>
                                               </Group>
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
                                               <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="fechaDescargaB" min="-2" pref="145" max="-2" attributes="0"/>
+                                                  <Component id="txtFechaDeDescargaModificar" min="-2" pref="145" max="-2" attributes="0"/>
                                                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="comboCamionB" min="-2" pref="300" max="-2" attributes="0"/>
+                                                  <Component id="txtTransportePesadoModificar" min="-2" pref="300" max="-2" attributes="0"/>
                                               </Group>
                                           </Group>
                                           <Group type="102" attributes="0">
@@ -240,22 +240,22 @@
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="fechaCargaB" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtFechaDeCargaModificar" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="fechaDescargaB" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtFechaDeDescargaModificar" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="comboPilotoB" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboCamionB" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtPilotoModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtTransportePesadoModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -332,9 +332,9 @@
                         <Property name="text" type="java.lang.String" value="Fecha De Descarga"/>
                       </Properties>
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="fechaDescargaB">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txtFechaDeDescargaModificar">
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="fechaCargaB">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txtFechaDeCargaModificar">
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel9">
                       <Properties>
@@ -344,7 +344,7 @@
                         <Property name="text" type="java.lang.String" value="Piloto"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="comboPilotoB">
+                    <Component class="javax.swing.JComboBox" name="txtPilotoModificar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Nirmala UI" size="12" style="0"/>
@@ -357,7 +357,7 @@
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="comboCamionB">
+                    <Component class="javax.swing.JComboBox" name="txtTransportePesadoModificar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Nirmala UI" size="12" style="0"/>
@@ -833,17 +833,17 @@
                                                   <Component id="jLabel3" alignment="0" min="-2" pref="94" max="-2" attributes="0"/>
                                                   <Component id="jLabel5" alignment="0" min="-2" pref="94" max="-2" attributes="0"/>
                                                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                                      <Component id="comboPilotosA" alignment="0" max="32767" attributes="0"/>
-                                                      <Component id="fechaCargaA" alignment="0" pref="149" max="32767" attributes="0"/>
+                                                      <Component id="txtPilotoAgregar" alignment="0" max="32767" attributes="0"/>
+                                                      <Component id="txtFechaDeCargaAgregar" alignment="0" pref="149" max="32767" attributes="0"/>
                                                   </Group>
                                               </Group>
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
                                               <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="comboCamionA" max="32767" attributes="0"/>
+                                                  <Component id="txtTransportePesadoAgregar" max="32767" attributes="0"/>
                                                   <Group type="102" attributes="0">
                                                       <Group type="103" groupAlignment="0" attributes="0">
                                                           <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="fechaDescargaA" alignment="0" min="-2" pref="145" max="-2" attributes="0"/>
+                                                          <Component id="txtFechaDeDescargaAgregar" alignment="0" min="-2" pref="145" max="-2" attributes="0"/>
                                                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                                                       </Group>
                                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -877,8 +877,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="fechaCargaA" min="-2" max="-2" attributes="0"/>
-                                  <Component id="fechaDescargaA" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtFechaDeCargaAgregar" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtFechaDeDescargaAgregar" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -887,8 +887,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="comboPilotosA" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboCamionA" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtPilotoAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtTransportePesadoAgregar" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="52" max="32767" attributes="0"/>
                               <Component id="jPanel9" min="-2" max="-2" attributes="0"/>
@@ -946,14 +946,14 @@
                         <Property name="text" type="java.lang.String" value="Fecha De Descarga"/>
                       </Properties>
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="fechaCargaA">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txtFechaDeCargaAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Nirmala UI" size="12" style="0"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="fechaDescargaA">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txtFechaDeDescargaAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Nirmala UI" size="12" style="0"/>
@@ -976,7 +976,7 @@
                         <Property name="text" type="java.lang.String" value="Transporte Pesado"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="comboPilotosA">
+                    <Component class="javax.swing.JComboBox" name="txtPilotoAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Nirmala UI" size="12" style="0"/>
@@ -989,7 +989,7 @@
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="comboCamionA">
+                    <Component class="javax.swing.JComboBox" name="txtTransportePesadoAgregar">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Nirmala UI" size="12" style="0"/>

@@ -3,13 +3,19 @@ package GestionDeCamiones;
 // Importación de clases necesarias para el funcionamiento de la aplicación
 import Login.LOGINPINEED; // Importa la clase LOGINPINEED para manejar la lógica de inicio de sesión
 import com.toedter.calendar.JDateChooser; // Importa la clase JDateChooser para seleccionar fechas de manera visual
+import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.SimpleDateFormat; // Importa la clase SimpleDateFormat para formatear fechas
 import java.util.Date; // Importa la clase Date para manejar fechas y horas
 import java.util.Vector; // Importa la clase Vector para almacenar datos en una lista dinámica
 import javax.swing.JOptionPane; // Importa la clase JOptionPane para mostrar diálogos de mensaje y entrada
 import javax.swing.table.DefaultTableModel; // Importa la clase DefaultTableModel para gestionar modelos de tabla en Swing
 import java.util.regex.Pattern; // Importa la clase Pattern para trabajar con expresiones regulares
+import javax.swing.JPasswordField;
 import javax.swing.JTable; // Importa la clase JTable para crear tablas en la interfaz gráfica
+import javax.swing.JTextField;
 
 /**
  * Clase AGREGARGESTIONCAMIONES.
@@ -45,6 +51,7 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
         if (gestionCamiones.getCamiones() != null) {
             listaCamiones = gestionCamiones.getCamiones();
         }
+    configurarCamposDeTextoConPlaceholdersCamiones(); // Configura los placeholders en los campos de texto
 
         cargarCamionesEnTabla(); // Carga los camiones en la tabla.
         this.currentUser = username;
@@ -84,19 +91,99 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * Limpia los campos de entrada en el formulario.
-     */
-    private void limpiarCampos() {
-        txtPlacasCamiones.setText("");
-        txtEstadoCamiones.setSelectedIndex(0);
-        txtTipoCombustibleCamiones.setSelectedIndex(0);
-        txtKilometrajeCamiones.setText("");
-        txtCapacidadDeCargaCamiones.setText("");
-        txtAñoDeFabricacionCamiones.setDate(null);
-        txtModeloCamiones.setText("");
-        txtMarcaCamiones.setText("");
-    }
+// Método para configurar el placeholder en campos de texto
+private void setupTextFieldCamiones(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el placeholder en JDateChooser
+private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
+    dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
+    dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
+
+    // Obtener el editor de fecha como JTextField
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    
+    // Inicializar con el placeholder
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+    
+    // Añadir un listener para manejar el enfoque
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Si no hay fecha seleccionada, establecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(""); // Limpia el texto al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Si no hay fecha seleccionada, restablecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+}
+
+
+// Método para configurar todos los campos de camiones con placeholders
+private void configurarCamposDeTextoConPlaceholdersCamiones() {
+    setupTextFieldCamiones(txtPlacasCamiones, "Ingrese las placas");
+    setupTextFieldCamiones(txtMarcaCamiones, "Ingrese la marca");
+    setupTextFieldCamiones(txtModeloCamiones, "Ingrese el modelo");
+    setupTextFieldCamiones(txtKilometrajeCamiones, "Ingrese el kilometraje");
+    setupTextFieldCamiones(txtCapacidadDeCargaCamiones, "Ingrese la capacidad de carga");
+    setupDateChooser(txtAñoDeFabricacionCamiones, "dd/MM/yyyy"); // Configura el JDateChooser con placeholder
+}
+
+// Método para limpiar y restablecer los placeholders de los campos de camiones
+public void limpiarCamposCamiones() {
+    txtPlacasCamiones.setText("Ingrese las placas");
+    txtPlacasCamiones.setForeground(Color.GRAY);
+
+    txtMarcaCamiones.setText("Ingrese la marca");
+    txtMarcaCamiones.setForeground(Color.GRAY);
+
+    txtModeloCamiones.setText("Ingrese el modelo");
+    txtModeloCamiones.setForeground(Color.GRAY);
+
+    txtKilometrajeCamiones.setText("Ingrese el kilometraje");
+    txtKilometrajeCamiones.setForeground(Color.GRAY);
+
+    txtCapacidadDeCargaCamiones.setText("Ingrese la capacidad de carga");
+    txtCapacidadDeCargaCamiones.setForeground(Color.GRAY);
+
+    // Restablece el JDateChooser al estado del placeholder
+    
+        ((JTextField) txtAñoDeFabricacionCamiones.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+}
+
 
     /**
      * Valida que las placas contengan al menos una letra y un número.
@@ -129,6 +216,33 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
     private boolean validarCapacidadCarga(double capacidadCarga) {
         return (capacidadCarga >= 100 && capacidadCarga <= 30000);
     } 
+    
+    
+       /**
+     * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
+     */
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir(); // Cierra sesión y sale
+            }
+        });
+    }
+    
+
+
+    private void cerrarSesionYSalir() {
+        if (loginFrame != null) {
+            loginFrame.cerrarSesion(currentUser, userRole);
+        }
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+    
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

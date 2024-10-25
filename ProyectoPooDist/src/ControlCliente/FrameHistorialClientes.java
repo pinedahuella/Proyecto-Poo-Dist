@@ -9,6 +9,12 @@ package ControlCliente;
  * @author USUARIO
  */
 
+import GestionDeCamiones.CAMIONESINACTIVOS;
+import Login.GESTIONLOGIN;
+import Login.LOGINPINEED;
+import Login.Login;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
 //definimos las librerias de tablas
@@ -35,8 +41,17 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
             }
         };
     
-    public FrameHistorialClientes() {
+        private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
+    
+    
+    public FrameHistorialClientes(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
+          this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+        
         
         //inciamos las clases
         gesclientes = new GestionClientes();
@@ -112,6 +127,51 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
         }
     }
 
+            public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+     
+
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
+
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -146,7 +206,7 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setText("Activar Cliente");
+        jLabel2.setText("ACTIVAR CLIENTE");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -172,7 +232,7 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 385, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -316,7 +376,16 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrameHistorialClientes().setVisible(true);
+                
+                                
+                                String username = "defaultUser";  // Reemplaza con el nombre de usuario real o lógica
+                String role = "defaultRole"; 
+
+                LOGINPINEED loginFrame = new LOGINPINEED();  // Instancia el objeto LOGINPINEED
+
+                // Crea la instancia de INICIOGESTIONCAMIONES con los parámetros requeridos
+                new FrameHistorialClientes(username, role, loginFrame).setVisible(true);
+
             }
         });
     }

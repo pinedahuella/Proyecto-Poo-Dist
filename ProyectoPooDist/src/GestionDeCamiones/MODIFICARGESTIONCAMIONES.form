@@ -78,20 +78,20 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel16" min="-2" pref="60" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="txtPlacaCamionesModificar" max="32767" attributes="0"/>
+                              <Component id="txtPlacasCamionesModificar" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel10" min="-2" pref="63" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtMarcaCamionModificar" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="txtModeloCamionModificar" alignment="0" min="-2" pref="258" max="-2" attributes="0"/>
+                                  <Component id="txtMarcaCamionesModificar" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtModeloCamionesModificar" alignment="0" min="-2" pref="258" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel15" min="-2" pref="141" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="txtAñoDeFabricacionCamionModificar" max="32767" attributes="0"/>
+                              <Component id="txtAñoDeFabricacionCamionesModificar" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -100,20 +100,20 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtCapacidadDeCargaCamionModificar" alignment="0" min="-2" pref="175" max="-2" attributes="0"/>
-                                  <Component id="txtTipoCombustibleCamionModificar" alignment="0" min="-2" pref="175" max="-2" attributes="0"/>
+                                  <Component id="txtCapacidadDeCargaCamionesModificar" alignment="0" min="-2" pref="175" max="-2" attributes="0"/>
+                                  <Component id="txtTipoCombustibleCamionesModificar" alignment="0" min="-2" pref="175" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel18" min="-2" pref="59" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="txtEstadoCamionModificar" min="-2" pref="172" max="-2" attributes="0"/>
+                                  <Component id="txtEstadoCamionesModificar" min="-2" pref="172" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel13" min="-2" pref="105" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtKilometrajeCamionModificar" min="-2" pref="132" max="-2" attributes="0"/>
+                                  <Component id="txtKilometrajeCamionesModificar" min="-2" pref="132" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -127,42 +127,42 @@
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtMarcaCamionModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtMarcaCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtModeloCamionModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtModeloCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtPlacaCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtPlacasCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jLabel15" alignment="1" min="-2" pref="22" max="-2" attributes="0"/>
-                          <Component id="txtAñoDeFabricacionCamionModificar" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtAñoDeFabricacionCamionesModificar" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtCapacidadDeCargaCamionModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtCapacidadDeCargaCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtTipoCombustibleCamionModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtTipoCombustibleCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtKilometrajeCamionModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtKilometrajeCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtEstadoCamionModificar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtEstadoCamionesModificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="128" max="-2" attributes="0"/>
                       <Component id="btnModificarCamionesSistema" pref="28" max="32767" attributes="0"/>
@@ -200,7 +200,7 @@
                 <Property name="text" type="java.lang.String" value="ESTADO"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="txtTipoCombustibleCamionModificar">
+            <Component class="javax.swing.JComboBox" name="txtTipoCombustibleCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -237,7 +237,7 @@
                 <Property name="text" type="java.lang.String" value="KILOMETRAJE"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="txtEstadoCamionModificar">
+            <Component class="javax.swing.JComboBox" name="txtEstadoCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -251,13 +251,13 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtEstadoCamionModificarActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtEstadoCamionesModificarActionPerformed"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="com.toedter.calendar.JDateChooser" name="txtA&#xf1;oDeFabricacionCamionModificar">
+            <Component class="com.toedter.calendar.JDateChooser" name="txtA&#xf1;oDeFabricacionCamionesModificar">
               <Properties>
                 <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -265,7 +265,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtCapacidadDeCargaCamionModificar">
+            <Component class="javax.swing.JTextField" name="txtCapacidadDeCargaCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -288,7 +288,7 @@
                 <Property name="text" type="java.lang.String" value="A&#xd1;O DE FABRICACION"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtModeloCamionModificar">
+            <Component class="javax.swing.JTextField" name="txtModeloCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
@@ -303,21 +303,21 @@
                 <Property name="text" type="java.lang.String" value="PLACA"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtPlacaCamionesModificar">
+            <Component class="javax.swing.JTextField" name="txtPlacasCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtKilometrajeCamionModificar">
+            <Component class="javax.swing.JTextField" name="txtKilometrajeCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtMarcaCamionModificar">
+            <Component class="javax.swing.JTextField" name="txtMarcaCamionesModificar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Nirmala UI" size="12" style="0"/>

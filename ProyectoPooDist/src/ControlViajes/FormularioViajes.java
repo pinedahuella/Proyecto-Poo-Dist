@@ -25,6 +25,14 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
+import com.toedter.calendar.JDateChooser;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
 
 //definimos las librerias para el vector
 import java.util.Vector;
@@ -41,10 +49,14 @@ import ControlPedidos.*;
 import java.util.Calendar;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.IDateEvaluator;
+import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 //libreria para hacer poups
 import javax.swing.JOptionPane;
@@ -113,9 +125,9 @@ public class FormularioViajes extends javax.swing.JFrame {
     if (role.equalsIgnoreCase("PILOTO")) {
         jPanel6.setVisible(false);
         jLabel2.setVisible(false);
-        fechaBCarga.setVisible(false);
+        txtFechaDeCargaAgregar.setVisible(false);
         jLabel3.setVisible(false);
-        fechaBDescarga.setVisible(false);
+        txtFechaDeDescargaAgregar.setVisible(false);
         jLabel4.setVisible(false);
         comboPilotosB.setVisible(false);
         jLabel5.setVisible(false);
@@ -217,6 +229,7 @@ public class FormularioViajes extends javax.swing.JFrame {
     ActualizarComboListaPedidos();
             
     iniciarBucleEnHilo(); 
+    configurarCamposConPlaceholders();
     this.currentUser = username;
     this.userRole = role;
     this.loginFrame = loginFrame;
@@ -230,7 +243,68 @@ public class FormularioViajes extends javax.swing.JFrame {
     });
 }
     
-   
+// Método para configurar el placeholder en JDateChooser
+private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
+    dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
+    dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
+
+    // Obtener el editor de fecha como JTextField
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    
+    // Inicializar con el placeholder
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+    
+    // Añadir un listener para manejar el enfoque
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Si no hay fecha seleccionada, establecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(""); // Limpia el texto al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Si no hay fecha seleccionada, restablecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+}
+
+// Método para configurar todos los JDateChooser con placeholders
+private void configurarCamposConPlaceholders() {
+    setupDateChooser(txtFechaDeCargaAgregar, "dd/MM/yyyy");
+    setupDateChooser(txtFechaDeCargaViaje, "dd/MM/yyyy");
+    setupDateChooser(txtFechaDeDescargaAgregar, "dd/MM/yyyy");
+    setupDateChooser(txtFechaDeDescargaViaje, "dd/MM/yyyy");
+}
+
+
+// Método para limpiar y restablecer los placeholders de los JDateChooser
+public void limpiarDateChoosers() {
+    txtFechaDeCargaAgregar.setDate(null);
+    txtFechaDeCargaAgregar.getDateEditor().getUiComponent().setForeground(Color.GRAY);
+    ((JTextField) txtFechaDeCargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+
+    txtFechaDeCargaViaje.setDate(null);
+    txtFechaDeCargaViaje.getDateEditor().getUiComponent().setForeground(Color.GRAY);
+    ((JTextField) txtFechaDeCargaViaje.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+
+    txtFechaDeDescargaAgregar.setDate(null);
+    txtFechaDeDescargaAgregar.getDateEditor().getUiComponent().setForeground(Color.GRAY);
+    ((JTextField) txtFechaDeDescargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+
+    txtFechaDeDescargaViaje.setDate(null);
+    txtFechaDeDescargaViaje.getDateEditor().getUiComponent().setForeground(Color.GRAY);
+    ((JTextField) txtFechaDeDescargaViaje.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+}
+
 
 private void setupComboBox() {
     txtMenu.removeAllItems();
@@ -589,8 +663,8 @@ private void cerrarSesionYRegresarLogin() {
         jLabel7 = new javax.swing.JLabel();
         comoboCamionesA = new javax.swing.JComboBox<>();
         comboPilotosA = new javax.swing.JComboBox<>();
-        fechaCargaA = new com.toedter.calendar.JDateChooser();
-        fechaDescargaA = new com.toedter.calendar.JDateChooser();
+        txtFechaDeCargaViaje = new com.toedter.calendar.JDateChooser();
+        txtFechaDeDescargaViaje = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaProductosA = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
@@ -607,9 +681,9 @@ private void cerrarSesionYRegresarLogin() {
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        fechaBCarga = new com.toedter.calendar.JDateChooser();
+        txtFechaDeCargaAgregar = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
-        fechaBDescarga = new com.toedter.calendar.JDateChooser();
+        txtFechaDeDescargaAgregar = new com.toedter.calendar.JDateChooser();
         jLabel4 = new javax.swing.JLabel();
         comboPilotosB = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
@@ -709,9 +783,9 @@ private void cerrarSesionYRegresarLogin() {
 
         comboPilotosA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        fechaCargaA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFechaDeCargaViaje.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        fechaDescargaA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFechaDeDescargaViaje.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         tablaProductosA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tablaProductosA.setModel(new javax.swing.table.DefaultTableModel(
@@ -772,7 +846,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(fechaCargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtFechaDeCargaViaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -789,7 +863,7 @@ private void cerrarSesionYRegresarLogin() {
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel7))
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(fechaDescargaA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtFechaDeDescargaViaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
@@ -812,7 +886,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addGap(7, 7, 7)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fechaCargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaDeCargaViaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -820,7 +894,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comoboCamionesA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fechaDescargaA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaDeDescargaViaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addGap(12, 12, 12)
@@ -978,12 +1052,12 @@ private void cerrarSesionYRegresarLogin() {
         jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel2.setText("Fecha de Carga");
 
-        fechaBCarga.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFechaDeCargaAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel3.setText("Fecha de Descarga");
 
-        fechaBDescarga.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtFechaDeDescargaAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("Piloto");
@@ -1048,7 +1122,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
-        jPanel14.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel14.setBackground(new java.awt.Color(0, 51, 255));
         jPanel14.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel14MouseClicked(evt);
@@ -1057,15 +1131,15 @@ private void cerrarSesionYRegresarLogin() {
 
         jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("Modo Daltonico");
+        jLabel14.setText("MODO DALTONICO");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1075,7 +1149,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap())
         );
 
-        jPanel15.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel15.setBackground(new java.awt.Color(51, 51, 255));
         jPanel15.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel15MouseClicked(evt);
@@ -1084,7 +1158,7 @@ private void cerrarSesionYRegresarLogin() {
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel15.setText("Eliminar Viaje");
+        jLabel15.setText("ELIMINAR VIAJE");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -1121,7 +1195,7 @@ private void cerrarSesionYRegresarLogin() {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
-                                    .addComponent(fechaBCarga, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtFechaDeCargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1129,7 +1203,7 @@ private void cerrarSesionYRegresarLogin() {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
-                                    .addComponent(fechaBDescarga, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtFechaDeDescargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel5)
@@ -1182,7 +1256,7 @@ private void cerrarSesionYRegresarLogin() {
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel2)
                                             .addGap(7, 7, 7)
-                                            .addComponent(fechaBCarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtFechaDeCargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel4)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1192,7 +1266,7 @@ private void cerrarSesionYRegresarLogin() {
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel3)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(fechaBDescarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtFechaDeDescargaAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1322,8 +1396,8 @@ private boolean isCamionDisponible(int indiceCamion) {
     private void jPanel12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel12MouseClicked
 SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     
-    Date newFechaCarga = fechaBCarga.getDate();
-    Date newFechaDescarga = fechaBDescarga.getDate();
+    Date newFechaCarga = txtFechaDeCargaAgregar.getDate();
+    Date newFechaDescarga = txtFechaDeDescargaAgregar.getDate();
     
     // Obtener la fecha actual
     Calendar calendar = Calendar.getInstance();
@@ -1443,8 +1517,8 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     private void botonModificarViajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonModificarViajesMouseClicked
  SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     
-    Date newFechaCarga = fechaCargaA.getDate();
-    Date newFechaDescarga = fechaDescargaA.getDate();
+    Date newFechaCarga = txtFechaDeCargaViaje.getDate();
+    Date newFechaDescarga = txtFechaDeDescargaViaje.getDate();
     
     try {
         // Primero verificamos si el piloto está disponible
@@ -1742,8 +1816,8 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
                 //ahora hacemos que cada cada elemento se iguale a la fecha seleccionada
                 
                 //igualamos las fechas
-                fechaCargaA.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaC());    
-                fechaDescargaA.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaD());
+                txtFechaDeCargaViaje.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaC());    
+                txtFechaDeDescargaViaje.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaD());
                 
                 //igualamos el combo box de pilotos y camiones
                 comboPilotosA.setSelectedIndex(FechaTablaNew.get(indiceSeleccionado).getIndicePiloto());
@@ -1946,10 +2020,6 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     private javax.swing.JComboBox<String> comboPilotosB;
     private javax.swing.JComboBox<String> comboTViajeB;
     private javax.swing.JComboBox<String> comoboCamionesA;
-    private com.toedter.calendar.JDateChooser fechaBCarga;
-    private com.toedter.calendar.JDateChooser fechaBDescarga;
-    private com.toedter.calendar.JDateChooser fechaCargaA;
-    private com.toedter.calendar.JDateChooser fechaDescargaA;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1987,6 +2057,10 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     private javax.swing.JTable tablaProductosA;
     private javax.swing.JTable tablaProductosB;
     private javax.swing.JLabel textoFechasIguales;
+    private com.toedter.calendar.JDateChooser txtFechaDeCargaAgregar;
+    private com.toedter.calendar.JDateChooser txtFechaDeCargaViaje;
+    private com.toedter.calendar.JDateChooser txtFechaDeDescargaAgregar;
+    private com.toedter.calendar.JDateChooser txtFechaDeDescargaViaje;
     private javax.swing.JComboBox<String> txtMenu;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,11 @@
 package ControlPlanilla;
 
 
+import Login.GESTIONLOGIN;
+import Login.LOGINPINEED;
+import Login.Login;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,9 +30,12 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
     //creamos el objeto gestion de trabajdores y el vector de trabajadores
     public GestionFichaTrabajador gTrabajadores;
     public Vector<FichaTrabajador> tTrabajador = new Vector<>();
+       private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
     
-    
-    public FrameHistorialTrabajadores() {
+    public FrameHistorialTrabajadores(String username, String role, LOGINPINEED loginFrame) {
+
         initComponents();
         
         //tabla trabajadores creamos la tabla
@@ -42,6 +50,9 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
           
         tTrabajador = gTrabajadores.getTrabajador();
 
+          this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
         
         //primero vaciaremos la tabla totalmente
         modeloTrabajador.setRowCount(0);
@@ -59,6 +70,53 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
         }
     }
 
+    
+                public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+     
+
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
+
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,7 +152,7 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
         });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel6.setText("Activar el Trabajador");
+        jLabel6.setText("ACTIVAR EL TRABAJADOR");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -102,8 +160,8 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,7 +178,7 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -267,23 +325,25 @@ public class FrameHistorialTrabajadores extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrameHistorialTrabajadores().setVisible(true);
+                
+                
+                                                
+                                String username = "defaultUser";  // Reemplaza con el nombre de usuario real o lógica
+                String role = "defaultRole"; 
+
+                LOGINPINEED loginFrame = new LOGINPINEED();  // Instancia el objeto LOGINPINEED
+
+                // Crea la instancia de INICIOGESTIONCAMIONES con los parámetros requeridos
+                new FrameHistorialTrabajadores(username, role, loginFrame).setVisible(true);
+ 
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;

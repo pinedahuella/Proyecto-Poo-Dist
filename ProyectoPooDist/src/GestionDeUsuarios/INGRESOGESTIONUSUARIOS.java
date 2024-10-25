@@ -1,11 +1,14 @@
 package GestionDeUsuarios;
 
+import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import GestionDeUsuarios.Usuarios;
 import Login.GESTIONLOGIN;
 import Login.LOGINPINEED;
 import Login.Login;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
@@ -18,14 +21,21 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
     private DefaultTableModel modeloLogins;    // Model for the login table
     private Usuarios usuarioActual;
     private INICIOGESTIONUSUARIOS ventanaPrincipal;
-
- public INGRESOGESTIONUSUARIOS() {
+    private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
+    
+    
+ public INGRESOGESTIONUSUARIOS(String username, String role, LOGINPINEED loginFrame) {
     initComponents();
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setResizable(false); // Desactivar el cambio de tamaño
     initializeData(); // Método separado para inicializar datos
     configurarTablaLogins(); // Configurar la tabla de logins
     cargarDatosLogin(); // Cargar datos de login en la tabla
+      this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
 }
 
 
@@ -41,35 +51,74 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
 
 
 
-    // Setup the login table
-    private void configurarTablaLogins() {
-        modeloLogins = new DefaultTableModel(new Object[]{"Tiempo Entrada", "Tiempo Salida", "Personal", "Rol"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tblRegistroLogins.setModel(modeloLogins);
-    }
-
-    // Load login data into the table
-    private void cargarDatosLogin() {
-        modeloLogins.setRowCount(0);  // Clear the table
-        Vector<Login> logins = gestionLogin.getLogins();
-
-        for (Login login : logins) {
-            modeloLogins.addRow(new Object[]{
-                login.getTiempoEntrada(),
-                login.getTiempoSalida(),
-                login.getPersonal(),
-                login.getRol()
-            });
+private void configurarTablaLogins() {
+    modeloLogins = new DefaultTableModel(new Object[]{"No.", "Tiempo Entrada", "Tiempo Salida", "Personal", "Rol"}, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
         }
+    };
+    tblRegistroLogins.setModel(modeloLogins);
+    
+    // Establecer el ancho de la columna "No."
+    tblRegistroLogins.getColumnModel().getColumn(0).setPreferredWidth(30);
+    tblRegistroLogins.getColumnModel().getColumn(0).setMaxWidth(30);
+    tblRegistroLogins.getColumnModel().getColumn(0).setMinWidth(30);
+}
+
+// También necesitamos modificar el método cargarDatosLogin() para incluir el número de índice
+private void cargarDatosLogin() {
+    modeloLogins.setRowCount(0);  // Clear the table
+    Vector<Login> logins = gestionLogin.getLogins();
+    
+    int numeroFila = 1;  // Iniciamos la numeración en 1
+    for (Login login : logins) {
+        modeloLogins.addRow(new Object[]{
+            numeroFila++,  // Agregar el número de fila
+            login.getTiempoEntrada(),
+            login.getTiempoSalida(),
+            login.getPersonal(),
+            login.getRol()
+        });
     }
+}
 
     // Refresh the login table when necessary
     public void refreshLoginTable() {
         cargarDatosLogin();  // Populate the login table
+    }
+    
+    private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
     }
     
     @SuppressWarnings("unchecked")
@@ -177,9 +226,13 @@ public class INGRESOGESTIONUSUARIOS extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                String username = "defaultUser";  // Reemplaza con el nombre de usuario real o lógica
+                String role = "defaultRole"; 
 
-            // Create the INICIOPINEED instance with the required parameters
-            new INGRESOGESTIONUSUARIOS().setVisible(true);
+                LOGINPINEED loginFrame = new LOGINPINEED();  // Instancia el objeto LOGINPINEED
+
+                // Crea la instancia de INICIOGESTIONCAMIONES con los parámetros requeridos
+                new INGRESOGESTIONUSUARIOS(username, role, loginFrame).setVisible(true);
 
             }
         });

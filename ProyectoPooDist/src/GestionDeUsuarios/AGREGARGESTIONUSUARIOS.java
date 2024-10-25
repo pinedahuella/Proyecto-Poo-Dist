@@ -7,6 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import com.toedter.calendar.JTextFieldDateEditor;
+
 
 /**
  * Clase AGREGARGESTIONUSUARIOS
@@ -43,29 +50,84 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
         if (gestionUsuarios.getUsuarios() != null) {
             listaUsuarios = gestionUsuarios.getUsuarios();
         }
-        
+    configurarCamposDeTextoConPlaceholders(); // Configura los placeholders en los campos de texto
+
+    
         this.currentUser = username; // Asigna el nombre de usuario actual
         this.userRole = role; // Asigna el rol del usuario actual
         this.loginFrame = loginFrame; // Asigna el marco de inicio de sesión
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); // Cierra la ventana al finalizar
     }
 
-    /**
-     * Limpia los campos de entrada en la ventana.
-     */
-    private void limpiarCampos() {
-        txtNombreUsuario.setText(""); // Limpia el campo de nombre
-        txtApellidoUsuario.setText(""); // Limpia el campo de apellido
-        txtNumeroDeDpiUsuario.setText(""); // Limpia el campo de DPI
-        txtCargoUsuario.setSelectedIndex(0); // Reinicia el índice de cargo
-        txtContraseñaUsuario.setText(""); // Limpia el campo de contraseña
-        txtCorreoElectronicoUsuario.setText(""); // Limpia el campo de correo electrónico
-        txtNumeroTelefonicoUsuario.setText(""); // Limpia el campo de número telefónico
-        txtGeneroUsuario.setSelectedIndex(0); // Reinicia el índice de género
-        txtFechaDeNacimientoUsuario.setDate(null); // Reinicia la fecha de nacimiento
-        txtNombreDeUsuarioUsuario.setText(""); // Limpia el campo de nombre de usuario
-        txtEstadoUsuario.setSelectedIndex(0); // Reinicia el índice de estado
-    }
+// Método para configurar el placeholder en campos de texto
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
+
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(placeholder);
+            }
+        }
+    });
+}
+
+// Método para configurar el placeholder en campos de contraseña
+private void setupPasswordField(JPasswordField passwordField, String placeholder) {
+    passwordField.setText(placeholder);
+    passwordField.setForeground(Color.GRAY);
+    passwordField.setEchoChar((char) 0); // Muestra el texto del placeholder
+
+    passwordField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Limpia el placeholder al enfocar
+            if (String.valueOf(passwordField.getPassword()).equals(placeholder)) {
+                passwordField.setText("");
+                passwordField.setForeground(Color.BLACK);
+                passwordField.setEchoChar('•'); // Carácter para ocultar la contraseña
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (passwordField.getPassword().length == 0) {
+                passwordField.setText(placeholder);
+                passwordField.setForeground(Color.GRAY);
+                passwordField.setEchoChar((char) 0); // Muestra el texto del placeholder
+            }
+        }
+    });
+}
+
+
+
+// Método para configurar todos los campos con placeholders
+private void configurarCamposDeTextoConPlaceholders() {
+    setupTextField(txtNombreUsuario, "Ingrese el nombre");
+    setupTextField(txtApellidoUsuario, "Ingrese el apellido");
+    setupTextField(txtNumeroDeDpiUsuario, "Ingrese el número de DPI");
+    setupPasswordField(txtContraseñaUsuario, "Ingrese la contraseña");
+    setupTextField(txtCorreoElectronicoUsuario, "Ingrese el correo electrónico");
+    setupTextField(txtNumeroTelefonicoUsuario, "Ingrese el número telefónico");
+    setupTextField(txtNombreDeUsuarioUsuario, "Ingrese el nombre de usuario");
+    setupDateChooserWithPlaceholder(txtFechaDeNacimientoUsuario, "dd/MM/yyyy"); // Configura el JDateChooser con placeholder
+}
+
 
     /**
      * Añade un oyente a la ventana para manejar el cierre de sesión al cerrar.
@@ -78,19 +140,84 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    // Método para configurar el JDateChooser con un placeholder en gris
+private void setupDateChooserWithPlaceholder(JDateChooser dateChooser, String placeholder) {
+dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
+    dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
 
-    /**
-     * Cierra la sesión del usuario actual y muestra la ventana de inicio de sesión.
-     */
+    // Obtener el editor de fecha como JTextField
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    
+    // Inicializar con el placeholder
+    editor.setText(placeholder);
+    editor.setForeground(Color.GRAY);
+    
+    // Añadir un listener para manejar el enfoque
+    editor.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Si no hay fecha seleccionada, establecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(""); // Limpia el texto al enfocar
+                editor.setForeground(Color.BLACK); // Cambia el color a negro
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Si no hay fecha seleccionada, restablecer el placeholder
+            if (dateChooser.getDate() == null) {
+                editor.setText(placeholder); // Restaura el placeholder si está vacío
+                editor.setForeground(Color.GRAY); // Cambia el color a gris
+            }
+        }
+    });
+}
+
+// Método para limpiar y restablecer los placeholders
+public void limpiarCampos() {
+    txtNombreUsuario.setText("Ingrese el nombre");
+    txtNombreUsuario.setForeground(Color.GRAY);
+
+    txtApellidoUsuario.setText("Ingrese el apellido");
+    txtApellidoUsuario.setForeground(Color.GRAY);
+
+    txtNumeroDeDpiUsuario.setText("Ingrese el número de DPI");
+    txtNumeroDeDpiUsuario.setForeground(Color.GRAY);
+
+    txtContraseñaUsuario.setText("Ingrese la contraseña");
+    txtContraseñaUsuario.setForeground(Color.GRAY);
+    txtContraseñaUsuario.setEchoChar((char) 0); // Muestra el texto del placeholder
+
+    txtCorreoElectronicoUsuario.setText("Ingrese el correo electrónico");
+    txtCorreoElectronicoUsuario.setForeground(Color.GRAY);
+
+    txtNumeroTelefonicoUsuario.setText("Ingrese el número telefónico");
+    txtNumeroTelefonicoUsuario.setForeground(Color.GRAY);
+
+    txtNombreDeUsuarioUsuario.setText("Ingrese el nombre de usuario");
+    txtNombreDeUsuarioUsuario.setForeground(Color.GRAY);
+
+    // Restablece el JDateChooser al estado del placeholder
+    ((JTextField) txtFechaDeNacimientoUsuario.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+}
+
+
+
+
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
-            loginFrame.cerrarSesion(currentUser, userRole); // Cierra sesión
+            loginFrame.cerrarSesion(currentUser, userRole);
         }
-        // Crea una nueva instancia de LOGINPINEED
+        // Crear una nueva instancia de LOGINPINEED sin pasar argumentos nulos
         LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-        nuevaLoginFrame.setVisible(true); // Muestra el marco de inicio de sesión
-        this.dispose(); // Cierra la ventana actual
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
     }
+    
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -195,6 +322,8 @@ public class AGREGARGESTIONUSUARIOS extends javax.swing.JFrame {
 
         txtEstadoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtEstadoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
+
+        txtContraseñaUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         btnMostrarContraseña.setBackground(new java.awt.Color(153, 153, 255));
         btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N

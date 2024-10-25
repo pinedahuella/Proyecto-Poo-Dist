@@ -12,6 +12,9 @@ import ControlInventario.*;
 
 //importamos de clientes aun falta
 import ControlCliente.*;
+import Login.GESTIONLOGIN;
+import Login.LOGINPINEED;
+import Login.Login;
 
 //definimos las librerias de tablas
 import javax.swing.*;
@@ -25,9 +28,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FrameHistorialVenta extends javax.swing.JFrame {
-
+    
+        private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
     /**
      * Creates new form FrameHistorialVenta
      */
@@ -53,9 +61,11 @@ public class FrameHistorialVenta extends javax.swing.JFrame {
             }
         };
     
-    public FrameHistorialVenta() {
+    public FrameHistorialVenta(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
+              this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
         //damos la direccion del historial
         excelFilePath = "excels/historial.xlsx";
         
@@ -112,6 +122,42 @@ public class FrameHistorialVenta extends javax.swing.JFrame {
 
     }
 
+    
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
+
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -231,7 +277,16 @@ public class FrameHistorialVenta extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrameHistorialVenta().setVisible(true);
+               
+                                
+                                
+                                String username = "defaultUser";  // Reemplaza con el nombre de usuario real o lógica
+                String role = "defaultRole"; 
+
+                LOGINPINEED loginFrame = new LOGINPINEED();  // Instancia el objeto LOGINPINEED
+
+                // Crea la instancia de INICIOGESTIONCAMIONES con los parámetros requeridos
+                new FrameHistorialVenta(username, role, loginFrame).setVisible(true);
             }
         });
     }

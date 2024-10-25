@@ -22,6 +22,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
+
 
 public class PILOTOSINACTIVOS extends javax.swing.JFrame {
     
@@ -47,6 +53,11 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
         inicializarTabla();
         cargarDatos();
         
+        
+        
+        // Configurar el placeholder para el campo de búsqueda
+        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre del Piloto a buscar");
+        
         // Configuración de la interfaz
         addWindowListener();
         setupComboBox();
@@ -64,88 +75,130 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
         });
     }
 
-    private void inicializarTabla() {
-        String[] columnas = {
-            "Nombre", "Apellido", "DPI", "Tipo Licencia", 
-            "Correo Electrónico", "Número Telefónico", "Estado"
-        };
-        
-        modeloPilotos = new DefaultTableModel(columnas, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        
-        tblRegistroPilotos.setModel(modeloPilotos);
-    }
+    // Método para configurar el campo de texto con placeholder
+    private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
 
-    private void cargarDatos() {
-        try {
-            System.out.println("Loading inactive pilots data...");
-            listaPilotosInactivos = new Vector<>();
-            
-            try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
-                 Workbook workbook = new XSSFWorkbook(fis)) {
-                
-                Sheet sheet = workbook.getSheetAt(0);
-                modeloPilotos.setRowCount(0); // Clear existing rows
-                
-                for (Row row : sheet) {
-                    if (row.getRowNum() == 0) continue; // Skip header
-                    
-                    Cell activoCell = row.getCell(9); // "Activo" column
-                    boolean isActive = true;
-                    
-                    if (activoCell != null) {
-                        if (activoCell.getCellType() == CellType.BOOLEAN) {
-                            isActive = activoCell.getBooleanCellValue();
-                        } else if (activoCell.getCellType() == CellType.STRING) {
-                            isActive = Boolean.parseBoolean(activoCell.getStringCellValue());
-                        }
-                    }
-                    
-                    // Only process inactive pilots
-                    if (!isActive) {
-                        Object[] fila = new Object[7];
-                        fila[0] = getCellValueAsString(row.getCell(0)); // Nombre
-                        fila[1] = getCellValueAsString(row.getCell(1)); // Apellido
-                        fila[2] = getCellValueAsString(row.getCell(2)); // DPI
-                        fila[3] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
-                        fila[4] = getCellValueAsString(row.getCell(4)); // Correo
-                        fila[5] = getCellValueAsString(row.getCell(5)); // Teléfono
-                        fila[6] = getCellValueAsString(row.getCell(8)); // Estado
-                        
-                        modeloPilotos.addRow(fila);
-                        
-                        // Create and add Piloto object to listaPilotosInactivos
-                        Piloto piloto = new Piloto(
-                            (String) fila[0],
-                            (String) fila[1],
-                            Long.parseLong(fila[2].toString()),
-                            (String) fila[3],
-                            (String) fila[4],
-                            Integer.parseInt(fila[5].toString()),
-                            "", // género
-                            "", // fecha nacimiento
-                            (String) fila[6],
-                            false // activo
-                        );
-                        listaPilotosInactivos.add(piloto);
-                    }
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                // Limpia el placeholder al enfocar
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
                 }
             }
-            
-            System.out.println("Total inactive pilots loaded: " + listaPilotosInactivos.size());
-            
-        } catch (Exception e) {
-            System.err.println("Error loading inactive pilots data: " + e.getMessage());
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                "Error loading inactive pilots data: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // Restablece el placeholder si el campo está vacío
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
     }
+
+    // Método para limpiar los campos incluyendo el campo de búsqueda
+    public void limpiarCampos() {
+        // ... otros campos que ya limpias ...
+        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+        txtNombrePilotoBuscar.setForeground(Color.GRAY);
+    }
+
+
+ private void inicializarTabla() {
+    String[] columnas = {
+        "No.", "Nombre", "Apellido", "DPI", "Tipo Licencia", 
+        "Correo Electrónico", "Número Telefónico", "Estado"
+    };
+    
+    modeloPilotos = new DefaultTableModel(columnas, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    
+    tblRegistroPilotos.setModel(modeloPilotos);
+    
+    // Configurar el ancho de la columna "No."
+    tblRegistroPilotos.getColumnModel().getColumn(0).setPreferredWidth(30);
+
+ }
+    
+    
+    private void cargarDatos() {
+    try {
+        System.out.println("Loading inactive pilots data...");
+        listaPilotosInactivos = new Vector<>();
+        
+        try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            
+            Sheet sheet = workbook.getSheetAt(0);
+            modeloPilotos.setRowCount(0); // Clear existing rows
+            
+            int rowIndex = 1; // Variable para el contador de filas
+            
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header
+                
+                Cell activoCell = row.getCell(9); // "Activo" column
+                boolean isActive = true;
+                
+                if (activoCell != null) {
+                    if (activoCell.getCellType() == CellType.BOOLEAN) {
+                        isActive = activoCell.getBooleanCellValue();
+                    } else if (activoCell.getCellType() == CellType.STRING) {
+                        isActive = Boolean.parseBoolean(activoCell.getStringCellValue());
+                    }
+                }
+                
+                // Only process inactive pilots
+                if (!isActive) {
+                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número
+                    fila[0] = rowIndex++; // Agregar el número de índice
+                    fila[1] = getCellValueAsString(row.getCell(0)); // Nombre
+                    fila[2] = getCellValueAsString(row.getCell(1)); // Apellido
+                    fila[3] = getCellValueAsString(row.getCell(2)); // DPI
+                    fila[4] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
+                    fila[5] = getCellValueAsString(row.getCell(4)); // Correo
+                    fila[6] = getCellValueAsString(row.getCell(5)); // Teléfono
+                    fila[7] = getCellValueAsString(row.getCell(8)); // Estado
+                    
+                    modeloPilotos.addRow(fila);
+                    
+                    // Create and add Piloto object to listaPilotosInactivos
+                    Piloto piloto = new Piloto(
+                        (String) fila[1], // Nombre (ahora en índice 1)
+                        (String) fila[2], // Apellido (ahora en índice 2)
+                        Long.parseLong(fila[3].toString()), // DPI (ahora en índice 3)
+                        (String) fila[4], // Tipo Licencia
+                        (String) fila[5], // Correo
+                        Integer.parseInt(fila[6].toString()), // Teléfono
+                        "", // género
+                        "", // fecha nacimiento
+                        (String) fila[7], // Estado
+                        false // activo
+                    );
+                    listaPilotosInactivos.add(piloto);
+                }
+            }
+        }
+        
+        System.out.println("Total inactive pilots loaded: " + listaPilotosInactivos.size());
+        
+    } catch (Exception e) {
+        System.err.println("Error loading inactive pilots data: " + e.getMessage());
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+            "Error loading inactive pilots data: " + e.getMessage(),
+            "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     private void actualizarTabla() {
         cargarDatos(); // Reload all inactive pilots
@@ -584,44 +637,91 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-        if (txtNombrePilotoBuscar.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Por favor, ingresa el nombre del piloto para buscar.");
-            return;
-        }
+    // Verificar si el campo de búsqueda está vacío o contiene el placeholder
+    if (txtNombrePilotoBuscar.getText().trim().isEmpty() || 
+        txtNombrePilotoBuscar.getText().equals("Ingresa Nombre del Piloto a buscar")) {
+        JOptionPane.showMessageDialog(this,
+            "Por favor, ingresa el nombre del piloto para buscar.");
+        return;
+    }
 
-        String nombreBuscado = txtNombrePilotoBuscar.getText().trim().toLowerCase();
-        modeloPilotos.setRowCount(0);
-        boolean hayCoincidencias = false;
+    String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
+    modeloPilotos.setRowCount(0);
+    boolean hayCoincidencias = false;
 
-        Vector<Piloto> todosLosPilotos = gestionPilotos.getPilotos();
+    // Normalizar el texto buscado
+    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
 
-        for (Piloto piloto : todosLosPilotos) {
-            if (!piloto.isActivo() &&
-                piloto.getNombrePiloto().toLowerCase().contains(nombreBuscado)) {
-
-                Object[] fila = {
-                    piloto.getNombrePiloto(),
-                    piloto.getApellidoPiloto(),
-                    piloto.getNumeroDeDpi(),
-                    piloto.getTipoLicencia(),
-                    piloto.getCorreoElectronicoPiloto(),
-                    piloto.getNumeroTelefonicoPiloto(),
-                    piloto.getEstadoPiloto()
-                };
-                modeloPilotos.addRow(fila);
-                hayCoincidencias = true;
+    try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
+         Workbook workbook = new XSSFWorkbook(fis)) {
+        
+        Sheet sheet = workbook.getSheetAt(0);
+        int rowIndex = 1; // Contador para el número de fila
+        
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Skip header
+            
+            // Verificar si el piloto está inactivo
+            Cell activoCell = row.getCell(9);
+            boolean isActive = true;
+            if (activoCell != null) {
+                if (activoCell.getCellType() == CellType.BOOLEAN) {
+                    isActive = activoCell.getBooleanCellValue();
+                } else if (activoCell.getCellType() == CellType.STRING) {
+                    isActive = Boolean.parseBoolean(activoCell.getStringCellValue());
+                }
+            }
+            
+            // Solo procesar pilotos inactivos
+            if (!isActive) {
+                String nombrePiloto = getCellValueAsString(row.getCell(0));
+                String nombrePilotoNormalizado = normalizarTexto(nombrePiloto);
+                
+                if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
+                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número de índice
+                    fila[0] = rowIndex++; // Agregar el número de índice
+                    fila[1] = getCellValueAsString(row.getCell(0)); // Nombre
+                    fila[2] = getCellValueAsString(row.getCell(1)); // Apellido
+                    fila[3] = getCellValueAsString(row.getCell(2)); // DPI
+                    fila[4] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
+                    fila[5] = getCellValueAsString(row.getCell(4)); // Correo
+                    fila[6] = getCellValueAsString(row.getCell(5)); // Teléfono
+                    fila[7] = getCellValueAsString(row.getCell(8)); // Estado
+                    
+                    modeloPilotos.addRow(fila);
+                    hayCoincidencias = true;
+                }
             }
         }
+    } catch (Exception e) {
+        System.err.println("Error al buscar pilotos inactivos: " + e.getMessage());
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+            "Error al buscar pilotos: " + e.getMessage(),
+            "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this,
-                "No se encontraron pilotos inactivos con el nombre especificado.");
-            cargarDatos();
-        }
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this,
+            "No se encontraron pilotos inactivos con el nombre especificado.");
+        cargarDatos(); // Recargar todos los pilotos inactivos
+    }
 
-        txtNombrePilotoBuscar.setText("");
+    // Reseteamos el campo después de la búsqueda
+    SwingUtilities.invokeLater(() -> {
+        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+        txtNombrePilotoBuscar.setForeground(Color.GRAY);
+    });
     }//GEN-LAST:event_buscarPilotoActionPerformed
+
+    // Método para normalizar el texto
+private String normalizarTexto(String texto) {
+    // Normalizar y eliminar tildes y caracteres especiales
+    String textoNormalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);
+    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+    return pattern.matcher(textoNormalizado).replaceAll("").toLowerCase(); // Devuelve el texto sin acentos y en minúsculas
+}
+
 
     private void txtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenuActionPerformed
         // TODO add your handling code here:
@@ -631,7 +731,8 @@ private void cerrarSesionYRegresarLogin() {
         int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
-            String dpiSeleccionado = tblRegistroPilotos.getValueAt(filaSeleccionada, 2).toString();
+            // Cambiamos el índice de 2 a 3 porque ahora el DPI está en la columna 3 debido a la nueva columna "No."
+            String dpiSeleccionado = tblRegistroPilotos.getValueAt(filaSeleccionada, 3).toString();
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de que deseas reactivar el piloto con DPI: " + dpiSeleccionado + "?",
                 "Confirmar reactivación",

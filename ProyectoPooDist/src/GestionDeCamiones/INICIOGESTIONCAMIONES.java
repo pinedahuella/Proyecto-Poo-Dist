@@ -11,6 +11,7 @@ import ControlViajes.FormularioViajes;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
 import Login.Login;
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
@@ -18,16 +19,20 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 // Clase principal para la gestión de camiones
 public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
-// Atributos de la clase
-public GESTIONCAMIONES gestionCamiones;
-public Vector<Camiones> listaCamiones = new Vector<>();
-private String currentUser;
-private String userRole;
-private LOGINPINEED loginFrame;
+    // Atributos de la clase
+    public GESTIONCAMIONES gestionCamiones;
+    public Vector<Camiones> listaCamiones = new Vector<>();
+    private String currentUser;
+    private String userRole;
+    private LOGINPINEED loginFrame;
+    private Vector<Camiones> camionesEnTabla = new Vector<>(); // Nueva variable para trackear los camiones mostrados
 
     // Modelo de tabla para mostrar los camiones
     DefaultTableModel modeloCamiones = new DefaultTableModel() {
@@ -37,7 +42,6 @@ private LOGINPINEED loginFrame;
         }
     };
 
-   
     // Constructor de la clase
     public INICIOGESTIONCAMIONES(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
@@ -46,12 +50,14 @@ private LOGINPINEED loginFrame;
         gestionCamiones.cargarCamionesDesdeExcel();
 
         // Configuración de las columnas de la tabla
-        String[] columnas = {"Placas", "Modelo", "Marca", "Estado", "Tipo Combustible", "Kilometraje"};
+        String[] columnas = {"No.", "Marca", "Modelo", "Placas", "Estado", "Tipo Combustible", "Kilometraje"};
         modeloCamiones.setColumnIdentifiers(columnas);
 
         if (gestionCamiones.getCamiones() != null) {
             listaCamiones = gestionCamiones.getCamiones();
         }
+
+        setupTextField(txtMarcaCamionBuscar, "Ingresa Marca del Camión a buscar");
 
         // Configuración de la tabla de camiones
         tblRegistroCamiones1.setModel(modeloCamiones);
@@ -60,6 +66,15 @@ private LOGINPINEED loginFrame;
         tblRegistroCamiones1.getTableHeader().setResizingAllowed(false);
         tblRegistroCamiones1.setRowSelectionAllowed(true);
         tblRegistroCamiones1.setColumnSelectionAllowed(false);
+
+        // Ajustar el ancho de las columnas
+        tblRegistroCamiones1.getColumnModel().getColumn(0).setPreferredWidth(30); // Ancho para la columna "No."
+        tblRegistroCamiones1.getColumnModel().getColumn(1).setPreferredWidth(100); // Ancho para la columna "Marca"
+        tblRegistroCamiones1.getColumnModel().getColumn(2).setPreferredWidth(100); // Ancho para la columna "Modelo"
+        tblRegistroCamiones1.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para la columna "Placas"
+        tblRegistroCamiones1.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para la columna "Estado"
+        tblRegistroCamiones1.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para la columna "Tipo Combustible"
+        tblRegistroCamiones1.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para la columna "Kilometraje"
 
         cargarCamionesEnTabla();
         this.currentUser = username;
@@ -74,19 +89,62 @@ private LOGINPINEED loginFrame;
         });
     }
 
-    // Método para cargar los camiones en la tabla
     private void cargarCamionesEnTabla() {
+        modeloCamiones.setRowCount(0);
+        camionesEnTabla.clear(); // Limpiamos el vector de seguimiento
+
+        int indice = 1; // Inicializamos el índice
         for (Camiones camion : listaCamiones) {
             modeloCamiones.addRow(new Object[]{
-                camion.getPlacas(),
-                camion.getModelo(),
-                camion.getMarca(),
-                camion.getEstado(),
-                camion.getTipoCombustible(),
-                camion.getKilometraje()
+                indice++,                          // No. (se incrementa automáticamente)
+                camion.getMarca(),                 // Marca
+                camion.getModelo(),                // Modelo
+                camion.getPlacas(),                // Placas
+                camion.getEstado(),                // Estado
+                camion.getTipoCombustible(),       // Tipo Combustible
+                camion.getKilometraje()            // Kilometraje
             });
+            camionesEnTabla.add(camion); // Agregamos el camión al vector de seguimiento
         }
     }
+
+
+
+    
+// Método para configurar el campo de texto con placeholder
+    private void setupTextField(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                // Limpia el placeholder al enfocar
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // Restablece el placeholder si el campo está vacío
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(placeholder);
+                }
+            }
+        });
+    }
+
+    // Método para limpiar los campos incluyendo el campo de búsqueda
+    public void limpiarCampos() {
+        // ... otros campos que ya limpias ...
+        txtMarcaCamionBuscar.setText("Ingresa Marca del Camión a buscar");
+        txtMarcaCamionBuscar.setForeground(Color.GRAY);
+    }
+    
+    
 
     private void setupComboBox() {
     txtMenu.removeAllItems();
@@ -330,7 +388,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel3 = new javax.swing.JPanel();
         jTextField19 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtMarcaCamionBuscar1 = new javax.swing.JTextField();
+        txtMarcaCamionBuscar = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblRegistroCamiones1 = new javax.swing.JTable();
         buscarCamion = new javax.swing.JButton();
@@ -367,7 +425,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel4.setText("MARCA");
 
-        txtMarcaCamionBuscar1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMarcaCamionBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         tblRegistroCamiones1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroCamiones1.setModel(new javax.swing.table.DefaultTableModel(
@@ -523,7 +581,7 @@ private void cerrarSesionYRegresarLogin() {
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -543,7 +601,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(ActivarCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtMarcaCamionBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(garageCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -610,40 +668,48 @@ private void cerrarSesionYRegresarLogin() {
      * @param evt el evento que activó esta acción
      */
     private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-            if (txtMarcaCamionBuscar1.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingresa la marca del camión para buscar.");
-            return;
+     if (txtMarcaCamionBuscar.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa la marca del camión para buscar.");
+        return;
+    }
+
+    String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
+    modeloCamiones.setRowCount(0);
+    camionesEnTabla.clear(); // Limpiamos el vector de seguimiento
+    boolean hayCoincidencias = false;
+
+    int indice = 1; // Inicializamos el índice
+
+    for (Camiones camion : listaCamiones) {
+        if (camion.getMarca().toLowerCase().contains(marcaBuscada.toLowerCase())) {
+            modeloCamiones.addRow(new Object[]{
+                indice++, // Añadimos el índice
+                camion.getMarca(), // Primero la marca
+                camion.getModelo(),
+                camion.getPlacas(),
+                camion.getEstado(),
+                camion.getTipoCombustible(),
+                camion.getKilometraje()
+            });
+            camionesEnTabla.add(camion); // Agregamos solo los camiones filtrados
+            hayCoincidencias = true;
         }
+    }
 
-        String marcaBuscada = txtMarcaCamionBuscar1.getText().trim();
-        modeloCamiones.setRowCount(0);
-        boolean hayCoincidencias = false;
-
-        for (Camiones camion : listaCamiones) {
-            if (camion.getMarca().toLowerCase().contains(marcaBuscada.toLowerCase())) {
-                modeloCamiones.addRow(new Object[]{
-                    camion.getPlacas(),
-                    camion.getModelo(),
-                    camion.getMarca(),
-                    camion.getEstado(),
-                    camion.getTipoCombustible(),
-                    camion.getKilometraje()
-                });
-                hayCoincidencias = true;
-            }
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron camiones de la marca especificada.");
+        cargarCamionesEnTabla();
+    } else {
+        tblRegistroCamiones1.setVisible(true);
+        if (tblRegistroCamiones1.getRowCount() > 0) {
+            tblRegistroCamiones1.setRowSelectionInterval(0, 0);
         }
+    }
 
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this, "No se encontraron camiones de la marca especificada.");
-            cargarCamionesEnTabla();
-        } else {
-            tblRegistroCamiones1.setVisible(true);
-            if (tblRegistroCamiones1.getRowCount() > 0) {
-                tblRegistroCamiones1.setRowSelectionInterval(0, 0);
-            }
-        }
-
-        txtMarcaCamionBuscar1.setText("");
+    SwingUtilities.invokeLater(() -> {
+        txtMarcaCamionBuscar.setText("Ingresa Marca del Camión a buscar");
+        txtMarcaCamionBuscar.setForeground(Color.GRAY);
+    });
     }//GEN-LAST:event_buscarCamionActionPerformed
 
      /**
@@ -684,9 +750,10 @@ private void cerrarSesionYRegresarLogin() {
      * @param evt el evento que activó esta acción
      */
     private void mostrarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarCamionActionPerformed
-        int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+    int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            Camiones camionSeleccionado = listaCamiones.get(filaSeleccionada);
+            // Usamos el vector de seguimiento en lugar del listaCamiones original
+            Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
             abrirVentanaMostrar(camionSeleccionado);
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para mostrar su información.");
@@ -700,9 +767,10 @@ private void cerrarSesionYRegresarLogin() {
      * @param evt el evento que activó esta acción
      */
     private void editarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarCamionActionPerformed
-        int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            Camiones camionSeleccionado = listaCamiones.get(filaSeleccionada);
+            // Usamos el vector de seguimiento en lugar del listaCamiones original
+            Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
             abrirVentanaModificar(camionSeleccionado);
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un camión para modificar.");
@@ -730,9 +798,11 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_txtMenuActionPerformed
 
     private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
-    int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+        int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 0);
+            // Usamos el vector de seguimiento en lugar del listaCamiones original
+            Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
+            String placasSeleccionadas = camionSeleccionado.getPlacas();
 
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de que deseas borrar este camión con placas: " + placasSeleccionadas + "?",
@@ -856,7 +926,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JButton mostrarCamion;
     private javax.swing.JButton refrescarCamion;
     private javax.swing.JTable tblRegistroCamiones1;
-    private javax.swing.JTextField txtMarcaCamionBuscar1;
+    private javax.swing.JTextField txtMarcaCamionBuscar;
     private javax.swing.JComboBox<String> txtMenu;
     // End of variables declaration//GEN-END:variables
 }
