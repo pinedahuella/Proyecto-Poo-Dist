@@ -495,59 +495,120 @@ public void limpiarCampos() {
      */
     private void btnAgregarUsuarioSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarUsuarioSistemaActionPerformed
     try {
+        // Validaciones individuales para cada campo
+        if (txtNombreUsuario.getText().equals("Ingrese el nombre") || txtNombreUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del usuario.");
+            return;
+        }
+
+        if (txtApellidoUsuario.getText().equals("Ingrese el apellido") || txtApellidoUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el apellido del usuario.");
+            return;
+        }
+
+        if (txtNumeroDeDpiUsuario.getText().equals("Ingrese el número de DPI") || txtNumeroDeDpiUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el número de DPI del usuario.");
+            return;
+        }
+
+        if (txtContraseñaUsuario.getText().equals("Ingrese la contraseña") || txtContraseñaUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese la contraseña del usuario.");
+            return;
+        }
+
+        if (txtCorreoElectronicoUsuario.getText().equals("Ingrese el correo electrónico") || txtCorreoElectronicoUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el correo electrónico del usuario.");
+            return;
+        }
+
+        if (txtNumeroTelefonicoUsuario.getText().equals("Ingrese el número telefónico") || txtNumeroTelefonicoUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el número telefónico del usuario.");
+            return;
+        }
+
+        if (txtNombreDeUsuarioUsuario.getText().equals("Ingrese el nombre de usuario") || txtNombreDeUsuarioUsuario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre de usuario.");
+            return;
+        }
+
+        if (txtFechaDeNacimientoUsuario.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione la fecha de nacimiento del usuario.");
+            return;
+        }
+
         // Recuperar y limpiar los datos de entrada
         String nombreUsuario = txtNombreUsuario.getText().trim();
         String apellidoUsuario = txtApellidoUsuario.getText().trim();
         
-        // Validar que nombre y apellido no estén vacíos
-        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre y apellido son obligatorios.");
-            return;
-        }
-
-        // Generar el nombre de usuario esperado en el formato correcto
-        String nombreUsuarioEsperado = nombreUsuario.toLowerCase() + "." + 
-                                     apellidoUsuario.toLowerCase() + "&pineed";
-
         // Obtener el nombre de usuario ingresado
         String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
+        
+        // Generar las dos versiones posibles del nombre de usuario
+        String nombreUsuarioSinTildes = removeTildes(nombreUsuario.toLowerCase()) + "." + 
+                                      removeTildes(apellidoUsuario.toLowerCase()) + "&pineed";
+                                      
+        String nombreUsuarioConTildes = nombreUsuario.toLowerCase() + "." + 
+                                      apellidoUsuario.toLowerCase() + "&pineed";
 
-        // Validar que el nombre de usuario coincida con el formato esperado
-        if (!nombreDeUsuario.equals(nombreUsuarioEsperado)) {
-            JOptionPane.showMessageDialog(this, 
-                "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
-                "Para sus datos, debe ser: " + nombreUsuarioEsperado);
+        // Remover espacios extras
+        nombreDeUsuario = nombreDeUsuario.replaceAll("\\s+", "");
+        nombreUsuarioSinTildes = nombreUsuarioSinTildes.replaceAll("\\s+", "");
+        nombreUsuarioConTildes = nombreUsuarioConTildes.replaceAll("\\s+", "");
+        
+        // Validar formato del nombre de usuario
+        if (!nombreDeUsuario.equals(nombreUsuarioSinTildes) && !nombreDeUsuario.equals(nombreUsuarioConTildes)) {
+            String mensaje = "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
+                           "Para sus datos, puede ser:\n" +
+                           "- Sin tildes: " + nombreUsuarioSinTildes + "\n" +
+                           "- Con tildes: " + nombreUsuarioConTildes + "\n\n" +
+                           "Nota: Aunque ambas formas son válidas, se recomienda usar la versión sin tildes " +
+                           "para mayor compatibilidad.";
+            JOptionPane.showMessageDialog(this, mensaje);
             return;
         }
 
-        // Obtener y validar el número de DPI
+        // Validar DPI
         String dpiText = txtNumeroDeDpiUsuario.getText().trim();
         if (dpiText.length() != 13) {
             JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
             return;
         }
+        
+        try {
+            long numeroDeDpiUsuario = Long.parseLong(dpiText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El número de DPI debe contener solo números.");
+            return;
+        }
         long numeroDeDpiUsuario = Long.parseLong(dpiText);
 
-        // Obtener la contraseña y validar que coincida con el DPI
+        // Validar contraseña
         String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
         if (!contrasenaUsuario.equals(dpiText)) {
             JOptionPane.showMessageDialog(this, "La contraseña debe ser igual al número de DPI.");
             return;
         }
 
-        // Continuar con el resto de las validaciones
         String cargoUsuario = txtCargoUsuario.getSelectedItem().toString().trim();
         String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
-        int numeroTelefonicoUsuario = Integer.parseInt(txtNumeroTelefonicoUsuario.getText().trim());
-        String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
-        String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
-
-        // Validar fecha de nacimiento
-        Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
-        if (fechaNacimientoUsuarioDate == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
+        
+        // Validar número telefónico
+        String telefonoText = txtNumeroTelefonicoUsuario.getText().trim();
+        if (telefonoText.length() != 8) {
+            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
             return;
         }
+        
+        try {
+            int numeroTelefonicoUsuario = Integer.parseInt(telefonoText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El número telefónico debe contener solo números.");
+            return;
+        }
+        int numeroTelefonicoUsuario = Integer.parseInt(telefonoText);
+        
+        String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
+        String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
 
         // Validar correo electrónico
         if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
@@ -555,17 +616,10 @@ public void limpiarCampos() {
             return;
         }
 
-        // Formatear fecha de nacimiento
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaDeNacimientoUsuario = sdf.format(fechaNacimientoUsuarioDate);
+        String fechaDeNacimientoUsuario = sdf.format(txtFechaDeNacimientoUsuario.getDate());
 
-        // Validar longitud del número telefónico
-        if (String.valueOf(numeroTelefonicoUsuario).length() != 8) { 
-            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
-            return;
-        }
-
-        // Verificar si el usuario ya existe
+        // Validar usuario existente
         for (Usuarios usuarioExistente : listaUsuarios) {
             if (usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) { 
                 JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
@@ -581,30 +635,25 @@ public void limpiarCampos() {
             }
         }
 
-        // Crear un nuevo usuario
-        Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, apellidoUsuario, 
-                                        cargoUsuario, generoUsuario, numeroDeDpiUsuario, 
-                                        fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
-                                        correoElectronicoUsuario, estadoUsuario);
+        // Crear y agregar el nuevo usuario
+        Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, 
+                                    apellidoUsuario, cargoUsuario, generoUsuario, numeroDeDpiUsuario, 
+                                    fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
+                                    correoElectronicoUsuario, estadoUsuario);
 
-        // Agregar usuario a la lista
         listaUsuarios.add(usuario);
         JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.");
 
-        // Limpiar los campos de entrada
         limpiarCampos();
 
-        // Guardar usuarios en Excel
         gestionUsuarios.setUsuarios(listaUsuarios); 
         gestionUsuarios.guardarUsuariosEnExcel();
 
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
+        JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage());
+        e.printStackTrace();
     }
 
-    // Navegar a la ventana de gestión de usuarios
     String username = this.currentUser;
     String role = this.userRole;
     LOGINPINEED loginFrame = this.loginFrame;
@@ -613,6 +662,24 @@ public void limpiarCampos() {
     abrir.setVisible(true);
     this.setVisible(false);
     }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
+
+    
+    // Agregar este método fuera del btnAgregarUsuarioSistemaActionPerformed, pero dentro de la clase
+private String removeTildes(String input) {
+    return input.replace('á', 'a')
+               .replace('é', 'e')
+               .replace('í', 'i')
+               .replace('ó', 'o')
+               .replace('ú', 'u')
+               .replace('Á', 'a')
+               .replace('É', 'e')
+               .replace('Í', 'i')
+               .replace('Ó', 'o')
+               .replace('Ú', 'u')
+               .replace('ñ', 'n')
+               .replace('Ñ', 'n');
+}
+
 
     // Indica si la contraseña es visible o no. Inicialmente, está oculta.
     private boolean isPasswordVisible = false;

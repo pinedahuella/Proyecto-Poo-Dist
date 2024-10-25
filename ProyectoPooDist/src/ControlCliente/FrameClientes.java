@@ -17,6 +17,8 @@ import Login.GESTIONLOGIN;
 import Login.LOGINPINEED;
 import Login.Login;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -91,6 +93,17 @@ public class FrameClientes extends javax.swing.JFrame {
     public FrameClientes(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
+        // Show or hide the button based on user role
+if (role.equalsIgnoreCase("ADMINISTRADOR")) {
+    txtHistorialClientesEliminados.setVisible(true); // Show the button for ADMINISTRADOR
+} else if (role.equalsIgnoreCase("SECRETARIA")) {
+    txtHistorialClientesEliminados.setVisible(false); // Hide the button for SECRETARIA
+} else {
+    // Optionally, you can set the default visibility for other roles
+    txtHistorialClientesEliminados.setVisible(false); // Hide for all other roles
+}
+
+
         //inicializamos el indice general a -1
         indiceGeneralClientes = -1;
         //inicializamos indice de creditos en -1;
@@ -621,7 +634,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
+        txtAñadirCliente = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField19 = new javax.swing.JTextField();
         jPanel18 = new javax.swing.JPanel();
@@ -675,7 +688,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel20 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         labelCatidad = new javax.swing.JLabel();
-        buscarPiloto = new javax.swing.JButton();
+        txtHistorialClientesEliminados = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -696,34 +709,28 @@ private void cerrarSesionYRegresarLogin() {
         ));
         jScrollPane1.setViewportView(tablaClientes);
 
-        jPanel3.setBackground(new java.awt.Color(85, 111, 169));
-        jPanel3.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtAñadirCliente.setBackground(new java.awt.Color(85, 111, 169));
+        txtAñadirCliente.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtAñadirCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel3MouseClicked(evt);
+                txtAñadirClienteMouseClicked(evt);
             }
         });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("AÑADIR CLIENTE");
+        jLabel1.setText("                                     AÑADIR CLIENTE");
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1)
-                .addContainerGap(11, Short.MAX_VALUE))
+        javax.swing.GroupLayout txtAñadirClienteLayout = new javax.swing.GroupLayout(txtAñadirCliente);
+        txtAñadirCliente.setLayout(txtAñadirClienteLayout);
+        txtAñadirClienteLayout.setHorizontalGroup(
+            txtAñadirClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        txtAñadirClienteLayout.setVerticalGroup(
+            txtAñadirClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
         );
 
         jTextField19.setEditable(false);
@@ -1256,7 +1263,7 @@ private void cerrarSesionYRegresarLogin() {
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(txtPrecioCostoModificarCredito))
                                         .addComponent(radioActivo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel11Layout.createSequentialGroup()
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -1322,14 +1329,14 @@ private void cerrarSesionYRegresarLogin() {
                         .addContainerGap())))
         );
 
-        buscarPiloto.setBackground(new java.awt.Color(0, 153, 153));
-        buscarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        buscarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        buscarPiloto.setText("HISTORIAL CLIENTE");
-        buscarPiloto.setBorder(null);
-        buscarPiloto.addActionListener(new java.awt.event.ActionListener() {
+        txtHistorialClientesEliminados.setBackground(new java.awt.Color(0, 153, 153));
+        txtHistorialClientesEliminados.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        txtHistorialClientesEliminados.setForeground(new java.awt.Color(255, 255, 255));
+        txtHistorialClientesEliminados.setText("HISTORIAL CLIENTES ELIMINADOS");
+        txtHistorialClientesEliminados.setBorder(null);
+        txtHistorialClientesEliminados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buscarPilotoActionPerformed(evt);
+                txtHistorialClientesEliminadosActionPerformed(evt);
             }
         });
 
@@ -1338,38 +1345,34 @@ private void cerrarSesionYRegresarLogin() {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(jTextField19, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(txtAñadirCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtHistorialClientesEliminados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelAgregarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                        .addComponent(txtHistorialClientesEliminados, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtAñadirCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1396,7 +1399,7 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
     }//GEN-LAST:event_radioActivoActionPerformed
 
-    private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
+    private void txtAñadirClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtAñadirClienteMouseClicked
         // TODO add your handling code here:
         
         //funcion que nos permitira ocultar o mostrar el panel de agregar cliente
@@ -1408,7 +1411,7 @@ private void cerrarSesionYRegresarLogin() {
             //de lo contrario lo mostramos
             panelAgregarCliente.setVisible(true);
         }
-    }//GEN-LAST:event_jPanel3MouseClicked
+    }//GEN-LAST:event_txtAñadirClienteMouseClicked
 
     private void jPanel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseClicked
         // TODO add your handling code here:
@@ -1747,14 +1750,14 @@ private void cerrarSesionYRegresarLogin() {
         }
     }//GEN-LAST:event_jPanel2MouseClicked
 
-    private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
+    private void txtHistorialClientesEliminadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHistorialClientesEliminadosActionPerformed
    String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
         String role = this.userRole;        // Suponiendo que userRole contiene el rol
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
         FrameHistorialClientes abrir = new FrameHistorialClientes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
-    }//GEN-LAST:event_buscarPilotoActionPerformed
+    }//GEN-LAST:event_txtHistorialClientesEliminadosActionPerformed
 
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
@@ -1882,7 +1885,6 @@ private void cerrarSesionYRegresarLogin() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buscarPiloto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1913,7 +1915,6 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -1932,9 +1933,11 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JTable tablaCreditos;
     private javax.swing.JTable tablaCreditosFinalizados;
     private javax.swing.JTable tablaProductos;
+    private javax.swing.JPanel txtAñadirCliente;
     private javax.swing.JTextArea txtDescripcionDelClienteAñadir;
     private javax.swing.JTextArea txtDescripcionDelClienteModificar;
     private javax.swing.JTextField txtFleteModificarCredito;
+    private javax.swing.JButton txtHistorialClientesEliminados;
     private javax.swing.JComboBox<String> txtMenu1;
     private javax.swing.JTextField txtNombreDelClienteAñadir;
     private javax.swing.JTextField txtNombreDelClienteModificar;

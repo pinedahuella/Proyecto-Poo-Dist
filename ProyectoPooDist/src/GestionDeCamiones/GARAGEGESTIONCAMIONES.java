@@ -49,71 +49,126 @@ public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
 
 
   public GARAGEGESTIONCAMIONES(String username, String role, LOGINPINEED loginFrame) {
-        initComponents();
+initComponents();
         indiceActual = 0;
-        setResizable(false); // Desactivar el cambio de tamaño
+        setResizable(false);
+        
+        // Inicializar gestiones
         gestionCamiones = new GESTIONCAMIONES();
         gestionCamiones.cargarCamionesDesdeExcel();
         
         gestionFacturas = new FACTURASGESTIONCAMIONES();
         gestionFacturas.cargarFacturasDesdeExcel();
 
-        // Modify the table models to be non-editable
-        modeloCamiones = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // This makes all cells non-editable
-            }
-        };
-
+        // Configurar modelo de tabla de facturas
         modeloRegistroGastos = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // This makes all cells non-editable
+                return false;
             }
         };
 
+        // Definir columnas para la tabla de facturas
+        String[] columnasFacturas = {
+            "No.", 
+            "Placas", 
+            "Fecha",
+            "Tipo de Gasto",
+            "Descripción",
+            "Monto",
+            "Hora"
+        };
+        modeloRegistroGastos.setColumnIdentifiers(columnasFacturas);
+        
+        // Asignar el modelo a la tabla de facturas
+        tblRegistroGastos.setModel(modeloRegistroGastos);
+
+        // Definir columnas para la tabla de camiones
         String[] columnasCamiones = {
-            "Placas", "Marca", "Modelo", "Estado",
-            "Tiempo en Reparación", "Fecha de Mantenimiento", "Total Invertido"
+            "No.", 
+            "Placas", 
+            "Marca", 
+            "Modelo", 
+            "Estado",
+            "Tiempo en Reparación", 
+            "Fecha de Mantenimiento", 
+            "Total Invertido"
         };
         modeloCamiones.setColumnIdentifiers(columnasCamiones);
-        
+
+        // Cargar la lista de camiones
         if (gestionCamiones.getCamiones() != null) {
             listaCamiones = gestionCamiones.getCamiones();
             System.out.println("Camiones cargados correctamente: " + listaCamiones.size());
         } else {
             System.out.println("Error: No se pudieron cargar los camiones.");
+            listaCamiones = new Vector<>();
         }
-        
+
+        // Asignar el modelo a la tabla
         tblRegistroCamiones.setModel(modeloCamiones);
-        cargarCamionesTabla();
-
-        String[] columnasFacturas = {
-            "Placas", "Fecha", "Tipo de Gasto", "Descripción", "Monto", "Hora Registrado"
-        };
-        modeloRegistroGastos.setColumnIdentifiers(columnasFacturas);
-        tblRegistroGastos.setModel(modeloRegistroGastos);
         
+        // Cargar los datos en la tabla
+        cargarCamionesTabla();
         cargarFacturasTabla();
-
-        // Additional settings to make tables non-editable
-        tblRegistroCamiones.setDefaultEditor(Object.class, null);
-        tblRegistroGastos.setDefaultEditor(Object.class, null);
+                this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
 
         this.currentUser = username;
-        this.userRole = role;
-        this.loginFrame = loginFrame;
-        addWindowListener();
-        setupComboBox();  // Añade esta línea
-        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-        this.setVisible(true);
-        SwingUtilities.invokeLater(() -> {
-            this.requestFocusInWindow();
-        });
+    this.userRole = role;
+    this.loginFrame = loginFrame;
+        
+        addWindowListener(); 
+        setupComboBox(); 
+        
+        // Final frame setup 
+        this.setVisible(true); 
+        SwingUtilities.invokeLater(() -> { 
+            this.requestFocusInWindow(); 
+        }); 
     }
-    
-    
+
+
+
+    private void cargarCamionesTabla() {
+        try {
+            // Limpiar la tabla antes de cargar nuevos datos
+            modeloCamiones.setRowCount(0);
+            
+            // Verificar si hay datos para cargar
+            if (listaCamiones == null || listaCamiones.isEmpty()) {
+                System.out.println("No hay camiones para cargar en la tabla");
+                return;
+            }
+
+            // Cargar los datos con índice
+            int index = 1;
+            for (Camiones camion : listaCamiones) {
+                if (camion != null) {
+                    Object[] fila = {
+                        index++,
+                        camion.getPlacas(),
+                        camion.getMarca(),
+                        camion.getModelo(),
+                        camion.getEstado(),
+                        camion.getTiempoEnReparacion(),
+                        camion.getFechaDeMantenimiento(),
+                        camion.getTotal()
+                    };
+                    modeloCamiones.addRow(fila);
+                }
+            }
+
+            // Verificar que se cargaron los datos
+            System.out.println("Filas cargadas en la tabla: " + modeloCamiones.getRowCount());
+
+            // Actualizar la vista de la tabla
+            tblRegistroCamiones.repaint();
+            
+        } catch (Exception e) {
+            System.out.println("Error al cargar los camiones en la tabla: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
      private String obtenerHoraActual() {
         LocalTime ahora = LocalTime.now();
@@ -121,37 +176,53 @@ public class GARAGEGESTIONCAMIONES extends javax.swing.JFrame {
         return ahora.format(formatter);
     }
 
-    private void cargarFacturasTabla() {
-        modeloRegistroGastos.setRowCount(0);
-        for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
-            modeloRegistroGastos.addRow(new Object[]{
-                factura.getPlacasFactura(),
-                factura.getFechaFactura(),
-                factura.getTipoDeGastoFactura(),
-                factura.getDescripcionFactura(),
-                factura.getMontoFactura(),
-                factura.getHoraActual()
-            });
+   private void cargarFacturasTabla() {
+        try {
+            // Limpiar la tabla antes de cargar nuevos datos
+            modeloRegistroGastos.setRowCount(0);
+            
+            // Verificar si hay facturas para cargar
+            if (gestionFacturas.getCamionesfactura() == null || gestionFacturas.getCamionesfactura().isEmpty()) {
+                System.out.println("No hay facturas para mostrar");
+                return;
+            }
+
+            // Cargar los datos con índice
+            int index = 1;
+            for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
+                if (factura != null) {
+                    Object[] fila = {
+                        index++,
+                        factura.getPlacasFactura(),
+                        factura.getFechaFactura(),
+                        factura.getTipoDeGastoFactura(),
+                        factura.getDescripcionFactura(),
+                        factura.getMontoFactura(),
+                        factura.getHoraActual()
+                    };
+                    modeloRegistroGastos.addRow(fila);
+                }
+            }
+
+            // Verificar que se cargaron los datos
+            System.out.println("Filas de facturas cargadas: " + modeloRegistroGastos.getRowCount());
+
+            // Actualizar la vista de la tabla
+            tblRegistroGastos.repaint();
+            
+        } catch (Exception e) {
+            System.out.println("Error al cargar las facturas en la tabla: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-
-private void cargarCamionesTabla() {
-    modeloCamiones.setRowCount(0);
-    for (Camiones camiones : listaCamiones) {
-        modeloCamiones.addRow(new Object[]{
-            camiones.getPlacas(),
-            camiones.getModelo(),
-            camiones.getMarca(),
-            camiones.getEstado(),
-            camiones.getTiempoEnReparacion(),
-            camiones.getFechaDeMantenimiento(),
-            camiones.getTotal()
-        });
+    private void actualizarTablaGastos() {
+        cargarFacturasTabla(); // Reutilizar el método existente
     }
-}
 
-  private void limpiarCampos() {
+    
+    
+      private void limpiarCampos() {
         txtCostoDeReparacionGasto.setText("");
         txtCostoGalonGasto.setText("");
         txtNumeroDeGalonesGasto.setText("");
@@ -161,7 +232,8 @@ private void cargarCamionesTabla() {
         txtTiempoMantenimientoGasto.setDate(null);
     }
  
- 
+      
+      
 private void setupComboBox() {
     txtMenu.removeAllItems();
     txtMenu.addItem("Seleccione una opción");
@@ -782,16 +854,15 @@ public void limpiarCamposGastos() {
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtActualizarEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtActualizarTiempoReparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(2, 2, 2))
+                                .addGap(2, 2, 2)))
+                        .addGap(25, 25, 25))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(25, 25, 25))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -815,8 +886,9 @@ public void limpiarCamposGastos() {
                     .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -934,11 +1006,12 @@ public void limpiarCamposGastos() {
     }//GEN-LAST:event_txtGastoNoEspecificadoGastoActionPerformed
 
     private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
-        int filaSeleccionada = tblRegistroGastos.getSelectedRow();
+int filaSeleccionada = tblRegistroGastos.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            String placaSeleccionada = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 0);
-            String fechaFactura = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 1);
-            double montoFactura = Double.parseDouble(tblRegistroGastos.getValueAt(filaSeleccionada, 4).toString());
+            // Obtener los valores saltando la columna del índice
+            String placaSeleccionada = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 1);
+            String fechaFactura = (String) tblRegistroGastos.getValueAt(filaSeleccionada, 2);
+            double montoFactura = Double.parseDouble(tblRegistroGastos.getValueAt(filaSeleccionada, 5).toString());
 
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de que deseas borrar esta factura?",
@@ -978,10 +1051,11 @@ public void limpiarCamposGastos() {
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona una factura para eliminar.");
         }
+
     }//GEN-LAST:event_eliminarCamionActionPerformed
 
     private void agregarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCamionActionPerformed
-        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+   int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
 
         if (filaSeleccionada < 0) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
@@ -1135,7 +1209,8 @@ public void limpiarCamposGastos() {
     }//GEN-LAST:event_agregarCamionActionPerformed
 
     private void actualizarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarCamionActionPerformed
-        int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+                                            
+   int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
         if (filaSeleccionada < 0) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
             return;
@@ -1151,8 +1226,10 @@ public void limpiarCamposGastos() {
                 camion.setTiempoEnReparacion(nuevoTiempoReparacion);
                 huboModificaciones = true;
             } else {
-                JOptionPane.showMessageDialog(this, "Formato invalido. Número seguido de una unidad de tiempo válida.");
-                return;
+                JOptionPane.showMessageDialog(this, "Formato inválido para el tiempo de reparación. "
+                + "Ejemplos de formatos válidos: '1 hora', '30 minutos', '2 días'. "
+                + "Usa un número seguido de una unidad de tiempo (ej. segundos, minutos, horas, días, semanas, meses, años).");
+            return;
             }
         }
 
@@ -1175,6 +1252,7 @@ public void limpiarCamposGastos() {
         } else {
             JOptionPane.showMessageDialog(this, "No se realizaron modificaciones.");
         }
+                   
     }//GEN-LAST:event_actualizarCamionActionPerformed
 
     private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
@@ -1183,25 +1261,21 @@ public void limpiarCamposGastos() {
             return;
         }
 
-        // Obtiene la marca buscada
         String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
-
-        // Limpia el modelo de la tabla
         modeloCamiones.setRowCount(0);
         boolean hayCoincidencias = false;
+        int index = 1;
 
-        // Itera sobre la lista de camiones
         for (Camiones camion : listaCamiones) {
             boolean coincide = true;
 
-            // Verifica si la marca coincide
             if (!marcaBuscada.isEmpty() && !camion.getMarca().equalsIgnoreCase(marcaBuscada)) {
                 coincide = false;
             }
 
-            // Si hay coincidencias, añade el camión a la tabla
             if (coincide) {
                 modeloCamiones.addRow(new Object[]{
+                    index++,
                     camion.getPlacas(),
                     camion.getMarca(),
                     camion.getModelo(),
@@ -1257,22 +1331,6 @@ public void limpiarCamposGastos() {
     
 
     
-    
-
-private void actualizarTablaGastos() {
-    modeloRegistroGastos.setRowCount(0);
-    for (CAMIONESFACTURA factura : gestionFacturas.getCamionesfactura()) {
-        modeloRegistroGastos.addRow(new Object[]{
-            factura.getPlacasFactura(),
-            factura.getFechaFactura(),  // Esta debe ser la fecha correcta
-            factura.getTipoDeGastoFactura(),
-            factura.getDescripcionFactura(),
-            factura.getMontoFactura(),
-            factura.getTiempoDeReparacionFactura(),
-            factura.getHoraActual()
-        });
-    }
-}
     
 
 
@@ -1390,29 +1448,29 @@ private double formatearDecimal(double valor) {
 }
     
 
-    
-    
-    
-private boolean validarFormatoTiempoReparacion(String tiempo) {
-    String[] partes = tiempo.split(" ");
-    if (partes.length != 2) return false;
-    
-    try {
-        Integer.parseInt(partes[0]);
-    } catch (NumberFormatException e) {
-        return false;
+
+
+
+    private boolean validarFormatoTiempoReparacion(String tiempo) {
+        String[] partes = tiempo.split(" ");
+        if (partes.length != 2) return false;
+
+        try {
+            Integer.parseInt(partes[0]);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        String unidad = partes[1].toLowerCase();
+        return unidad.equals("segundo") || unidad.equals("segundos") ||
+               unidad.equals("minuto") || unidad.equals("minutos") ||
+               unidad.equals("hora") || unidad.equals("horas") ||
+               unidad.equals("día") || unidad.equals("días") || 
+               unidad.equals("semana") || unidad.equals("semanas") || 
+               unidad.equals("mes") || unidad.equals("meses") || 
+               unidad.equals("año") || unidad.equals("años") ||
+               unidad.equals("media hora");
     }
-    
-    String unidad = partes[1].toLowerCase();
-    return unidad.equals("segundo") || unidad.equals("segundos") ||
-           unidad.equals("minuto") || unidad.equals("minutos") ||
-           unidad.equals("hora") || unidad.equals("horas") ||
-           unidad.equals("día") || unidad.equals("días") || 
-           unidad.equals("semana") || unidad.equals("semanas") || 
-           unidad.equals("mes") || unidad.equals("meses") || 
-           unidad.equals("año") || unidad.equals("años") ||
-           unidad.equals("media hora");
-}
 
 
 

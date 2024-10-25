@@ -446,7 +446,34 @@ public void limpiarCampos() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoSistemaActionPerformed
-try {
+    try {
+        // Primero validar que ningún campo tenga su placeholder o esté vacío
+        if (txtNombrePiloto.getText().equals("Ingrese el nombre") || txtNombrePiloto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del piloto.");
+            return;
+        }
+        if (txtApellidoPiloto.getText().equals("Ingrese el apellido") || txtApellidoPiloto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el apellido del piloto.");
+            return;
+        }
+        if (txtNumeroDeDpiPiloto.getText().equals("Ingrese el número de DPI") || txtNumeroDeDpiPiloto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el número de DPI del piloto.");
+            return;
+        }
+        if (txtCorreoElectronicoPiloto.getText().equals("Ingrese el correo electrónico") || txtCorreoElectronicoPiloto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el correo electrónico del piloto.");
+            return;
+        }
+        if (txtNumeroTelefonicoPiloto.getText().equals("Ingrese el número telefónico") || txtNumeroTelefonicoPiloto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el número telefónico del piloto.");
+            return;
+        }
+        if (txtFechaDeNacimientoPiloto.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione la fecha de nacimiento del piloto.");
+            return;
+        }
+
+        // Si pasa todas las validaciones, entonces proceder con la obtención de valores
         String nombrePiloto = txtNombrePiloto.getText().trim();
         String apellidoPiloto = txtApellidoPiloto.getText().trim();
         long numeroDeDpiPiloto = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim());
@@ -456,23 +483,16 @@ try {
         String generoPiloto = txtGeneroPiloto.getSelectedItem().toString().trim();
         String estadoPiloto = txtEstadoPiloto.getSelectedItem().toString().trim();
 
+        // Crear versiones sin tildes para validaciones si es necesario
+        String nombrePilotoSinTildes = removeTildes(nombrePiloto);
+        String apellidoPilotoSinTildes = removeTildes(apellidoPiloto);
+
         Date fechaNacimientoPilotoDate = txtFechaDeNacimientoPiloto.getDate();
-        if (fechaNacimientoPilotoDate == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
-            return;
-        }
-
-        if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
-            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
-            return;
-        }
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDeNacimientoPiloto = sdf.format(fechaNacimientoPilotoDate);
 
-        if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || tipoLicencia.isEmpty() ||
-            correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
+        if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
             return;
         }
 
@@ -502,7 +522,7 @@ try {
             }
         }
 
-        // Crear un nuevo piloto y agregarlo
+        // Crear un nuevo piloto y agregarlo usando los valores originales (con tildes)
         Piloto nuevoPiloto = new Piloto();
         nuevoPiloto.setNombrePiloto(nombrePiloto);
         nuevoPiloto.setApellidoPiloto(apellidoPiloto);
@@ -513,30 +533,42 @@ try {
         nuevoPiloto.setGeneroPiloto(generoPiloto);
         nuevoPiloto.setFechaDeNacimiento(fechaDeNacimientoPiloto);
         nuevoPiloto.setEstadoPiloto(estadoPiloto);
-        nuevoPiloto.setActivo(true); // Establecer activo en true
+        nuevoPiloto.setActivo(true);
 
-        // Agregar piloto a la lista y actualizar
         listaPilotos.add(nuevoPiloto);
-        gestionPilotos.actualizarPiloto(nuevoPiloto); // Llama al método de actualización para manejar el guardado
+        gestionPilotos.actualizarPiloto(nuevoPiloto);
 
-        // Recargar la tabla
         cargarPilotosEnTabla();
         limpiarCampos();
 
-        // Mensaje de éxito
         JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.");
 
+        INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+        JOptionPane.showMessageDialog(this, "Por favor, ingrese números válidos en los campos numéricos.");
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al agregar piloto: " + e.getMessage());
     }
-
-    // Cerrar la ventana actual y abrir la gestión de pilotos
-    INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
-    abrir.setVisible(true);
-    this.setVisible(false);
     }//GEN-LAST:event_btnAgregarPilotoSistemaActionPerformed
+
+ // Método para remover tildes que se usará en ambas funciones
+private String removeTildes(String input) {
+    return input.replace('á', 'a')
+               .replace('é', 'e')
+               .replace('í', 'i')
+               .replace('ó', 'o')
+               .replace('ú', 'u')
+               .replace('Á', 'a')
+               .replace('É', 'e')
+               .replace('Í', 'i')
+               .replace('Ó', 'o')
+               .replace('Ú', 'u')
+               .replace('ñ', 'n')
+               .replace('Ñ', 'n');
+}
 
     private void txtNumeroTelefonicoPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroTelefonicoPilotoActionPerformed
         // TODO add your handling code here:

@@ -1,10 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ControlPlanilla;
 
-
+import ControlCliente.FrameClientes;
 import Login.GESTIONLOGIN;
 import Login.LOGINPINEED;
 import Login.Login;
@@ -12,87 +8,77 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.util.Vector;
-/**
- *
- * @author USUARIO
- */
+
 public class FrameHistorialTrabajadores extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameHistorialTrabajadores
-     */
-    
-    //crearemos el modelo de la tabla de trabajadores
-    DefaultTableModel modeloTrabajador = new DefaultTableModel();
-    
-    //creamos el objeto gestion de trabajdores y el vector de trabajadores
-    public GestionFichaTrabajador gTrabajadores;
-    public Vector<FichaTrabajador> tTrabajador = new Vector<>();
-       private String currentUser;
+    // Modelo de la tabla de trabajadores
+    private DefaultTableModel modeloTrabajador = new DefaultTableModel();
+
+    // Objeto gestión de trabajadores y vector de trabajadores
+    private GestionFichaTrabajador gTrabajadores;
+    private Vector<FichaTrabajador> tTrabajador = new Vector<>();
+    private String currentUser;
     private String userRole;
     private LOGINPINEED loginFrame;
-    
+
     public FrameHistorialTrabajadores(String username, String role, LOGINPINEED loginFrame) {
-
         initComponents();
-        
-        //tabla trabajadores creamos la tabla
-        String ids [] = {"nombre del trabajador", "estado"};
-        modeloTrabajador.setColumnIdentifiers(ids);
-        tabla1.setModel(modeloTrabajador);
-        
-        //crearemos el objeto gtrabajadores
-        gTrabajadores = new GestionFichaTrabajador();
-        
-        gTrabajadores.cargarTrabajadoresExcel();
-          
-        tTrabajador = gTrabajadores.getTrabajador();
-
-          this.currentUser = username;
+        this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
-        
-        //primero vaciaremos la tabla totalmente
+
+        // Configurar propiedades de la ventana
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false); // Desactivar el cambio de tamaño
+        configurarListenerCierre();
+
+        // Inicializar la tabla de trabajadores
+        String[] columnNames = {"Nombre del Trabajador", "Estado"};
+        modeloTrabajador.setColumnIdentifiers(columnNames);
+        tabla1.setModel(modeloTrabajador);
+
+        // Crear objeto gTrabajadores y cargar trabajadores
+        gTrabajadores = new GestionFichaTrabajador();
+        gTrabajadores.cargarTrabajadoresExcel();
+        tTrabajador = gTrabajadores.getTrabajador();
+
+        // Vaciar la tabla y llenar con datos
         modeloTrabajador.setRowCount(0);
-        
-        //contador que guardara los indices reales
-        String activo = "Desactivo";
-        //con este for llenaremos la tabla con los elemetos del vector
+        llenarTabla();
+    }
+
+    private void llenarTabla() {
         for (FichaTrabajador trad : tTrabajador) {
-            activo = "Desactivo";
-            if (trad.getSemanasDeTrabajo() >= 0) {
-                activo = "Activo";
-            }
-            
-            modeloTrabajador.addRow(new Object[]{trad.getNombre(), activo});
+            String estado = trad.getSemanasDeTrabajo() >= 0 ? "Activo" : "Desactivado";
+            modeloTrabajador.addRow(new Object[]{trad.getNombre(), estado});
         }
     }
 
-    
-                public void addWindowListener() {
+    private void configurarListenerCierre() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
+                cerrarYActualizarFrame();
             }
         });
     }
-     
 
-private void cerrarSesionYRegresarLogin() {
-        cerrarSesionManualmente();
-        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-        nuevaLoginFrame.setVisible(true);
-        this.dispose();
-    }
+    // Cerrar y actualizar el frame de trabajadores
+private void cerrarYActualizarFrame() {
+    cerrarSesionManualmente();
+    this.dispose();
 
+    // Crear y abrir una nueva instancia de FramePlanillaSemanal
+    FramePlanillaSemanal nuevoFrame = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+    nuevoFrame.actualizarTablaTrabajadores(); // Refresh the worker table
+    nuevoFrame.setVisible(true);
+}
     private void cerrarSesionManualmente() {
         LocalDateTime tiempoSalida = LocalDateTime.now();
         GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
         gestionLogin.cargarLoginsDesdeExcel();
-        
+
         boolean sesionCerrada = false;
         for (Login login : gestionLogin.getLogins()) {
             if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
@@ -103,7 +89,7 @@ private void cerrarSesionYRegresarLogin() {
                 break;
             }
         }
-        
+
         if (!sesionCerrada) {
             System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
         }
@@ -114,9 +100,6 @@ private void cerrarSesionYRegresarLogin() {
         System.exit(0);
     }
 
-    
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -142,7 +125,7 @@ private void cerrarSesionYRegresarLogin() {
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Historial General de Trabajadores");
+        jLabel5.setText("Historial de Trabajadores");
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -177,8 +160,8 @@ private void cerrarSesionYRegresarLogin() {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -186,9 +169,9 @@ private void cerrarSesionYRegresarLogin() {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(58, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel5)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -212,7 +195,7 @@ private void cerrarSesionYRegresarLogin() {
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -220,7 +203,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -261,6 +244,8 @@ private void cerrarSesionYRegresarLogin() {
                 //mostramos mesaje 
                 JOptionPane.showMessageDialog(null, "Trabajador activado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
         
+                    JOptionPane.showMessageDialog(null, "Los cambios realizados se verán reflejados al cerrar el historial de clientes eliminados.", "Información", JOptionPane.INFORMATION_MESSAGE);
+
                 //funcion provisional para guardas datos en el excel
                  gTrabajadores.guardarTrabajadoresExcel(); 
                  

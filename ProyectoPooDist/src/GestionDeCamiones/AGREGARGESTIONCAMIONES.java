@@ -335,51 +335,57 @@ public void limpiarCamposCamiones() {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(696, Short.MAX_VALUE)
-                .addComponent(btnAgregarCamionesSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addContainerGap(696, Short.MAX_VALUE)
+                        .addComponent(btnAgregarCamionesSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtPlacasCamiones))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtMarcaCamiones)
-                            .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCapacidadDeCargaCamiones)
-                            .addComponent(txtTipoCombustibleCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtKilometrajeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtMarcaCamiones)
+                                    .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtCapacidadDeCargaCamiones)
+                                    .addComponent(txtTipoCombustibleCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtKilometrajeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtPlacasCamiones)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(13, 13, 13)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(txtPlacasCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtMarcaCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -387,11 +393,7 @@ public void limpiarCamposCamiones() {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(txtPlacasCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -456,86 +458,115 @@ public void limpiarCamposCamiones() {
      * @param evt Evento del botón.
      */
     private void btnAgregarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCamionesSistemaActionPerformed
+    try {
+        // Obtención de datos desde el formulario
+        String marca = txtMarcaCamiones.getText().trim();
+        String placas = txtPlacasCamiones.getText().trim();
+        String modelo = txtModeloCamiones.getText().trim();
+        String estado = txtEstadoCamiones.getSelectedItem().toString().trim();
+        String tipoCombustible = txtTipoCombustibleCamiones.getSelectedItem().toString().trim();
+
+        // Validación de campos
+        if (marca.isEmpty() || modelo.isEmpty() || placas.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
+            return;
+        }
+
+        // Validar la marca primero
+        if (marca.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "La marca no puede estar vacía.");
+            return;
+        }
+
+        // Validar placas
+        if (!validarPlacas(placas)) {
+            JOptionPane.showMessageDialog(this, "Las placas deben contener al menos una letra y un número.");
+            return;
+        }
+
+        // Validar kilometraje
+        String kilometrajeStr = txtKilometrajeCamiones.getText().trim();
+        if (kilometrajeStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el kilometraje del camión.");
+            return;
+        }
+        double kilometraje;
         try {
-                    // Obtención de datos desde el formulario
-                    String placas = txtPlacasCamiones.getText().trim();
-                    String modelo = txtModeloCamiones.getText().trim();
-                    String marca = txtMarcaCamiones.getText().trim();
-                    String estado = txtEstadoCamiones.getSelectedItem().toString().trim();
-                    String tipoCombustible = txtTipoCombustibleCamiones.getSelectedItem().toString().trim();
-                    double kilometraje = Double.parseDouble(txtKilometrajeCamiones.getText().trim());
-                    double capacidadCarga = Double.parseDouble(txtCapacidadDeCargaCamiones.getText().trim());
+            kilometraje = Double.parseDouble(kilometrajeStr);
+            if (!validarKilometraje(kilometraje)) {
+                JOptionPane.showMessageDialog(this, "El kilometraje debe ser un valor positivo y realista (0 - 1,000,000 km).");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error en el formato de número para el kilometraje: " + e.getMessage());
+            return;
+        }
 
-                    Date añoFabricacionDate = txtAñoDeFabricacionCamiones.getDate();
-                    if (añoFabricacionDate == null) {
-                        JOptionPane.showMessageDialog(this, "Por favor, selecciona un año de fabricación válido.");
-                        return;
-                    }
+        // Validar capacidad de carga
+        String capacidadCargaStr = txtCapacidadDeCargaCamiones.getText().trim();
+        if (capacidadCargaStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese la capacidad de carga del camión.");
+            return;
+        }
+        double capacidadCarga;
+        try {
+            capacidadCarga = Double.parseDouble(capacidadCargaStr);
+            if (!validarCapacidadCarga(capacidadCarga)) {
+                JOptionPane.showMessageDialog(this, "La capacidad de carga debe ser un valor positivo y realista (100 - 30,000 kg).");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error en el formato de número para la capacidad de carga: " + e.getMessage());
+            return;
+        }
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-                    String añoFabricacion = sdf.format(añoFabricacionDate);
+        // Validar año de fabricación
+        Date añoFabricacionDate = txtAñoDeFabricacionCamiones.getDate();
+        if (añoFabricacionDate == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un año de fabricación válido.");
+            return;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        String añoFabricacion = sdf.format(añoFabricacionDate);
 
-                    // Validación de campos
-                    if (placas.isEmpty() || modelo.isEmpty() || marca.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
-                        return;
-                    }
+        // Verifica si hay un camión con las mismas placas
+        boolean placasCambiadas = !placas.equals(camionActual.getPlacas());
+        for (Camiones camionExistente : listaCamiones) {
+            if (camionExistente != camionActual && placasCambiadas && camionExistente.getPlacas().equals(placas)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
+                return;
+            }
+        }
 
-                    if (!validarPlacas(placas)) {
-                        JOptionPane.showMessageDialog(this, "Las placas deben contener al menos una letra y un número.");
-                        return;
-                    }
+        // Actualización de datos del camión
+        camionActual.setPlacas(placas);
+        camionActual.setModelo(modelo);
+        camionActual.setMarca(marca);
+        camionActual.setEstado(estado);
+        camionActual.setTipoCombustible(tipoCombustible);
+        camionActual.setKilometraje(kilometraje);
+        camionActual.setCapacidadCarga(capacidadCarga);
+        camionActual.setAñoFabricacion(añoFabricacion);
 
-                    if (!validarKilometraje(kilometraje)) {
-                        JOptionPane.showMessageDialog(this, "El kilometraje debe ser un valor positivo y realista (0 - 1,000,000 km).");
-                        return;
-                    }
+        gestionCamiones.actualizarCamion(camionActual); // Actualiza el camión en la gestión.
 
-                    if (!validarCapacidadCarga(capacidadCarga)) {
-                        JOptionPane.showMessageDialog(this, "La capacidad de carga debe ser un valor positivo y realista (100 - 30,000 kg).");
-                        return;
-                    }
+        JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.");
+        cargarCamionesEnTabla(); // Refresca la tabla con los nuevos datos
 
-                    // Verifica si hay un camión con las mismas placas
-                    boolean placasCambiadas = !placas.equals(camionActual.getPlacas());
-                    for (Camiones camionExistente : listaCamiones) {
-                        if (camionExistente != camionActual && placasCambiadas && camionExistente.getPlacas().equals(placas)) {
-                            JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
-                            return;
-                        }
-                    }
+        this.dispose(); // Cierra la ventana actual
 
-                    // Actualización de datos del camión
-                    camionActual.setPlacas(placas);
-                    camionActual.setModelo(modelo);
-                    camionActual.setMarca(marca);
-                    camionActual.setEstado(estado);
-                    camionActual.setTipoCombustible(tipoCombustible);
-                    camionActual.setKilometraje(kilometraje);
-                    camionActual.setCapacidadCarga(capacidadCarga);
-                    camionActual.setAñoFabricacion(añoFabricacion);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al modificar camión: " + e.getMessage());
+    }
 
-                    gestionCamiones.actualizarCamion(camionActual); // Actualiza el camión en la gestión.
+    // Abre la ventana de gestión de camiones después de modificar
+    String username = this.currentUser;
+    String role = this.userRole;
+    LOGINPINEED loginFrame = this.loginFrame;
 
-                    JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.");
-                    cargarCamionesEnTabla(); // Refresca la tabla con los nuevos datos
-
-                    this.dispose(); // Cierra la ventana actual
-
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error al modificar camión: " + e.getMessage());
-                }
-
-                // Abre la ventana de gestión de camiones después de modificar
-                String username = this.currentUser;
-                String role = this.userRole;
-                LOGINPINEED loginFrame = this.loginFrame;
-
-                INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(username, role, loginFrame);
-                abrir.setVisible(true);
-                this.setVisible(false);
+    INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(username, role, loginFrame);
+    abrir.setVisible(true);
+    this.setVisible(false);
     }//GEN-LAST:event_btnAgregarCamionesSistemaActionPerformed
 
     private void txtEstadoCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionesActionPerformed

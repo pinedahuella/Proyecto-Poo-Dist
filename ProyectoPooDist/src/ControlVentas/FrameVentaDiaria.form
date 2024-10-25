@@ -56,7 +56,7 @@
                                   <Component id="jLabel20" alignment="0" min="-2" pref="102" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="historialVentas" min="-2" pref="202" max="-2" attributes="0"/>
+                              <Component id="txtHistorialVentas" min="-2" pref="202" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jTextField19" alignment="0" min="-2" pref="433" max="-2" attributes="0"/>
@@ -96,7 +96,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="labelGanaciaGeneral" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="historialVentas" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="txtHistorialVentas" min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" min="-2" pref="518" max="-2" attributes="0"/>
@@ -1020,7 +1020,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField19ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="historialVentas">
+        <Component class="javax.swing.JButton" name="txtHistorialVentas">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="0" type="rgb"/>
@@ -1037,7 +1037,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="historialVentasActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtHistorialVentasActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

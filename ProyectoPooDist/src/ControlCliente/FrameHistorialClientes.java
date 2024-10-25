@@ -51,7 +51,10 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
           this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
-        
+                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false); // Desactivar el cambio de tamaño
+    configurarListenerCierre();
+
         
         //inciamos las clases
         gesclientes = new GestionClientes();
@@ -127,50 +130,82 @@ public class FrameHistorialClientes extends javax.swing.JFrame {
         }
     }
 
-            public void addWindowListener() {
+     
+public void addWindowListener() {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                cerrarSesionYSalir();
+                // Show message about changes being reflected
+                JOptionPane.showMessageDialog(null, 
+                    "Los cambios realizados se verán reflejados al cerrar el historial de clientes eliminados", 
+                    "Información", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                
+                cerrarYActualizarFrame();
             }
         });
     }
      
-
-private void cerrarSesionYRegresarLogin() {
-        cerrarSesionManualmente();
-        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
-        nuevaLoginFrame.setVisible(true);
-        this.dispose();
-    }
-
-    private void cerrarSesionManualmente() {
-        LocalDateTime tiempoSalida = LocalDateTime.now();
-        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
-        gestionLogin.cargarLoginsDesdeExcel();
-        
-        boolean sesionCerrada = false;
-        for (Login login : gestionLogin.getLogins()) {
-            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
-                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-                gestionLogin.actualizarLogin(login);
-                sesionCerrada = true;
-                System.out.println("Sesión cerrada para el usuario: " + currentUser);
-                break;
-            }
+private void configurarListenerCierre() {
+    this.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            cerrarYActualizarFrame();
         }
-        
-        if (!sesionCerrada) {
-            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+    });
+}
+
+// Función para actualizar la tabla de clientes
+public void actualizarTablaClientes() {
+    modeloClientes.setRowCount(0);
+    boolean activoCliente;
+    int longitudCreditos;
+
+    for (Cliente cliente : vectorclientes) {
+        activoCliente = true;
+        longitudCreditos = cliente.getIndiceCredito().size();
+
+        if (longitudCreditos > 0 && cliente.getIndiceCredito().get(longitudCreditos - 1) == -100) {
+            activoCliente = false;
         }
-    }
 
-    private void cerrarSesionYSalir() {
-        cerrarSesionManualmente();
-        System.exit(0);
+        String estadoCliente = activoCliente ? "Activo" : "Desactivo";
+        modeloClientes.addRow(new Object[]{cliente.getNombre(), estadoCliente});
     }
+}
 
+// Cerrar y actualizar el frame de clientes
+private void cerrarYActualizarFrame() {
+    cerrarSesionManualmente();
+    this.dispose();
+
+    // Crear y abrir una nueva instancia de FrameClientes
+    FrameClientes nuevoFrame = new FrameClientes(currentUser, userRole, loginFrame);
+    nuevoFrame.actualizaTablaCliente();
+    nuevoFrame.setVisible(true);
+}
+
+// Otros métodos de cierre de sesión
+private void cerrarSesionManualmente() {
+    LocalDateTime tiempoSalida = LocalDateTime.now();
+    GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+    gestionLogin.cargarLoginsDesdeExcel();
     
+    boolean sesionCerrada = false;
+    for (Login login : gestionLogin.getLogins()) {
+        if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+            login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+            gestionLogin.actualizarLogin(login);
+            sesionCerrada = true;
+            System.out.println("Sesión cerrada para el usuario: " + currentUser);
+            break;
+        }
+    }
+    
+    if (!sesionCerrada) {
+        System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+    }
+}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -232,7 +267,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 385, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -240,9 +275,9 @@ private void cerrarSesionYRegresarLogin() {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(55, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -274,7 +309,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabla1, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+                .addComponent(tabla1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -322,8 +357,8 @@ private void cerrarSesionYRegresarLogin() {
                     gesclientes.getClientes().get(indiceActual).getIndiceCredito().remove(gesclientes.getClientes().get(indiceActual).getIndiceCredito().size()-1);
                 
                 //mostramos mesaje 
-                JOptionPane.showMessageDialog(null, "Trabajador activado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
-        
+    JOptionPane.showMessageDialog(null, "Los cambios realizados se verán reflejados al cerrar el historial de clientes eliminados.", "Información", JOptionPane.INFORMATION_MESSAGE);
+
                 //funcion provisional para guardas datos en el excel
                  gesclientes.guardarExcelCliente();
                  

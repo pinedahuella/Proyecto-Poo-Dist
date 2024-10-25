@@ -484,18 +484,30 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
             return;
         }
 
-        // Generar el nombre de usuario esperado en el formato correcto
-        String nombreUsuarioEsperado = nombreUsuario.toLowerCase() + "." + 
-                                     apellidoUsuario.toLowerCase() + "&pineed";
-
         // Obtener el nombre de usuario ingresado
         String nombreDeUsuario = txtNombreDeUsuarioUsuarioModificarModificar.getText().trim().toLowerCase();
+        
+        // Generar las dos versiones posibles del nombre de usuario (con y sin tildes)
+        String nombreUsuarioSinTildes = removeTildes(nombreUsuario.toLowerCase()) + "." + 
+                                      removeTildes(apellidoUsuario.toLowerCase()) + "&pineed";
+                                      
+        String nombreUsuarioConTildes = nombreUsuario.toLowerCase() + "." + 
+                                      apellidoUsuario.toLowerCase() + "&pineed";
 
-        // Validar que el nombre de usuario coincida con el formato esperado
-        if (!nombreDeUsuario.equals(nombreUsuarioEsperado)) {
-            JOptionPane.showMessageDialog(this, 
-                "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
-                "Para sus datos, debe ser: " + nombreUsuarioEsperado);
+        // Remover espacios extras que pudieran haberse colado
+        nombreDeUsuario = nombreDeUsuario.replaceAll("\\s+", "");
+        nombreUsuarioSinTildes = nombreUsuarioSinTildes.replaceAll("\\s+", "");
+        nombreUsuarioConTildes = nombreUsuarioConTildes.replaceAll("\\s+", "");
+        
+        // Validar que el nombre de usuario coincida con alguno de los formatos esperados
+        if (!nombreDeUsuario.equals(nombreUsuarioSinTildes) && !nombreDeUsuario.equals(nombreUsuarioConTildes)) {
+            String mensaje = "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
+                           "Para sus datos, puede ser:\n" +
+                           "- Sin tildes: " + nombreUsuarioSinTildes + "\n" +
+                           "- Con tildes: " + nombreUsuarioConTildes + "\n\n" +
+                           "Nota: Aunque ambas formas son válidas, se recomienda usar la versión sin tildes " +
+                           "para mayor compatibilidad.";
+            JOptionPane.showMessageDialog(this, mensaje);
             return;
         }
 
@@ -597,6 +609,22 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
         JOptionPane.showMessageDialog(this, "Error al modificar usuario: " + e.getMessage());
     }
     }//GEN-LAST:event_btnModificarUsuariosSistemaActionPerformed
+   // Agregar este método fuera del btnAgregarUsuarioSistemaActionPerformed, pero dentro de la clase
+private String removeTildes(String input) {
+    return input.replace('á', 'a')
+               .replace('é', 'e')
+               .replace('í', 'i')
+               .replace('ó', 'o')
+               .replace('ú', 'u')
+               .replace('Á', 'a')
+               .replace('É', 'e')
+               .replace('Í', 'i')
+               .replace('Ó', 'o')
+               .replace('Ú', 'u')
+               .replace('ñ', 'n')
+               .replace('Ñ', 'n');
+}
+
 
 
     private boolean isPasswordVisible = false;

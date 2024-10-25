@@ -194,10 +194,10 @@ private void cerrarSesionYRegresarLogin() {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(44, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap())
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         tablaHistorial.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N

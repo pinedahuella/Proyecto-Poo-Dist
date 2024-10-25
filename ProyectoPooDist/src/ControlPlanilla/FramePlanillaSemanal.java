@@ -61,6 +61,17 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     public FramePlanillaSemanal(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
+        
+        // Show or hide the button based on user role
+if (role.equalsIgnoreCase("ADMINISTRADOR")) {
+    txtReactivarTrabajadorEliminado.setVisible(true); // Show the button for ADMINISTRADOR
+} else if (role.equalsIgnoreCase("SECRETARIA")) {
+    txtReactivarTrabajadorEliminado.setVisible(false); // Hide the button for SECRETARIA
+} else {
+    // Optionally, you can set the default visibility for other roles
+    txtReactivarTrabajadorEliminado.setVisible(false); // Hide for all other roles
+}
+
         //desactivamos el boton de guardar
         botonguardarDatos.setVisible(false);
         setResizable(false); // Desactivar el cambio de tamaño
@@ -99,6 +110,8 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         //llamamos a un bucle infinito
         iniciarBucleEnHilo();
         configurarCamposTrabajador();
+        actualizarTablaTrabajadores();
+    cargarInvetrioTabla(); // This will refresh 
           this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
@@ -111,7 +124,9 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         });
     }
     
-    
+    public void actualizarTablaTrabajadores() {
+    cargarInvetrioTabla(); // This will refresh the table
+}
  
     // Método para configurar el placeholder en campos de texto
 private void setupTextFieldTrabajador(JTextField textField, String placeholder) {
@@ -540,7 +555,7 @@ private void cerrarSesionYRegresarLogin() {
         botonguardarDatos = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
-        buscarPiloto = new javax.swing.JButton();
+        txtReactivarTrabajadorEliminado = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -1264,14 +1279,14 @@ private void cerrarSesionYRegresarLogin() {
             .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
         );
 
-        buscarPiloto.setBackground(new java.awt.Color(0, 153, 153));
-        buscarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        buscarPiloto.setForeground(new java.awt.Color(255, 255, 255));
-        buscarPiloto.setText("ACTIVAR TRABAJADORES ELIMINADOS");
-        buscarPiloto.setBorder(null);
-        buscarPiloto.addActionListener(new java.awt.event.ActionListener() {
+        txtReactivarTrabajadorEliminado.setBackground(new java.awt.Color(0, 153, 153));
+        txtReactivarTrabajadorEliminado.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        txtReactivarTrabajadorEliminado.setForeground(new java.awt.Color(255, 255, 255));
+        txtReactivarTrabajadorEliminado.setText("ACTIVAR TRABAJADORES ELIMINADOS");
+        txtReactivarTrabajadorEliminado.setBorder(null);
+        txtReactivarTrabajadorEliminado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buscarPilotoActionPerformed(evt);
+                txtReactivarTrabajadorEliminadoActionPerformed(evt);
             }
         });
 
@@ -1300,7 +1315,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtReactivarTrabajadorEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(24, 24, 24)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1310,7 +1325,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtReactivarTrabajadorEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -1697,14 +1712,14 @@ private void cerrarSesionYRegresarLogin() {
                 }
     }//GEN-LAST:event_jPanel6MouseClicked
 
-    private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
+    private void txtReactivarTrabajadorEliminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtReactivarTrabajadorEliminadoActionPerformed
         String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
         String role = this.userRole;        // Suponiendo que userRole contiene el rol
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
         FrameHistorialTrabajadores abrir = new FrameHistorialTrabajadores(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
-    }//GEN-LAST:event_buscarPilotoActionPerformed
+    }//GEN-LAST:event_txtReactivarTrabajadorEliminadoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1835,7 +1850,6 @@ private void cerrarSesionYRegresarLogin() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelBoton3;
     private javax.swing.JPanel botonguardarDatos;
-    private javax.swing.JButton buscarPiloto;
     private javax.swing.JComboBox<String> comboOperacionEntrada;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1896,6 +1910,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JTextArea txtPequeñaDescripcionAgregar;
     private javax.swing.JTextArea txtPequeñaDescripcionModificar;
     private javax.swing.JTextField txtRazon;
+    private javax.swing.JButton txtReactivarTrabajadorEliminado;
     private javax.swing.JTextField txtSalarioSemanalAgregar;
     private javax.swing.JTextField txtSalarioSemanalModificado;
     private javax.swing.JTextField txtValorDeLaEntrada;

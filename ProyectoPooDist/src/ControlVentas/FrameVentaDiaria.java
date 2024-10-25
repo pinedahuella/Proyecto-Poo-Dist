@@ -77,6 +77,15 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
     public FrameVentaDiaria(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
+        // Show or hide the button based on user role
+if (role.equalsIgnoreCase("ADMINISTRADOR")) {
+    txtHistorialVentas.setVisible(true); // Show the button for ADMINISTRADOR
+} else if (role.equalsIgnoreCase("SECRETARIA")) {
+    txtHistorialVentas.setVisible(false); // Hide the button for SECRETARIA
+} else {
+    // Optionally, you can set the default visibility for other roles
+    txtHistorialVentas.setVisible(false); // Hide for all other roles
+}
         //inidiciamos el indice general en -1
         indiceGeneral = -1;
         
@@ -575,7 +584,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel2 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
         jTextField19 = new javax.swing.JTextField();
-        historialVentas = new javax.swing.JButton();
+        txtHistorialVentas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -1088,14 +1097,14 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        historialVentas.setBackground(new java.awt.Color(0, 153, 153));
-        historialVentas.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        historialVentas.setForeground(new java.awt.Color(255, 255, 255));
-        historialVentas.setText("HISTORIAL DE VENTAS");
-        historialVentas.setBorder(null);
-        historialVentas.addActionListener(new java.awt.event.ActionListener() {
+        txtHistorialVentas.setBackground(new java.awt.Color(0, 153, 153));
+        txtHistorialVentas.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        txtHistorialVentas.setForeground(new java.awt.Color(255, 255, 255));
+        txtHistorialVentas.setText("HISTORIAL DE VENTAS");
+        txtHistorialVentas.setBorder(null);
+        txtHistorialVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                historialVentasActionPerformed(evt);
+                txtHistorialVentasActionPerformed(evt);
             }
         });
 
@@ -1114,7 +1123,7 @@ private void cerrarSesionYRegresarLogin() {
                                 .addComponent(labelGanaciaGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(historialVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtHistorialVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -1145,7 +1154,7 @@ private void cerrarSesionYRegresarLogin() {
                                 .addComponent(jLabel20)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelGanaciaGeneral))
-                            .addComponent(historialVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtHistorialVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1592,14 +1601,14 @@ private void cerrarSesionYRegresarLogin() {
         }
     }//GEN-LAST:event_jPanel12MouseClicked
 
-    private void historialVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_historialVentasActionPerformed
+    private void txtHistorialVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHistorialVentasActionPerformed
         String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
         String role = this.userRole;        // Suponiendo que userRole contiene el rol
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
         FrameHistorialVenta abrir = new FrameHistorialVenta(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
-    }//GEN-LAST:event_historialVentasActionPerformed
+    }//GEN-LAST:event_txtHistorialVentasActionPerformed
 
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
@@ -1716,7 +1725,6 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JComboBox<String> comboClienteA;
     private javax.swing.JComboBox<String> comboClienteB;
     private javax.swing.JComboBox<String> comboProductosA;
-    private javax.swing.JButton historialVentas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1762,6 +1770,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JTable tablaVentasA;
     private javax.swing.JTextField textoPrecioCostoAgregar;
     private javax.swing.JTextField textoPrecioVentaAgregar;
+    private javax.swing.JButton txtHistorialVentas;
     private javax.swing.JComboBox<String> txtMenu;
     private javax.swing.JTextField txtPrecioAgregar;
     private javax.swing.JTextField txtPrecioCostoModificar;
