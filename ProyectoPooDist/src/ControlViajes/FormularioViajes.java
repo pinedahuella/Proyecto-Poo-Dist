@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
+import ControlPedidos.*;
 
 import java.util.Calendar;
 import com.toedter.calendar.JCalendar;
@@ -58,6 +58,7 @@ public class FormularioViajes extends javax.swing.JFrame {
 
     //definimos el la gestion de pilotos, fechas, caminos e inventario
     private GestionCalendario gescalendario;
+    private GestionPedido gespedidos;
     private gestionProductos gesproductos;
     private GESTIONPILOTOS gespilotos;
     private GESTIONCAMIONES gescamiones;
@@ -156,12 +157,14 @@ public class FormularioViajes extends javax.swing.JFrame {
     gesproductos = new gestionProductos();
     gespilotos = new GESTIONPILOTOS();
     gescamiones = new GESTIONCAMIONES();
+    gespedidos = new GestionPedido();
     
     //cargamos los valores del excel del las gestiones
     gescalendario.cargarFechasExcel();
     gesproductos.setCargarInvetarioExcel();
     gespilotos.cargarPilotosDesdeExcel();
     gescamiones.cargarCamionesDesdeExcel();
+    gespedidos.CargaDeExcel();
     
     //tabla productosA creamos la tabla
     String ids [] = {"productos", "cantidades"};
@@ -617,6 +620,10 @@ private void cerrarSesionYRegresarLogin() {
         comboTViajeB = new javax.swing.JComboBox<>();
         jPanel12 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jPanel15 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
 
@@ -1041,6 +1048,61 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
+        jPanel14.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel14.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel14MouseClicked(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("Modo Daltonico");
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addContainerGap(10, Short.MAX_VALUE)
+                .addComponent(jLabel14)
+                .addContainerGap())
+        );
+
+        jPanel15.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel15MouseClicked(evt);
+            }
+        });
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setText("Eliminar Viaje");
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addComponent(jLabel15)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1048,6 +1110,10 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1094,7 +1160,15 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1168,7 +1242,7 @@ private void cerrarSesionYRegresarLogin() {
             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, 828, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1385,9 +1459,27 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         return;
         }
         
+        Date fechaAntigua = new Date();
+        Date nuevaFecha = new Date();
+        
+        if (indiceActual > -1) {
+            //fecha antigua
+        fechaAntigua = FechaTablaNew.get(indiceActual).getFechaC();
+
+                
+                // Crear una instancia de Calendar y establecer la fechaAntigua
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaAntigua);
+        // Restar un día
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        // Obtener la nueva fecha
+        nuevaFecha = calendar.getTime();
+        }
+ 
+        
         //verifica que las fechas sean validas
         if (newFechaCarga != null && newFechaDescarga != null && 
-            indiceActual > -1 && !newFechaDescarga.before(newFechaCarga)) {
+            indiceActual > -1 && !newFechaDescarga.before(newFechaCarga) && nuevaFecha.before(newFechaCarga) && nuevaFecha.before(newFechaDescarga)) {
             
   
             
@@ -1555,6 +1647,72 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         // TODO add your handling code here:
     }//GEN-LAST:event_comboTViajeBActionPerformed
 
+    private void jPanel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel14MouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para el modo daltonico
+        if (pastelGreen.equals(new Color(144, 238, 144))) {
+        // Cambiar a modo daltónico
+        pastelGreen = new Color(255, 255, 0); 
+        pastelRed = new Color(255, 0, 0);      // Rojo
+        pastelBlue = new Color(128, 0, 128); // Morado
+        } else {
+        // Cambiar a colores originales
+        pastelGreen = new Color(144, 238, 144); // Verde pastel
+        pastelRed = new Color(255, 182, 193);   // Rojo pastel
+        pastelBlue = new Color(173, 216, 255);  // Azul pastel
+        }
+        
+        
+        ActualizarCalendario();
+        
+        //preguntamos si el indice anterior es superior de -1
+                 if (comboPedidosLista.getSelectedIndex() > -1) {
+  
+                    //volvemos a colores las fechas antiguas al color correspondiente 
+                    colorearFecha(FechaTablaNew.get(comboPedidosLista.getSelectedIndex()).getFechaC(), pastelBlue);
+                    colorearFecha(FechaTablaNew.get(comboPedidosLista.getSelectedIndex()).getFechaD(), pastelBlue );
+                 }
+        
+    }//GEN-LAST:event_jPanel14MouseClicked
+
+    private void jPanel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel15MouseClicked
+        // TODO add your handling code here:
+        
+        //este formulario nos ayudara a elimar una fecha
+          // Mostrar popup de advertencia        
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
+
+        // Si el usuario selecciona "Sí"
+        if (respuesta == JOptionPane.YES_OPTION) {
+               if (indiceActual > -1) {
+                
+                   gescalendario.getFechasDeCalendario().remove(indiceActual);
+                   gescalendario.guardarFecharExcel();
+                   
+                   gespedidos.actualizarIndiceCalendario(indiceActual);              
+                   gespedidos.GuardarEnExcel();
+                   
+                   
+                   
+                    //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "viaje eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
+           
+                String username = this.currentUser; // Assuming currentUser holds the username
+                String role = this.userRole;        // Assuming userRole holds the role
+                LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+                FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+                abrir.setVisible(true); 
+                this.dispose();
+            }else{
+                //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "seleccione un viaje de la tabla valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
+            }
+
+        }
+    }//GEN-LAST:event_jPanel15MouseClicked
+
     private void iniciarBucleEnHilo() {
         //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
         Thread hiloBucle = new Thread(() -> {
@@ -1607,9 +1765,11 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
                 if (FechaTablaNew.get(indiceSeleccionado).getActivo() == true) {
                     botonModificarViajes.setVisible(true);
                     radioFinalizarViaje.setVisible(true);
+                    jPanel15.setVisible(true);
                 }else{
                     botonModificarViajes.setVisible(false);
                     radioFinalizarViaje.setVisible(false);
+                    jPanel15.setVisible(false);
                 }
                 
                 //actualizamos la tabla
@@ -1795,6 +1955,8 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1808,6 +1970,8 @@ SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

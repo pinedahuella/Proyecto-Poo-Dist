@@ -1208,10 +1208,11 @@ private void cerrarSesionYRegresarLogin() {
             //obtenemos los datos del usuario
         String newnombre = textProductoN.getText();
         String newproveedor = textProductoP.getText();
-        
-            if (!newnombre.isEmpty() && !newproveedor.isEmpty()) {
-                float newPrecioCosto = Float.parseFloat(textProductoPC.getText());
+        float newPrecioCosto = Float.parseFloat(textProductoPC.getText());
         float newPrecioFlete = Float.parseFloat(textProductoPF.getText());
+        
+            if (!newnombre.isEmpty() && !newproveedor.isEmpty() && newPrecioCosto > 0 && newPrecioFlete > 0) {
+                
         
         int newExistencias = (Integer) spinnerCantidad.getValue();
         
@@ -1245,7 +1246,7 @@ private void cerrarSesionYRegresarLogin() {
        
             }else{
                //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "complete el nombre y proveedor", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            JOptionPane.showMessageDialog(null, "complete el nombre y proveedor, ingrese precios validos", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
         
             }
         
@@ -1278,9 +1279,11 @@ private void cerrarSesionYRegresarLogin() {
             String newnombre = textoModificadoNombre.getText();
             String newproveedor = textoModificadoProveedor.getText();
             
-            if (!newnombre.isEmpty() && !newproveedor.isEmpty()) {
-                float newPrecioCosto = Float.parseFloat(textoModificadoPC.getText());
+            float newPrecioCosto = Float.parseFloat(textoModificadoPC.getText());
             float newPrecioFlete = Float.parseFloat(textoModificadoPF.getText());
+            
+            if (!newnombre.isEmpty() && !newproveedor.isEmpty() && newPrecioCosto > 0 && newPrecioFlete > 0) {
+                
 
             int newExistencias = (Integer) spinnerModificadoCantidad.getValue();
 
@@ -1302,7 +1305,7 @@ private void cerrarSesionYRegresarLogin() {
        
             }else{
                //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "complete el nombre y proveedor", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            JOptionPane.showMessageDialog(null, "complete el nombre y proveedor, ingrese precios validos", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
         
             }
             

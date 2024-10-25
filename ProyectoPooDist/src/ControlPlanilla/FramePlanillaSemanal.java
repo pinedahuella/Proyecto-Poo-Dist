@@ -39,6 +39,9 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     public GestionFichaTrabajador gTrabajadores;
     public Vector<FichaTrabajador> tTrabajador = new Vector<>();
     
+    //creamos un vector de intengers que contendra los indices reales de los trabajadores
+    public Vector<Integer>  indicesVectores = new Vector<>();
+    
     //crearemos el modelo de la tabla de trabajadores
     DefaultTableModel modeloTrabajador = new DefaultTableModel();
     
@@ -50,6 +53,7 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
 
     //crearemos un indice actual que nos ayudara a modificar los elementos
     private int indiceActual;
+    private int indiceActualTabla;
     
     public FramePlanillaSemanal(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
@@ -64,6 +68,7 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
         
         //definimos el indice actual en -1 debido aque no representa ningun indice de la tabla real
         indiceActual = -1;
+        indiceActualTabla = -1;
         
         //colocamos los paneles invisibles
         panelf1.setVisible(false);
@@ -343,12 +348,21 @@ private void cerrarSesionYRegresarLogin() {
         
         //primero vaciaremos la tabla totalmente
         modeloTrabajador.setRowCount(0);
+        //vaciamos primero el vector
+        indicesVectores.clear();
+        
+        //contador que guardara los indices reales
+        int contador = 0;
         
         //con este for llenaremos la tabla con los elemetos del vector
         for (FichaTrabajador trad : tTrabajador) {
             
-            modeloTrabajador.addRow(new Object[]{trad.getNombre()});
-
+            if (trad.getSemanasDeTrabajo() >= 0) {
+                modeloTrabajador.addRow(new Object[]{trad.getNombre()});
+                
+                indicesVectores.add(contador);
+            }
+            contador++;
         }
         
     };
@@ -425,6 +439,8 @@ private void cerrarSesionYRegresarLogin() {
         jPanel5 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
         botonguardarDatos = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -621,7 +637,7 @@ private void cerrarSesionYRegresarLogin() {
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 125, Short.MAX_VALUE)
                         .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
                                 .addComponent(jLabel14)
@@ -860,14 +876,14 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelBotonModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
@@ -884,7 +900,7 @@ private void cerrarSesionYRegresarLogin() {
                             .addComponent(jLabel16)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(labelSemanaInfo))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jLabel5.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -1094,7 +1110,7 @@ private void cerrarSesionYRegresarLogin() {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -1120,7 +1136,33 @@ private void cerrarSesionYRegresarLogin() {
         );
         botonguardarDatosLayout.setVerticalGroup(
             botonguardarDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 31, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jPanel6.setBackground(new java.awt.Color(85, 111, 169));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
+            }
+        });
+
+        jLabel20.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel20.setText("Eliminar Trabajador");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1131,7 +1173,12 @@ private void cerrarSesionYRegresarLogin() {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1143,26 +1190,25 @@ private void cerrarSesionYRegresarLogin() {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(panelf2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(24, 24, 24))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(24, 24, 24)))
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(botonguardarDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(6, 6, 6))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1172,7 +1218,7 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(31, 31, 31))
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1214,7 +1260,7 @@ private void cerrarSesionYRegresarLogin() {
         int newsemanas = 0;
         String newDescripcion = areaDescripcionT.getText();
         
-        if (!newnombre.isEmpty() && !newDescripcion.isEmpty()) {
+        if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newsalario > 0) {
                    //crearemos el objeto trabajador provisional
         FichaTrabajador newTrabajador = new FichaTrabajador(newnombre, newDescripcion, newsalario, newsemanas);
         
@@ -1233,9 +1279,9 @@ private void cerrarSesionYRegresarLogin() {
         panelf1.setVisible(false);
         panelf2.setVisible(false);
         
-        if (indiceActual > -1) {
+        if (indiceActualTabla > -1) {
             //colocamos la tabala seleccionando el indice actual
-            tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+            tablaTrabajadores.setRowSelectionInterval(indiceActualTabla, indiceActualTabla);
         }
         
         //mostramos mesaje 
@@ -1246,7 +1292,7 @@ private void cerrarSesionYRegresarLogin() {
          
                 }else{
                   //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "Completar los campos de nombre y descripcion", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            JOptionPane.showMessageDialog(null, "Completar los campos de nombre, descripcion y salario valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
               
                 }
         
@@ -1279,20 +1325,20 @@ private void cerrarSesionYRegresarLogin() {
         
         try{
             //preguntamos si el indice seleccionado de la tabla es legal
-            if (tablaTrabajadores.getSelectedRow() > -1) {
+            if (indiceActual > -1) {
                 
                 //primeor obtenemos los valores del trabajador 
                 String newnombre = textoNombreModificado.getText();
                 String newDescripcion = areaDescripcionModificada.getText();
-                
-                if (!newnombre.isEmpty() && !newDescripcion.isEmpty()) {
-                    
                 float newSalario = Float.parseFloat(textoSalarioModificado.getText());
+                float salarioAntiguo = gTrabajadores.getSalariTotalEnNumeros(indiceActual);
+                
+                if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newSalario > 0 && newSalario > salarioAntiguo) {
 
                 //indiceActual
 
                 //crearemos el objeto trabajador provisional
-                FichaTrabajador newTrabajador = tTrabajador.get(tablaTrabajadores.getSelectedRow());
+                FichaTrabajador newTrabajador = tTrabajador.get(indiceActual);
                 
                 //asignamos este objetos los nuevos valores
                 newTrabajador.setNombre(newnombre);
@@ -1300,32 +1346,32 @@ private void cerrarSesionYRegresarLogin() {
                 newTrabajador.setSalarioSemanal(newSalario);
                 
                 //llamamos a la funcion de modificar un valor
-                gTrabajadores.modificarTRabajdor(tablaTrabajadores.getSelectedRow(), newTrabajador);
+                gTrabajadores.modificarTRabajdor(indiceActual, newTrabajador);
                 
                 //ocultamos los paneles para evitar problemas
                 panelf1.setVisible(false);
                 panelf2.setVisible(false);
                 
                 //mostramos los datos de la tabla 
-                labelNombre.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
-                labelSemanaInfo.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
+                labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
+                labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
+                areaDescripcionNo.setText(tTrabajador.get(indiceActual).getDescripcion());
                 
-                labelSalirioSemanal.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                labelSalirioSemanal.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
                 //ahora vamos a llamar a la funcion de calcular el sueldo total
-                labelSalioTotal.setText(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow()));
+                labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
                 //mostramos los mismos datos de modificado 
-                textoNombreModificado.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
-                areaDescripcionModificada.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
-                textoSalarioModificado.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                textoNombreModificado.setText(tTrabajador.get(indiceActual).getNombre());
+                areaDescripcionModificada.setText(tTrabajador.get(indiceActual).getDescripcion());
+                textoSalarioModificado.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
                 //actualizamos la tabla
                 cargarInvetrioTabla();
                 
                 //acemos que la tabla siga seleccionando el indice actual
-                tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+                tablaTrabajadores.setRowSelectionInterval(indiceActualTabla, indiceActualTabla);
                 
                 //mostramos mesaje 
             JOptionPane.showMessageDialog(null, "Trabajador modificado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
@@ -1334,7 +1380,7 @@ private void cerrarSesionYRegresarLogin() {
             
                 }else{
                   //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "Completar los campos de nombre y descripcion", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            JOptionPane.showMessageDialog(null, "Completar los campos de nombre, descripcion y salario valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
               
                 }
                 }else{
@@ -1357,44 +1403,44 @@ private void cerrarSesionYRegresarLogin() {
         //boton para grabar una nueva entrada
         try{
             //preguntamos si el indice seleccionado de la tabla es legal
-            if (tablaTrabajadores.getSelectedRow() > -1) {
+            if (indiceActual > -1) {
                 
                                 //primero obtenemos los datos de la entrada
                 String newEntrada = textoRazonEntrada.getText();
                 
                 if (!newEntrada.isEmpty()) {
-                    float newValorEntrada = Float.parseFloat(textoValorEntrada.getText()); 
+                float newValorEntrada = Float.parseFloat(textoValorEntrada.getText()); 
                         
                 String operacion = comboOperacionEntrada.getSelectedItem().toString();
                 
-                if (Float.parseFloat(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow())) >= newValorEntrada && operacion.equals("-") && newValorEntrada >= 1 || operacion.equals("+") && newValorEntrada >= 1) {
+                if (newValorEntrada > 0 && (Float.parseFloat(gTrabajadores.getSalariTotal(indiceActual)) >= newValorEntrada && operacion.equals("-") && newValorEntrada >= 1 || operacion.equals("+") && newValorEntrada >= 1)) {
                     
                 //hacemo que el valor no pueda quedar negativo 
-                if ( Float.parseFloat(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow())) >= newValorEntrada && operacion.equals("-") && newValorEntrada >= 1) {
+                if ( Float.parseFloat(gTrabajadores.getSalariTotal(indiceActual)) >= newValorEntrada && operacion.equals("-") && newValorEntrada >= 1) {
                     //llamamos a la funcion de agregar entrada
-                    gTrabajadores.setEntrada(tablaTrabajadores.getSelectedRow(), newEntrada, newValorEntrada, operacion);
+                    gTrabajadores.setEntrada(indiceActual, newEntrada, newValorEntrada, operacion);
                 }else if(operacion.equals("+") && newValorEntrada >= 1){
                     //llamamos a la funcion de agregar entrada
-                    gTrabajadores.setEntrada(tablaTrabajadores.getSelectedRow(), newEntrada, newValorEntrada, operacion);
+                    gTrabajadores.setEntrada(indiceActual, newEntrada, newValorEntrada, operacion);
                 }
                 
                 //mostramos los datos de la tabla 
-                labelNombre.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
-                labelSemanaInfo.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
+                labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
+                labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
+                areaDescripcionNo.setText(tTrabajador.get(indiceActual).getDescripcion());
                 
-                labelSalirioSemanal.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                labelSalirioSemanal.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
                 //ahora vamos a llamar a la funcion de calcular el sueldo total
-                labelSalioTotal.setText(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow()));
+                labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
                 //actualizamos la tabla de entradas
-                modificarTabladeEtradas(tablaTrabajadores.getSelectedRow());
+                modificarTabladeEtradas(indiceActual);
                 //actualizamos la tabla
                 cargarInvetrioTabla();
                 
                 //colocamos la tabala seleccionando el indice actual
-                tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+                tablaTrabajadores.setRowSelectionInterval(indiceActualTabla, indiceActualTabla);
                 
                 //mostramos mesaje 
             JOptionPane.showMessageDialog(null, "Entrada creada exitosamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
@@ -1404,7 +1450,7 @@ private void cerrarSesionYRegresarLogin() {
             
                 }else{
                     //mostramos mesaje 
-            JOptionPane.showMessageDialog(null, "el salario del trabajador es inferior a la entrada", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+            JOptionPane.showMessageDialog(null, "el salario del trabajador es inferior a la entrada, o la cantidad de la entrada no es valida", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
         
                 }
                   
@@ -1459,22 +1505,22 @@ private void cerrarSesionYRegresarLogin() {
                 panelf2.setVisible(false);
                 
                 //mostramos los datos de la tabla 
-                labelNombre.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
-                labelSemanaInfo.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSemanasDeTrabajo());
-                areaDescripcionNo.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
+                labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
+                labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
+                areaDescripcionNo.setText(tTrabajador.get(indiceActual).getDescripcion());
                 
-                labelSalirioSemanal.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                labelSalirioSemanal.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
                 //ahora vamos a llamar a la funcion de calcular el sueldo total
-                labelSalioTotal.setText(gTrabajadores.getSalariTotal(tablaTrabajadores.getSelectedRow()));
+                labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
                 //mostramos los mismos datos de modificado 
-                textoNombreModificado.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getNombre());
-                areaDescripcionModificada.setText(tTrabajador.get(tablaTrabajadores.getSelectedRow()).getDescripcion());
-                textoSalarioModificado.setText("" + tTrabajador.get(tablaTrabajadores.getSelectedRow()).getSalarioSemanal());
+                textoNombreModificado.setText(tTrabajador.get(indiceActual).getNombre());
+                areaDescripcionModificada.setText(tTrabajador.get(indiceActual).getDescripcion());
+                textoSalarioModificado.setText("" + tTrabajador.get(indiceActual).getSalarioSemanal());
                 
             //colocamos la tabala seleccionando el indice actual
-            tablaTrabajadores.setRowSelectionInterval(indiceActual, indiceActual);
+            tablaTrabajadores.setRowSelectionInterval(indiceActualTabla, indiceActualTabla);
         }
                     
                     // vaciaremos la tabla totalmente
@@ -1483,6 +1529,60 @@ private void cerrarSesionYRegresarLogin() {
                     gTrabajadores.guardarTrabajadoresExcel();
                 }
     }//GEN-LAST:event_jPanel5MouseClicked
+
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para eliminar un trabajador
+            
+            int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
+
+                // Si el usuario selecciona "Sí"
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    //preguntamos si el indice seleccionado de la tabla es legal
+            if (indiceActual > -1) {
+                
+                tTrabajador.get(indiceActual).setSemanasDeTrabajo(-1);
+                
+                //mostramos los datos de la tabla 
+                labelNombre.setText("");
+                labelSemanaInfo.setText("");
+                areaDescripcionNo.setText("");
+                
+                labelSalirioSemanal.setText("");
+                
+                //ahora vamos a llamar a la funcion de calcular el sueldo total
+                labelSalioTotal.setText("");
+                
+                //mostramos los mismos datos de modificado 
+                textoNombreModificado.setText("");
+                areaDescripcionModificada.setText("");
+                textoSalarioModificado.setText("");
+                
+                //actualizamos la tabla
+                cargarInvetrioTabla();
+                
+                // vaciaremos la tabla totalmente
+                modeloEntradas.setRowCount(0);
+                
+                //igualamos el indice actual a -1
+                indiceActual = -1;
+                
+                
+                //mostramos mesaje 
+                JOptionPane.showMessageDialog(null, "Trabajador eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
+                //funcion provisional para guardas datos en el excel
+                 gTrabajadores.guardarTrabajadoresExcel();
+
+                
+                }else{
+                //mostramos mesaje 
+            JOptionPane.showMessageDialog(null, "Ingresa un Trabajador de la Tabla", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
+        
+            }
+                }
+    }//GEN-LAST:event_jPanel6MouseClicked
 
     /**
      * @param args the command line arguments
@@ -1538,11 +1638,16 @@ private void cerrarSesionYRegresarLogin() {
             //leemos el indice de seleccion de la tabla
             int indiceSeleccionado = tablaTrabajadores.getSelectedRow();
             
+             if (tablaTrabajadores.getSelectedRow() > -1 ) {
+                 indiceSeleccionado = indicesVectores.get(tablaTrabajadores.getSelectedRow());
+             }
+            
             //preguntamos si el indice genera y el seleccionado son distintos
             if (indiceSeleccionado != indiceActual && tablaTrabajadores.getSelectedRow() > -1) {
                 
                 //igualamos el indice general el indice seleccionado
                 indiceActual = indiceSeleccionado;
+                indiceActualTabla = tablaTrabajadores.getSelectedRow();
                 
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceSeleccionado).getNombre());
@@ -1560,7 +1665,7 @@ private void cerrarSesionYRegresarLogin() {
                 textoSalarioModificado.setText("" + tTrabajador.get(indiceSeleccionado).getSalarioSemanal());
                 
                 //actualizamos la tabla de entradas
-                modificarTabladeEtradas(tablaTrabajadores.getSelectedRow());
+                modificarTabladeEtradas(indicesVectores.get(tablaTrabajadores.getSelectedRow()));
             }
              
             
@@ -1624,6 +1729,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1642,6 +1748,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
