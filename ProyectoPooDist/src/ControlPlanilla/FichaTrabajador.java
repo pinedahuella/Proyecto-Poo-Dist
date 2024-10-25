@@ -101,6 +101,9 @@ public class FichaTrabajador {
     
     //creamos una funcion para sumarle semana
     public void nuevaSemanaTrabajada(){
-        this.semanasDeTrabajo++;
+
+        if (this.semanasDeTrabajo > -1) {
+            this.semanasDeTrabajo++;
+        }
     }
 }

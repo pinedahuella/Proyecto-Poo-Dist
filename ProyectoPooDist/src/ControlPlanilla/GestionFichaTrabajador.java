@@ -76,6 +76,26 @@ public class GestionFichaTrabajador {
         return "" + salarioTotal;
     };
     
+    //funcion para obtener el salario total
+    public float getSalariTotalEnNumeros(int indice){
+        
+        float salarioTotal = 0;
+        
+        Vector<Float> newValorEntrada = this.trabajador.get(indice).getValorEntrada();
+        
+        for (float prod : newValorEntrada) {
+            
+            if (prod > 0) {
+               salarioTotal += prod;
+            }else{
+              salarioTotal -= prod;
+            }
+
+        }
+        
+        return salarioTotal;
+    };
+    
     
     //funcion para agregar una nueva entradad
     public void setEntrada(int indice, String e, float v, String operacion){

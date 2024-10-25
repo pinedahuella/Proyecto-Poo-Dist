@@ -135,7 +135,7 @@ public class GestionCalendario {
                 // 1. Está activa
                 // 2. El índice del camión es válido
                 // 3. El camión referenciado está activo
-                if (activo && indicesCamionesValidos.containsKey(indiceCamion)) {
+                if (indicesCamionesValidos.containsKey(indiceCamion)) {
                     Vector<Integer> indiceProductos = new Vector<>();
                     Vector<Integer> indiceCantidad = new Vector<>();
                     

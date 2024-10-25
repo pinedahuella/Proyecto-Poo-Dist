@@ -574,6 +574,8 @@ private void cerrarSesionYRegresarLogin() {
         jLabel12 = new javax.swing.JLabel();
         labeltPedido = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -643,7 +645,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(724, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.setBackground(new java.awt.Color(102, 102, 255));
@@ -724,6 +726,33 @@ private void cerrarSesionYRegresarLogin() {
         jLabel14.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel14.setText("Para la Distribuidora");
 
+        jPanel5.setBackground(new java.awt.Color(102, 153, 255));
+        jPanel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel5MouseClicked(evt);
+            }
+        });
+
+        jLabel19.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setText("ELIMINAR PEDIDO");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel19)
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -737,7 +766,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(radioFinalizadoA, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -793,7 +823,9 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(labeltPedido)
                     .addComponent(jLabel14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -976,7 +1008,7 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addComponent(jLabel16)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("PEDIDOS FINALIZADOS", jPanel11);
@@ -1107,7 +1139,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboPilotosA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboCamionA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1244,7 +1276,7 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                 .addComponent(formato1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1449,9 +1481,24 @@ private boolean isCamionDisponible(int indiceCamion) {
         
         try {
             if (indiceGeneral > -1) {
+                
+                //seleccionamos el indice a utiliza para la fecha necesaria
+                int indiceDelPedidoAntiguo = pedidoTablaNew.get((int) tablaPedidosA.getValueAt(indiceGeneral, 0) -1).getIndiceViaje();
 
+                //fecha antigua
+                Date fechaAntigua = FechaTablaNew.get(indiceDelPedidoAntiguo).getFechaC();
+
+                
+                // Crear una instancia de Calendar y establecer la fechaAntigua
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaAntigua);
+        // Restar un día
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        // Obtener la nueva fecha
+        Date nuevaFecha = calendar.getTime();
+                        
         // Primero verificamos si el piloto está disponible
-        int newIndicePiloto = comboPilotosA.getSelectedIndex();
+        int newIndicePiloto = comboPilotoB.getSelectedIndex();
         if (!isPilotoDisponible(newIndicePiloto)) {
             return; // Si el piloto no está disponible, terminamos la ejecución
         }
@@ -1462,7 +1509,7 @@ private boolean isCamionDisponible(int indiceCamion) {
         return;
         }
                        //verifica que las fechas sean validas
-                if (newFechaCarga != null && newFechaDescarga != null && !newFechaDescarga.before(newFechaCarga)) {
+                if (newFechaCarga != null && newFechaDescarga != null && !newFechaDescarga.before(newFechaCarga) && nuevaFecha.before(newFechaCarga) && nuevaFecha.before(newFechaDescarga)) {
 
                     //miramos si el viaje es una compra o una venta
                     boolean newcompra;
@@ -1568,6 +1615,42 @@ private boolean isCamionDisponible(int indiceCamion) {
     private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
 
     }//GEN-LAST:event_jTextField19ActionPerformed
+
+    private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para eliminar un pedido
+        
+        // Mostrar popup de advertencia        
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
+
+        // Si el usuario selecciona "Sí"
+        if (respuesta == JOptionPane.YES_OPTION) {
+               if (indiceGeneral > -1) {
+                
+                   //obtenemos el indice que se utilizara para el pedido
+                    int indiceDelPedido = pedidoTablaNew.get((int) tablaPedidosA.getValueAt(indiceGeneral, 0) -1).getIndiceViaje();
+                 
+                   gescalendario.getFechasDeCalendario().remove(indiceDelPedido);
+                   gescalendario.guardarFecharExcel();
+                   
+                   gespedidos.actualizarIndiceCalendario(indiceDelPedido);
+                   
+                   gespedidos.GuardarEnExcel();
+                   
+                   //actualizamos la tabla general de pedidos
+                   actualizarTablaDePedidos();
+                   
+                    //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "pedido eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
+           
+            }else{
+                //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "seleccione un pedido de la tabla valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
+            }
+
+        }
+    }//GEN-LAST:event_jPanel5MouseClicked
 
     
     
@@ -1724,6 +1807,7 @@ private boolean isCamionDisponible(int indiceCamion) {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1743,6 +1827,7 @@ private boolean isCamionDisponible(int indiceCamion) {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;

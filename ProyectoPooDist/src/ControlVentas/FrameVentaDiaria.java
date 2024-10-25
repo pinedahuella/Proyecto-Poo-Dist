@@ -67,6 +67,10 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
     /**
      * Creates new form FrameVentaDiaria
      */
+    
+    //creamos un vector que contenga los indices reales de los clientes
+    public Vector<Integer> vectorIndices = new Vector<>();
+    
     public FrameVentaDiaria(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
@@ -376,14 +380,43 @@ private void cerrarSesionYRegresarLogin() {
         //primero vaciamos los combo box
         comboClienteA.removeAllItems();
         comboClienteB.removeAllItems();
+        
+        //vaciamos el vector de clientes
+        vectorIndices.clear();
+        
         //contador para el combo box
         int numerocontado = 1;
+        
+        //creamos una variable de si el cliente esta activo o no
+        boolean activoCliente = true;
+        //creamos una variable que tendra la cantidad del vector de creditos
+        int logitudCreditos = 0;
+        
         //ahora creamos un for que recorrera todos los clientes para añadirlos a los combo box
         for (int i = 0; i < gesclientes.getClientes().size(); i++) {
+                    
+            activoCliente = true;
             
-            comboClienteA.addItem(numerocontado +". " +gesclientes.getClientes().get(i).getNombre());
-            comboClienteB.addItem(numerocontado +". " +gesclientes.getClientes().get(i).getNombre());
-            numerocontado++;
+            //leemos la logitus del vector credito
+            logitudCreditos = gesclientes.getClientes().get(i).getIndiceCredito().size();
+            
+            if (logitudCreditos > 0) {
+                if (gesclientes.getClientes().get(i).getIndiceCredito().get(logitudCreditos-1) == -100) {
+                    activoCliente = false;
+                }
+            }else{
+                activoCliente = true;
+            }
+            
+            if (activoCliente == true) {
+                comboClienteA.addItem(numerocontado +". " +gesclientes.getClientes().get(i).getNombre());
+                comboClienteB.addItem(numerocontado +". " +gesclientes.getClientes().get(i).getNombre());
+                
+                vectorIndices.add(i);
+                
+                numerocontado++;
+            }
+
         }
     }
     
@@ -477,6 +510,8 @@ private void cerrarSesionYRegresarLogin() {
         jLabel17 = new javax.swing.JLabel();
         labelProductosB = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -788,6 +823,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel12.setText("Precio de venta");
 
         spinCantidadB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        spinCantidadB.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         spinCantidadB.setBorder(null);
 
         textoFleteB.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
@@ -840,6 +876,35 @@ private void cerrarSesionYRegresarLogin() {
         jLabel21.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel21.setText("Cliente");
 
+        jPanel12.setBackground(new java.awt.Color(85, 111, 169));
+        jPanel12.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel12MouseClicked(evt);
+            }
+        });
+
+        jLabel15.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel15.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setText("ELIMINAR");
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel15)
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -883,6 +948,8 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15))
         );
@@ -923,8 +990,10 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textoCostoB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
 
@@ -1079,7 +1148,11 @@ private void cerrarSesionYRegresarLogin() {
            
             //leemos los indices del inventario y del cliente
             int newindiceproducto = comboProductosA.getSelectedIndex();
-            int newindicecliente =  comboClienteA.getSelectedIndex();
+            int newindicecliente =  -1;
+            
+            if (comboClienteA.getSelectedIndex() > -1) {
+                newindicecliente = vectorIndices.get(comboClienteA.getSelectedIndex());
+            }
             
             //preguntamos si los indices son validos
             if (newindiceproducto > -1 && newindicecliente > -1) {
@@ -1099,7 +1172,7 @@ private void cerrarSesionYRegresarLogin() {
                 if (vectorproductos.get(newindiceproducto).getExistencias() >= newcantidad) {
                    
                     //crearemos un if para indidicar que la ganancia no puede ser negativa
-                    if (newprecio - (newflete + newcosto) >= 0) {
+                    if (newprecio - (newflete + newcosto) >= 0 && newprecio > 0 && newflete > 0 && newcosto > 0) {
                       //cremos la nueva venta y la agregamos al vector
                 Venta newventa = new Venta(newindiceproducto, newcantidad, newindicecliente, newprecio, newcosto, newflete, newcredito, true, 0);
                 gesventas.addVentaVector(newventa);
@@ -1108,6 +1181,7 @@ private void cerrarSesionYRegresarLogin() {
                         if (newcredito == true) {
                             //guardamos en el vector y el excel
                             gescreditos.addCreditoVector(newventa);
+                            gescreditos.calcularGananciaCredito(gescreditos.getCreditos().size()-1);
                             gescreditos.guardarExcelCreditos();
                             
                             //cuardamos el credito en el cliente correspondiente
@@ -1154,7 +1228,7 @@ private void cerrarSesionYRegresarLogin() {
                  
                     }else{
                         //monstra mensajje
-                JOptionPane.showMessageDialog(null, "el costo y flete superan al precio", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "el costo y flete superan al precio, o existe algun precio invalido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                 
                     }
                
@@ -1185,7 +1259,11 @@ private void cerrarSesionYRegresarLogin() {
            
             //leemos los indices del inventario y del cliente
             int newindiceproducto = comboProductosA.getSelectedIndex();
-            int newindicecliente =  comboClienteA.getSelectedIndex();
+            int newindicecliente =  -1;
+            
+            if (comboClienteA.getSelectedIndex() > -1) {
+                newindicecliente = vectorIndices.get(comboClienteA.getSelectedIndex());
+            }
             
             //preguntamos si los indices son validos
             if (newindiceproducto > -1 && newindicecliente > -1) {
@@ -1234,7 +1312,11 @@ private void cerrarSesionYRegresarLogin() {
             if (indiceGeneral > -1) {
                  //leemos los indices del inventario y del cliente
             int newindiceproducto = vectorventas.get(indiceGeneral).getIndiceProducto();
-            int newindicecliente =  comboClienteB.getSelectedIndex();
+            int newindicecliente =  -1;
+            
+            if (comboClienteA.getSelectedIndex() > -1) {
+                newindicecliente = vectorIndices.get(comboClienteA.getSelectedIndex());
+            }
             
             //preguntamos si los indices son validos
             if (newindiceproducto > -1 && newindicecliente > -1) {
@@ -1254,10 +1336,10 @@ private void cerrarSesionYRegresarLogin() {
                 boolean newcredito = false;
                 
                 //preguntamos is hay suficientes existencias para completar el pedido
-                if (vectorproductos.get(newindiceproducto).getExistencias() + cantidadAntigua >= newcantidad) {
+                if (vectorproductos.get(newindiceproducto).getExistencias() + cantidadAntigua >= newcantidad ) {
                    
                     //crearemos un if para indidicar que la ganancia no puede ser negativa
-                    if (newprecio - (newflete + newcosto) >= 0) {
+                    if (newprecio - (newflete + newcosto) >= 0 && newprecio > 0 && newflete > 0 && newcosto > 0) {
                       //cremos la nueva venta y  editamos el vector
                 Venta newventa = new Venta(newindiceproducto, newcantidad, newindicecliente, newprecio, newcosto, newflete, newcredito, true, 0);
                 gesventas.modificarVenta(indiceGeneral, newventa);
@@ -1286,12 +1368,14 @@ private void cerrarSesionYRegresarLogin() {
                             tablaVentasA.setRowSelectionInterval(indiceGeneral, indiceGeneral);
                         }
                 
+                labelGanaciaVenta.setText("" + vectorventas.get(indiceGeneral).getGanancia());
+
                 //mostramos mesaje para acetar que este bien
                 JOptionPane.showMessageDialog(null, "venta modificada correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                  
                     }else{
                         //monstra mensajje
-                JOptionPane.showMessageDialog(null, "el costo y flete superan al precio", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "el costo y flete superan al precio, o existe algun precio invalido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                 
                     }
                
@@ -1430,6 +1514,57 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMenuActionPerformed
 
+    private void jPanel12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel12MouseClicked
+        // TODO add your handling code here:
+        
+        //funcion para eliminar una venta
+         // Mostrar popup de advertencia        
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
+
+        // Si el usuario selecciona "Sí"
+        if (respuesta == JOptionPane.YES_OPTION) {
+           if (indiceGeneral > -1) {
+                   //rellenamos las informacion correspondiente
+                comboClienteB.setSelectedIndex(0);               
+                labelProductosB.setText("N/A");
+                
+                spinCantidadB.setValue(0);
+                
+                textoPrecioB.setText("");
+                textoFleteB.setText("");
+                textoCostoB.setText("");
+                
+                labelGanaciaVenta.setText("Q 0.00");
+                
+                //guardamos la cantidad antigua porque nos sera util, al sumar la cantidad 
+                int cantidadAntigua = vectorventas.get(indiceGeneral).getIndiceCantidad();
+                
+                //leemos los indices del inventario 
+                int newindiceproducto = vectorventas.get(indiceGeneral).getIndiceProducto();
+                
+                //resumamos las ventas
+                gesproductos.setCantidad(newindiceproducto, cantidadAntigua, "+");
+                
+                //actualizamos el inventario
+                gesproductos.getCargarInvetarioExcel();
+                        
+                //eliminamos la venta del vector
+                gesventas.getVentas().remove(indiceGeneral);
+                
+                //actualizamos las tablas correspondientes               
+                actualizarTablaVentas();
+                ActualizarGananciaTotal();
+                
+                gesventas.guardarExcelVentas();
+                //mostramos mesaje 
+                JOptionPane.showMessageDialog(null, "Venta eliminada correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+            }else{
+                //mostramos mesaje 
+                JOptionPane.showMessageDialog(null, "Seleccion una venta de la tabla", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+            }       
+        }
+    }//GEN-LAST:event_jPanel12MouseClicked
+
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
         //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
@@ -1447,7 +1582,19 @@ private void cerrarSesionYRegresarLogin() {
                 indiceGeneral = indiceSeleccionado;
                  
                 //rellenamos las informacion correspondiente
-                comboClienteB.setSelectedIndex(vectorventas.get(indiceGeneral).getIndiceCliente());               
+                
+                //creamos una variable que cree representar al cliente de dicha venta
+                int indiceClienteVenta = 0;
+                
+                //hacemos un for que recorra el vector de indices para ver si los indices coindice
+                
+                 for (int i = 0; i < vectorIndices.size(); i++) {
+                     //si los indices coincides los igualamos
+                     if (vectorventas.get(indiceGeneral).getIndiceCliente() == vectorIndices.get(i)) {
+                         indiceClienteVenta = i;
+                     }
+                 }
+                comboClienteB.setSelectedIndex(indiceClienteVenta);               
                 labelProductosB.setText(vectorproductos.get(vectorventas.get(indiceGeneral).getIndiceProducto()).getNombre());
                 
                 spinCantidadB.setValue(vectorventas.get(indiceGeneral).getIndiceCantidad());
@@ -1461,8 +1608,10 @@ private void cerrarSesionYRegresarLogin() {
                 //reguntamos si es un credito para no mostrar el boton de modificar
                  if (vectorventas.get(indiceGeneral).getCredito() == true || vectorventas.get(indiceGeneral).getCreditoActivo() == false) {
                      jPanel9.setVisible(false);
+                     jPanel12.setVisible(false);
                  }else{
                      jPanel9.setVisible(true);
+                     jPanel12.setVisible(true);
                  }
              }
             
@@ -1537,6 +1686,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -1555,6 +1705,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

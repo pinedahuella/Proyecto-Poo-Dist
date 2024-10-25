@@ -77,7 +77,13 @@ public class FrameClientes extends javax.swing.JFrame {
     int indiceGeneralClientes;
     //cremos un indice general para la tabla de creditos
     int indiceGeneralCreditos;
+    
+    //creamos el indice de la tabla;
+    int indiceTablaCliente;
    
+    
+    //creamos un vectores que tendra los indices reales de los clientes
+    private Vector<Integer> indicesClientes = new Vector<>();
     
     public FrameClientes(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
@@ -86,6 +92,8 @@ public class FrameClientes extends javax.swing.JFrame {
         indiceGeneralClientes = -1;
         //inicializamos indice de creditos en -1;
        indiceGeneralCreditos = -1;
+       //iniciamos el idice tabla a -1
+       indiceTablaCliente = -1;
         
         //inciamos las clases
         gesproductos = new gestionProductos();
@@ -409,9 +417,35 @@ private void cerrarSesionYRegresarLogin() {
         //vaciamos la tabla primero
         modeloClientes.setRowCount(0);
         
+        //vaciamos el vector
+        indicesClientes.clear();
+        
+                        
+        //creamos una variable de si el cliente esta activo o no
+        boolean activoCliente = true;
+        //creamos una variable que tendra la cantidad del vector de creditos
+        int logitudCreditos = 0;
+        
         //hacemos un for que recorra el vector de clientes y añada la informacion
         for (int i = 0; i < vectorclientes.size() ;i++) {
-            modeloClientes.addRow(new Object[]{vectorclientes.get(i).getNombre()});
+            activoCliente = true;
+            
+            //leemos la logitus del vector credito
+            logitudCreditos = vectorclientes.get(i).getIndiceCredito().size();
+            
+            if (logitudCreditos > 0) {
+                if (vectorclientes.get(i).getIndiceCredito().get(logitudCreditos-1) == -100) {
+                    activoCliente = false;
+                }
+            }else{
+                activoCliente = true;
+            }
+            
+            if (activoCliente == true) {
+                modeloClientes.addRow(new Object[]{vectorclientes.get(i).getNombre()});
+                
+                indicesClientes.add(i);
+            }
         }
     }
     
@@ -426,12 +460,14 @@ private void cerrarSesionYRegresarLogin() {
             
             //cremos un vector correspondiente a los indices de los creditos
             Vector<Integer> newcreditos = vectorclientes.get(indiceGeneralClientes).getIndiceCredito();
-                    
+
+            
             //creamos un for que pondra en las tablas los creditos correspondientes
             for (int i = 0; i < newcreditos.size(); i++) {
-                if (vectorcreditos.get(newcreditos.get(i)).getCreditoActivo() == true) {
+                
+                if (vectorcreditos.get(newcreditos.get(i)).getCreditoActivo() == true && vectorcreditos.get(newcreditos.get(i)).getPrecio() > -1) {
                     modeloCreditosActivos.addRow(new Object[]{newcreditos.get(i)+1, vectorproductos.get(vectorcreditos.get(newcreditos.get(i)).getIndiceProducto()).getNombre(), vectorcreditos.get(newcreditos.get(i)).getIndiceCantidad(), vectorcreditos.get(newcreditos.get(i)).getPrecio(), vectorcreditos.get(newcreditos.get(i)).getGanancia()});
-                }else{
+                }else if(vectorcreditos.get(newcreditos.get(i)).getPrecio() > -1){
                     modeloCreditosFinalizados.addRow(new Object[]{newcreditos.get(i)+1, vectorproductos.get(vectorcreditos.get(newcreditos.get(i)).getIndiceProducto()).getNombre(), vectorcreditos.get(newcreditos.get(i)).getIndiceCantidad(), vectorcreditos.get(newcreditos.get(i)).getPrecio(), vectorcreditos.get(newcreditos.get(i)).getGanancia()});
                 }
             }
@@ -514,6 +550,8 @@ private void cerrarSesionYRegresarLogin() {
         textoDescripcionB = new javax.swing.JTextArea();
         jPanel19 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tablaCreditos = new javax.swing.JTable();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -708,7 +746,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(16, 16, 16))
         );
@@ -852,7 +890,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel19Layout.setHorizontalGroup(
             jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel19Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(10, Short.MAX_VALUE)
                 .addComponent(jLabel21)
                 .addGap(26, 26, 26))
         );
@@ -861,6 +899,35 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel19Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel21)
+                .addContainerGap())
+        );
+
+        jPanel2.setBackground(new java.awt.Color(102, 153, 255));
+        jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel2MouseClicked(evt);
+            }
+        });
+
+        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Eliminar Cliente");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
                 .addContainerGap())
         );
 
@@ -877,13 +944,14 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrolgenerico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addComponent(scrolgenerico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 251, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
@@ -892,8 +960,11 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap()
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel15Layout.createSequentialGroup()
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel15Layout.createSequentialGroup()
                             .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel7)
@@ -1034,7 +1105,7 @@ private void cerrarSesionYRegresarLogin() {
         jPanel20Layout.setHorizontalGroup(
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(10, Short.MAX_VALUE)
                 .addComponent(jLabel22)
                 .addContainerGap())
         );
@@ -1085,7 +1156,7 @@ private void cerrarSesionYRegresarLogin() {
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(textoCosto))
                                         .addComponent(radioActivo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                                 .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel11Layout.createSequentialGroup()
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -1165,7 +1236,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelAgregarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1258,8 +1329,8 @@ private void cerrarSesionYRegresarLogin() {
             panelAgregarCliente.setVisible(false);
             
             //si el indice general el mayor a menos -1, haremos que el cliente seleccionado se mantenga seleccionado
-            if (indiceGeneralClientes > -1) {
-                tablaClientes.setRowSelectionInterval(indiceGeneralClientes, indiceGeneralClientes);
+            if (indiceTablaCliente > -1) {
+                tablaClientes.setRowSelectionInterval(indiceTablaCliente, indiceTablaCliente);
             }
             
             //mostramos mensaje de que fue añadido el cliente
@@ -1297,8 +1368,8 @@ private void cerrarSesionYRegresarLogin() {
             panelAgregarCliente.setVisible(false);
             
             //si el indice general el mayor a menos -1, haremos que el cliente seleccionado se mantenga seleccionado
-            if (indiceGeneralClientes > -1) {
-                tablaClientes.setRowSelectionInterval(indiceGeneralClientes, indiceGeneralClientes);
+            if (indiceTablaCliente > -1) {
+                tablaClientes.setRowSelectionInterval(indiceTablaCliente, indiceTablaCliente);
             }
             
             //mostramos mensaje de que fue añadido el cliente
@@ -1431,7 +1502,7 @@ private void cerrarSesionYRegresarLogin() {
                 if (vectorproductos.get(newindiceproducto).getExistencias() >= newcantidad) {
                    
                     //crearemos un if para indidicar que la ganancia no puede ser negativa
-                    if (newprecio - (newflete + newcosto) >= 0) {
+                    if (newprecio - (newflete + newcosto) >= 0 && newprecio > 0 && newflete > 0 && newcosto > 0) {
                         
                       //cremos la nueva venta y  editamos el vector
                 Venta newventa = new Venta(newindiceproducto, newcantidad, newindicecliente, newprecio, newcosto, newflete, newcredito, newactivo, 0);
@@ -1474,7 +1545,7 @@ private void cerrarSesionYRegresarLogin() {
                  
                     }else{
                         //monstra mensajje
-                JOptionPane.showMessageDialog(null, "el costo y flete superan al precio", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "el costo y flete superan al precio, o existe algun valor invalido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                 
                     }
                
@@ -1508,6 +1579,59 @@ private void cerrarSesionYRegresarLogin() {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMenu1ActionPerformed
 
+    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
+        // TODO add your handling code here:
+        
+        //esta funcion nos ayudara a eliminar un cliente
+        
+         // Mostrar popup de advertencia        
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
+
+        // Si el usuario selecciona "Sí"
+        if (respuesta == JOptionPane.YES_OPTION) {
+           if (indiceGeneralClientes > -1) {
+                   //rellenamos las informacion correspondiente            
+                textoNombreB.setText("");
+                textoDescripcionB.setText("");
+
+                
+                labelProducto.setText("N/A");
+                labelCatidad.setText("0");
+                
+                textoPrecio.setText("");
+                textoFlete.setText("");
+                textoCosto.setText("");
+                
+                radioActivo.setSelected(false);
+                
+                //eliminamos el cliente de la tabla
+                gesclientes.addCredito(indiceGeneralClientes, -100);
+                
+                //reiniciamos los indices
+                //inicializamos el indice general a -1
+                indiceGeneralClientes = -1;
+                //inicializamos indice de creditos en -1;
+                indiceGeneralCreditos = -1;
+                //iniciamos el idice tabla a -1
+                indiceTablaCliente = -1;
+                
+                //actualizamos las tablas correspondientes      
+                actualizaTablaCliente();
+                actualizarTablaProductos();
+                
+                gesclientes.guardarExcelCliente();
+                modeloCreditosActivos.setRowCount(0);
+                modeloCreditosFinalizados.setRowCount(0);
+                
+                //mostramos mesaje 
+                JOptionPane.showMessageDialog(null, "cliente eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+            }else{
+                //mostramos mesaje 
+                JOptionPane.showMessageDialog(null, "Seleccion un cliente de la tabla", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+            }       
+        }
+    }//GEN-LAST:event_jPanel2MouseClicked
+
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
         //este es nuetro bucle infinito que nos ayudara a realizar acciones continuamente
@@ -1516,10 +1640,18 @@ private void cerrarSesionYRegresarLogin() {
          while (true) {
              
             //leemos el indice actual que ha seleccionado la tabla 
-            int indiceSeleccionadoClientes = tablaClientes.getSelectedRow();
+            int indiceSeleccionadoClientes = -1;
+            
+             if (tablaClientes.getSelectedRow() > -1) {
+                indiceSeleccionadoClientes = indicesClientes.get(tablaClientes.getSelectedRow());
+             }
             
             //preguntamos si el indice actual y el general son diferente y mayores a -1
              if (indiceSeleccionadoClientes != indiceGeneralClientes &&  indiceSeleccionadoClientes > -1) {
+                 
+                 //indice de la tabla
+                 indiceTablaCliente = tablaClientes.getSelectedRow();
+
                  //igualamos el indice general al seleccionado
                  indiceGeneralClientes = indiceSeleccionadoClientes;
                  
@@ -1532,6 +1664,13 @@ private void cerrarSesionYRegresarLogin() {
                  
                  //actualizamos la tabla de productos;
                  actualizarTablaProductos();
+                 
+                 //el cliente varios no puede ser eliminado
+                 if (indiceSeleccionadoClientes == 0) {
+                     jPanel2.setVisible(false);
+                 }else{
+                     jPanel2.setVisible(true);
+                 }
              }
              
              //leemos el idice seleccionado de la tabla de creditos
@@ -1632,6 +1771,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1646,6 +1786,7 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
