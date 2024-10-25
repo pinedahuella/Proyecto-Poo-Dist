@@ -1,6 +1,14 @@
 package GestionDeUsuarios;
 
+import ControlCliente.FrameClientes;
+import ControlInventario.FrameInventario;
+import ControlPedidos.FormularioPedidos;
+import ControlPlanilla.FramePlanillaSemanal;
+import ControlVentas.FrameVentaDiaria;
+import ControlViajes.FormularioViajes;
+import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
+import Login.GESTIONLOGIN;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
@@ -8,6 +16,11 @@ import java.io.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import Login.LOGINPINEED;
+import Login.Login;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class USUARIOSINACTIVOS extends javax.swing.JFrame {
     
@@ -18,14 +31,10 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
     private String currentUser;
     private String userRole;
     private LOGINPINEED loginFrame;
-
+    
     public USUARIOSINACTIVOS(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
-        
-        // Inicialización de variables de clase
-        this.currentUser = username;
-        this.userRole = role;
-        this.loginFrame = loginFrame;
+
         this.gestionUsuarios = new GESTIONUSUARIOS();
         
         // Configuración inicial
@@ -42,7 +51,18 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
         tblRegistroUsuarios.getTableHeader().setResizingAllowed(false);
         tblRegistroUsuarios.setRowSelectionAllowed(true);
         tblRegistroUsuarios.setColumnSelectionAllowed(false);
-    }
+        this.currentUser = username;
+        this.userRole = role;
+        this.loginFrame = loginFrame;
+        addWindowListener();
+        setupComboBox();  // Añade esta línea
+
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            this.requestFocusInWindow();
+    });
+}
 
     private void inicializarTabla() {
         String[] columnas = {
@@ -91,6 +111,242 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
         }
     }
     
+      
+
+private void setupComboBox() {
+    txtMenu10.removeAllItems();
+    txtMenu10.addItem("Seleccione una opción");
+
+    if (userRole.equalsIgnoreCase("ADMINISTRADOR")) {
+        addAdminOptions();
+    } else if (userRole.equalsIgnoreCase("SECRETARIA")) {
+        addSecretariaOptions();
+    } else if (userRole.equalsIgnoreCase("PILOTO")) {
+        addPilotOptions();
+    }
+
+    txtMenu10.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String selectedOption = (String) txtMenu10.getSelectedItem();
+            redirectToFrame(selectedOption);
+        }
+    });
+}
+
+private void addAdminOptions() {
+    txtMenu10.addItem("Gestión de Usuarios");
+    txtMenu10.addItem("Gestión de Pilotos");
+    txtMenu10.addItem("Gestión de Clientes");
+    txtMenu10.addItem("Gestión de Ventas");
+    txtMenu10.addItem("Gestión de Pedidos");
+    txtMenu10.addItem("Inventario de Quintales");
+    txtMenu10.addItem("Planilla de Trabajadores");
+    txtMenu10.addItem("Gestión de Camiones");
+    txtMenu10.addItem("Calendario");
+    txtMenu10.addItem("Cerrar Sesión");
+}
+
+private void addSecretariaOptions() {
+    txtMenu10.addItem("Gestión de Ventas");
+    txtMenu10.addItem("Gestión de Clientes");
+    txtMenu10.addItem("Gestión de Camiones");
+    txtMenu10.addItem("Gestión de Pedidos");
+    txtMenu10.addItem("Gestión de Pilotos");
+    txtMenu10.addItem("Calendario");
+    txtMenu10.addItem("Cerrar Sesión");
+}
+
+private void addPilotOptions() {
+    txtMenu10.addItem("Calendario");
+    txtMenu10.addItem("Cerrar Sesión");
+}
+    
+private void redirectToFrame(String option) {
+    switch (option) {
+        case "Seleccione una opción":
+            btnSeleccionarUnaOpcionActionPerformed(null);
+            break;
+        case "Gestión de Usuarios":
+            btnGestionDeUsuariosActionPerformed(null);
+            break;
+        case "Gestión de Pilotos":
+            btnGestionDePilotosActionPerformed(null);
+            break;
+        case "Gestión de Clientes":
+            btnGestionDeClientesActionPerformed(null);
+            break;
+        case "Gestión de Ventas":
+            btnGestionDeVentasActionPerformed(null);
+            break;
+        case "Gestión de Pedidos":
+            btnGestionDePedidosActionPerformed(null);
+            break;
+        case "Inventario de Quintales":
+            btnInventarioDeQuintalesActionPerformed(null);
+            break;
+        case "Planilla de Trabajadores":
+            btnPlanillaDeTrabajadoresActionPerformed(null);
+            break;
+        case "Gestión de Camiones":
+            btnGestionDeCamionesActionPerformed(null);
+            break;
+        case "Calendario":
+            btnCalendarioActionPerformed(null);
+            break;
+        case "Cerrar Sesión":
+            btnRegresarLoginActionPerformed(null);
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Opción no válida");
+            break;
+    }
+}
+
+
+    private void btnSeleccionarUnaOpcionActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+    }  
+    
+    private void btnGestionDeUsuariosActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONUSUARIOS abrir = new  INICIOGESTIONUSUARIOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                    
+
+    private void btnGestionDePilotosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        INICIOGESTIONPILOTOS abrir = new  INICIOGESTIONPILOTOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                   
+                                          
+
+    private void btnGestionDeClientesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameClientes abrir = new  FrameClientes(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                    
+
+    private void btnGestionDeVentasActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+        FrameVentaDiaria abrir = new FrameVentaDiaria(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                  
+
+    private void btnGestionDePedidosActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioPedidos abrir = new  FormularioPedidos(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                   
+
+    private void btnInventarioDeQuintalesActionPerformed(java.awt.event.ActionEvent evt) {                                                         
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameInventario abrir = new  FrameInventario(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                        
+
+    private void btnPlanillaDeTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {                                                          
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FramePlanillaSemanal abrir = new FramePlanillaSemanal(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                         
+
+    private void btnGestionDeCamionesActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+        
+        INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }                                                                                                  
+
+    private void btnRegresarLoginActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        cerrarSesionYRegresarLogin();
+    }                                                
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }     
+
+ 
+
+
+
+    public void addWindowListener() {
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                cerrarSesionYSalir();
+            }
+        });
+    }
+     
+private void cerrarSesionYRegresarLogin() {
+        cerrarSesionManualmente();
+        LOGINPINEED nuevaLoginFrame = new LOGINPINEED();
+        nuevaLoginFrame.setVisible(true);
+        this.dispose();
+    }
+
+    private void cerrarSesionManualmente() {
+        LocalDateTime tiempoSalida = LocalDateTime.now();
+        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+        gestionLogin.cargarLoginsDesdeExcel();
+        
+        boolean sesionCerrada = false;
+        for (Login login : gestionLogin.getLogins()) {
+            if (login.getPersonal().equals(currentUser) && login.getTiempoSalida().isEmpty()) {
+                login.setTiempoSalida(tiempoSalida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                gestionLogin.actualizarLogin(login);
+                sesionCerrada = true;
+                System.out.println("Sesión cerrada para el usuario: " + currentUser);
+                break;
+            }
+        }
+        
+        if (!sesionCerrada) {
+            System.out.println("No se encontró una sesión abierta para cerrar para el usuario: " + currentUser);
+        }
+    }
+
+    private void cerrarSesionYSalir() {
+        cerrarSesionManualmente();
+        System.exit(0);
+    }
+
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -106,7 +362,7 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
         ActivarUsuarioEliminado = new javax.swing.JButton();
         ActivosUsuarios = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
-        txtMenu1 = new javax.swing.JComboBox<>();
+        txtMenu10 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -179,10 +435,10 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
         jPanel8.setBackground(new java.awt.Color(32, 67, 99));
         jPanel8.setPreferredSize(new java.awt.Dimension(194, 34));
 
-        txtMenu1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtMenu1.addActionListener(new java.awt.event.ActionListener() {
+        txtMenu10.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMenu10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtMenu1ActionPerformed(evt);
+                txtMenu10ActionPerformed(evt);
             }
         });
 
@@ -192,14 +448,14 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap(22, Short.MAX_VALUE)
-                .addComponent(txtMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMenu10, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMenu10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -263,9 +519,9 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTextField19ActionPerformed
 
-    private void txtMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenu1ActionPerformed
+    private void txtMenu10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMenu10ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtMenu1ActionPerformed
+    }//GEN-LAST:event_txtMenu10ActionPerformed
 
     private void ActivosUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivosUsuariosActionPerformed
 String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
@@ -392,13 +648,11 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     private javax.swing.JButton buscarUsuario;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
     private javax.swing.JTable tblRegistroUsuarios;
-    private javax.swing.JComboBox<String> txtMenu;
-    private javax.swing.JComboBox<String> txtMenu1;
+    private javax.swing.JComboBox<String> txtMenu10;
     private javax.swing.JTextField txtNombreUsuarioBuscar;
     // End of variables declaration//GEN-END:variables
 }

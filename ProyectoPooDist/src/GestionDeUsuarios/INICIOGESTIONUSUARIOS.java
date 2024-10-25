@@ -521,7 +521,7 @@ private void abrirVentanaMostrar(Usuarios usuario) {
         ActivosPilotos.setBackground(new java.awt.Color(0, 153, 153));
         ActivosPilotos.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         ActivosPilotos.setForeground(new java.awt.Color(255, 255, 255));
-        ActivosPilotos.setText("REGRESAR A USUARIOS ACTIVOS");
+        ActivosPilotos.setText("ACTIVAR USUARIOS ELIMINADOS");
         ActivosPilotos.setBorder(null);
         ActivosPilotos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
