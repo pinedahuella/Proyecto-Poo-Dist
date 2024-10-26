@@ -213,11 +213,11 @@ private void addAdminOptions() {
 }
 
 private void addSecretariaOptions() {
-    txtMenu2.addItem("Gestión de Ventas");
     txtMenu2.addItem("Gestión de Clientes");
-    txtMenu2.addItem("Gestión de Camiones");
+    txtMenu2.addItem("Gestión de Ventas");
     txtMenu2.addItem("Gestión de Pedidos");
-    txtMenu2.addItem("Gestión de Pilotos");
+    txtMenu2.addItem("Inventario de Quintales");
+    txtMenu2.addItem("Planilla de Trabajadores");
     txtMenu2.addItem("Calendario");
     txtMenu2.addItem("Cerrar Sesión");
 }

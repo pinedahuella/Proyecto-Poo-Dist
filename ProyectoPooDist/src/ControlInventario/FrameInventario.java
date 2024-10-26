@@ -218,11 +218,11 @@ private void addAdminOptions() {
 }
 
 private void addSecretariaOptions() {
-    txtMenu3.addItem("Gestión de Ventas");
     txtMenu3.addItem("Gestión de Clientes");
-    txtMenu3.addItem("Gestión de Camiones");
+    txtMenu3.addItem("Gestión de Ventas");
     txtMenu3.addItem("Gestión de Pedidos");
-    txtMenu3.addItem("Gestión de Pilotos");
+    txtMenu3.addItem("Inventario de Quintales");
+    txtMenu3.addItem("Planilla de Trabajadores");
     txtMenu3.addItem("Calendario");
     txtMenu3.addItem("Cerrar Sesión");
 }

@@ -134,47 +134,24 @@ public class FormularioViajes extends javax.swing.JFrame {
     /**
      * Creates new form FormularioViajes
      */
-    public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
+public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
     initComponents();
     setResizable(false); // Desactivar el cambio de tamaño
     
-    // Hide components if user is PILOTO
+   // Ocultar componentes si el rol del usuario es PILOTO
     if (role.equalsIgnoreCase("PILOTO")) {
-        jPanel6.setVisible(false);
-        jLabel2.setVisible(false);
-        txtFechaDeCargaAgregar.setVisible(false);
-        jLabel3.setVisible(false);
-        txtFechaDeDescargaAgregar.setVisible(false);
-        jLabel4.setVisible(false);
-        comboPilotosB.setVisible(false);
-        jLabel5.setVisible(false);
-        comboCamionesB.setVisible(false);
-// Ocultar la tabla y su contenedor (JScrollPane)
-        tablaProductosB.setVisible(false);
-        Container parentContainer = tablaProductosB.getParent();
-        while (parentContainer != null) {
-            if (parentContainer instanceof JScrollPane) {
-                parentContainer.setVisible(false);
-                break;
-            }
-            parentContainer = parentContainer.getParent();
-        }
-        jLabel11.setVisible(false);
-        comboTViajeB.setVisible(false);
-        jLabel10.setVisible(false);
-        jPanel12.setVisible(false);
-        jPanel7.setVisible(false);
-        jPanel9.setVisible(false);
-        jPanel10.setVisible(false);
-        jPanel8.setVisible(false);
-        jPanel11.setVisible(false);
+        ocultarComponentesParaPiloto();
     }
 
     //iniciamos el indice a 0;
     indice = 0;
     
     //ocultamos el boton de modificar un viaje
-    botonModificarViajes.setVisible(false);
+    txtModificarViajes.setVisible(false);
+        txtEliminarViaje.setVisible(false);
+    txtModificarViajes.setVisible(false);
+
+        
     //ocultamos el radio button de finalizar un pedido
     radioFinalizarViaje.setVisible(false);
     
@@ -303,6 +280,46 @@ public class FormularioViajes extends javax.swing.JFrame {
     });
 }
     
+
+private void ocultarComponentesParaPiloto() {
+    // Ocultar paneles principales y campos de fecha
+    jPanel6.setVisible(false);
+    jLabel2.setVisible(false);
+    txtFechaDeCargaAgregar.setVisible(false);
+    jLabel3.setVisible(false);
+    txtFechaDeDescargaAgregar.setVisible(false);
+    jLabel4.setVisible(false);
+    comboPilotosB.setVisible(false);
+    jLabel5.setVisible(false);
+    
+    // Ocultar botones y otros paneles
+    txtModificarViajes.setVisible(false);
+    txtEliminarViaje.setVisible(false);
+    comboCamionesB.setVisible(false);
+    jLabel11.setVisible(false);
+    comboTViajeB.setVisible(false);
+    jLabel10.setVisible(false);
+    
+    // Paneles adicionales
+    txtAgregarFecha.setVisible(false);
+    jPanel7.setVisible(false);
+    jPanel9.setVisible(false);
+    jPanel10.setVisible(false);
+    jPanel8.setVisible(false);
+    jPanel11.setVisible(false);
+    
+    // Ocultar tabla y su contenedor (JScrollPane)
+    tablaProductosB.setVisible(false);
+    Container parentContainer = tablaProductosB.getParent();
+    while (parentContainer != null) {
+        if (parentContainer instanceof JScrollPane) {
+            parentContainer.setVisible(false);
+            break;
+        }
+        parentContainer = parentContainer.getParent();
+    }
+}
+
 // Método para configurar el placeholder en JDateChooser
 private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
     dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
@@ -400,11 +417,11 @@ private void addAdminOptions() {
 }
 
 private void addSecretariaOptions() {
-    txtMenu.addItem("Gestión de Ventas");
     txtMenu.addItem("Gestión de Clientes");
-    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Ventas");
     txtMenu.addItem("Gestión de Pedidos");
-    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
     txtMenu.addItem("Calendario");
     txtMenu.addItem("Cerrar Sesión");
 }
@@ -729,7 +746,7 @@ private void cerrarSesionYRegresarLogin() {
         tablaProductosA = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
         ComboTViajeA = new javax.swing.JComboBox<>();
-        botonModificarViajes = new javax.swing.JPanel();
+        txtModificarViajes = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         CalendarioGeneral = new com.toedter.calendar.JCalendar();
@@ -752,11 +769,11 @@ private void cerrarSesionYRegresarLogin() {
         tablaProductosB = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         comboTViajeB = new javax.swing.JComboBox<>();
-        jPanel12 = new javax.swing.JPanel();
+        txtAgregarFecha = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
-        jPanel15 = new javax.swing.JPanel();
+        txtEliminarViaje = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
@@ -867,11 +884,11 @@ private void cerrarSesionYRegresarLogin() {
         ComboTViajeA.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         ComboTViajeA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pedido para Distribuidora", "Pedido Para Cliente " }));
 
-        botonModificarViajes.setBackground(new java.awt.Color(85, 111, 169));
-        botonModificarViajes.setForeground(new java.awt.Color(255, 255, 255));
-        botonModificarViajes.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtModificarViajes.setBackground(new java.awt.Color(85, 111, 169));
+        txtModificarViajes.setForeground(new java.awt.Color(255, 255, 255));
+        txtModificarViajes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                botonModificarViajesMouseClicked(evt);
+                txtModificarViajesMouseClicked(evt);
             }
         });
 
@@ -879,18 +896,18 @@ private void cerrarSesionYRegresarLogin() {
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText(" MODIFICAR VIAJES");
 
-        javax.swing.GroupLayout botonModificarViajesLayout = new javax.swing.GroupLayout(botonModificarViajes);
-        botonModificarViajes.setLayout(botonModificarViajesLayout);
-        botonModificarViajesLayout.setHorizontalGroup(
-            botonModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(botonModificarViajesLayout.createSequentialGroup()
+        javax.swing.GroupLayout txtModificarViajesLayout = new javax.swing.GroupLayout(txtModificarViajes);
+        txtModificarViajes.setLayout(txtModificarViajesLayout);
+        txtModificarViajesLayout.setHorizontalGroup(
+            txtModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(txtModificarViajesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        botonModificarViajesLayout.setVerticalGroup(
-            botonModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, botonModificarViajesLayout.createSequentialGroup()
+        txtModificarViajesLayout.setVerticalGroup(
+            txtModificarViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, txtModificarViajesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel13)
                 .addContainerGap())
@@ -915,7 +932,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botonModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -963,7 +980,7 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ComboTViajeA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(botonModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtModificarViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -1154,10 +1171,10 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        jPanel12.setBackground(new java.awt.Color(85, 111, 169));
-        jPanel12.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtAgregarFecha.setBackground(new java.awt.Color(85, 111, 169));
+        txtAgregarFecha.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel12MouseClicked(evt);
+                txtAgregarFechaMouseClicked(evt);
             }
         });
 
@@ -1165,18 +1182,18 @@ private void cerrarSesionYRegresarLogin() {
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("   AGREGAR FECHA");
 
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+        javax.swing.GroupLayout txtAgregarFechaLayout = new javax.swing.GroupLayout(txtAgregarFecha);
+        txtAgregarFecha.setLayout(txtAgregarFechaLayout);
+        txtAgregarFechaLayout.setHorizontalGroup(
+            txtAgregarFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(txtAgregarFechaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+        txtAgregarFechaLayout.setVerticalGroup(
+            txtAgregarFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(txtAgregarFechaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addContainerGap(8, Short.MAX_VALUE))
@@ -1209,10 +1226,10 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap())
         );
 
-        jPanel15.setBackground(new java.awt.Color(51, 51, 255));
-        jPanel15.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtEliminarViaje.setBackground(new java.awt.Color(51, 51, 255));
+        txtEliminarViaje.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel15MouseClicked(evt);
+                txtEliminarViajeMouseClicked(evt);
             }
         });
 
@@ -1220,18 +1237,18 @@ private void cerrarSesionYRegresarLogin() {
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("ELIMINAR VIAJE");
 
-        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
-        jPanel15.setLayout(jPanel15Layout);
-        jPanel15Layout.setHorizontalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel15Layout.createSequentialGroup()
+        javax.swing.GroupLayout txtEliminarViajeLayout = new javax.swing.GroupLayout(txtEliminarViaje);
+        txtEliminarViaje.setLayout(txtEliminarViajeLayout);
+        txtEliminarViajeLayout.setHorizontalGroup(
+            txtEliminarViajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(txtEliminarViajeLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel15Layout.setVerticalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+        txtEliminarViajeLayout.setVerticalGroup(
+            txtEliminarViajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, txtEliminarViajeLayout.createSequentialGroup()
                 .addContainerGap(8, Short.MAX_VALUE)
                 .addComponent(jLabel15)
                 .addContainerGap())
@@ -1247,7 +1264,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtEliminarViaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1279,7 +1296,7 @@ private void cerrarSesionYRegresarLogin() {
                                 .addGap(0, 209, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtAgregarFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1297,7 +1314,7 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtEliminarViaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1339,7 +1356,7 @@ private void cerrarSesionYRegresarLogin() {
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(13, 13, 13))
-                    .addComponent(jPanel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(txtAgregarFecha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel13.setBackground(new java.awt.Color(32, 67, 99));
@@ -1988,7 +2005,7 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
 
 
 
-    private void jPanel12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel12MouseClicked
+    private void txtAgregarFechaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtAgregarFechaMouseClicked
    // Confirmación inicial
     int confirmacion = JOptionPane.showConfirmDialog(null,
         "¿Está seguro de que desea agregar este viaje?\nEl envío del correo puede tomar unos segundos.",
@@ -2128,13 +2145,13 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
 
     dialogoEspera.setVisible(true);  // Mostrar el diálogo de espera y bloquear la interfaz 
     
-    }//GEN-LAST:event_jPanel12MouseClicked
+    }//GEN-LAST:event_txtAgregarFechaMouseClicked
 
     private void radioFinalizarViajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioFinalizarViajeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_radioFinalizarViajeActionPerformed
 
-    private void botonModificarViajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonModificarViajesMouseClicked
+    private void txtModificarViajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtModificarViajesMouseClicked
 int respuesta = JOptionPane.showConfirmDialog(this, 
         "¿Está seguro de que desea modificar el viaje?", 
         "Confirmar Modificación", 
@@ -2218,7 +2235,7 @@ int respuesta = JOptionPane.showConfirmDialog(this,
                     colorearFecha(newFechaDescarga, pastelBlue);
 
                     if (!pedidoActivo) {
-                        botonModificarViajes.setVisible(false);
+                        txtModificarViajes.setVisible(false);
                         radioFinalizarViaje.setVisible(false);
                     }
 
@@ -2283,7 +2300,7 @@ int respuesta = JOptionPane.showConfirmDialog(this,
 
         dialogoEspera.setVisible(true);  // Mostrar el diálogo de espera y bloquear la interfaz
     }
-    }//GEN-LAST:event_botonModificarViajesMouseClicked
+    }//GEN-LAST:event_txtModificarViajesMouseClicked
 
     private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
 
@@ -2324,7 +2341,7 @@ int respuesta = JOptionPane.showConfirmDialog(this,
 
     private Vector<Integer> deletedTripIndices = new Vector<>();
 
-    private void jPanel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel15MouseClicked
+    private void txtEliminarViajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtEliminarViajeMouseClicked
        
    int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar el viaje seleccionado?", "Confirmación", JOptionPane.YES_NO_OPTION);
     if (respuesta == JOptionPane.YES_OPTION) {
@@ -2401,7 +2418,7 @@ int respuesta = JOptionPane.showConfirmDialog(this,
 
         dialogoEspera.setVisible(true); // Mostrar el diálogo de espera y bloquear la interfaz
     }
-    }//GEN-LAST:event_jPanel15MouseClicked
+    }//GEN-LAST:event_txtEliminarViajeMouseClicked
 
 
 
@@ -2455,13 +2472,13 @@ int respuesta = JOptionPane.showConfirmDialog(this,
                 
                 //verificamos si el pedido aun esta activo para poder ponerlo activo o no el boton de modificar y el radio button
                 if (FechaTablaNew.get(indiceSeleccionado).getActivo() == true) {
-                    botonModificarViajes.setVisible(true);
+                    txtModificarViajes.setVisible(true);
                     radioFinalizarViaje.setVisible(true);
-                    jPanel15.setVisible(true);
+                    txtEliminarViaje.setVisible(true);
                 }else{
-                    botonModificarViajes.setVisible(false);
+                    txtModificarViajes.setVisible(false);
                     radioFinalizarViaje.setVisible(false);
-                    jPanel15.setVisible(false);
+                    txtEliminarViaje.setVisible(false);
                 }
                 
                 //actualizamos la tabla
@@ -2630,7 +2647,6 @@ int respuesta = JOptionPane.showConfirmDialog(this,
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JCalendar CalendarioGeneral;
     private javax.swing.JComboBox<String> ComboTViajeA;
-    private javax.swing.JPanel botonModificarViajes;
     private javax.swing.JComboBox<String> comboCamionesB;
     private javax.swing.JComboBox<String> comboMasDeFecha;
     private javax.swing.JComboBox<String> comboPedidosLista;
@@ -2656,10 +2672,8 @@ int respuesta = JOptionPane.showConfirmDialog(this,
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -2675,10 +2689,13 @@ int respuesta = JOptionPane.showConfirmDialog(this,
     private javax.swing.JTable tablaProductosA;
     private javax.swing.JTable tablaProductosB;
     private javax.swing.JLabel textoFechasIguales;
+    private javax.swing.JPanel txtAgregarFecha;
+    private javax.swing.JPanel txtEliminarViaje;
     private com.toedter.calendar.JDateChooser txtFechaDeCargaAgregar;
     private com.toedter.calendar.JDateChooser txtFechaDeCargaViaje;
     private com.toedter.calendar.JDateChooser txtFechaDeDescargaAgregar;
     private com.toedter.calendar.JDateChooser txtFechaDeDescargaViaje;
     private javax.swing.JComboBox<String> txtMenu;
+    private javax.swing.JPanel txtModificarViajes;
     // End of variables declaration//GEN-END:variables
 }

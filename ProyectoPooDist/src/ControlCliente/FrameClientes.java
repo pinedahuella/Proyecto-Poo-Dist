@@ -325,11 +325,11 @@ private void addAdminOptions() {
 }
 
 private void addSecretariaOptions() {
-    txtMenu1.addItem("Gestión de Ventas");
     txtMenu1.addItem("Gestión de Clientes");
-    txtMenu1.addItem("Gestión de Camiones");
+    txtMenu1.addItem("Gestión de Ventas");
     txtMenu1.addItem("Gestión de Pedidos");
-    txtMenu1.addItem("Gestión de Pilotos");
+    txtMenu1.addItem("Inventario de Quintales");
+    txtMenu1.addItem("Planilla de Trabajadores");
     txtMenu1.addItem("Calendario");
     txtMenu1.addItem("Cerrar Sesión");
 }

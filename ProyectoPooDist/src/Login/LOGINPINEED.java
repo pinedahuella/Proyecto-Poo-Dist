@@ -335,33 +335,13 @@ initComponents();
     
     // Acción del botón para iniciar sesión
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
-String nombreUsuario = txtNombreUsuario.getText();
+    String nombreUsuario = txtNombreUsuario.getText();
     String contraseña = new String(txtContraseñaUsuario.getPassword());
 
-    // Verificar primero si es el administrador especial
+    // Verificar administrador especial
     if (nombreUsuario.equals("1")) {
         if (contraseña.equals("1")) {
-            LocalDateTime tiempoEntrada = LocalDateTime.now();
-            GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
-            gestionLogin.cargarLoginsDesdeExcel();
-            
-            Login nuevoLogin = new Login(
-                tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
-                "",
-                nombreUsuario,
-                "ADMINISTRADOR"
-            );
-            gestionLogin.setUnLogin(nuevoLogin);
-            
-            INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, "ADMINISTRADOR", this);
-            abrir.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                    LOGINPINEED.this.setVisible(true);
-                }
-            });
-            abrir.setVisible(true);
-            this.setVisible(false);
+            iniciarSesion(nombreUsuario, "ADMINISTRADOR");
             return;
         } else {
             mostrarMensajeError("Contraseña incorrecta.");
@@ -381,26 +361,8 @@ String nombreUsuario = txtNombreUsuario.getText();
     // Verificar si es un piloto
     Piloto piloto = buscarPiloto(nombreUsuario);
     if (piloto != null) {
-        // Verificar estado del piloto
         if (!piloto.getEstadoPiloto().equalsIgnoreCase("ACTIVO")) {
-            String mensaje = "Acceso denegado. ";
-            switch (piloto.getEstadoPiloto().toUpperCase()) {
-                case "BLOQUEADO":
-                    mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
-                    break;
-                case "ENFERMO":
-                    mensaje += "Su cuenta está suspendida por enfermedad.";
-                    break;
-                case "EN VACACIONES":
-                    mensaje += "Su cuenta está suspendida por vacaciones.";
-                    break;
-                case "JUBILADO":
-                    mensaje += "Su cuenta está inactiva por jubilación.";
-                    break;
-                default:
-                    mensaje += "Su cuenta no está activa.";
-            }
-            mostrarMensajeError(mensaje);
+            mostrarMensajeEstadoPiloto(piloto.getEstadoPiloto());
             return;
         }
         validarLoginPiloto(piloto, nombreUsuario, contraseña);
@@ -414,115 +376,123 @@ String nombreUsuario = txtNombreUsuario.getText();
         return;
     }
 
-   // Verificar estado del usuario
-if (!usuario.getEstado().equalsIgnoreCase("ACTIVO")) {
-    // Para administradores, permitir acceso si están en ACTIVO o EN VACACIONES
-    if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-        if (usuario.getEstado().equalsIgnoreCase("EN VACACIONES")) {
-            // Permitir acceso pero mostrar advertencia
+    // Verificar estado del usuario
+    if (!usuario.getEstado().equalsIgnoreCase("ACTIVO")) {
+        // Caso especial para administradores
+        if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR") && 
+            usuario.getEstado().equalsIgnoreCase("EN VACACIONES")) {
             JOptionPane.showMessageDialog(
                 this,
                 "Advertencia: Está ingresando durante su período de vacaciones.",
                 "Advertencia",
                 JOptionPane.WARNING_MESSAGE
             );
-            // Continuar con el proceso de login
-            return;
-        } else if (!usuario.getEstado().equalsIgnoreCase("ACTIVO")) {
-            mostrarMensajeError("Acceso denegado. Su cuenta de administrador está " + 
-                              usuario.getEstado().toLowerCase() + ".");
+            // Continuar con la validación de contraseña
+        } else {
+            mostrarMensajeEstadoUsuario(usuario.getEstado());
             return;
         }
-    } else {
-        // Para usuarios normales, mostrar mensaje según el estado
-        String mensaje = "Acceso denegado. ";
-        switch (usuario.getEstado().toUpperCase()) {
-            case "BLOQUEADO":
-                mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
-                break;
-            case "ENFERMO":
-                mensaje += "Su cuenta está suspendida por enfermedad.";
-                break;
-            case "EN VACACIONES":
-                mensaje += "Su cuenta está suspendida por vacaciones.";
-                break;
-            case "JUBILADO":
-                mensaje += "Su cuenta está inactiva por jubilación.";
-                break;
-            default:
-                mensaje += "Su cuenta no está activa.";
-        }
-        mostrarMensajeError(mensaje);
-        return;
-    }
-        
-        // Para usuarios normales, mostrar mensaje según el estado
-        String mensaje = "Acceso denegado. ";
-        switch (usuario.getEstado().toUpperCase()) {
-            case "BLOQUEADO":
-                mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
-                break;
-            case "ENFERMO":
-                mensaje += "Su cuenta está suspendida por enfermedad.";
-                break;
-            case "EN VACACIONES":
-                mensaje += "Su cuenta está suspendida por vacaciones.";
-                break;
-            case "JUBILADO":
-                mensaje += "Su cuenta está inactiva por jubilación.";
-                break;
-            default:
-                mensaje += "Su cuenta no está activa.";
-        }
-        mostrarMensajeError(mensaje);
-        return;
     }
 
+    // Validación de contraseña
     if (contraseña.equals(usuario.getContrasenaUsuario())) {
-        LocalDateTime tiempoEntrada = LocalDateTime.now();
-        String rol = usuario.getCargo();
-        GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
-        gestionLogin.cargarLoginsDesdeExcel();
-
-        Login nuevoLogin = new Login(
-            tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
-            "",
-            nombreUsuario,
-            rol
-        );
-        gestionLogin.setUnLogin(nuevoLogin);
-
-        INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
-        abrir.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                LOGINPINEED.this.setVisible(true);
-            }
-        });
-        abrir.setVisible(true);
-        this.setVisible(false);
+        iniciarSesion(nombreUsuario, usuario.getCargo());
         intentosFallidos.remove(nombreUsuario);
     } else {
-        // Si es administrador, solo mostrar mensaje de error sin contar intentos
-        if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
-            mostrarMensajeError("Contraseña incorrecta.");
-            return;
-        }
-        
-        // Para usuarios no-administradores, aplicar la lógica de intentos
-        int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
-        intentosFallidos.put(nombreUsuario, intentos);
-
-        if (intentos >= 3) {
-            bloquearUsuario(usuario);
-            mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos. Contacte al administrador: +502 5754-5388");
-        } else {
-            mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
-        }
+        manejarIntentoFallido(usuario, nombreUsuario);
     }
     }//GEN-LAST:event_btnIngresarPineedActionPerformed
 
     
+    // Métodos auxiliares para mejor organización
+private void iniciarSesion(String nombreUsuario, String rol) {
+    LocalDateTime tiempoEntrada = LocalDateTime.now();
+    GESTIONLOGIN gestionLogin = new GESTIONLOGIN();
+    gestionLogin.cargarLoginsDesdeExcel();
+    
+    Login nuevoLogin = new Login(
+        tiempoEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
+        "",
+        nombreUsuario,
+        rol
+    );
+    gestionLogin.setUnLogin(nuevoLogin);
+    
+    INICIOPINEED abrir = new INICIOPINEED(nombreUsuario, rol, this);
+    abrir.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+            LOGINPINEED.this.setVisible(true);
+        }
+    });
+    abrir.setVisible(true);
+    this.setVisible(false);
+}
+
+private void mostrarMensajeEstadoUsuario(String estado) {
+    String mensaje = "Acceso denegado. ";
+    switch (estado.toUpperCase()) {
+        case "BLOQUEADO":
+            mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
+            break;
+        case "ENFERMO":
+            mensaje += "Su cuenta está suspendida por enfermedad.";
+            break;
+        case "EN VACACIONES":
+            mensaje += "Su cuenta está suspendida por vacaciones.";
+            break;
+        case "JUBILADO":
+            mensaje += "Su cuenta está inactiva por jubilación.";
+            break;
+        default:
+            mensaje += "Su cuenta no está activa.";
+    }
+    mostrarMensajeError(mensaje);
+}
+
+
+private void mostrarMensajeEstadoPiloto(String estado) {
+    String mensaje = "Acceso denegado. ";
+    switch (estado.toUpperCase()) {
+        case "BLOQUEADO":
+            mensaje += "Su cuenta está bloqueada. Contacte al administrador: +502 5754-5388";
+            break;
+        case "ENFERMO":
+            mensaje += "Su cuenta está suspendida por enfermedad.";
+            break;
+        case "EN VACACIONES":
+            mensaje += "Su cuenta está suspendida por vacaciones.";
+            break;
+        case "JUBILADO":
+            mensaje += "Su cuenta está inactiva por jubilación.";
+            break;
+        default:
+            mensaje += "Su cuenta no está activa.";
+    }
+    mostrarMensajeError(mensaje);
+}
+
+
+
+private void manejarIntentoFallido(Usuarios usuario, String nombreUsuario) {
+    if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+        mostrarMensajeError("Contraseña incorrecta.");
+        return;
+    }
+    
+    int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
+    intentosFallidos.put(nombreUsuario, intentos);
+
+    if (intentos >= 3) {
+        bloquearUsuario(usuario);
+        mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos. Contacte al administrador: +502 5754-5388");
+    } else {
+        mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
+    }
+}
+
+
+
       // Añadir método para buscar piloto
     private Piloto buscarPiloto(String nombreUsuario) {
         // El formato esperado es "nombre.apellido&pineed"
@@ -576,7 +546,7 @@ if (!usuario.getEstado().equalsIgnoreCase("ACTIVO")) {
             intentosFallidos.put(nombreUsuario, intentos);
 
             if (intentos >= 3) {
-                piloto.setEstadoPiloto("bloqueado");
+                piloto.setEstadoPiloto("BLOQUEADO");
                 gestionPilotos.actualizarPiloto(piloto);
                 mostrarMensajeError("Piloto bloqueado por múltiples intentos fallidos.");
             } else {

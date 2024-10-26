@@ -416,7 +416,7 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
         jLabel18.setText("ESTADO DEL PILOTO");
 
         txtEstadoPiloto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
+        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO", "BLOQUEADO" }));
 
         txtNumeroTelefonicoPiloto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtNumeroTelefonicoPiloto.addActionListener(new java.awt.event.ActionListener() {
@@ -654,7 +654,7 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
 
         try {
             // Intentar agregar el nuevo piloto
-            gestionPilotos.actualizarPiloto(nuevoPiloto);
+            gestionPilotos.agregarPiloto(nuevoPiloto);
             
             // Si llegamos aquí, el piloto se agregó exitosamente
             cargarPilotosEnTabla();

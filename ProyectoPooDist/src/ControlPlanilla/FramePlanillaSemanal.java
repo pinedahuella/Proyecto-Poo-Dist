@@ -261,11 +261,11 @@ private void addAdminOptions() {
 }
 
 private void addSecretariaOptions() {
-    txtMenu.addItem("Gestión de Ventas");
     txtMenu.addItem("Gestión de Clientes");
-    txtMenu.addItem("Gestión de Camiones");
+    txtMenu.addItem("Gestión de Ventas");
     txtMenu.addItem("Gestión de Pedidos");
-    txtMenu.addItem("Gestión de Pilotos");
+    txtMenu.addItem("Inventario de Quintales");
+    txtMenu.addItem("Planilla de Trabajadores");
     txtMenu.addItem("Calendario");
     txtMenu.addItem("Cerrar Sesión");
 }
