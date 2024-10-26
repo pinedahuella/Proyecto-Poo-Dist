@@ -21,6 +21,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import javax.mail.util.ByteArrayDataSource;
+
 
 public class MODIFICARGESTIONPILOTOS extends javax.swing.JFrame {
 
@@ -189,6 +201,91 @@ public void limpiarCampos() {
     }
     
 
+    
+    private void enviarCorreoActualizacionPiloto(String destinatario, Piloto piloto) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+        
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("PINEED - Actualización de Información de Piloto");
+        
+        Multipart multipart = new MimeMultipart("related");
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        String contenido = "<html><body>" +
+            "<h2><strong>Actualización de Datos de Piloto en PINEED</strong></h2>" +
+            "<p>Sus datos han sido actualizados exitosamente en nuestro sistema.</p>" +
+            "<h3>Información Actualizada:</h3>" +
+            "<p><strong>Nombre:</strong> " + piloto.getNombrePiloto() + "</p>" +
+            "<p><strong>Apellido:</strong> " + piloto.getApellidoPiloto() + "</p>" +
+            "<p><strong>DPI:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
+            "<p><strong>Tipo de Licencia:</strong> " + piloto.getTipoLicencia() + "</p>" +
+            "<p><strong>Correo Electrónico:</strong> " + piloto.getCorreoElectronicoPiloto() + "</p>" +
+            "<p><strong>Teléfono:</strong> " + piloto.getNumeroTelefonicoPiloto() + "</p>" +
+            "<p><strong>Género:</strong> " + piloto.getGeneroPiloto() + "</p>" +
+            "<p><strong>Fecha de Nacimiento:</strong> " + piloto.getFechaDeNacimiento() + "</p>" +
+            "<p><strong>Estado:</strong> " + piloto.getEstadoPiloto() + "</p>" +
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "</body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        
+        int option = JOptionPane.showConfirmDialog(this, 
+            "Se ha enviado un correo electrónico con los datos actualizados a: " + destinatario + "\n" +
+            "¿Recibió el correo correctamente?",
+            "Confirmación de Envío",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+            
+        if (option == JOptionPane.NO_OPTION) {
+            throw new IOException("El piloto no recibió el correo correctamente. Por favor, intente nuevamente.");
+        }
+        
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+    
+    
 
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
@@ -200,6 +297,11 @@ public void limpiarCampos() {
         this.dispose();
     }
     
+    private boolean esSoloLetras(String texto) {
+    // Expresión regular para letras solamente (incluyendo letras con acentos y ñ)
+    return texto.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+}
+
     
 
     @SuppressWarnings("unchecked")
@@ -439,30 +541,46 @@ public void limpiarCampos() {
         String generoPiloto = txtGeneroPilotoModificarModificar.getSelectedItem().toString().trim();
         String estadoPiloto = txtEstadoPilotoModificarModificar.getSelectedItem().toString().trim();
 
-        // Crear versiones sin tildes para validaciones si es necesario
-        String nombrePilotoSinTildes = removeTildes(nombrePiloto);
-        String apellidoPilotoSinTildes = removeTildes(apellidoPiloto);
-
+        // Validar fecha de nacimiento
         Date fechaNacimientoPilotoDate = txtFechaDeNacimientoPilotoModificarModificar.getDate();
         if (fechaNacimientoPilotoDate == null) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
             return;
         }
 
+        // Validaciones básicas
         if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
             JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
             return;
         }
+        
+        if (!esSoloLetras(nombrePiloto)) {
+            JOptionPane.showMessageDialog(this, "El nombre solo debe contener letras.");
+            return;
+        }
+        
+        if (apellidoPiloto.equals("Ingrese el apellido") || apellidoPiloto.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el apellido del piloto.");
+            return;
+        }
+        
+        if (!esSoloLetras(apellidoPiloto)) {
+            JOptionPane.showMessageDialog(this, "El apellido solo debe contener letras.");
+            return;
+        }
 
+        // Formatear fecha
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDeNacimientoPiloto = sdf.format(fechaNacimientoPilotoDate);
 
+        // Validar campos vacíos
         if (nombrePiloto.isEmpty() || apellidoPiloto.isEmpty() || tipoLicencia.isEmpty() ||
             correoElectronicoPiloto.isEmpty() || generoPiloto.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
             return;
         }
 
+        // Validar longitud de DPI y teléfono
         if (String.valueOf(numeroDeDpiPiloto).length() != 13) {
             JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
             return;
@@ -473,30 +591,36 @@ public void limpiarCampos() {
             return;
         }
 
-        boolean dpiCambiado = numeroDeDpiPiloto != pilotoActual.getNumeroDeDpi();
-        boolean telefonoCambiado = numeroTelefonicoPiloto != pilotoActual.getNumeroTelefonicoPiloto();
-        boolean correoCambiado = !correoElectronicoPiloto.equals(pilotoActual.getCorreoElectronicoPiloto());
-
+        // Verificar duplicados SOLO si los valores han cambiado
         for (Piloto pilotoExistente : listaPilotos) {
-            if (pilotoExistente != pilotoActual) {
-                if (dpiCambiado && pilotoExistente.getNumeroDeDpi() == numeroDeDpiPiloto) {
+            // Ignorar el piloto actual en la comparación
+            if (!pilotoExistente.equals(pilotoActual)) {
+                // Verificar DPI solo si ha cambiado
+                if (numeroDeDpiPiloto != pilotoActual.getNumeroDeDpi() && 
+                    pilotoExistente.getNumeroDeDpi() == numeroDeDpiPiloto) {
                     JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
                     return;
                 }
-                if (telefonoCambiado && pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonicoPiloto) {
+                
+                // Verificar teléfono solo si ha cambiado
+                if (numeroTelefonicoPiloto != pilotoActual.getNumeroTelefonicoPiloto() && 
+                    pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonicoPiloto) {
                     JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
                     return;
                 }
-                if (correoCambiado && pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
+                
+                // Verificar correo solo si ha cambiado
+                if (!correoElectronicoPiloto.equals(pilotoActual.getCorreoElectronicoPiloto()) && 
+                    pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
                     JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
                     return;
                 }
             }
         }
 
-        // Actualizar el piloto usando los valores originales (con tildes)
-        pilotoActual.setNombrePiloto(nombrePiloto);  // Usar versión con tildes
-        pilotoActual.setApellidoPiloto(apellidoPiloto);  // Usar versión con tildes
+        // Actualizar el piloto
+        pilotoActual.setNombrePiloto(nombrePiloto);
+        pilotoActual.setApellidoPiloto(apellidoPiloto);
         pilotoActual.setNumeroDeDpi(numeroDeDpiPiloto);
         pilotoActual.setTipoLicencia(tipoLicencia);
         pilotoActual.setCorreoElectronicoPiloto(correoElectronicoPiloto);
@@ -507,12 +631,30 @@ public void limpiarCampos() {
 
         gestionPilotos.actualizarPiloto(pilotoActual);
 
-        JOptionPane.showMessageDialog(this, "Piloto modificado exitosamente.");
+        // Mostrar mensaje de éxito
+        JOptionPane.showMessageDialog(this, 
+            "Piloto modificado exitosamente.\n" +
+            "En unos segundos se enviará un correo electrónico con los datos actualizados.\n" +
+            "Espere por favor...",
+            "Modificación Exitosa",
+            JOptionPane.INFORMATION_MESSAGE);
 
+        // Actualizar la tabla principal
         ventanaPrincipal.actualizarTabla();
-        ventanaPrincipal.setVisible(true);
-        this.dispose();
-
+        
+        // Enviar correo
+        try {
+            enviarCorreoActualizacionPiloto(correoElectronicoPiloto, pilotoActual);
+            ventanaPrincipal.setVisible(true);
+            this.dispose();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al enviar el correo de actualización: " + e.getMessage() +
+                "\nPor favor, intente nuevamente.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+        
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
     } catch (Exception e) {

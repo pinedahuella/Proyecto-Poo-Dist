@@ -1438,9 +1438,10 @@ private boolean isCamionDisponible(int indiceCamion) {
         if (!isCamionDisponible(newIndiceCamion)) {
         return;
         }
-          //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null && !newFechaCarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(fechaActualMenosUnDia) && !newFechaDescarga.before(newFechaCarga)) {
-            
+ if (newFechaCarga != null && newFechaDescarga != null 
+    && !newFechaCarga.before(fechaActualMenosUnDia) 
+    && !newFechaDescarga.before(fechaActualMenosUnDia) 
+    && !newFechaDescarga.before(newFechaCarga)) {
 
             //miramos si el viaje es una compra o una venta
             boolean newcompra;

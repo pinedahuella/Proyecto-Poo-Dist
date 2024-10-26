@@ -13,7 +13,17 @@ import javax.swing.JPasswordField;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import com.toedter.calendar.JTextFieldDateEditor;
-
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import javax.mail.util.ByteArrayDataSource;
 
 /**
  * Clase AGREGARGESTIONUSUARIOS
@@ -218,6 +228,100 @@ public void limpiarCampos() {
     }
     
     
+    
+    
+private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+        
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("Bienvenido a PINEED - Información de Registro");
+        
+        // Create multipart message
+        Multipart multipart = new MimeMultipart("related");
+        
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        // Note el "cid:imagen" al final del HTML que hace referencia a la imagen
+        String contenido = "<html><body>" +
+            "<h2><strong>¡Bienvenido a PINEED!</strong></h2>" +
+            "<p>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
+            "<h3>Información del Registro:</h3>" +
+            "<p><strong>Nombre:</strong> " + usuario.getNombre() + "</p>" +
+            "<p><strong>Apellido:</strong> " + usuario.getApellido() + "</p>" +
+            "<p><strong>DPI:</strong> " + usuario.getNumeroDPI() + "</p>" +
+            "<p><strong>Cargo:</strong> " + usuario.getCargo() + "</p>" +
+            "<p><strong>Correo Electrónico:</strong> " + usuario.getCorreoElectronico() + "</p>" +
+            "<p><strong>Teléfono:</strong> " + usuario.getNumeroTelefono() + "</p>" +
+            "<p><strong>Género:</strong> " + usuario.getGenero() + "</p>" +
+            "<p><strong>Fecha de Nacimiento:</strong> " + usuario.getFechaNacimiento() + "</p>" +
+            "<p><strong>Estado:</strong> " + usuario.getEstado() + "</p>" +
+            "<h3>Información de Acceso al Sistema:</h3>" +
+            "<p><strong>Nombre de Usuario:</strong> " + usuario.getNombreUsuario() + "</p>" +
+            "<p><strong>Contraseña:</strong> " + usuario.getContrasenaUsuario() + "</p>" +
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "</body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        
+        // Mostrar mensaje de confirmación y esperar respuesta del usuario
+        int option = JOptionPane.showConfirmDialog(this, 
+            "Se ha enviado un correo electrónico con los datos actualizados a: " + destinatario + "\n" +
+            "¿Recibió el correo correctamente?",
+            "Confirmación de Envío",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+            
+        if (option == JOptionPane.NO_OPTION) {
+            // Si el usuario indica que no recibió el correo, lanzar una excepción
+            throw new IOException("El usuario no recibió el correo correctamente. Por favor, intente nuevamente.");
+        }
+        
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -482,6 +586,10 @@ public void limpiarCampos() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private boolean esNombreValido(String nombre) {
+    // Expresión regular para validar que el nombre solo contenga letras y espacios
+    return nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+}
     
     /**
      * Maneja el evento de acción para agregar un usuario al sistema.
@@ -494,121 +602,60 @@ public void limpiarCampos() {
      * @param evt El evento de acción que desencadena este método.
      */
     private void btnAgregarUsuarioSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarUsuarioSistemaActionPerformed
-    try {
-        // Validaciones individuales para cada campo
-        if (txtNombreUsuario.getText().equals("Ingrese el nombre") || txtNombreUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del usuario.");
-            return;
-        }
-
-        if (txtApellidoUsuario.getText().equals("Ingrese el apellido") || txtApellidoUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el apellido del usuario.");
-            return;
-        }
-
-        if (txtNumeroDeDpiUsuario.getText().equals("Ingrese el número de DPI") || txtNumeroDeDpiUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el número de DPI del usuario.");
-            return;
-        }
-
-        if (txtContraseñaUsuario.getText().equals("Ingrese la contraseña") || txtContraseñaUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese la contraseña del usuario.");
-            return;
-        }
-
-        if (txtCorreoElectronicoUsuario.getText().equals("Ingrese el correo electrónico") || txtCorreoElectronicoUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el correo electrónico del usuario.");
-            return;
-        }
-
-        if (txtNumeroTelefonicoUsuario.getText().equals("Ingrese el número telefónico") || txtNumeroTelefonicoUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el número telefónico del usuario.");
-            return;
-        }
-
-        if (txtNombreDeUsuarioUsuario.getText().equals("Ingrese el nombre de usuario") || txtNombreDeUsuarioUsuario.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre de usuario.");
-            return;
-        }
-
-        if (txtFechaDeNacimientoUsuario.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Por favor seleccione la fecha de nacimiento del usuario.");
-            return;
-        }
-
+try {
         // Recuperar y limpiar los datos de entrada
         String nombreUsuario = txtNombreUsuario.getText().trim();
         String apellidoUsuario = txtApellidoUsuario.getText().trim();
-        
-        // Obtener el nombre de usuario ingresado
-        String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase();
-        
-        // Generar las dos versiones posibles del nombre de usuario
-        String nombreUsuarioSinTildes = removeTildes(nombreUsuario.toLowerCase()) + "." + 
-                                      removeTildes(apellidoUsuario.toLowerCase()) + "&pineed";
-                                      
-        String nombreUsuarioConTildes = nombreUsuario.toLowerCase() + "." + 
-                                      apellidoUsuario.toLowerCase() + "&pineed";
 
-        // Remover espacios extras
-        nombreDeUsuario = nombreDeUsuario.replaceAll("\\s+", "");
-        nombreUsuarioSinTildes = nombreUsuarioSinTildes.replaceAll("\\s+", "");
-        nombreUsuarioConTildes = nombreUsuarioConTildes.replaceAll("\\s+", "");
-        
-        // Validar formato del nombre de usuario
-        if (!nombreDeUsuario.equals(nombreUsuarioSinTildes) && !nombreDeUsuario.equals(nombreUsuarioConTildes)) {
-            String mensaje = "El nombre de usuario debe seguir el formato: nombre.apellido&pineed\n" +
-                           "Para sus datos, puede ser:\n" +
-                           "- Sin tildes: " + nombreUsuarioSinTildes + "\n" +
-                           "- Con tildes: " + nombreUsuarioConTildes + "\n\n" +
-                           "Nota: Aunque ambas formas son válidas, se recomienda usar la versión sin tildes " +
-                           "para mayor compatibilidad.";
-            JOptionPane.showMessageDialog(this, mensaje);
+        // Validar que nombre y apellido no estén vacíos
+        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre y apellido son obligatorios.");
             return;
         }
 
-        // Validar DPI
+        // Obtener el nombre de usuario ingresado y limpiarlo
+        String nombreDeUsuario = txtNombreDeUsuarioUsuario.getText().trim().toLowerCase().replaceAll("\\s+", "");
+        String nombreUsuarioSinTildes = removeTildes(nombreUsuario.replaceAll("\\s+", ""));
+        String nombreUsuarioConTildes = nombreUsuario.replaceAll("\\s+", "");
+
+        // Validar y obtener el DPI
         String dpiText = txtNumeroDeDpiUsuario.getText().trim();
         if (dpiText.length() != 13) {
             JOptionPane.showMessageDialog(this, "El DPI debe contener exactamente 13 dígitos.");
             return;
         }
-        
-        try {
-            long numeroDeDpiUsuario = Long.parseLong(dpiText);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El número de DPI debe contener solo números.");
-            return;
-        }
-        long numeroDeDpiUsuario = Long.parseLong(dpiText);
+        long dpiUsuario = Long.parseLong(dpiText);
 
-        // Validar contraseña
+        // Validar que la contraseña coincida con el DPI
         String contrasenaUsuario = txtContraseñaUsuario.getText().trim();
         if (!contrasenaUsuario.equals(dpiText)) {
             JOptionPane.showMessageDialog(this, "La contraseña debe ser igual al número de DPI.");
             return;
         }
 
+        
+             // Validar que el nombre y apellido no contengan números
+        if (!esNombreValido(nombreUsuario)) {
+            JOptionPane.showMessageDialog(this, "El nombre no puede contener números o caracteres especiales.");
+            return;
+        }
+
+        if (!esNombreValido(apellidoUsuario)) {
+            JOptionPane.showMessageDialog(this, "El apellido no puede contener números o caracteres especiales.");
+            return;
+        }
+        
         String cargoUsuario = txtCargoUsuario.getSelectedItem().toString().trim();
         String correoElectronicoUsuario = txtCorreoElectronicoUsuario.getText().trim();
-        
-        // Validar número telefónico
-        String telefonoText = txtNumeroTelefonicoUsuario.getText().trim();
-        if (telefonoText.length() != 8) {
-            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
-            return;
-        }
-        
-        try {
-            int numeroTelefonicoUsuario = Integer.parseInt(telefonoText);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El número telefónico debe contener solo números.");
-            return;
-        }
-        int numeroTelefonicoUsuario = Integer.parseInt(telefonoText);
-        
         String generoUsuario = txtGeneroUsuario.getSelectedItem().toString().trim();
         String estadoUsuario = txtEstadoUsuario.getSelectedItem().toString().trim();
+
+        // Validar fecha de nacimiento
+        Date fechaNacimientoUsuarioDate = txtFechaDeNacimientoUsuario.getDate();
+        if (fechaNacimientoUsuarioDate == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de nacimiento válida.");
+            return;
+        }
 
         // Validar correo electrónico
         if (!correoElectronicoUsuario.endsWith("@gmail.com")) {
@@ -616,51 +663,74 @@ public void limpiarCampos() {
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaDeNacimientoUsuario = sdf.format(txtFechaDeNacimientoUsuario.getDate());
+        // Validar número telefónico
+        String telefonoText = txtNumeroTelefonicoUsuario.getText().trim();
+        if (!telefonoText.matches("\\d{8}")) {
+            JOptionPane.showMessageDialog(this, "El número telefónico debe contener exactamente 8 dígitos.");
+            return;
+        }
+        int numeroTelefonicoUsuario = Integer.parseInt(telefonoText);
 
-        // Validar usuario existente
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaDeNacimientoUsuario = sdf.format(fechaNacimientoUsuarioDate);
+
+        // Verificar si el usuario ya existe
         for (Usuarios usuarioExistente : listaUsuarios) {
-            if (usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) { 
-                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
-                return;
-            }
-            if (usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) { 
-                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
-                return;
-            }
-            if (usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
-                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+            if (usuarioExistente.getNumeroDPI() == dpiUsuario || 
+                usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario || 
+                usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI, número telefónico o correo electrónico.");
                 return;
             }
         }
 
-        // Crear y agregar el nuevo usuario
-        Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, 
-                                    apellidoUsuario, cargoUsuario, generoUsuario, numeroDeDpiUsuario, 
-                                    fechaDeNacimientoUsuario, numeroTelefonicoUsuario, 
-                                    correoElectronicoUsuario, estadoUsuario);
+        // Crear nuevo usuario
+        Usuarios usuario = new Usuarios(nombreDeUsuario, contrasenaUsuario, nombreUsuario, apellidoUsuario,
+                                        cargoUsuario, generoUsuario, dpiUsuario,
+                                        fechaDeNacimientoUsuario, numeroTelefonicoUsuario,
+                                        correoElectronicoUsuario, estadoUsuario);
 
+        // Agregar usuario a la lista
         listaUsuarios.add(usuario);
-        JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.");
 
-        limpiarCampos();
+        // Mostrar mensaje de registro exitoso
+        JOptionPane.showMessageDialog(this,
+            "Usuario registrado exitosamente.\n" +
+            "En unos segundos se enviará un correo electrónico con los datos de registro.\n" +
+            "Espere por favor...",
+            "Registro Exitoso",
+            JOptionPane.INFORMATION_MESSAGE);
 
-        gestionUsuarios.setUsuarios(listaUsuarios); 
+        // Guardar usuarios en Excel
+        gestionUsuarios.setUsuarios(listaUsuarios);
         gestionUsuarios.guardarUsuariosEnExcel();
 
+        // Enviar el correo
+        try {
+            enviarCorreoActualizacion(correoElectronicoUsuario, usuario);
+            // Limpiar campos y mostrar la ventana principal
+            limpiarCampos();
+            // Navegar a la ventana de gestión de usuarios
+            String username = this.currentUser;
+            String role = this.userRole;
+            LOGINPINEED loginFrame = this.loginFrame;
+
+            INICIOGESTIONUSUARIOS abrir = new INICIOGESTIONUSUARIOS(username, role, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                "Error al enviar el correo de registro: " + e.getMessage() +
+                "\nPor favor, intente nuevamente.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage());
-        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error al agregar usuario: " + e.getMessage());
     }
-
-    String username = this.currentUser;
-    String role = this.userRole;
-    LOGINPINEED loginFrame = this.loginFrame;
-
-    INICIOGESTIONUSUARIOS abrir = new INICIOGESTIONUSUARIOS(username, role, loginFrame);
-    abrir.setVisible(true);
-    this.setVisible(false);
     }//GEN-LAST:event_btnAgregarUsuarioSistemaActionPerformed
 
     

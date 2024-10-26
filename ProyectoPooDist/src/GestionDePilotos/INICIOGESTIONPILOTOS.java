@@ -685,54 +685,61 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }//GEN-LAST:event_refrescarPilotoActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-        if (txtNombrePilotoBuscar.getText().trim().isEmpty() || 
-            txtNombrePilotoBuscar.getText().equals("Ingresa Nombre del Piloto a buscar")) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre para buscar.");
-            return;
+String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
+
+    // Validar si el campo está vacío o es el placeholder
+    if (nombreBuscado.isEmpty() || nombreBuscado.equals("Ingresa Nombre del Piloto a buscar")) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre para buscar.");
+        return;
+    }
+
+    modeloPilotos.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
+    pilotosFiltrados = new Vector<>(); // Reset lista filtrada
+    boolean hayCoincidencias = false;
+
+    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+    int indice = 1; // Inicializamos el índice para la numeración
+
+    for (Piloto piloto : listaPilotos) {
+        String nombrePilotoNormalizado = normalizarTexto(piloto.getNombrePiloto());
+
+        // Comprobar si el nombre del piloto contiene el texto buscado
+        if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
+            pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
+            modeloPilotos.addRow(new Object[]{
+                indice++, // Añadimos el índice
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getEstadoPiloto()
+            });
+            hayCoincidencias = true;
         }
+    }
 
-        String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
-        modeloPilotos.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
-        pilotosFiltrados = new Vector<>(); // Reset lista filtrada
-        boolean hayCoincidencias = false;
-
-        String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
-
-        int indice = 1; // Inicializamos el índice para la numeración
-
-        for (Piloto piloto : listaPilotos) {
-            String nombrePilotoNormalizado = normalizarTexto(piloto.getNombrePiloto());
-
-            if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
-                pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
-                modeloPilotos.addRow(new Object[]{
-                    indice++, // Añadimos el índice
-                    piloto.getNombrePiloto(),
-                    piloto.getApellidoPiloto(),
-                    piloto.getNumeroDeDpi(),
-                    piloto.getTipoLicencia(),
-                    piloto.getNumeroTelefonicoPiloto(),
-                    piloto.getEstadoPiloto()
-                });
-                hayCoincidencias = true;
-            }
-        }
-
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-            // Restaurar la tabla completa
-            cargarPilotosEnTabla();
-        }
-
+    // Si no hay coincidencias, mostrar un mensaje y restaurar la tabla completa
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        cargarPilotosEnTabla(); // Restaurar la tabla completa
+    } else {
+        // Si hay resultados, seleccionar el primer resultado
         if (tblRegistroPilotos.getRowCount() > 0) {
             tblRegistroPilotos.setRowSelectionInterval(0, 0);
         }
+    }
 
+    // No restaurar el placeholder si hay resultados
+    if (hayCoincidencias) {
+        txtNombrePilotoBuscar.setForeground(Color.BLACK); // Cambiar el color del texto
+    } else {
         // Restaurar el placeholder
         SwingUtilities.invokeLater(() -> {
             txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
             txtNombrePilotoBuscar.setForeground(Color.GRAY);
         });
+    }
     }//GEN-LAST:event_buscarPilotoActionPerformed
 
     

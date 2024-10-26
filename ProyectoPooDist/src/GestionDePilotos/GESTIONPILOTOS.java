@@ -11,17 +11,24 @@
     import java.util.Map;
     import ControlViajes.GestionCalendario;
     import ControlViajes.FechaCalendario;
+import GestionDePilotos.Piloto;
+import GestionDeUsuarios.GESTIONUSUARIOS;
+import GestionDeUsuarios.Usuarios;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
     import java.util.Set;
 
     public class GESTIONPILOTOS {
+        
 private Vector<Piloto> pilotos = new Vector<>();
     private String excelFilePath;
     private boolean isUpdatingCalendar = false;
 
         public GESTIONPILOTOS() {
             excelFilePath = "excels/PINEED.xlsx";
+                    cargarPilotosDesdeExcel(); // Cargar datos al iniciar
+
         }
 
         public GESTIONPILOTOS(Vector<Piloto> pils) {
@@ -43,14 +50,55 @@ private Vector<Piloto> pilotos = new Vector<>();
         }
 
         
-        public void agregarCamion(Piloto piloto) {
-        this.pilotos.add(piloto);
+// Método para validar si el piloto existe en GESTIONUSUARIOS
+    private boolean validarDuplicadosEnUsuarios(Piloto piloto) {
+        GESTIONUSUARIOS gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel(); // Cargar datos de usuarios
+
+        for (Usuarios usuario : gestionUsuarios.getUsuarios()) {
+            if (usuario.getNumeroDPI() == piloto.getNumeroDeDpi() || 
+                usuario.getNumeroTelefono() == piloto.getNumeroTelefonicoPiloto() || 
+                usuario.getCorreoElectronico().equalsIgnoreCase(piloto.getCorreoElectronicoPiloto())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void agregarPiloto(Piloto nuevoPiloto) {
+        // Validar que el piloto no esté duplicado en usuarios
+        if (validarDuplicadosEnUsuarios(nuevoPiloto)) {
+            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de usuarios.");
+        }
+        
+        // Agregar el piloto si no existe
+        for (Piloto piloto : pilotos) {
+            if (piloto.getNumeroDeDpi() == nuevoPiloto.getNumeroDeDpi()) {
+                throw new IllegalStateException("El piloto ya existe en el sistema.");
+            }
+        }
+        pilotos.add(nuevoPiloto);
         guardarPilotosEnExcel();
     }
-        
-        
-        
-        
+
+    public void actualizarPiloto(Piloto pilotoActualizado) {
+        // Validar que el piloto no esté duplicado en usuarios
+        if (validarDuplicadosEnUsuarios(pilotoActualizado)) {
+            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de usuarios.");
+        }
+
+        // Actualizar piloto
+        for (int i = 0; i < pilotos.size(); i++) {
+            if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
+                pilotos.set(i, pilotoActualizado);
+                guardarPilotosEnExcel();
+                return;
+            }
+        }
+        throw new IllegalStateException("El piloto no existe.");
+    }
+
+
         private void reordenarIndices() {
             try {
                 Map<Integer, Integer> mapaIndices = new HashMap<>();
@@ -300,30 +348,7 @@ public void activarPiloto(long dpi) {
             }
         }
         
-// Método para actualizar un piloto existente en el Vector
-public void actualizarPiloto(Piloto pilotoActualizado) {
-    boolean encontrado = false; // Bandera para verificar si el piloto fue encontrado
 
-    // Recorre el Vector de pilotos
-    for (int i = 0; i < pilotos.size(); i++) {
-        // Compara el DPI del piloto actual con el actualizado
-        if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
-            pilotos.set(i, pilotoActualizado); // Actualiza el piloto en el Vector
-            encontrado = true; // Cambia la bandera a verdadero
-            break; // Sale del bucle
-        }
-    }
-
-    // Si el piloto no fue encontrado, lo agrega al Vector
-    if (!encontrado) {
-        pilotos.add(pilotoActualizado);
-    }
-
-    // Guarda los pilotos en Excel
-    guardarPilotosEnExcel(); // Asegúrate de que este método esté implementado
-    // Carga la lista actualizada de pilotos desde Excel
-    cargarPilotosDesdeExcel(); // Asegúrate de que este método esté implementado
-}
     
         private void actualizarIndicesEnCalendario(Vector<Piloto> todosPilotos) {
             if (isUpdatingCalendar) {
@@ -391,43 +416,28 @@ public void cargarPilotosDesdeExcel() {
             if (row.getRowNum() == 0) continue; // Skip header
 
             try {
-                // Get the status and active fields first
+                // Load all pilots, regardless of their status
+                String nombrePiloto = getStringCellValue(row.getCell(0));
+                String apellidoPiloto = getStringCellValue(row.getCell(1));
+                long numeroDeDpi = getNumericCellValue(row.getCell(2));
+                String tipoLicencia = getStringCellValue(row.getCell(3));
+                String correoElectronicoPiloto = getStringCellValue(row.getCell(4));
+                int numeroTelefonicoPiloto = (int) getNumericCellValue(row.getCell(5));
+                String generoPiloto = getStringCellValue(row.getCell(6));
+                String fechaDeNacimiento = procesarFecha(getStringCellValue(row.getCell(7)));
                 String estadoPiloto = getStringCellValue(row.getCell(8));
-                boolean activo = true; // Default value
-                
-                // Check the active column (index 9)
-                if (row.getCell(9) != null) {
-                    activo = row.getCell(9).getBooleanCellValue();
-                }
-                
-                // Modificado: Verificar si el estado está en la lista de estados válidos
-                Set<String> estadosValidos = new HashSet<>(Arrays.asList(
-                    "ACTIVO",
-                    "ENFERMO",
-                    "EN VACACIONES",
-                    "BLOQUEADO",
-                    "JUBILADO"
-                ));
-                
-                // Procesar la fila si el piloto está activo y su estado es válido
-                if (activo && estadosValidos.contains(estadoPiloto.toUpperCase())) {
-                    String nombrePiloto = getStringCellValue(row.getCell(0));
-                    String apellidoPiloto = getStringCellValue(row.getCell(1));
-                    long numeroDeDpi = getNumericCellValue(row.getCell(2));
-                    String tipoLicencia = getStringCellValue(row.getCell(3));
-                    String correoElectronicoPiloto = getStringCellValue(row.getCell(4));
-                    int numeroTelefonicoPiloto = (int) getNumericCellValue(row.getCell(5));
-                    String generoPiloto = getStringCellValue(row.getCell(6));
-                    String fechaDeNacimiento = procesarFecha(getStringCellValue(row.getCell(7)));
+                boolean activo = row.getCell(9) != null && row.getCell(9).getBooleanCellValue();
 
-                    Piloto piloto = new Piloto(
-                        nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia,
-                        correoElectronicoPiloto, numeroTelefonicoPiloto, generoPiloto,
-                        fechaDeNacimiento, estadoPiloto, activo
-                    );
+                // Debug output
+                System.out.println("DPI: " + numeroDeDpi + ", Activo: " + activo);
+                
+                Piloto piloto = new Piloto(
+                    nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia,
+                    correoElectronicoPiloto, numeroTelefonicoPiloto, generoPiloto,
+                    fechaDeNacimiento, estadoPiloto, activo
+                );
 
-                    pilotos.add(piloto);
-                }
+                pilotos.add(piloto);
                 
             } catch (Exception e) {
                 System.err.println("Error processing row " + row.getRowNum() + ": " + e.getMessage());
@@ -438,6 +448,59 @@ public void cargarPilotosDesdeExcel() {
         e.printStackTrace();
     }
 }
+
+
+
+
+// Validar piloto existente por DPI
+private boolean existePilotoPorDPI(long dpi) {
+    for (Piloto pilotoExistente : pilotos) {
+        if (pilotoExistente.getNumeroDeDpi() == dpi) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Validar piloto existente por teléfono
+private boolean existePilotoPorTelefono(int telefono) {
+    for (Piloto pilotoExistente : pilotos) {
+        if (pilotoExistente.getNumeroTelefonicoPiloto() == telefono) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Validar piloto existente por correo
+private boolean existePilotoPorCorreo(String correo) {
+    for (Piloto pilotoExistente : pilotos) {
+        if (pilotoExistente.getCorreoElectronicoPiloto().equals(correo)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Método de validación integral para el formulario
+public void validarPilotoNuevo(long dpi, int telefono, String correo) throws IllegalStateException {
+    // Validar DPI
+    if (existePilotoPorDPI(dpi)) {
+        throw new IllegalStateException("Ya existe un piloto con ese número de DPI.");
+    }
+
+    // Validar teléfono
+    if (existePilotoPorTelefono(telefono)) {
+        throw new IllegalStateException("Ya existe un piloto con ese número telefónico.");
+    }
+
+    // Validar correo
+    if (existePilotoPorCorreo(correo)) {
+        throw new IllegalStateException("Ya existe un piloto con ese correo electrónico.");
+    }
+}
+
+
 
         private String procesarFecha(String fechaExcel) {
             if (fechaExcel == null || fechaExcel.isEmpty()) {

@@ -1,5 +1,7 @@
 package GestionDeUsuarios;
 
+import GestionDePilotos.GESTIONPILOTOS;
+import GestionDePilotos.Piloto;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
@@ -53,31 +55,55 @@ public class GESTIONUSUARIOS {
      * Agrega un nuevo usuario al sistema
      * @param usuario Usuario a agregar
      */
-    public void agregarUsuario(Usuarios usuario) {
-        this.usuarios.add(usuario);
+// Método para validar si el usuario existe en GESTIONPILOTOS
+    private boolean validarDuplicadosEnPilotos(Usuarios usuario) {
+        GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
+        gestionPilotos.cargarPilotosDesdeExcel(); // Cargar datos de pilotos
+
+        for (Piloto piloto : gestionPilotos.getPilotos()) {
+            if (piloto.getNumeroDeDpi() == usuario.getNumeroDPI() || 
+                piloto.getNumeroTelefonicoPiloto() == usuario.getNumeroTelefono() || 
+                piloto.getCorreoElectronicoPiloto().equalsIgnoreCase(usuario.getCorreoElectronico())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void agregarUsuario(Usuarios nuevoUsuario) {
+        // Validar que el usuario no esté duplicado en pilotos
+        if (validarDuplicadosEnPilotos(nuevoUsuario)) {
+            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de pilotos.");
+        }
+        
+        // Agregar el usuario si no existe
+        for (Usuarios usuario : usuarios) {
+            if (usuario.getNumeroDPI() == nuevoUsuario.getNumeroDPI()) {
+                throw new IllegalStateException("El usuario ya existe en el sistema.");
+            }
+        }
+        usuarios.add(nuevoUsuario);
         guardarUsuariosEnExcel();
     }
 
-    /**
-     * Actualiza un usuario existente o lo agrega si no existe
-     * @param usuarioActualizado Usuario con la información actualizada
-     */
     public void actualizarUsuario(Usuarios usuarioActualizado) {
-        boolean encontrado = false;
+        // Validar que el usuario no esté duplicado en pilotos
+        if (validarDuplicadosEnPilotos(usuarioActualizado)) {
+            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de pilotos.");
+        }
+
+        // Actualizar usuario
         for (int i = 0; i < usuarios.size(); i++) {
             if (usuarios.get(i).getNumeroDPI() == usuarioActualizado.getNumeroDPI()) {
                 usuarios.set(i, usuarioActualizado);
-                encontrado = true;
-                break;
+                guardarUsuariosEnExcel();
+                return;
             }
         }
-        if (!encontrado) {
-            usuarios.add(usuarioActualizado);
-        }   
-        guardarUsuariosEnExcel();
-        cargarUsuariosDesdeExcel();
+        throw new IllegalStateException("El usuario no existe.");
     }
 
+    
     /**
      * Elimina un usuario del sistema
      * @param dpi DPI del usuario a eliminar

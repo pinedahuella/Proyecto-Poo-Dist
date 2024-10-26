@@ -16,6 +16,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import javax.mail.util.ByteArrayDataSource;
+
+
 
 public class AGREGARGESTIONPILOTOS extends javax.swing.JFrame {
 
@@ -210,6 +223,100 @@ public void limpiarCampos() {
         });
     }
     
+private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+        
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("Bienvenido a PINEED - Información de Registro");
+        
+        // Create multipart message
+        Multipart multipart = new MimeMultipart("related");
+        
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        String nombreUsuario = piloto.getNombrePiloto().toLowerCase() + "." + 
+                             piloto.getApellidoPiloto().toLowerCase() + "@pineed";
+        
+        // Note el "cid:imagen" al final del HTML que hace referencia a la imagen
+        String contenido = "<html><body>" +
+            "<h2><strong>¡Bienvenido a PINEED!</strong></h2>" +
+            "<p>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
+            "<h3>Información del Registro:</h3>" +
+            "<p><strong>Nombre:</strong> " + piloto.getNombrePiloto() + "</p>" +
+            "<p><strong>Apellido:</strong> " + piloto.getApellidoPiloto() + "</p>" +
+            "<p><strong>DPI:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
+            "<p><strong>Tipo de Licencia:</strong> " + piloto.getTipoLicencia() + "</p>" +
+            "<p><strong>Correo Electrónico:</strong> " + piloto.getCorreoElectronicoPiloto() + "</p>" +
+            "<p><strong>Teléfono:</strong> " + piloto.getNumeroTelefonicoPiloto() + "</p>" +
+            "<p><strong>Género:</strong> " + piloto.getGeneroPiloto() + "</p>" +
+            "<p><strong>Fecha de Nacimiento:</strong> " + piloto.getFechaDeNacimiento() + "</p>" +
+            "<p><strong>Estado:</strong> " + piloto.getEstadoPiloto() + "</p>" +
+            "<h3>Información de Acceso al Sistema:</h3>" +
+            "<p><strong>Nombre de Usuario:</strong> " + nombreUsuario + "</p>" +
+            "<p><strong>Contraseña:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "</body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);  // Esto es importante para que se muestre en línea
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        
+        // Mostrar mensaje de confirmación y esperar respuesta del usuario
+        int option = JOptionPane.showConfirmDialog(this, 
+            "Se ha enviado un correo electrónico con los datos actualizados a: " + destinatario + "\n" +
+            "¿Recibió el correo correctamente?",
+            "Confirmación de Envío",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+            
+        if (option == JOptionPane.NO_OPTION) {
+            // Si el usuario indica que no recibió el correo, lanzar una excepción
+            throw new IOException("El usuario no recibió el correo correctamente. Por favor, intente nuevamente.");
+        }
+        
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
 
 
     private void cerrarSesionYSalir() {
@@ -223,7 +330,11 @@ public void limpiarCampos() {
     }
     
     
-    
+    private boolean esSoloLetras(String texto) {
+    // Expresión regular para letras solamente (incluyendo letras con acentos y ñ)
+    return texto.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+}
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -446,7 +557,7 @@ public void limpiarCampos() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoSistemaActionPerformed
-    try {
+   try {
         // Primero validar que ningún campo tenga su placeholder o esté vacío
         if (txtNombrePiloto.getText().equals("Ingrese el nombre") || txtNombrePiloto.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del piloto.");
@@ -460,6 +571,22 @@ public void limpiarCampos() {
             JOptionPane.showMessageDialog(this, "Por favor ingrese el número de DPI del piloto.");
             return;
         }
+        
+        if (!esSoloLetras(txtNombrePiloto.getText().trim())) {
+            JOptionPane.showMessageDialog(this, "El nombre solo debe contener letras.");
+            return;
+        }
+        
+        if (txtApellidoPiloto.getText().equals("Ingrese el apellido") || txtApellidoPiloto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el apellido del piloto.");
+            return;
+        }
+        if (!esSoloLetras(txtApellidoPiloto.getText().trim())) {
+            JOptionPane.showMessageDialog(this, "El apellido solo debe contener letras.");
+            return;
+        }
+        
+        
         if (txtCorreoElectronicoPiloto.getText().equals("Ingrese el correo electrónico") || txtCorreoElectronicoPiloto.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor ingrese el correo electrónico del piloto.");
             return;
@@ -476,21 +603,23 @@ public void limpiarCampos() {
         // Si pasa todas las validaciones, entonces proceder con la obtención de valores
         String nombrePiloto = txtNombrePiloto.getText().trim();
         String apellidoPiloto = txtApellidoPiloto.getText().trim();
-        long numeroDeDpiPiloto = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim());
+        long numeroDeDpiPiloto;
+        int numeroTelefonicoPiloto;
+        
+        try {
+            numeroDeDpiPiloto = Long.parseLong(txtNumeroDeDpiPiloto.getText().trim());
+            numeroTelefonicoPiloto = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El DPI y el número telefónico deben contener solo números.");
+            return;
+        }
+        
         String tipoLicencia = txtTipoDeLicenciaPiloto.getSelectedItem().toString().trim();
         String correoElectronicoPiloto = txtCorreoElectronicoPiloto.getText().trim();
-        int numeroTelefonicoPiloto = Integer.parseInt(txtNumeroTelefonicoPiloto.getText().trim());
         String generoPiloto = txtGeneroPiloto.getSelectedItem().toString().trim();
         String estadoPiloto = txtEstadoPiloto.getSelectedItem().toString().trim();
 
-        // Crear versiones sin tildes para validaciones si es necesario
-        String nombrePilotoSinTildes = removeTildes(nombrePiloto);
-        String apellidoPilotoSinTildes = removeTildes(apellidoPiloto);
-
-        Date fechaNacimientoPilotoDate = txtFechaDeNacimientoPiloto.getDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaDeNacimientoPiloto = sdf.format(fechaNacimientoPilotoDate);
-
+        // Validaciones de formato
         if (!correoElectronicoPiloto.endsWith("@gmail.com")) {
             JOptionPane.showMessageDialog(this, "El correo electrónico debe terminar en '@gmail.com'.");
             return;
@@ -506,23 +635,11 @@ public void limpiarCampos() {
             return;
         }
 
-        // Verificación de existencia de piloto
-        for (Piloto pilotoExistente : listaPilotos) {
-            if (pilotoExistente.getNumeroDeDpi() == numeroDeDpiPiloto) {
-                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
-                return;
-            }
-            if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonicoPiloto) {
-                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
-                return;
-            }
-            if (pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
-                JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
-                return;
-            }
-        }
+        Date fechaNacimientoPilotoDate = txtFechaDeNacimientoPiloto.getDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaDeNacimientoPiloto = sdf.format(fechaNacimientoPilotoDate);
 
-        // Crear un nuevo piloto y agregarlo usando los valores originales (con tildes)
+        // Crear el nuevo piloto
         Piloto nuevoPiloto = new Piloto();
         nuevoPiloto.setNombrePiloto(nombrePiloto);
         nuevoPiloto.setApellidoPiloto(apellidoPiloto);
@@ -535,22 +652,41 @@ public void limpiarCampos() {
         nuevoPiloto.setEstadoPiloto(estadoPiloto);
         nuevoPiloto.setActivo(true);
 
-        listaPilotos.add(nuevoPiloto);
-        gestionPilotos.actualizarPiloto(nuevoPiloto);
+        try {
+            // Intentar agregar el nuevo piloto
+            gestionPilotos.actualizarPiloto(nuevoPiloto);
+            
+            // Si llegamos aquí, el piloto se agregó exitosamente
+            cargarPilotosEnTabla();
+            limpiarCampos();
 
-        cargarPilotosEnTabla();
-        limpiarCampos();
+            JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.\n"
+                    + "En unos segundos se enviará un correo electrónico con los datos de acceso.\n"
+                    + "Espere por favor...");
+            
+            // Enviar correo y abrir nueva ventana
+            enviarCorreoActualizacion(correoElectronicoPiloto, nuevoPiloto);
+            INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false);
 
-        JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.");
+        } catch (IllegalStateException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
 
-        INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
-        abrir.setVisible(true);
-        this.setVisible(false);
-
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingrese números válidos en los campos numéricos.");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, 
+            "Error al enviar el correo de actualización: " + e.getMessage() +
+            "\nPor favor, intente nuevamente.",
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al agregar piloto: " + e.getMessage());
+        JOptionPane.showMessageDialog(this, 
+            "Error inesperado: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_btnAgregarPilotoSistemaActionPerformed
 

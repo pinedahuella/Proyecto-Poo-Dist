@@ -61,7 +61,11 @@ public class FramePlanillaSemanal extends javax.swing.JFrame {
     public FramePlanillaSemanal(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
         
-        
+        txtPequeñaDescripcionAgregar.setEnabled(true);
+txtPequeñaDescripcionAgregar.setEditable(true);
+txtDescripcionNuevaEntrada.setEnabled(true);
+txtDescripcionNuevaEntrada.setEditable(true);
+
         // Show or hide the button based on user role
 if (role.equalsIgnoreCase("ADMINISTRADOR")) {
     txtReactivarTrabajadorEliminado.setVisible(true); // Show the button for ADMINISTRADOR

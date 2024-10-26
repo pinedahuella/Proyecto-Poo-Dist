@@ -21,6 +21,19 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import javax.mail.util.ByteArrayDataSource;
+
+
 
 public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
 
@@ -194,6 +207,98 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
     }
     
 
+private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+        
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("PINEED - Actualización de Información");
+        
+        // Create multipart message
+        Multipart multipart = new MimeMultipart("related");
+        
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        // Note el "cid:imagen" al final del HTML que hace referencia a la imagen
+        String contenido = "<html><body>" +
+            "<h2><strong>Actualización de Datos en PINEED</strong></h2>" +
+            "<p>Sus datos han sido actualizados exitosamente en nuestro sistema.</p>" +
+            "<h3>Información Actualizada:</h3>" +
+            "<p><strong>Nombre:</strong> " + usuario.getNombre() + "</p>" +
+            "<p><strong>Apellido:</strong> " + usuario.getApellido() + "</p>" +
+            "<p><strong>DPI:</strong> " + usuario.getNumeroDPI() + "</p>" +
+            "<p><strong>Cargo:</strong> " + usuario.getCargo() + "</p>" +
+            "<p><strong>Correo Electrónico:</strong> " + usuario.getCorreoElectronico() + "</p>" +
+            "<p><strong>Teléfono:</strong> " + usuario.getNumeroTelefono() + "</p>" +
+            "<p><strong>Género:</strong> " + usuario.getGenero() + "</p>" +
+            "<p><strong>Fecha de Nacimiento:</strong> " + usuario.getFechaNacimiento() + "</p>" +
+            "<p><strong>Estado:</strong> " + usuario.getEstado() + "</p>" +
+            "<h3>Información de Acceso al Sistema:</h3>" +
+            "<p><strong>Nombre de Usuario:</strong> " + usuario.getNombreUsuario() + "</p>" +
+            "<p><strong>Contraseña:</strong> " + usuario.getContrasenaUsuario() + "</p>" +
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "</body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        
+        // Mostrar mensaje de confirmación y esperar respuesta del usuario
+        int option = JOptionPane.showConfirmDialog(this, 
+            "Se ha enviado un correo electrónico con los datos actualizados a: " + destinatario + "\n" +
+            "¿Recibió el correo correctamente?",
+            "Confirmación de Envío",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+            
+        if (option == JOptionPane.NO_OPTION) {
+            // Si el usuario indica que no recibió el correo, lanzar una excepción
+            throw new IOException("El usuario no recibió el correo correctamente. Por favor, intente nuevamente.");
+        }
+        
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
 
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
@@ -204,6 +309,12 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
         nuevaLoginFrame.setVisible(true);
         this.dispose();
     }
+    
+    
+    private boolean esNombreValido(String nombre) {
+    // Expresión regular para validar que el nombre solo contenga letras y espacios
+    return nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+}
     
     
     @SuppressWarnings("unchecked")
@@ -484,6 +595,24 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
             return;
         }
 
+            // Validar que nombre y apellido no estén vacíos
+        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre y apellido son obligatorios.");
+            return;
+        }
+        
+        
+             // Validar que el nombre y apellido no contengan números
+        if (!esNombreValido(nombreUsuario)) {
+            JOptionPane.showMessageDialog(this, "El nombre no puede contener números o caracteres especiales.");
+            return;
+        }
+
+        if (!esNombreValido(apellidoUsuario)) {
+            JOptionPane.showMessageDialog(this, "El apellido no puede contener números o caracteres especiales.");
+            return;
+        }
+        
         // Obtener el nombre de usuario ingresado
         String nombreDeUsuario = txtNombreDeUsuarioUsuarioModificarModificar.getText().trim().toLowerCase();
         
@@ -560,29 +689,29 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
         }
 
         // Verificar si los datos únicos han cambiado
-        boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
-        boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
-        boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
+boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
+boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
+boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
 
-        // Verificar duplicados solo si los datos únicos han cambiado
-        for (Usuarios usuarioExistente : listaUsuarios) {
-            if (usuarioExistente != usuarioActual) {
-                if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
-                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
-                    return;
-                }
-                if (telefonoCambiado && usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) {
-                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
-                    return;
-                }
-                if (correoCambiado && usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
-                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
-                    return;
-                }
-            }
+// Verificar duplicados solo si los datos únicos han cambiado
+for (Usuarios usuarioExistente : listaUsuarios) {
+    if (usuarioExistente != usuarioActual) { // Asegúrate de no comparar el usuario actual
+        if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
+            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+            return;
         }
+        if (telefonoCambiado && usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) {
+            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+            return;
+        }
+        if (correoCambiado && usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
+            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+            return;
+        }
+    }
+}
 
-        // Actualizar los datos del usuario
+                // Actualizar los datos del usuario
         usuarioActual.setNombreUsuario(nombreDeUsuario);
         usuarioActual.setContrasenaUsuario(contrasenaUsuario);
         usuarioActual.setNombre(nombreUsuario);
@@ -597,13 +726,33 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
 
         gestionUsuarios.actualizarUsuario(usuarioActual);
 
-        JOptionPane.showMessageDialog(this, "Usuario modificado exitosamente.");
+        // Mostrar mensaje de modificación exitosa y espera
+        JOptionPane.showMessageDialog(this, 
+            "Usuario modificado exitosamente.\n" +
+            "En unos segundos se enviará un correo electrónico con los datos actualizados.\n" +
+            "Espere por favor...",
+            "Modificación Exitosa",
+            JOptionPane.INFORMATION_MESSAGE);
 
+        // Actualizar la tabla principal pero mantener esta ventana abierta
         ventanaPrincipal.actualizarTabla();
-        ventanaPrincipal.setVisible(true);
-        this.dispose();
+        
+        // Enviar el correo
+        try {
+            enviarCorreoActualizacion(correoElectronicoUsuario, usuarioActual);
+            // Solo después de que el correo se envíe exitosamente y el usuario confirme,
+            // cerrar esta ventana y mostrar la ventana principal
+            ventanaPrincipal.setVisible(true);
+            this.dispose();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al enviar el correo de actualización: " + e.getMessage() +
+                "\nPor favor, intente nuevamente.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
 
-    } catch (NumberFormatException e) {
+   } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al modificar usuario: " + e.getMessage());
