@@ -1423,7 +1423,7 @@ private void cerrarSesionYRegresarLogin() {
         String newdescripcion = txtDescripcionDelClienteAñadir.getText();
         
         //preguntamos si la informacion no esta vacia
-        if (!newname.equals("") && !newdescripcion.equals("")) {
+        if (!newname.equals("") && !newdescripcion.equals("") && !newname.equals("Ingrese el nombre del cliente") && !newdescripcion.equals("Ingrese la descripción del cliente")) {
             
             //creamos el vector vacio
             Vector<Integer> vectorvacio = new Vector<>();
@@ -1451,10 +1451,19 @@ private void cerrarSesionYRegresarLogin() {
                 tablaClientes.setRowSelectionInterval(indiceTablaCliente, indiceTablaCliente);
             }
             
+            
+            
             //mostramos mensaje de que fue añadido el cliente
             //mostramos mesaje 
             JOptionPane.showMessageDialog(null, "Cliente añadido exitosamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
        
+            String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameClientes abrir = new  FrameClientes(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
             
         }else{
             //mostramos mesaje 
@@ -1473,7 +1482,7 @@ private void cerrarSesionYRegresarLogin() {
         String newdescripcion = txtDescripcionDelClienteModificar.getText();
         
         //preguntamos si la informacion no esta vacia
-        if (!newname.equals("") && !newdescripcion.equals("")) {
+        if (!newname.equals("") && !newdescripcion.equals("") && !newname.equals("Ingrese el nombre del cliente") && !newdescripcion.equals("Ingrese la descripción del cliente")) {
 
             //modificamos el vector el cliente al vector de clientes y guardanos en el excel
             gesclientes.modificarInformacionGeneral(indiceGeneralClientes, newname, newdescripcion);
@@ -1757,6 +1766,7 @@ private void cerrarSesionYRegresarLogin() {
 
         FrameHistorialClientes abrir = new FrameHistorialClientes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_txtHistorialClientesEliminadosActionPerformed
 
     //creamos el bucle infinito
@@ -1776,11 +1786,14 @@ private void cerrarSesionYRegresarLogin() {
             //preguntamos si el indice actual y el general son diferente y mayores a -1
              if (indiceSeleccionadoClientes != indiceGeneralClientes &&  indiceSeleccionadoClientes > -1) {
                  
+                 
                  //indice de la tabla
                  indiceTablaCliente = tablaClientes.getSelectedRow();
 
                  //igualamos el indice general al seleccionado
                  indiceGeneralClientes = indiceSeleccionadoClientes;
+                 
+                 System.out.println(indiceGeneralClientes);
                  
                  //mostramos la informacion necesaria en los campos de visualizacion
                  txtNombreDelClienteModificar.setText(vectorclientes.get(indiceGeneralClientes).getNombre());

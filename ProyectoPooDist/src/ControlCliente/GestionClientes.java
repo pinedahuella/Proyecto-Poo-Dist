@@ -140,10 +140,13 @@ public class GestionClientes {
 
                 // Escribir los pares de productos y cantidades
                 int cellNum = 2;
+                
+
                 for (int i = 0; i < cliente.getIndiceProducto().size(); i++) {
                     rowProductos.createCell(cellNum++).setCellValue(cliente.getIndiceProducto().get(i));
                     rowProductos.createCell(cellNum++).setCellValue(cliente.getIndiceCantidad().get(i));
-                }
+                } 
+                
 
                 // Crear la fila para los créditos
                 Row rowCreditos = sheet.createRow(rowNum++);

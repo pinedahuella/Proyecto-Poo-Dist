@@ -81,7 +81,7 @@ public class FrameVentaDiaria extends javax.swing.JFrame {
 if (role.equalsIgnoreCase("ADMINISTRADOR")) {
     txtHistorialVentas.setVisible(true); // Show the button for ADMINISTRADOR
 } else if (role.equalsIgnoreCase("SECRETARIA")) {
-    txtHistorialVentas.setVisible(false); // Hide the button for SECRETARIA
+    txtHistorialVentas.setVisible(true); // Hide the button for SECRETARIA
 } else {
     // Optionally, you can set the default visibility for other roles
     txtHistorialVentas.setVisible(false); // Hide for all other roles

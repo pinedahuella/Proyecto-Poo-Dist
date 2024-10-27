@@ -1625,10 +1625,15 @@ private boolean isCamionDisponible(int indiceCamion) {
 
                                 //asignamos el valor a las variables
                                 cantidadDeProducto = Integer.parseInt((String) tablaProductosB.getValueAt(i, 1));
+                                
+                                System.out.println(cantidadDeProducto);
 
-                                gesproductos.setCantidad(i, cantidadDeProducto, "+");                               
+                                gesproductos.setCantidad(i, cantidadDeProducto, "+");     
+                                System.out.println(gesproductos.getProductos().get(i).getExistencias());
 
                             }
+                            
+                            System.out.println("cantidades eliminadas");
                             
                             gesproductos.getCargarInvetarioExcel();
                         }

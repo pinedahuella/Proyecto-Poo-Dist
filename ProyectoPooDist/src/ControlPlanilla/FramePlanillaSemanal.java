@@ -1392,7 +1392,7 @@ private void cerrarSesionYRegresarLogin() {
         int newsemanas = 0;
         String newDescripcion = txtPequeñaDescripcionAgregar.getText();
         
-        if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newsalario > 0) {
+        if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newsalario > 0 && !newnombre.equals("Ingrese nombre del trabajador") && !newDescripcion.equals("Ingrese una pequeña descripción")) {
                    //crearemos el objeto trabajador provisional
         FichaTrabajador newTrabajador = new FichaTrabajador(newnombre, newDescripcion, newsalario, newsemanas);
         
@@ -1465,7 +1465,7 @@ private void cerrarSesionYRegresarLogin() {
                 float newSalario = Float.parseFloat(txtSalarioSemanalModificado.getText());
                 float salarioAntiguo = gTrabajadores.getSalariTotalEnNumeros(indiceActual);
                 
-                if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newSalario > 0 && newSalario > salarioAntiguo) {
+                if (!newnombre.isEmpty() && !newDescripcion.isEmpty() && newSalario > 0 && newSalario > salarioAntiguo && !newnombre.equals("Ingrese nombre del trabajador") && !newDescripcion.equals("Ingrese una pequeña descripción")) {
 
                 //indiceActual
 
@@ -1540,7 +1540,7 @@ private void cerrarSesionYRegresarLogin() {
                                 //primero obtenemos los datos de la entrada
                 String newEntrada = txtRazon.getText();
                 
-                if (!newEntrada.isEmpty()) {
+                if (!newEntrada.isEmpty() && !newEntrada.equals("Ingrese la descripción nueva entrada")) {
                 float newValorEntrada = Float.parseFloat(txtValorDeLaEntrada.getText()); 
                         
                 String operacion = comboOperacionEntrada.getSelectedItem().toString();
@@ -1723,6 +1723,7 @@ private void cerrarSesionYRegresarLogin() {
 
         FrameHistorialTrabajadores abrir = new FrameHistorialTrabajadores(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_txtReactivarTrabajadorEliminadoActionPerformed
 
     /**
