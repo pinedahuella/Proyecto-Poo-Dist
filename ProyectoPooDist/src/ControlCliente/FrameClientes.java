@@ -1451,10 +1451,19 @@ private void cerrarSesionYRegresarLogin() {
                 tablaClientes.setRowSelectionInterval(indiceTablaCliente, indiceTablaCliente);
             }
             
+            
+            
             //mostramos mensaje de que fue añadido el cliente
             //mostramos mesaje 
             JOptionPane.showMessageDialog(null, "Cliente añadido exitosamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
        
+            String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        FrameClientes abrir = new  FrameClientes(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
             
         }else{
             //mostramos mesaje 
@@ -1776,11 +1785,14 @@ private void cerrarSesionYRegresarLogin() {
             //preguntamos si el indice actual y el general son diferente y mayores a -1
              if (indiceSeleccionadoClientes != indiceGeneralClientes &&  indiceSeleccionadoClientes > -1) {
                  
+                 
                  //indice de la tabla
                  indiceTablaCliente = tablaClientes.getSelectedRow();
 
                  //igualamos el indice general al seleccionado
                  indiceGeneralClientes = indiceSeleccionadoClientes;
+                 
+                 System.out.println(indiceGeneralClientes);
                  
                  //mostramos la informacion necesaria en los campos de visualizacion
                  txtNombreDelClienteModificar.setText(vectorclientes.get(indiceGeneralClientes).getNombre());
