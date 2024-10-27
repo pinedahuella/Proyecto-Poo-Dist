@@ -150,6 +150,7 @@ public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
     txtModificarViajes.setVisible(false);
         txtEliminarViaje.setVisible(false);
     txtModificarViajes.setVisible(false);
+    jLabel16.setVisible(false);
 
         
     //ocultamos el radio button de finalizar un pedido
@@ -2019,144 +2020,120 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
 
 
     private void txtAgregarFechaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtAgregarFechaMouseClicked
-   // Confirmación inicial
-    int confirmacion = JOptionPane.showConfirmDialog(null,
-        "¿Está seguro de que desea agregar este viaje?\nEl envío del correo puede tomar unos segundos.",
-        "Confirmar agregar viaje",
-        JOptionPane.YES_NO_OPTION);
-
-    if (confirmacion != JOptionPane.YES_OPTION) {
-        return;
-    }
-
-    // Mensaje modal para bloquear la interfaz durante el procesamiento
-    JDialog dialogoEspera = new JDialog();
-    dialogoEspera.setModal(true);
-    dialogoEspera.setUndecorated(true);
-    dialogoEspera.add(new JLabel("Procesando su solicitud y enviando correo...  \nPor favor espere.", SwingConstants.CENTER));
-    dialogoEspera.setSize(500, 50);
-    dialogoEspera.setLocationRelativeTo(null);
-
-    // Iniciar el envío en un nuevo hilo
-    new Thread(() -> {
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        Date newFechaCarga = txtFechaDeCargaAgregar.getDate();
-        Date newFechaDescarga = txtFechaDeDescargaAgregar.getDate();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        Date fechaActualMenosUnDia = calendar.getTime();
-
-        try {
-            int newIndicePiloto = comboPilotosB.getSelectedIndex();
-            if (!isPilotoDisponible(newIndicePiloto)) {
-                return;
-            }
-
-            int newIndiceCamion = comboCamionesB.getSelectedIndex();
-            if (!isCamionDisponible(newIndiceCamion)) {
-                return;
-            }
-
-            // Verificar que las fechas no sean anteriores a la fecha actual menos un día
-            if (newFechaCarga != null && newFechaDescarga != null &&
-                !newFechaCarga.before(fechaActualMenosUnDia) &&
-                !newFechaDescarga.before(fechaActualMenosUnDia) &&
-                (newFechaDescarga.after(newFechaCarga) || newFechaDescarga.equals(newFechaCarga))) {
-
-                boolean newcompra = comboTViajeB.getSelectedItem().equals("Pedido para Distribuidora");
-
-                Vector<Integer> newIndiceProducto = new Vector<>();
-                Vector<Integer> newIndiceCantidad = new Vector<>();
-
-                for (int i = 0; i < tablaProductosB.getRowCount(); i++) {
-                    try {
-                        int cantidadDeProducto = Integer.parseInt((String) tablaProductosB.getValueAt(i, 1));
-                        if (cantidadDeProducto > 0) {
-                            newIndiceProducto.add(i);
-                            newIndiceCantidad.add(cantidadDeProducto);
-                        }
-                    } catch (NumberFormatException e) {
-                        continue;
-                    }
-                }
-
-                if (!newIndiceProducto.isEmpty()) {
-                    contadorViajes++;
-                    guardarContadorViajes();
-
-                    FechaCalendario newFecha = new FechaCalendario(newFechaCarga, newFechaDescarga,
-                        newIndicePiloto, newIndiceCamion, newIndiceProducto, newIndiceCantidad, true, newcompra);
-
-                    gescalendario.agregarFecha(newFecha);
-
-                    Vector<Piloto> pilotos = gespilotos.getPilotos();
-                    if (newIndicePiloto >= 0 && newIndicePiloto < pilotos.size()) {
-                        Piloto pilotoSeleccionado = pilotos.get(newIndicePiloto);
-
-                        if (pilotoSeleccionado.getCorreoElectronicoPiloto() != null &&
-                            !pilotoSeleccionado.getCorreoElectronicoPiloto().trim().isEmpty()) {
-
-                            Vector<Camiones> camiones = gescamiones.getCamiones();
-                            if (newIndiceCamion >= 0 && newIndiceCamion < camiones.size()) {
-                                Camiones camionSeleccionado = camiones.get(newIndiceCamion);
-
-                                try {
-                                    String tripDetails = buildTripEmailContent(newFechaCarga, newFechaDescarga,
-                                        newcompra, tablaProductosB, "agregado", camionSeleccionado);
-
-                                    enviarCorreoViaje(pilotoSeleccionado.getCorreoElectronicoPiloto(),
-                                        pilotoSeleccionado, tripDetails);
-                                } catch (IOException e) {
-                                    System.err.println("Error al enviar correo: " + e.getMessage());
-                                    JOptionPane.showMessageDialog(null,
-                                        "El viaje se creó correctamente pero hubo un error al enviar el correo de notificación.",
-                                        "Advertencia", JOptionPane.WARNING_MESSAGE);
-                                }
-                            }
-                        }
-                    }
-
-                    ActualizarCalendario();
-                    ActualizarComboListaPedidos();
-                    ActualizarTablaB();
-
-                    if (indiceActual > -1) {
-                        colorearFecha(FechaTablaNew.get(0).getFechaC(), pastelBlue);
-                        colorearFecha(FechaTablaNew.get(0).getFechaD(), pastelBlue);
-                    }
-
-                    comboPilotosB.setSelectedIndex(0);
-                    comboCamionesB.setSelectedIndex(0);
-                    comboTViajeB.setSelectedIndex(0);
-
-                    gescalendario.guardarFecharExcel();
-
-                    JOptionPane.showMessageDialog(null,
-                        "Viaje agregado correctamente.\nCorreo enviado con éxito.",
-                        "Éxito",
-                        JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                        "Ingresa al menos un producto", "Advertencia",
-                        JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null,
-                "Ingresa cantidad válida", "Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                "Error inesperado: " + e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-        } finally {
-            dialogoEspera.dispose();  // Cerrar el diálogo de espera al finalizar
+   SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    Date newFechaCarga = txtFechaDeCargaAgregar.getDate();
+    Date newFechaDescarga = txtFechaDeDescargaAgregar.getDate();
+    
+    // Obtener la fecha actual
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.DAY_OF_MONTH, -1);
+    Date fechaActualMenosUnDia = calendar.getTime();
+    
+    try {
+        // Primero verificamos si el piloto está disponible
+        int newIndicePiloto = comboPilotosB.getSelectedIndex();
+        if (!isPilotoDisponible(newIndicePiloto)) {
+            return; // Si el piloto no está disponible, terminamos la ejecución
         }
-    }).start();
+        
+            int newIndiceCamion = comboCamionesB.getSelectedIndex();
+        if (!isCamionDisponible(newIndiceCamion)) {
+        return;
+        }
+        //verifica que las fechas sean validas
+        if (newFechaCarga != null && newFechaDescarga != null && 
+            !newFechaCarga.before(fechaActualMenosUnDia) && 
+            !newFechaDescarga.before(fechaActualMenosUnDia) && 
+            !newFechaDescarga.before(newFechaCarga)) {
 
-    dialogoEspera.setVisible(true);  // Mostrar el diálogo de espera y bloquear la interfaz 
+            //miramos si el viaje es una compra o una venta
+            boolean newcompra;
+            
+            if (comboTViajeB.getSelectedItem().equals("Pedido para Distribuidora")) {
+                newcompra = true;
+            }else{
+                newcompra = false;
+            }
+            
+            //creamos los vectores que tengas los indices de los productos
+            Vector<Integer> newIndiceProducto = new Vector<>();
+            Vector<Integer> newIndiceCantidad = new Vector<>();
+            
+            //recoremos las tabla B para ver cuantos productos forman parte del viaje
+            for (int i = 0; i < tablaProductosB.getRowCount(); i++) {
+                
+                //definimos las variables a utilizar
+                int cantidadDeProducto = 0;     
+                Object value = tablaProductosB.getValueAt(i, 1);
+                
+                //asignamos el valor a las variables
+                cantidadDeProducto = Integer.parseInt((String) tablaProductosB.getValueAt(i, 1));
+               
+                
+                //verificamos si la cantidad es superior a cero
+                if (cantidadDeProducto > 0) {
+                    newIndiceProducto.add(i);
+                    newIndiceCantidad.add(cantidadDeProducto);
+                }
+                
+            }
+            
+                            
+            //verificamos que los vectores no esten vacios
+            if (!newIndiceProducto.isEmpty()) {
+                //creamos la fecha nueva
+                FechaCalendario newFecha = new FechaCalendario(newFechaCarga, newFechaDescarga, newIndicePiloto, newIndiceCamion, newIndiceProducto, newIndiceCantidad, true, newcompra);
+                
+                //la agregamos a la lista de fechas
+                gescalendario.agregarFecha(newFecha);
+                
+                System.out.println("se ha creado la fecha correctamente");
+                
+                //actualizamos el calendario 
+                ActualizarCalendario();
+                
+                //actualizamos el combo box
+                ActualizarComboListaPedidos();
+                
+                //reiniciamos todos los elemento necesario
+                ActualizarTablaB();
+                
+                //preguntamos si el indice anterior es superior de -1
+                 if (indiceActual > -1) {
+                    
+                    //pintamos la fecha seleccionada en azul
+                    colorearFecha(FechaTablaNew.get(0).getFechaC(), pastelBlue);
+                    colorearFecha(FechaTablaNew.get(0).getFechaD(), pastelBlue);
+                 }
+                
+                comboPilotosB.setSelectedIndex(0);
+                comboCamionesB.setSelectedIndex(0);
+                
+                comboTViajeB.setSelectedIndex(0);
+                
+                //cargamos los datos en el excel
+                gescalendario.guardarFecharExcel();
+                
+                //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "Datos agregados de forma correcta", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+  
+
+            }else{
+               //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "Ingresa al menos un producto ", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+            }
+            
+        }else{
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa fecha Valida", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }  
+            
+        } catch (NumberFormatException e) {
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }
     
     }//GEN-LAST:event_txtAgregarFechaMouseClicked
 
@@ -2165,154 +2142,205 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
     }//GEN-LAST:event_radioFinalizarViajeActionPerformed
 
     private void txtModificarViajesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtModificarViajesMouseClicked
-int respuesta = JOptionPane.showConfirmDialog(this, 
-        "¿Está seguro de que desea modificar el viaje?", 
-        "Confirmar Modificación", 
-        JOptionPane.YES_NO_OPTION);
-
-    if (respuesta == JOptionPane.YES_OPTION) {
-        // Diálogo de espera para bloquear la interfaz durante el procesamiento
-        JDialog dialogoEspera = new JDialog();
-        dialogoEspera.setModal(true);
-        dialogoEspera.setUndecorated(true);
-        dialogoEspera.add(new JLabel("Procesando su solicitud y enviando correo...  \nPor favor espere.", SwingConstants.CENTER));
-        dialogoEspera.setSize(500, 50);
-        dialogoEspera.setLocationRelativeTo(null);
+            
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+    
+    Date newFechaCarga = txtFechaDeCargaViaje.getDate();
+    Date newFechaDescarga = txtFechaDeDescargaViaje.getDate();
+    
+    try {
+        // Primero verificamos si el piloto está disponible
+        int newIndicePiloto = comboPilotosA.getSelectedIndex();
+        if (!isPilotoDisponible(newIndicePiloto)) {
+            return; // Si el piloto no está disponible, terminamos la ejecución
+        }
         
-        // Iniciar el proceso de modificación en un nuevo hilo
-        new Thread(() -> {
-            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-            Date newFechaCarga = txtFechaDeCargaViaje.getDate();
-            Date newFechaDescarga = txtFechaDeDescargaViaje.getDate();
+        
+        int newIndiceCamion = comoboCamionesA.getSelectedIndex();
+        if (!isCamionDisponible(newIndiceCamion)) {
+        return;
+        }
+        
+        Date fechaAntigua = new Date();
+        Date nuevaFecha = new Date();
+        
+        if (indiceActual > -1) {
+            //fecha antigua
+        fechaAntigua = FechaTablaNew.get(indiceActual).getFechaC();
 
-            // Obtener la fecha actual menos un día
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.DAY_OF_MONTH, -1);
-            Date fechaActualMenosUnDia = calendar.getTime();
-
-            try {
-                // Verificar disponibilidad del piloto
-                int newIndicePiloto = comboPilotosA.getSelectedIndex();
-                if (!isPilotoDisponible(newIndicePiloto)) {
-                    JOptionPane.showMessageDialog(this, "El piloto no está disponible.", "Error de Disponibilidad", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Verificar disponibilidad del camión
-                int newIndiceCamion = comoboCamionesA.getSelectedIndex();
-                if (!isCamionDisponible(newIndiceCamion)) {
-                    JOptionPane.showMessageDialog(this, "El camión no está disponible.", "Error de Disponibilidad", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Verificar que las fechas sean válidas
-                if (newFechaCarga != null && newFechaDescarga != null && 
-                    indiceActual > -1 && 
-                    !newFechaCarga.before(fechaActualMenosUnDia) && 
-                    !newFechaDescarga.before(fechaActualMenosUnDia) && 
-                    !newFechaDescarga.before(newFechaCarga)) {
-
-                    Date oldFechaCarga = FechaTablaNew.get(indiceActual).getFechaC();
-                    Date oldFechaDescarga = FechaTablaNew.get(indiceActual).getFechaD();
-                    boolean newcompra = ComboTViajeA.getSelectedItem().equals("Pedido para Distribuidora");
-                    boolean pedidoActivo = !radioFinalizarViaje.isSelected();
-
-                    Vector<Integer> newIndiceProducto = new Vector<>();
-                    Vector<Integer> newIndiceCantidad = new Vector<>();
-                    boolean todasCantidadesCero = true;
-
-                    // Verificar cantidades y construir vectores
-                    for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
-                        int cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
-                        if (cantidadDeProducto > 0) {
-                            todasCantidadesCero = false;
-                        }
-                        newIndiceProducto.add(i);
-                        newIndiceCantidad.add(cantidadDeProducto);
-                    }
-
-                    // Crear nueva fecha de calendario
-                    FechaCalendario newFecha = new FechaCalendario(newFechaCarga, newFechaDescarga,
-                            newIndicePiloto, newIndiceCamion, newIndiceProducto, newIndiceCantidad, 
-                            pedidoActivo, newcompra);
-                    
-                    // Modificar la fecha en el calendario
-                    gescalendario.modificarFecha(indiceActual, newFecha);
-
-                    // Actualizar visualización del calendario
-                    colorearFecha(oldFechaCarga, defaultButtonGray);
-                    colorearFecha(oldFechaDescarga, defaultButtonGray);
-                    ActualizarCalendario();
-                    colorearFecha(newFechaCarga, pastelBlue);
-                    colorearFecha(newFechaDescarga, pastelBlue);
-
-                    if (!pedidoActivo) {
-                        txtModificarViajes.setVisible(false);
-                        radioFinalizarViaje.setVisible(false);
-                    }
-
-                    // Actualizar inventario si es necesario
-                    if (!todasCantidadesCero) {
-                        String operacion = (pedidoActivo == false && newcompra) ? "+" : "-";
-                        for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
-                            int cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
-                            gesproductos.setCantidad(i, cantidadDeProducto, operacion);
-                        }
-                    }
-                    
-                    // Guardar cambios
-                    gesproductos.getCargarInvetarioExcel();
-                    gescalendario.guardarFecharExcel();
-
-                    // Obtener detalles del camión
-                    Vector<Camiones> camiones = gescamiones.getCamiones();
-                    Camiones camionSeleccionado = null;
-                    if (newIndiceCamion >= 0 && newIndiceCamion < camiones.size()) {
-                        camionSeleccionado = camiones.get(newIndiceCamion);
-                    }
-
-                    // Construir detalles del viaje para el correo
-                    String tripDetails = buildTripEmailContent(oldFechaCarga, oldFechaDescarga, tablaProductosA, 
-                                                                newFechaCarga, newFechaDescarga, newcompra, 
-                                                                tablaProductosA, "modificado", camionSeleccionado);
-
-                    // Enviar correo al piloto
-                    Vector<Piloto> pilotos = gespilotos.getPilotos();
-                    if (newIndicePiloto >= 0 && newIndicePiloto < pilotos.size()) {
-                        Piloto pilotoSeleccionado = pilotos.get(newIndicePiloto);
-                        if (pilotoSeleccionado.getCorreoElectronicoPiloto() != null && 
-                            !pilotoSeleccionado.getCorreoElectronicoPiloto().isEmpty()) {
-                            enviarCorreoViaje(pilotoSeleccionado.getCorreoElectronicoPiloto(), pilotoSeleccionado, tripDetails);
-                        }
-                    }
-
-                    // Mensaje de éxito
-                    JOptionPane.showMessageDialog(null, 
-                        "Viaje modificado correctamente.\nCorreo enviado con éxito.", 
-                        "Éxito", 
-                        JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, 
-                        "Fechas no válidas. Asegúrese de que la fecha de carga sea anterior a la de descarga y que ambas sean mayores a la fecha actual menos un día.", 
-                        "Error de Fechas", 
-                        JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, 
-                    "Ingresa cantidad válida", "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, 
-                    "Error inesperado: " + e.getMessage(), "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            } finally {
-                dialogoEspera.dispose();  // Cerrar el diálogo de espera al finalizar
+                
+                // Crear una instancia de Calendar y establecer la fechaAntigua
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaAntigua);
+        // Restar un día
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        // Obtener la nueva fecha
+        nuevaFecha = calendar.getTime();
+        }
+ 
+        
+        //verifica que las fechas sean validas
+        if (newFechaCarga != null && newFechaDescarga != null && 
+            indiceActual > -1 && !newFechaDescarga.before(newFechaCarga) && nuevaFecha.before(newFechaCarga) && nuevaFecha.before(newFechaDescarga)) {
+            
+  
+            
+            //leemos las fechas antiguas
+            Date oldFechaCarga = FechaTablaNew.get(indiceActual).getFechaC();
+            Date oldFechaDescarga = FechaTablaNew.get(indiceActual).getFechaD();
+            
+            
+            //miramos si el viaje es una compra o una venta
+            boolean newcompra;
+            
+            //preguntamo si el pedido estara activo pedido activo
+            boolean pedidoActivo = !radioFinalizarViaje.isSelected();
+            
+            if (ComboTViajeA.getSelectedItem().equals("Pedido para Distribuidora")) {
+                newcompra = true;
+            }else{
+                newcompra = false;
             }
-        }).start();
+            
+            //creamos los vectores que tengas los indices de los productos
+            Vector<Integer> newIndiceProducto = new Vector<>();
+            Vector<Integer> newIndiceCantidad = new Vector<>();
+            
+            //recoremos las tabla B para ver cuantos productos forman parte del viaje
+            for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+                
+                //definimos las variables a utilizar
+                int cantidadDeProducto = 0;     
+                Object value = tablaProductosA.getValueAt(i, 1);
+                
+                //asignamos el valor a las variables
+                cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+               
+                
+                //verificamos si la cantidad es superior a cero
+                if (cantidadDeProducto > 0) {
+                    newIndiceProducto.add(i);
+                    newIndiceCantidad.add(cantidadDeProducto);
+                }
+                
+            }
+            
+            
+            //vamos a hacer un bucle y una variable que nos ayude a identificar si hay suficientes existencias para completar un viaje de cliente
+            boolean ViajeDeCliente = true;
+            
+            if (pedidoActivo == false && newcompra == false) {
+                //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
 
-        dialogoEspera.setVisible(true);  // Mostrar el diálogo de espera y bloquear la interfaz
-    }
+                    //definimos las variables a utilizar
+                    int cantidadDeProducto = 0;
+
+                    //asignamos el valor a las variables
+                   cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+                   
+                    if (cantidadDeProducto > productosTablaNew.get(i).getExistencias() ) {
+                        ViajeDeCliente = false;
+                    }
+                }
+           }
+            
+            if (ViajeDeCliente == true) {
+                //verificamos que los vectores no esten vacios
+               if (!newIndiceProducto.isEmpty()) {
+                   //creamos la fecha nueva
+                   FechaCalendario newFecha = new FechaCalendario(newFechaCarga, newFechaDescarga, newIndicePiloto, newIndiceCamion, newIndiceProducto, newIndiceCantidad, pedidoActivo, newcompra);
+
+                   //la agregamos a la lista de fechas
+                   gescalendario.modificarFecha(indiceActual, newFecha);
+
+                   System.out.println("se ha creado la fecha correctamente");
+
+                   //pintamos la fecha seleccionada otra vez en gris
+                   colorearFecha(oldFechaCarga, defaultButtonGray);
+                   colorearFecha(oldFechaDescarga, defaultButtonGray);        
+
+                   //actualizamos el calendario 
+                   ActualizarCalendario();
+
+                   //pintamos la fecha seleccionada en azul
+                   colorearFecha(newFechaCarga, pastelBlue);
+                   colorearFecha(newFechaDescarga, pastelBlue);
+
+
+                   //preguntamos si el viaje fue cancelado para ocualtar los botones d editar
+                   if (pedidoActivo == false) {
+                       //ocultamos el boton de modificar un viaje
+                       txtModificarViajes.setVisible(false);
+                       //ocultamos el radio button de finalizar un pedido
+                       radioFinalizarViaje.setVisible(false);
+                       //ocultamos el boton de eliminar
+                       txtEliminarViaje.setVisible(false);
+                   }
+
+
+                    //ahora vamos a preguntar si el pedido fue cancelado para sumarle las cantidades al inventario de quintales
+                    if (pedidoActivo == false && newcompra == true) {
+                           //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                           for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+
+                               //definimos las variables a utilizar
+                               int cantidadDeProducto = 0;   
+
+                               //asignamos el valor a las variables
+                               cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+
+                               gesproductos.setCantidad(i, cantidadDeProducto, "+");                               
+
+                           }
+
+                           gesproductos.getCargarInvetarioExcel();
+                    }
+                    
+                    //ahora vamos a preguntar si el pedido fue cancelado para sumarle las cantidades al inventario de quintales
+                    if (pedidoActivo == false && newcompra == false) {
+                           //recoremos las tabla B para ver cuantos productos forman parte del viaje
+                           for (int i = 0; i < tablaProductosA.getRowCount(); i++) {
+
+                               //definimos las variables a utilizar
+                               int cantidadDeProducto = 0;   
+
+                               //asignamos el valor a las variables
+                               cantidadDeProducto = Integer.parseInt((String) tablaProductosA.getValueAt(i, 1));
+
+                               gesproductos.setCantidad(i, cantidadDeProducto, "-");                               
+
+                           }
+
+                           gesproductos.getCargarInvetarioExcel();
+                    }
+
+
+                   //cargamos los datos en el excel
+                   gescalendario.guardarFecharExcel();
+
+                   //mostramos mesaje para acetar que este bien
+                   JOptionPane.showMessageDialog(null, "Datos fueron modificados de forma correcta", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+
+
+               }else{
+                  //mostramos mesaje para acetar que este bien
+                   JOptionPane.showMessageDialog(null, "Ingresa al menos un producto ", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+               }   
+            }else{
+               //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "no hay suficientes cantidades para completar el viaje", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
+            }              
+            
+        }else{
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa fecha Valida", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }  
+            
+        } catch (NumberFormatException e) {
+            //mostramos mesaje para acetar que este bien
+            JOptionPane.showMessageDialog(null, "Ingresa cantidad Valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_txtModificarViajesMouseClicked
 
     private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed
@@ -2356,83 +2384,38 @@ int respuesta = JOptionPane.showConfirmDialog(this,
 
     private void txtEliminarViajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtEliminarViajeMouseClicked
        
-        
-   int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar el viaje seleccionado?", "Confirmación", JOptionPane.YES_NO_OPTION);
-    if (respuesta == JOptionPane.YES_OPTION) {
-        // Diálogo de espera
-        JDialog dialogoEspera = new JDialog();
-        dialogoEspera.setModal(true);
-        dialogoEspera.setUndecorated(true);
-        dialogoEspera.add(new JLabel("Procesando su solicitud...  \nPor favor espere.", SwingConstants.CENTER));
-        dialogoEspera.setSize(500, 50);
-        dialogoEspera.setLocationRelativeTo(null);
+     //este formulario nos ayudara a elimar una fecha
+          // Mostrar popup de advertencia        
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea continuar con la acción?", "Advertencia", JOptionPane.YES_NO_OPTION);
 
-        // Iniciar el proceso de eliminación en un nuevo hilo
-        new Thread(() -> {
-            try {
-                // Obtener el piloto antes de eliminar
-                FechaCalendario fechaAEliminar = gescalendario.getFechasDeCalendario().get(indiceActual);
-                Vector<Piloto> pilotos = gespilotos.getPilotos();
-
-                // Check if indicePiloto is valid
-                int indicePiloto = fechaAEliminar.getIndicePiloto();
-                if (indicePiloto < 0 || indicePiloto >= pilotos.size()) {
-                    throw new IndexOutOfBoundsException("Índice de piloto no válido: " + indicePiloto);
-                }
-
-                Piloto pilotoSeleccionado = pilotos.get(indicePiloto);
-
-                // Obtener camiones y asegurarse de que newIndiceCamion esté definido
-                Vector<Camiones> camiones = gescamiones.getCamiones();
-                int newIndiceCamion = fechaAEliminar.getIndiceCamion(); // Asumiendo que tienes un método para obtenerlo
-                if (newIndiceCamion < 0 || newIndiceCamion >= camiones.size()) {
-                    throw new IndexOutOfBoundsException("Índice de camión no válido: " + newIndiceCamion);
-                }
-                Camiones camionSeleccionado = camiones.get(newIndiceCamion);
+        // Si el usuario selecciona "Sí"
+        if (respuesta == JOptionPane.YES_OPTION) {
+               if (indiceActual > -1) {
                 
-                // Enviar correo de cancelación
-                String correo = pilotoSeleccionado.getCorreoElectronicoPiloto();
-                if (correo != null && !correo.isEmpty()) {
-                    String tripDetails = buildCancelledTripEmailContent(
-                        fechaAEliminar.getFechaC(),
-                        fechaAEliminar.getFechaD(),
-                        camionSeleccionado // Asegúrate de pasar el objeto camion
-                    );
-                    enviarCorreoViaje(correo, pilotoSeleccionado, tripDetails);
-                }
+                   gescalendario.getFechasDeCalendario().remove(indiceActual);
+                   gescalendario.guardarFecharExcel();
+                   
+                   gespedidos.actualizarIndiceCalendario(indiceActual);              
+                   gespedidos.GuardarEnExcel();
+                   
+                   
+                   
+                    //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "viaje eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
+           
+                String username = this.currentUser; // Assuming currentUser holds the username
+                String role = this.userRole;        // Assuming userRole holds the role
+                LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
 
-                // Eliminar la fecha
-                gescalendario.getFechasDeCalendario().remove(indiceActual);
-                
-   
-                // Guardar el nuevo estado
-                gescalendario.guardarFecharExcel();
-                guardarContadorViajes();
-
-                // Actualizar pedidos
-                gespedidos.actualizarIndiceCalendario(indiceActual);
-                gespedidos.GuardarEnExcel();
-  
-                JOptionPane.showMessageDialog(null, "Viaje eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
-                
-                cargarformulario();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error: un objeto no fue inicializado. " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al procesar la eliminación del viaje: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } finally {
-                dialogoEspera.dispose(); // Cerrar el diálogo de espera al finalizar
+                FormularioViajes abrir = new FormularioViajes(currentUser, userRole, loginFrame);
+                abrir.setVisible(true); 
+                this.dispose();
+            }else{
+                //mostramos mesaje para acetar que este bien
+                JOptionPane.showMessageDialog(null, "seleccione un viaje de la tabla valido", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 
             }
-        }).start();
-        
-        dialogoEspera.setVisible(true); // Mostrar el diálogo de espera y bloquear la interfaz
-    }
-    
+
+        } 
                 
     }//GEN-LAST:event_txtEliminarViajeMouseClicked
 

@@ -1423,7 +1423,7 @@ private void cerrarSesionYRegresarLogin() {
         String newdescripcion = txtDescripcionDelClienteAñadir.getText();
         
         //preguntamos si la informacion no esta vacia
-        if (!newname.equals("") && !newdescripcion.equals("")) {
+        if (!newname.equals("") && !newdescripcion.equals("") && !newname.equals("Ingrese el nombre del cliente") && !newdescripcion.equals("Ingrese la descripción del cliente")) {
             
             //creamos el vector vacio
             Vector<Integer> vectorvacio = new Vector<>();
@@ -1482,7 +1482,7 @@ private void cerrarSesionYRegresarLogin() {
         String newdescripcion = txtDescripcionDelClienteModificar.getText();
         
         //preguntamos si la informacion no esta vacia
-        if (!newname.equals("") && !newdescripcion.equals("")) {
+        if (!newname.equals("") && !newdescripcion.equals("") && !newname.equals("Ingrese el nombre del cliente") && !newdescripcion.equals("Ingrese la descripción del cliente")) {
 
             //modificamos el vector el cliente al vector de clientes y guardanos en el excel
             gesclientes.modificarInformacionGeneral(indiceGeneralClientes, newname, newdescripcion);
@@ -1766,6 +1766,7 @@ private void cerrarSesionYRegresarLogin() {
 
         FrameHistorialClientes abrir = new FrameHistorialClientes(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_txtHistorialClientesEliminadosActionPerformed
 
     //creamos el bucle infinito
