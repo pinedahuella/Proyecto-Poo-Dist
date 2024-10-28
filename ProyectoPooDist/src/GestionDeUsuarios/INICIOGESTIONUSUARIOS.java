@@ -24,7 +24,11 @@ import GestionDeUsuarios.Usuarios;
 import Login.GESTIONLOGIN;
 import Login.LOGINPINEED;
 import Login.Login;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -35,6 +39,8 @@ import java.awt.event.ActionListener;  // Para manejar eventos de acción
 import java.awt.event.ActionEvent;  // Para representar eventos de acción
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -44,8 +50,30 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.text.Normalizer;
+import java.util.Properties;
 import java.util.regex.Pattern;
-
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import javax.swing.JPanel;
 
 public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
     public GESTIONUSUARIOS gestionUsuarios;
@@ -688,36 +716,184 @@ private void abrirVentanaMostrar(Usuarios usuario) {
         this.setVisible(false);
     }//GEN-LAST:event_ActivosPilotosActionPerformed
 
+    
+    // Método para enviar correo de eliminación
+private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuario) throws IOException, AddressException, MessagingException {
+    // Validar el correo electrónico
+    if (destinatario == null || destinatario.trim().isEmpty() || !destinatario.contains("@")) {
+        throw new IOException("Correo electrónico inválido: " + destinatario);
+    }
+
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+    
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("Desactivación de Cuenta - PINEED");
+        
+        Multipart multipart = new MimeMultipart("related");
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>Notificación de Eliminación de Cuenta - PINEED</strong></h2>" +
+            "<p style='color: #34495e;'>Estimado(a) " + usuario.getNombre() + " " + usuario.getApellido() + ",</p>" +
+            "<p style='color: #34495e;'>Le informamos que su cuenta ha sido eliminada del sistema de PINEED.</p>" +
+            
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Usuario:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + usuario.getNombre() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + usuario.getApellido() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Cargo:</strong></td><td>" + usuario.getCargo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + usuario.getCorreoElectronico() + "</td></tr>" +
+            "</table></div>" +
+            
+            "<p style='color: #34495e;'>Si tiene alguna pregunta sobre esta acción, por favor contacte al administrador del sistema.</p>" +
+            "<p style='color: #34495e;'>Atentamente,</p>" +
+            "<p style='color: #34495e;'>El equipo de PINEED</p>" +
+
+            "<div style='text-align: center; margin-top: 20px;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        System.out.println("Correo enviado exitosamente a: " + destinatario);
+        
+    } catch (MessagingException e) {
+        System.err.println("Error detallado al enviar correo de eliminación: ");
+        e.printStackTrace();
+        throw new IOException("Error al enviar el correo de eliminación: " + e.getMessage());
+    }
+}
+
+
     private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
 int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            // Obtener el DPI del usuario seleccionado
-            long dpiSeleccionado = Long.parseLong(tblRegistroUsuarios.getValueAt(filaSeleccionada, 2).toString());
-            
+    if (filaSeleccionada >= 0) {
+        try {
+            // Obtener el usuario seleccionado
+            Usuarios usuarioSeleccionado = listaUsuarios.get(filaSeleccionada);
+            String nombreCompleto = usuarioSeleccionado.getNombre() + " " + usuarioSeleccionado.getApellido();
+            String correo = usuarioSeleccionado.getCorreoElectronico();
+
             int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar este usuario con DPI: " + dpiSeleccionado + "?",
+                "¿Está seguro de que desea eliminar el usuario: " + nombreCompleto + "?",
                 "Confirmar eliminación",
                 JOptionPane.YES_NO_OPTION);
-                
+
             if (confirm == JOptionPane.YES_OPTION) {
-                try {
-                    // Eliminar el usuario
-                    gestionUsuarios.eliminarUsuario(dpiSeleccionado);
-                    
-                    // Actualizar la tabla inmediatamente después de la eliminación
-                    actualizarTabla();
-                    
-                    JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.");
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this,
-                        "Error al eliminar el usuario: " + e.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                }
+                // Crear y mostrar el diálogo de progreso
+                JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+                dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                JPanel panel = new JPanel(new BorderLayout(10, 10));
+                panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+                JPanel contenidoPanel = new JPanel(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridwidth = GridBagConstraints.REMAINDER;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.insets = new Insets(5, 5, 5, 5);
+
+                JProgressBar progressBar = new JProgressBar();
+                progressBar.setIndeterminate(true);
+                progressBar.setStringPainted(true);
+                progressBar.setString("Procesando...");
+
+                JLabel mensajeLabel = new JLabel("Desactivando usuario y enviando notificación...");
+                mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+
+                contenidoPanel.add(mensajeLabel, gbc);
+                contenidoPanel.add(progressBar, gbc);
+                panel.add(contenidoPanel, BorderLayout.CENTER);
+                dialogoProceso.add(panel);
+                dialogoProceso.setSize(400, 150);
+                dialogoProceso.setLocationRelativeTo(this);
+
+                Thread processingThread = new Thread(() -> {
+                    try {
+                        // Enviar correo antes de eliminar el usuario
+                        enviarCorreoEliminacionUsuario(correo, usuarioSeleccionado);
+                        
+                        // Eliminar usuario
+                        gestionUsuarios.eliminarUsuario(usuarioSeleccionado.getNumeroDPI());
+
+                        SwingUtilities.invokeLater(() -> {
+                            dialogoProceso.dispose();
+                            cargarUsuariosEnTabla(); // Actualizar la tabla
+                            JOptionPane.showMessageDialog(this,
+                                "Usuario eliminado correctamente y notificación enviada.",
+                                "Éxito",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        });
+                    } catch (IOException e) {
+                        SwingUtilities.invokeLater(() -> {
+                            dialogoProceso.dispose();
+                            JOptionPane.showMessageDialog(this,
+                                "Usuario eliminado pero hubo un error al enviar el correo: " + e.getMessage(),
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE);
+                        });
+                    } catch (Exception e) {
+                        SwingUtilities.invokeLater(() -> {
+                            dialogoProceso.dispose();
+                            JOptionPane.showMessageDialog(this,
+                                "Error durante el proceso: " + e.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        });
+                    }
+                });
+
+                processingThread.start();
+                dialogoProceso.setVisible(true);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.");
+        } catch (Exception e) {
+            System.err.println("Error al eliminar el usuario: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,
+                "Error al eliminar el usuario: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "Por favor, seleccione un usuario para eliminar.");
+    }
     }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed

@@ -3,8 +3,13 @@ package GestionDeUsuarios;
 import Login.LOGINPINEED;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
+import com.sun.jdi.connect.spi.Connection;
 import com.toedter.calendar.JDateChooser;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -31,7 +36,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JLabel;
 
 
 
@@ -45,7 +58,7 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
     private String currentUser;
     private String userRole;
     private LOGINPINEED loginFrame;
-    
+
 
         
         
@@ -205,8 +218,7 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
             }
         });
     }
-    
-
+// Método para enviar correo de actualización
 private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) throws IOException {
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
@@ -232,33 +244,44 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
         message.setSubject("PINEED - Actualización de Información");
         
-        // Create multipart message
         Multipart multipart = new MimeMultipart("related");
-        
-        // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
         
-        // Note el "cid:imagen" al final del HTML que hace referencia a la imagen
-        String contenido = "<html><body>" +
-            "<h2><strong>Actualización de Datos en PINEED</strong></h2>" +
-            "<p>Sus datos han sido actualizados exitosamente en nuestro sistema.</p>" +
-            "<h3>Información Actualizada:</h3>" +
-            "<p><strong>Nombre:</strong> " + usuario.getNombre() + "</p>" +
-            "<p><strong>Apellido:</strong> " + usuario.getApellido() + "</p>" +
-            "<p><strong>DPI:</strong> " + usuario.getNumeroDPI() + "</p>" +
-            "<p><strong>Cargo:</strong> " + usuario.getCargo() + "</p>" +
-            "<p><strong>Correo Electrónico:</strong> " + usuario.getCorreoElectronico() + "</p>" +
-            "<p><strong>Teléfono:</strong> " + usuario.getNumeroTelefono() + "</p>" +
-            "<p><strong>Género:</strong> " + usuario.getGenero() + "</p>" +
-            "<p><strong>Fecha de Nacimiento:</strong> " + usuario.getFechaNacimiento() + "</p>" +
-            "<p><strong>Estado:</strong> " + usuario.getEstado() + "</p>" +
-            "<h3>Información de Acceso al Sistema:</h3>" +
-            "<p><strong>Nombre de Usuario:</strong> " + usuario.getNombreUsuario() + "</p>" +
-            "<p><strong>Contraseña:</strong> " + usuario.getContrasenaUsuario() + "</p>" +
-            "<div style='margin-top: 20px; text-align: center;'>" +
+        
+           String nombreUsuario = usuario.getNombreUsuario().toLowerCase() + "." + 
+                               usuario.getApellido().toLowerCase() + "&pineed";
+           
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>Actualización de Datos en PINEED</strong></h2>" +
+            "<p style='color: #34495e;'>Sus datos han sido actualizados exitosamente en nuestro sistema.</p>" +
+            
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Información Actualizada:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + usuario.getNombre() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + usuario.getApellido() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Cargo:</strong></td><td>" + usuario.getCargo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + usuario.getCorreoElectronico() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Teléfono:</strong></td><td>" + usuario.getNumeroTelefono() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Género:</strong></td><td>" + usuario.getGenero() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Fecha de Nacimiento:</strong></td><td>" + usuario.getFechaNacimiento() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + usuario.getEstado() + "</td></tr>" +
+            "</table></div>" +
+
+            "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Información de Acceso al Sistema:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Nombre de Usuario:</strong></td><td>" + nombreUsuario + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Contraseña:</strong></td><td>" + usuario.getContrasenaUsuario() + "</td></tr>" +
+            "</table></div>" +
+
+            "<div style='text-align: center; margin-top: 20px;'>" +
             "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
             "</div>" +
-            "</body></html>";
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
             
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
@@ -281,24 +304,12 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
         message.setContent(multipart);
         Transport.send(message);
         
-        // Mostrar mensaje de confirmación y esperar respuesta del usuario
-        int option = JOptionPane.showConfirmDialog(this, 
-            "Se ha enviado un correo electrónico con los datos actualizados a: " + destinatario + "\n" +
-            "¿Recibió el correo correctamente?",
-            "Confirmación de Envío",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
-            
-        if (option == JOptionPane.NO_OPTION) {
-            // Si el usuario indica que no recibió el correo, lanzar una excepción
-            throw new IOException("El usuario no recibió el correo correctamente. Por favor, intente nuevamente.");
-        }
+        System.out.println("Correo enviado exitosamente a: " + destinatario);
         
     } catch (MessagingException e) {
         throw new IOException("Error al enviar el correo: " + e.getMessage());
     }
 }
-
 
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
@@ -317,6 +328,20 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
 }
     
     
+  // En la clase donde tienes el método de modificación:
+private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
+    // Recorrer la lista de usuarios y verificar si la contraseña ya existe
+    for (Usuarios usuario : listaUsuarios) {
+        // Si la contraseña existe en otro usuario (no en el usuario actual)
+        if (usuario != usuarioActual && 
+            usuario.getContrasenaUsuario() != null && 
+            usuario.getContrasenaUsuario().equals(contrasena)) {
+            return true;
+        }
+    }
+    return false;
+}
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -584,7 +609,7 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnModificarUsuariosSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarUsuariosSistemaActionPerformed
-    try {
+  try {
         // Recuperar y limpiar los datos de entrada
         String nombreUsuario = txtNombreUsuarioModificarModificar.getText().trim();
         String apellidoUsuario = txtApellidoUsuarioModificarModificar.getText().trim();
@@ -595,14 +620,13 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
             return;
         }
 
-            // Validar que nombre y apellido no estén vacíos
+        // Validar que nombre y apellido no estén vacíos
         if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty()) {
             JOptionPane.showMessageDialog(this, "El nombre y apellido son obligatorios.");
             return;
         }
         
-        
-             // Validar que el nombre y apellido no contengan números
+        // Validar que el nombre y apellido no contengan números
         if (!esNombreValido(nombreUsuario)) {
             JOptionPane.showMessageDialog(this, "El nombre no puede contener números o caracteres especiales.");
             return;
@@ -648,12 +672,38 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
         }
         long numeroDeDpiUsuario = Long.parseLong(dpiText);
 
-        // Obtener la contraseña y validar que coincida con el DPI
+// Obtener la contraseña
+       // Obtener la contraseña
         String contrasenaUsuario = txtContraseñaUsuarioModificarModificar.getText().trim();
-        if (!contrasenaUsuario.equals(dpiText)) {
-            JOptionPane.showMessageDialog(this, "La contraseña debe ser igual al número de DPI.");
+        
+        // Validar longitud de la contraseña
+        if (contrasenaUsuario.length() != 13) {
+            JOptionPane.showMessageDialog(this, 
+                "La contraseña debe contener exactamente 13 caracteres.",
+                "Error de validación",
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        // Validar que la contraseña solo contenga dígitos
+        if (!contrasenaUsuario.matches("\\d{13}")) {
+            JOptionPane.showMessageDialog(this,
+                "La contraseña debe contener solo números.",
+                "Error de validación",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Verificar si la contraseña ya existe en otro usuario
+        if (existeContrasena(contrasenaUsuario, usuarioActual)) {
+            JOptionPane.showMessageDialog(this,
+                "La contraseña ya ha sido utilizada por otro usuario. Por favor, elija una contraseña diferente.",
+                "Error de validación",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+ 
+
 
         // Continuar con el resto de las validaciones
         String cargoUsuario = txtCargoUsuarioModificarModificar.getSelectedItem().toString().trim();
@@ -689,76 +739,209 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
         }
 
         // Verificar si los datos únicos han cambiado
-boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
-boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
-boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
+        boolean dpiCambiado = numeroDeDpiUsuario != usuarioActual.getNumeroDPI();
+        boolean telefonoCambiado = numeroTelefonicoUsuario != usuarioActual.getNumeroTelefono();
+        boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
 
-// Verificar duplicados solo si los datos únicos han cambiado
-for (Usuarios usuarioExistente : listaUsuarios) {
-    if (usuarioExistente != usuarioActual) { // Asegúrate de no comparar el usuario actual
-        if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
-            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+        // Verificar duplicados solo si los datos únicos han cambiado
+        for (Usuarios usuarioExistente : listaUsuarios) {
+            if (usuarioExistente != usuarioActual) {
+                if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
+                    return;
+                }
+                if (telefonoCambiado && usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+                    return;
+                }
+                if (correoCambiado && usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
+                    return;
+                }
+            }
+        }
+
+        
+        
+        
+            // Validar longitud del nombre y apellido
+        if (nombreUsuario.length() < 2 || nombreUsuario.length() > 50) {
+            JOptionPane.showMessageDialog(this, "El nombre debe tener entre 2 y 50 caracteres.");
             return;
         }
-        if (telefonoCambiado && usuarioExistente.getNumeroTelefono() == numeroTelefonicoUsuario) {
-            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número telefónico.");
+        if (apellidoUsuario.length() < 2 || apellidoUsuario.length() > 50) {
+            JOptionPane.showMessageDialog(this, "El apellido debe tener entre 2 y 50 caracteres.");
             return;
         }
-        if (correoCambiado && usuarioExistente.getCorreoElectronico().equals(correoElectronicoUsuario)) {
-            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese correo electrónico.");
-            return;
-        }
-    }
+
+        
+        
+        
+// Validar que el usuario tenga al menos 18 años
+Calendar calHoy = Calendar.getInstance();
+Calendar calNacimiento = Calendar.getInstance();
+calNacimiento.setTime(fechaNacimientoUsuarioDate);
+
+int edad = calHoy.get(Calendar.YEAR) - calNacimiento.get(Calendar.YEAR);
+if (calHoy.get(Calendar.DAY_OF_YEAR) < calNacimiento.get(Calendar.DAY_OF_YEAR)) {
+    edad--;
 }
 
-                // Actualizar los datos del usuario
-        usuarioActual.setNombreUsuario(nombreDeUsuario);
-        usuarioActual.setContrasenaUsuario(contrasenaUsuario);
-        usuarioActual.setNombre(nombreUsuario);
-        usuarioActual.setApellido(apellidoUsuario);
-        usuarioActual.setCargo(cargoUsuario);
-        usuarioActual.setGenero(generoUsuario);
-        usuarioActual.setNumeroDPI(numeroDeDpiUsuario);
-        usuarioActual.setFechaNacimiento(fechaDeNacimientoUsuario);
-        usuarioActual.setNumeroTelefono(numeroTelefonicoUsuario);
-        usuarioActual.setCorreoElectronico(correoElectronicoUsuario);
-        usuarioActual.setEstado(estadoUsuario);
+if (edad < 18) {
+    JOptionPane.showMessageDialog(this, "El usuario debe ser mayor de 18 años.");
+    return;
+}
 
-        gestionUsuarios.actualizarUsuario(usuarioActual);
 
-        // Mostrar mensaje de modificación exitosa y espera
-        JOptionPane.showMessageDialog(this, 
-            "Usuario modificado exitosamente.\n" +
-            "En unos segundos se enviará un correo electrónico con los datos actualizados.\n" +
-            "Espere por favor...",
-            "Modificación Exitosa",
-            JOptionPane.INFORMATION_MESSAGE);
+               // Mostrar diálogo de confirmación
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de que desea modificar al usuario con los siguientes datos?\n\n" +
+            "Nombre completo: " + nombreUsuario + " " + apellidoUsuario + "\n" +
+            "DPI: " + numeroDeDpiUsuario + "\n" +
+            "Cargo: " + cargoUsuario + "\n" +
+            "Correo electrónico: " + correoElectronicoUsuario + "\n" +
+            "Teléfono: " + numeroTelefonicoUsuario + "\n" +
+            "Género: " + generoUsuario + "\n" +
+            "Fecha de nacimiento: " + fechaDeNacimientoUsuario + "\n" +
+            "Estado: " + estadoUsuario,
+            "Confirmar modificación de usuario",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
 
-        // Actualizar la tabla principal pero mantener esta ventana abierta
-        ventanaPrincipal.actualizarTabla();
-        
-        // Enviar el correo
-        try {
-            enviarCorreoActualizacion(correoElectronicoUsuario, usuarioActual);
-            // Solo después de que el correo se envíe exitosamente y el usuario confirme,
-            // cerrar esta ventana y mostrar la ventana principal
-            ventanaPrincipal.setVisible(true);
-            this.dispose();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error al enviar el correo de actualización: " + e.getMessage() +
-                "\nPor favor, intente nuevamente.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
         }
 
-   } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+        
+        
+        // Almacenar los datos validados en variables finales para usar en el hilo
+        final String finalNombreDeUsuario = nombreDeUsuario;
+        final String finalContrasenaUsuario = contrasenaUsuario;
+        final String finalNombreUsuario = nombreUsuario;
+        final String finalApellidoUsuario = apellidoUsuario;
+        final String finalCargoUsuario = cargoUsuario;
+        final String finalGeneroUsuario = generoUsuario;
+        final long finalNumeroDeDpiUsuario = numeroDeDpiUsuario;
+        final String finalFechaDeNacimientoUsuario = fechaDeNacimientoUsuario;
+        final int finalNumeroTelefonicoUsuario = numeroTelefonicoUsuario;
+        final String finalCorreoElectronicoUsuario = correoElectronicoUsuario;
+        final String finalEstadoUsuario = estadoUsuario;
+
+        // Crear y mostrar el diálogo de progreso
+        JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+        dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JPanel contenidoPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        progressBar.setStringPainted(true);
+        progressBar.setString("Modificando usuario...");
+        
+        JLabel mensajeLabel = new JLabel("Actualizando información y enviando correo electrónico...");
+        mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        contenidoPanel.add(mensajeLabel, gbc);
+        contenidoPanel.add(progressBar, gbc);
+        
+        panel.add(contenidoPanel, BorderLayout.CENTER);
+        dialogoProceso.add(panel);
+        dialogoProceso.setSize(400, 150);
+        dialogoProceso.setLocationRelativeTo(this);
+
+        // Crear e iniciar el hilo de procesamiento
+        Thread processingThread = new Thread(() -> {
+            try {
+                // Actualizar el usuario actual con los datos validados
+                synchronized(usuarioActual) {
+                    usuarioActual.setNombreUsuario(finalNombreDeUsuario);
+                    usuarioActual.setContrasenaUsuario(finalContrasenaUsuario);
+                    usuarioActual.setNombre(finalNombreUsuario);
+                    usuarioActual.setApellido(finalApellidoUsuario);
+                    usuarioActual.setCargo(finalCargoUsuario);
+                    usuarioActual.setGenero(finalGeneroUsuario);
+                    usuarioActual.setNumeroDPI(finalNumeroDeDpiUsuario);
+                    usuarioActual.setFechaNacimiento(finalFechaDeNacimientoUsuario);
+                    usuarioActual.setNumeroTelefono(finalNumeroTelefonicoUsuario);
+                    usuarioActual.setCorreoElectronico(finalCorreoElectronicoUsuario);
+                    usuarioActual.setEstado(finalEstadoUsuario);
+                }
+
+                // Actualizar en la base de datos
+                gestionUsuarios.actualizarUsuario(usuarioActual);
+
+                // Enviar correo
+                enviarCorreoActualizacion(finalCorreoElectronicoUsuario, usuarioActual);
+
+                // Actualizar UI en el EDT
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        // Actualizar la tabla principal
+                        ventanaPrincipal.actualizarTabla();
+                        
+                        // Cerrar el diálogo de progreso
+                        dialogoProceso.dispose();
+                        
+                        // Mostrar mensaje de éxito
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "¡Usuario modificado exitosamente!\n\n" +
+                            "Se ha enviado un correo electrónico a:\n" + 
+                            finalCorreoElectronicoUsuario + "\n" +
+                            "con los datos actualizados.",
+                            "Modificación exitosa",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+
+                        // Cerrar la ventana actual y mostrar la principal
+                        ventanaPrincipal.setVisible(true);
+                        this.dispose();
+                    } catch (Exception e) {
+                        manejarError("Error al actualizar la interfaz", e);
+                    }
+                });
+
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() -> {
+                    dialogoProceso.dispose();
+                    manejarError("Error durante la actualización", e);
+                });
+            }
+        });
+
+        // Iniciar el proceso y mostrar el diálogo
+        processingThread.start();
+        dialogoProceso.setVisible(true);
+
+    } catch (NumberFormatException e) {
+        manejarError("Error en el formato de número", e);
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al modificar usuario: " + e.getMessage());
+        manejarError("Error al modificar usuario", e);
     }
     }//GEN-LAST:event_btnModificarUsuariosSistemaActionPerformed
-   // Agregar este método fuera del btnAgregarUsuarioSistemaActionPerformed, pero dentro de la clase
+   
+// Método auxiliar para manejar errores
+private void manejarError(String mensaje, Exception e) {
+    SwingUtilities.invokeLater(() -> {
+        JOptionPane.showMessageDialog(
+            this,
+            mensaje + ": " + e.getMessage() +
+            "\nPor favor, intente nuevamente.",
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+    });
+}
+
+// Agregar este método fuera del btnAgregarUsuarioSistemaActionPerformed, pero dentro de la clase
 private String removeTildes(String input) {
     return input.replace('á', 'a')
                .replace('é', 'e')

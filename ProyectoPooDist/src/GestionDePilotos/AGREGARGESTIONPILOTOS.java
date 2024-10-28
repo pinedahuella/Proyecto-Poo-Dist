@@ -6,7 +6,11 @@ import GestionDePilotos.Piloto;
 import Login.LOGINPINEED;
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.SimpleDateFormat;
@@ -26,7 +30,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 
 
@@ -243,46 +254,55 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
         });
         
     try {
-        Message message = new MimeMessage(session);
+        MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario));
         message.setSubject("Bienvenido a PINEED - Información de Registro");
-        
-        // Create multipart message
+
+        // Crear la estructura de mensaje multipart
         Multipart multipart = new MimeMultipart("related");
-        
+
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-        
+
         String nombreUsuario = piloto.getNombrePiloto().toLowerCase() + "." + 
-                             piloto.getApellidoPiloto().toLowerCase() + "@pineed";
-        
-        // Note el "cid:imagen" al final del HTML que hace referencia a la imagen
-        String contenido = "<html><body>" +
-            "<h2><strong>¡Bienvenido a PINEED!</strong></h2>" +
-            "<p>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
-            "<h3>Información del Registro:</h3>" +
-            "<p><strong>Nombre:</strong> " + piloto.getNombrePiloto() + "</p>" +
-            "<p><strong>Apellido:</strong> " + piloto.getApellidoPiloto() + "</p>" +
-            "<p><strong>DPI:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
-            "<p><strong>Tipo de Licencia:</strong> " + piloto.getTipoLicencia() + "</p>" +
-            "<p><strong>Correo Electrónico:</strong> " + piloto.getCorreoElectronicoPiloto() + "</p>" +
-            "<p><strong>Teléfono:</strong> " + piloto.getNumeroTelefonicoPiloto() + "</p>" +
-            "<p><strong>Género:</strong> " + piloto.getGeneroPiloto() + "</p>" +
-            "<p><strong>Fecha de Nacimiento:</strong> " + piloto.getFechaDeNacimiento() + "</p>" +
-            "<p><strong>Estado:</strong> " + piloto.getEstadoPiloto() + "</p>" +
-            "<h3>Información de Acceso al Sistema:</h3>" +
+                               piloto.getApellidoPiloto().toLowerCase() + "&pineed";
+
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Bienvenido a PINEED!</strong></h2>" +
+            "<p style='color: #34495e;'>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Registro:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + piloto.getNombrePiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + piloto.getApellidoPiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Tipo de Licencia:</strong></td><td>" + piloto.getTipoLicencia() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Teléfono:</strong></td><td>" + piloto.getNumeroTelefonicoPiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Género:</strong></td><td>" + piloto.getGeneroPiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Fecha de Nacimiento:</strong></td><td>" + piloto.getFechaDeNacimiento() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + piloto.getEstadoPiloto() + "</td></tr>" +
+            "</table></div>" +
+
+            // Sección de Información de Acceso al Sistema con fondo cuadrado
+            "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
             "<p><strong>Nombre de Usuario:</strong> " + nombreUsuario + "</p>" +
             "<p><strong>Contraseña:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
-            "<div style='margin-top: 20px; text-align: center;'>" +
+            "</div>" +
+
+            "<div style='text-align: center; margin-top: 20px;'>" +
             "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
             "</div>" +
-            "</body></html>";
-            
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
 
-        // Segunda parte - la imagen
+        // Segunda parte - la imagen embebida
         messageBodyPart = new MimeBodyPart();
         String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
         InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
@@ -291,32 +311,27 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
             DataSource source = new ByteArrayDataSource(imageStream, "image/png");
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setHeader("Content-ID", "<imagen>");
-            messageBodyPart.setDisposition(MimeBodyPart.INLINE);  // Esto es importante para que se muestre en línea
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE); // Mostrar la imagen embebida
             multipart.addBodyPart(messageBodyPart);
         } else {
             System.out.println("Imagen no encontrada en el classpath.");
         }
-        
+
+        // Configurar el contenido final del correo
         message.setContent(multipart);
+
+        // Enviar el correo
         Transport.send(message);
-        
-        // Mostrar mensaje de confirmación y esperar respuesta del usuario
-        int option = JOptionPane.showConfirmDialog(this, 
-            "Se ha enviado un correo electrónico con los datos actualizados a: " + destinatario + "\n" +
-            "¿Recibió el correo correctamente?",
-            "Confirmación de Envío",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
-            
-        if (option == JOptionPane.NO_OPTION) {
-            // Si el usuario indica que no recibió el correo, lanzar una excepción
-            throw new IOException("El usuario no recibió el correo correctamente. Por favor, intente nuevamente.");
-        }
-        
+
+        // Confirmación de envío exitoso
+        System.out.println("El correo fue enviado correctamente a: " + destinatario);
+
     } catch (MessagingException e) {
         throw new IOException("Error al enviar el correo: " + e.getMessage());
     }
 }
+
+
 
 
     private void cerrarSesionYSalir() {
@@ -416,7 +431,7 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
         jLabel18.setText("ESTADO DEL PILOTO");
 
         txtEstadoPiloto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO", "BLOQUEADO" }));
+        txtEstadoPiloto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
         txtNumeroTelefonicoPiloto.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         txtNumeroTelefonicoPiloto.addActionListener(new java.awt.event.ActionListener() {
@@ -557,7 +572,7 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPilotoSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPilotoSistemaActionPerformed
-   try {
+      try {
         // Primero validar que ningún campo tenga su placeholder o esté vacío
         if (txtNombrePiloto.getText().equals("Ingrese el nombre") || txtNombrePiloto.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del piloto.");
@@ -585,7 +600,6 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
             JOptionPane.showMessageDialog(this, "El apellido solo debe contener letras.");
             return;
         }
-        
         
         if (txtCorreoElectronicoPiloto.getText().equals("Ingrese el correo electrónico") || txtCorreoElectronicoPiloto.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor ingrese el correo electrónico del piloto.");
@@ -639,54 +653,201 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String fechaDeNacimientoPiloto = sdf.format(fechaNacimientoPilotoDate);
 
-        // Crear el nuevo piloto
-        Piloto nuevoPiloto = new Piloto();
-        nuevoPiloto.setNombrePiloto(nombrePiloto);
-        nuevoPiloto.setApellidoPiloto(apellidoPiloto);
-        nuevoPiloto.setNumeroDeDpi(numeroDeDpiPiloto);
-        nuevoPiloto.setTipoLicencia(tipoLicencia);
-        nuevoPiloto.setCorreoElectronicoPiloto(correoElectronicoPiloto);
-        nuevoPiloto.setNumeroTelefonicoPiloto(numeroTelefonicoPiloto);
-        nuevoPiloto.setGeneroPiloto(generoPiloto);
-        nuevoPiloto.setFechaDeNacimiento(fechaDeNacimientoPiloto);
-        nuevoPiloto.setEstadoPiloto(estadoPiloto);
-        nuevoPiloto.setActivo(true);
-
-        try {
-            // Intentar agregar el nuevo piloto
-            gestionPilotos.agregarPiloto(nuevoPiloto);
-            
-            // Si llegamos aquí, el piloto se agregó exitosamente
-            cargarPilotosEnTabla();
-            limpiarCampos();
-
-            JOptionPane.showMessageDialog(this, "Piloto agregado exitosamente.\n"
-                    + "En unos segundos se enviará un correo electrónico con los datos de acceso.\n"
-                    + "Espere por favor...");
-            
-            // Enviar correo y abrir nueva ventana
-            enviarCorreoActualizacion(correoElectronicoPiloto, nuevoPiloto);
-            INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false);
-
-        } catch (IllegalStateException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        
+                    // Validar longitud del nombre y apellido
+        if (nombrePiloto.length() < 2 || nombrePiloto.length() > 50) {
+            JOptionPane.showMessageDialog(this, "El nombre debe tener entre 2 y 50 caracteres.");
+            return;
+        }
+        if (nombrePiloto.length() < 2 || nombrePiloto.length() > 50) {
+            JOptionPane.showMessageDialog(this, "El apellido debe tener entre 2 y 50 caracteres.");
+            return;
         }
 
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, 
-            "Error al enviar el correo de actualización: " + e.getMessage() +
-            "\nPor favor, intente nuevamente.",
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
+        
+        
+ // Verificar duplicados y mostrar mensajes específicos
+for (Piloto pilotoExistente : listaPilotos) {
+    if (pilotoExistente.getNumeroDeDpi() == numeroDeDpiPiloto) {
+        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número de DPI.");
+        return;
+    }
+    
+    if (pilotoExistente.getNumeroTelefonicoPiloto() == numeroTelefonicoPiloto) {
+        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese número telefónico.");
+        return;
+    }
+    
+    if (pilotoExistente.getCorreoElectronicoPiloto().equals(correoElectronicoPiloto)) {
+        JOptionPane.showMessageDialog(this, "Ya existe un piloto con ese correo electrónico.");
+        return;
+    }
+}
+
+        
+// Validar que el usuario tenga al menos 18 años
+Calendar calHoy = Calendar.getInstance();
+Calendar calNacimiento = Calendar.getInstance();
+calNacimiento.setTime(fechaNacimientoPilotoDate);
+
+int edad = calHoy.get(Calendar.YEAR) - calNacimiento.get(Calendar.YEAR);
+if (calHoy.get(Calendar.DAY_OF_YEAR) < calNacimiento.get(Calendar.DAY_OF_YEAR)) {
+    edad--;
+}
+
+if (edad < 18) {
+    JOptionPane.showMessageDialog(this, "El usuario debe ser mayor de 18 años.");
+    return;
+}
+            // Crear el nuevo piloto
+            Piloto nuevoPiloto = new Piloto();
+            nuevoPiloto.setNombrePiloto(nombrePiloto);
+            nuevoPiloto.setApellidoPiloto(apellidoPiloto);
+            nuevoPiloto.setNumeroDeDpi(numeroDeDpiPiloto);
+            nuevoPiloto.setTipoLicencia(tipoLicencia);
+            nuevoPiloto.setCorreoElectronicoPiloto(correoElectronicoPiloto);
+            nuevoPiloto.setNumeroTelefonicoPiloto(numeroTelefonicoPiloto);
+            nuevoPiloto.setGeneroPiloto(generoPiloto);
+            nuevoPiloto.setFechaDeNacimiento(fechaDeNacimientoPiloto);
+            nuevoPiloto.setEstadoPiloto(estadoPiloto);
+            nuevoPiloto.setActivo(true);
+        // Mostrar diálogo de confirmación con los datos
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de que desea agregar al piloto con los siguientes datos?\n\n" +
+            "Nombre completo: " + nombrePiloto + " " + apellidoPiloto + "\n" +
+            "DPI: " + numeroDeDpiPiloto + "\n" +
+            "Tipo de licencia: " + tipoLicencia + "\n" +
+            "Correo electrónico: " + correoElectronicoPiloto + "\n" +
+            "Teléfono: " + numeroTelefonicoPiloto + "\n" +
+            "Género: " + generoPiloto + "\n" +
+            "Fecha de nacimiento: " + fechaDeNacimientoPiloto + "\n" +
+            "Estado: " + estadoPiloto,
+            "Confirmar agregación de piloto",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Crear y mostrar el diálogo de progreso
+        JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+        dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        // Panel para el contenido
+        JPanel contenidoPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        
+        // Crear y configurar la barra de progreso
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        progressBar.setStringPainted(true);
+        progressBar.setString("Procesando...");
+        
+        // Etiqueta de mensaje
+        JLabel mensajeLabel = new JLabel("Agregando piloto y enviando correo electrónico...");
+        mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        // Agregar componentes al panel
+        contenidoPanel.add(mensajeLabel, gbc);
+        contenidoPanel.add(progressBar, gbc);
+        
+        panel.add(contenidoPanel, BorderLayout.CENTER);
+        dialogoProceso.add(panel);
+        dialogoProceso.setSize(400, 150);
+        dialogoProceso.setLocationRelativeTo(this);
+        
+        // Crear thread para procesar en segundo plano
+        Thread processingThread = new Thread(() -> {
+            try {
+                // Intentar agregar el nuevo piloto
+                gestionPilotos.agregarPiloto(nuevoPiloto);
+                
+                // Actualizar UI y enviar correo
+                SwingUtilities.invokeLater(() -> {
+                    cargarPilotosEnTabla();
+                    limpiarCampos();
+                });
+                
+                // Enviar correo
+                enviarCorreoActualizacion(correoElectronicoPiloto, nuevoPiloto);
+                
+                // Cerrar diálogo de progreso y mostrar éxito
+                SwingUtilities.invokeLater(() -> {
+                    dialogoProceso.dispose();
+                    
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "¡Piloto agregado exitosamente!\n\n" +
+                        "Se ha enviado un correo electrónico a:\n" + 
+                        correoElectronicoPiloto + "\n" +
+                        "con los datos de acceso al sistema.",
+                        "Operación exitosa",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
+                    // Abrir nueva ventana de gestión
+                    INICIOGESTIONPILOTOS abrir = new INICIOGESTIONPILOTOS(currentUser, userRole, loginFrame);
+                    abrir.setVisible(true);
+                    this.setVisible(false);
+                });
+                
+            } catch (IllegalStateException | IllegalArgumentException e) {
+                SwingUtilities.invokeLater(() -> {
+                    dialogoProceso.dispose();
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error de validación: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                });
+            } catch (IOException e) {
+                SwingUtilities.invokeLater(() -> {
+                    dialogoProceso.dispose();
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error al enviar el correo electrónico: " + e.getMessage() +
+                        "\nPor favor, intente nuevamente.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                });
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() -> {
+                    dialogoProceso.dispose();
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Error inesperado: " + e.getMessage() +
+                        "\nPor favor, contacte al administrador del sistema.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                });
+            }
+        });
+        
+        // Iniciar el procesamiento en segundo plano
+        processingThread.start();
+        
+        // Mostrar el diálogo de progreso
+        dialogoProceso.setVisible(true);
+        
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, 
-            "Error inesperado: " + e.getMessage(),
+        JOptionPane.showMessageDialog(
+            this,
+            "Error inesperado: " + e.getMessage() +
+            "\nPor favor, contacte al administrador del sistema.",
             "Error",
-            JOptionPane.ERROR_MESSAGE);
+            JOptionPane.ERROR_MESSAGE
+        );
     }
     }//GEN-LAST:event_btnAgregarPilotoSistemaActionPerformed
 

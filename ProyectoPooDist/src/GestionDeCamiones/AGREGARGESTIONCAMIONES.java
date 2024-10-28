@@ -1,21 +1,56 @@
 package GestionDeCamiones;
 
 // Importación de clases necesarias para el funcionamiento de la aplicación
+import GestionDePilotos.Piloto;
+import GestionDeUsuarios.GESTIONUSUARIOS;
+import GestionDeUsuarios.Usuarios;
 import Login.LOGINPINEED; // Importa la clase LOGINPINEED para manejar la lógica de inicio de sesión
 import com.toedter.calendar.JDateChooser; // Importa la clase JDateChooser para seleccionar fechas de manera visual
 import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat; // Importa la clase SimpleDateFormat para formatear fechas
+import java.util.ArrayList;
 import java.util.Date; // Importa la clase Date para manejar fechas y horas
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.Vector; // Importa la clase Vector para almacenar datos en una lista dinámica
 import javax.swing.JOptionPane; // Importa la clase JOptionPane para mostrar diálogos de mensaje y entrada
 import javax.swing.table.DefaultTableModel; // Importa la clase DefaultTableModel para gestionar modelos de tabla en Swing
 import java.util.regex.Pattern; // Importa la clase Pattern para trabajar con expresiones regulares
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
 import javax.swing.JTable; // Importa la clase JTable para crear tablas en la interfaz gráfica
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  * Clase AGREGARGESTIONCAMIONES.
@@ -31,6 +66,10 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
     private String currentUser; // Nombre del usuario actual.
     private String userRole; // Rol del usuario actual.
     private LOGINPINEED loginFrame; // Referencia al frame de inicio de sesión.
+private List<Usuarios> usuarios = new ArrayList<>();
+private List<Piloto> pilotos = new ArrayList<>();
+    private GESTIONUSUARIOS gestionUsuarios;
+
 
     /**
      * Constructor de la clase AGREGARGESTIONCAMIONES.
@@ -58,6 +97,8 @@ public class AGREGARGESTIONCAMIONES extends javax.swing.JFrame {
         this.userRole = role;
         this.loginFrame = loginFrame;
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); // Cierra la ventana al salir.
+           gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel();
     }
 
     /**
@@ -243,6 +284,82 @@ public void limpiarCamposCamiones() {
     }
     
     
+
+private void enviarCorreoActualizacion(String destinatario, Camiones camion) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+        }
+    });
+
+    try {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario));
+        message.setSubject("Nuevo Camión Agregado - PINEED");
+
+        Multipart multipart = new MimeMultipart("related");
+
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" +
+            "<p style='color: #34495e;'>Se ha agregado un nuevo camión al sistema.</p>" +
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Detalles del Camión:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camion.getMarca() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camion.getModelo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camion.getPlacas() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camion.getEstado() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camion.getTipoCombustible() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camion.getCapacidadCarga() + " kg</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camion.getAñoFabricacion() + "</td></tr>" +
+            "</table></div>" +
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +  // Referencia a la imagen
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";  // Ruta de la imagen
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);  // Importante para mostrar la imagen en línea
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+
+        message.setContent(multipart);
+        Transport.send(message);
+
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -336,46 +453,44 @@ public void limpiarCamposCamiones() {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addContainerGap(696, Short.MAX_VALUE)
-                        .addComponent(btnAgregarCamionesSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtMarcaCamiones)
-                                    .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCapacidadDeCargaCamiones)
-                                    .addComponent(txtTipoCombustibleCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtKilometrajeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtPlacasCamiones)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(txtMarcaCamiones)
+                            .addComponent(txtModeloCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtAñoDeFabricacionCamiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCapacidadDeCargaCamiones)
+                            .addComponent(txtTipoCombustibleCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtEstadoCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtKilometrajeCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtPlacasCamiones)))
+                .addContainerGap(474, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAgregarCamionesSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -466,7 +581,7 @@ public void limpiarCamposCamiones() {
         String estado = txtEstadoCamiones.getSelectedItem().toString().trim();
         String tipoCombustible = txtTipoCombustibleCamiones.getSelectedItem().toString().trim();
 
-        // Validación de campos
+        // Validación de campos (mantener las validaciones existentes...)
         if (marca.isEmpty() || modelo.isEmpty() || placas.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
             return;
@@ -529,44 +644,134 @@ public void limpiarCamposCamiones() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         String añoFabricacion = sdf.format(añoFabricacionDate);
 
-        // Verifica si hay un camión con las mismas placas
-        boolean placasCambiadas = !placas.equals(camionActual.getPlacas());
+        // Verifica si hay un camión con las mismas placas en la lista existente
         for (Camiones camionExistente : listaCamiones) {
-            if (camionExistente != camionActual && placasCambiadas && camionExistente.getPlacas().equals(placas)) {
+            if (camionExistente.getPlacas().equals(placas)) {
                 JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
                 return;
             }
         }
 
-        // Actualización de datos del camión
-        camionActual.setPlacas(placas);
-        camionActual.setModelo(modelo);
-        camionActual.setMarca(marca);
-        camionActual.setEstado(estado);
-        camionActual.setTipoCombustible(tipoCombustible);
-        camionActual.setKilometraje(kilometraje);
-        camionActual.setCapacidadCarga(capacidadCarga);
-        camionActual.setAñoFabricacion(añoFabricacion);
+        // Crear nuevo camión
+            Camiones nuevoCamion = new Camiones(
+                placas,
+                estado,
+                tipoCombustible,
+                kilometraje,
+                capacidadCarga,
+                añoFabricacion,
+                modelo,
+                marca,
+                true,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                "",
+                "",
+                "",
+                0.0,
+                0.0
+            );
 
-        gestionCamiones.actualizarCamion(camionActual); // Actualiza el camión en la gestión.
+            // Agregar el nuevo camión
+            gestionCamiones.agregarCamion(nuevoCamion);
 
-        JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.");
-        cargarCamionesEnTabla(); // Refresca la tabla con los nuevos datos
+            // Crear y mostrar el diálogo de progreso
+            JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+            dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            
+            // Configurar el panel de progreso
+            JPanel panel = new JPanel(new BorderLayout(10, 10));
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setIndeterminate(true);
+            progressBar.setStringPainted(true);
+            progressBar.setString("Enviando notificaciones...");
+            
+            JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
+            mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+            
+            panel.add(mensajeLabel, BorderLayout.NORTH);
+            panel.add(progressBar, BorderLayout.CENTER);
+            
+            dialogoProceso.add(panel);
+            dialogoProceso.setSize(400, 150);
+            dialogoProceso.setLocationRelativeTo(this);
 
-        this.dispose(); // Cierra la ventana actual
+            // Crear y ejecutar el hilo para enviar correos
+            Thread processingThread = new Thread(() -> {
+                try {
+      Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+                boolean correosEnviados = false;
+                
+                // Enviar correos tanto a administradores como a secretarias
+                for (Usuarios usuario : usuarios) {
+                    // Verificar si el usuario es ADMINISTRADOR o SECRETARIA
+                    if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                         "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) && 
+                        usuario.getCorreoElectronico() != null && 
+                        !usuario.getCorreoElectronico().isEmpty()) {
+                        
+                        enviarCorreoActualizacion(usuario.getCorreoElectronico(), nuevoCamion);
+                        correosEnviados = true;
+                    }
+                }   
+
+                    final boolean exito = correosEnviados;
+                    SwingUtilities.invokeLater(() -> {
+                        dialogoProceso.dispose();
+                        if (exito) {
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Camión agregado exitosamente y se han enviado las notificaciones al personal administrativo.",
+                                "Operación exitosa",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
+                            
+                            
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Camión agregado exitosamente pero no se el personal administrativo para notificar.",
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE
+                            );
+                        }
+ cargarCamionesEnTabla();
+            
+            // Abrir nueva ventana de gestión
+            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+            abrir.setVisible(true);
+            this.setVisible(false); // Ocultar la ventana actual
+        });
 
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al modificar camión: " + e.getMessage());
-    }
+        SwingUtilities.invokeLater(() -> {
+            dialogoProceso.dispose(); // Cerrar diálogo en caso de error
+            JOptionPane.showMessageDialog(
+                this,
+                "Error al enviar las notificaciones: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+                    });
+                }
+            });
 
-    // Abre la ventana de gestión de camiones después de modificar
-    String username = this.currentUser;
-    String role = this.userRole;
-    LOGINPINEED loginFrame = this.loginFrame;
+            processingThread.start();
+            dialogoProceso.setVisible(true);
 
-    INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(username, role, loginFrame);
-    abrir.setVisible(true);
-    this.setVisible(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error inesperado: " + e.getMessage() + "\nPor favor, contacte al administrador del sistema.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_btnAgregarCamionesSistemaActionPerformed
 
     private void txtEstadoCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionesActionPerformed

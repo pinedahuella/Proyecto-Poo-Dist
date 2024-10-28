@@ -335,7 +335,7 @@ initComponents();
     
     // Acción del botón para iniciar sesión
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
-    String nombreUsuario = txtNombreUsuario.getText();
+      String nombreUsuario = txtNombreUsuario.getText();
     String contraseña = new String(txtContraseñaUsuario.getPassword());
 
     // Verificar administrador especial
@@ -349,28 +349,22 @@ initComponents();
         }
     }
 
-    // Validación de formato minúsculas
-    if (!nombreUsuario.equals(nombreUsuario.toLowerCase())) {
-        mostrarMensajeError("El nombre de usuario debe estar en minúsculas."
-                + "Usando el formato: nombre.apellido&pineed "
-                + "Primer Nombre y Primer Apellido"
-                + "Por favor, corríjalo e intente de nuevo.");
-        return;
-    }
+    // Normalizar el nombre de usuario
+    String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
 
     // Verificar si es un piloto
-    Piloto piloto = buscarPiloto(nombreUsuario);
+    Piloto piloto = buscarPiloto(nombreNormalizado);
     if (piloto != null) {
         if (!piloto.getEstadoPiloto().equalsIgnoreCase("ACTIVO")) {
             mostrarMensajeEstadoPiloto(piloto.getEstadoPiloto());
             return;
         }
-        validarLoginPiloto(piloto, nombreUsuario, contraseña);
+        validarLoginPiloto(piloto, nombreNormalizado, contraseña);
         return;
     }
 
     // Validación de usuario normal
-    Usuarios usuario = buscarUsuario(nombreUsuario);
+    Usuarios usuario = buscarUsuario(nombreNormalizado);
     if (usuario == null) {
         mostrarMensajeError("Usuario no encontrado.");
         return;
@@ -475,6 +469,7 @@ private void mostrarMensajeEstadoPiloto(String estado) {
 
 
 private void manejarIntentoFallido(Usuarios usuario, String nombreUsuario) {
+    // Los administradores nunca se bloquean
     if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
         mostrarMensajeError("Contraseña incorrecta.");
         return;
@@ -484,38 +479,75 @@ private void manejarIntentoFallido(Usuarios usuario, String nombreUsuario) {
     intentosFallidos.put(nombreUsuario, intentos);
 
     if (intentos >= 3) {
-        bloquearUsuario(usuario);
+        // En lugar de eliminar, cambiamos el estado a BLOQUEADO
+        usuario.setEstado("BLOQUEADO");
+        gestionUsuarios.actualizarUsuario(usuario);
         mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos. Contacte al administrador: +502 5754-5388");
     } else {
         mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
     }
 }
 
+// También actualizamos el método bloquearUsuario para mantener consistencia
+private void bloquearUsuario(Usuarios usuario) {
+    // Verificación adicional para nunca bloquear administradores
+    if (usuario.getCargo().equalsIgnoreCase("ADMINISTRADOR")) {
+        return;
+    }
+    
+    usuario.setEstado("BLOQUEADO");
+    gestionUsuarios.actualizarUsuario(usuario);
+    mostrarMensajeError("Usuario bloqueado por múltiples intentos fallidos. Contacte al administrador: +502 5754-5388");
+}
 
-
-      // Añadir método para buscar piloto
-    private Piloto buscarPiloto(String nombreUsuario) {
-        // El formato esperado es "nombre.apellido&pineed"
-        if (!nombreUsuario.endsWith("&pineed")) {
-            return null;
-        }
-        
-        String[] partes = nombreUsuario.replace("&pineed", "").split("\\.");
-        if (partes.length != 2) {
-            return null;
-        }
-        
-        String nombre = partes[0];
-        String apellido = partes[1];
-        
-        for (Piloto p : gestionPilotos.getPilotos()) {
-            if (p.getNombrePiloto().toLowerCase().equals(nombre) &&
-                p.getApellidoPiloto().toLowerCase().equals(apellido)) {
-                return p;
-            }
-        }
+// Método actualizado para buscar piloto
+private Piloto buscarPiloto(String nombreUsuario) {
+    // Normalizar el nombre de usuario ingresado
+    String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
+    
+    // El formato esperado es "nombre.apellido&pineed"
+    if (!nombreNormalizado.endsWith("&pineed")) {
         return null;
     }
+    
+    String[] partes = nombreNormalizado.replace("&pineed", "").split("\\.");
+    if (partes.length != 2) {
+        return null;
+    }
+    
+    String nombre = partes[0];
+    String apellido = partes[1];
+    
+    for (Piloto p : gestionPilotos.getPilotos()) {
+        // Normalizar el nombre y apellido del piloto almacenado
+        String nombrePilotoNormalizado = normalizarNombreUsuario(p.getNombrePiloto());
+        String apellidoPilotoNormalizado = normalizarNombreUsuario(p.getApellidoPiloto());
+        
+        if (nombrePilotoNormalizado.equals(nombre) &&
+            apellidoPilotoNormalizado.equals(apellido)) {
+            return p;
+        }
+    }
+    return null;
+}
+
+// Método actualizado para buscar usuario
+private Usuarios buscarUsuario(String nombreUsuario) {
+    // Normalizar el nombre de usuario ingresado
+    String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
+    
+    for (Usuarios u : gestionUsuarios.getUsuarios()) {
+        // Normalizar el nombre de usuario almacenado
+        String nombreUsuarioNormalizado = normalizarNombreUsuario(u.getNombreUsuario());
+        
+        if (nombreUsuarioNormalizado.equals(nombreNormalizado)) {
+            return u;
+        }
+    }
+    return null;
+}
+
+
     
     // Añadir método para validar login de piloto
     private void validarLoginPiloto(Piloto piloto, String nombreUsuario, String contraseña) {
@@ -576,6 +608,27 @@ private void manejarIntentoFallido(Usuarios usuario, String nombreUsuario) {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtContraseñaUsuarioActionPerformed
 
+    
+    // Método para normalizar el nombre de usuario
+private String normalizarNombreUsuario(String nombreUsuario) {
+    // Convertir a minúsculas
+    String normalizado = nombreUsuario.toLowerCase();
+    
+    // Quitar tildes
+    normalizado = normalizado
+        .replace('á', 'a')
+        .replace('é', 'e')
+        .replace('í', 'i')
+        .replace('ó', 'o')
+        .replace('ú', 'u')
+        .replace('ü', 'u')
+        .replace('ñ', 'n');
+    
+    return normalizado;
+}
+
+
+
     // Método para cerrar sesión del usuario
 
     public void cerrarSesion(String nombreUsuario, String rol) {
@@ -617,22 +670,9 @@ private void manejarIntentoFallido(Usuarios usuario, String nombreUsuario) {
         super.setVisible(visible);
     }
 
-    // Método para buscar un usuario por su nombre
-    private Usuarios buscarUsuario(String nombreUsuario) {
-        for (Usuarios u : gestionUsuarios.getUsuarios()) {
-            if (u.getNombreUsuario().equals(nombreUsuario)) {
-                return u; // Retorna el usuario encontrado
-            }
-        }
-        return null; // Retorna nulo si no se encuentra
-    }
+ 
 
-    // Método para bloquear un usuario
-    private void bloquearUsuario(Usuarios usuario) {
-        usuario.setEstado("bloqueado");
-        gestionUsuarios.actualizarUsuario(usuario); // Actualiza el estado del usuario
-        JOptionPane.showMessageDialog(this, "El usuario ha sido bloqueado por múltiples intentos fallidos.");
-    }
+
 
     // Método para mostrar mensajes de error
     private void mostrarMensajeError(String mensaje) {

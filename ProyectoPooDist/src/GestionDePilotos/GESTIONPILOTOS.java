@@ -49,55 +49,57 @@ private Vector<Piloto> pilotos = new Vector<>();
             guardarPilotosEnExcel();
         }
 
-        
 // Método para validar si el piloto existe en GESTIONUSUARIOS
-    private boolean validarDuplicadosEnUsuarios(Piloto piloto) {
-        GESTIONUSUARIOS gestionUsuarios = new GESTIONUSUARIOS();
-        gestionUsuarios.cargarUsuariosDesdeExcel(); // Cargar datos de usuarios
+private String validarDuplicadosEnUsuarios(Piloto piloto) {
+    GESTIONUSUARIOS gestionUsuarios = new GESTIONUSUARIOS();
+    gestionUsuarios.cargarUsuariosDesdeExcel(); // Cargar datos de usuarios
 
-        for (Usuarios usuario : gestionUsuarios.getUsuarios()) {
-            if (usuario.getNumeroDPI() == piloto.getNumeroDeDpi() || 
-                usuario.getNumeroTelefono() == piloto.getNumeroTelefonicoPiloto() || 
-                usuario.getCorreoElectronico().equalsIgnoreCase(piloto.getCorreoElectronicoPiloto())) {
-                return true;
-            }
+    for (Usuarios usuario : gestionUsuarios.getUsuarios()) {
+        if (usuario.getNumeroDPI() == piloto.getNumeroDeDpi()) {
+            return "El DPI ya está registrado en el sistema de usuarios.";
+        } else if (usuario.getNumeroTelefono() == piloto.getNumeroTelefonicoPiloto()) {
+            return "El número de teléfono ya está registrado en el sistema de usuarios.";
+        } else if (usuario.getCorreoElectronico().equalsIgnoreCase(piloto.getCorreoElectronicoPiloto())) {
+            return "El correo electrónico ya está registrado en el sistema de usuarios.";
         }
-        return false;
+    }
+    return null; // No hay duplicados
+}
+
+public void agregarPiloto(Piloto nuevoPiloto) {
+    // Validar que el piloto no esté duplicado en usuarios
+    String mensajeError = validarDuplicadosEnUsuarios(nuevoPiloto);
+    if (mensajeError != null) {
+        throw new IllegalStateException(mensajeError);
     }
 
-    public void agregarPiloto(Piloto nuevoPiloto) {
-        // Validar que el piloto no esté duplicado en usuarios
-        if (validarDuplicadosEnUsuarios(nuevoPiloto)) {
-            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de usuarios.");
+    // Agregar el piloto si no existe
+    for (Piloto piloto : pilotos) {
+        if (piloto.getNumeroDeDpi() == nuevoPiloto.getNumeroDeDpi()) {
+            throw new IllegalStateException("El piloto ya existe en el sistema.");
         }
-        
-        // Agregar el piloto si no existe
-        for (Piloto piloto : pilotos) {
-            if (piloto.getNumeroDeDpi() == nuevoPiloto.getNumeroDeDpi()) {
-                throw new IllegalStateException("El piloto ya existe en el sistema.");
-            }
-        }
-        pilotos.add(nuevoPiloto);
-        guardarPilotosEnExcel();
+    }
+    pilotos.add(nuevoPiloto);
+    guardarPilotosEnExcel();
+}
+
+public void actualizarPiloto(Piloto pilotoActualizado) {
+    // Validar que el piloto no esté duplicado en usuarios
+    String mensajeError = validarDuplicadosEnUsuarios(pilotoActualizado);
+    if (mensajeError != null) {
+        throw new IllegalStateException(mensajeError);
     }
 
-    public void actualizarPiloto(Piloto pilotoActualizado) {
-        // Validar que el piloto no esté duplicado en usuarios
-        if (validarDuplicadosEnUsuarios(pilotoActualizado)) {
-            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de usuarios.");
+    // Actualizar piloto
+    for (int i = 0; i < pilotos.size(); i++) {
+        if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
+            pilotos.set(i, pilotoActualizado);
+            guardarPilotosEnExcel();
+            return;
         }
-
-        // Actualizar piloto
-        for (int i = 0; i < pilotos.size(); i++) {
-            if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
-                pilotos.set(i, pilotoActualizado);
-                guardarPilotosEnExcel();
-                return;
-            }
-        }
-        throw new IllegalStateException("El piloto no existe.");
     }
-
+    throw new IllegalStateException("El piloto no existe.");
+}
 
         private void reordenarIndices() {
             try {

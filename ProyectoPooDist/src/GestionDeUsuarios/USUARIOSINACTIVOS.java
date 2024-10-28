@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import Login.LOGINPINEED;
 import Login.Login;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -24,8 +25,30 @@ import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.text.Normalizer;
+import java.util.Properties;
 import java.util.regex.Pattern;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import javax.swing.JPanel;
 
 public class USUARIOSINACTIVOS extends javax.swing.JFrame {
     
@@ -637,15 +660,108 @@ private String normalizarTexto(String texto) {
     Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
     return pattern.matcher(textoNormalizado).replaceAll("").toLowerCase(); // Devuelve el texto sin acentos y en minúsculas
 }
+private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario) throws IOException, AddressException, MessagingException {
+    // Validar el correo electrónico
+    if (destinatario == null || destinatario.trim().isEmpty() || !destinatario.contains("@")) {
+        throw new IOException("Correo electrónico inválido: " + destinatario);
+    }
+
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+    
+    System.out.println("Intentando enviar correo a: " + destinatario);
+        
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("Reactivación de Usuario en el Sistema - PINEED");
+        
+        Multipart multipart = new MimeMultipart("related");
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
+            "<p style='color: #34495e;'>Nos complace informarle que su cuenta de usuario ha sido reactivada en nuestro sistema.</p>" +
+            
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Usuario:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + usuario.getNombre() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + usuario.getApellido() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Cargo:</strong></td><td>" + usuario.getCargo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + usuario.getCorreoElectronico() + "</td></tr>" +
+            "</table></div>" +
+
+            "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Usuario:</strong></td><td>" + usuario.getNombreUsuario() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Contraseña:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
+            "</table>" +
+            "</div>" +
+
+            "<div style='text-align: center; margin-top: 20px;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen embebida
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        System.out.println("Correo enviado exitosamente a: " + destinatario);
+        
+    } catch (MessagingException e) {
+        System.err.println("Error detallado al enviar correo: ");
+        e.printStackTrace();
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
 
 
     private void ActivarUsuarioEliminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarUsuarioEliminadoActionPerformed
-       int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+    int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
-            // Ajustamos el índice para tomar en cuenta la nueva columna "No."
-            // La columna DPI ahora está en el índice 4 en lugar de 3
+            // Obtener DPI y correo del usuario seleccionado
             long dpi = Long.parseLong(tblRegistroUsuarios.getValueAt(filaSeleccionada, 4).toString());
+            String correo = tblRegistroUsuarios.getValueAt(filaSeleccionada, 6).toString();
 
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Está seguro de que desea reactivar el usuario con DPI: " + dpi + "?",
@@ -653,9 +769,83 @@ private String normalizarTexto(String texto) {
                 JOptionPane.YES_NO_OPTION);
 
             if (confirm == JOptionPane.YES_OPTION) {
-                gestionUsuarios.reactivarUsuario(dpi);
-                cargarDatos();
-                JOptionPane.showMessageDialog(this, "Usuario reactivado correctamente.");
+                // Crear y mostrar el diálogo de progreso
+                JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+                dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                JPanel panel = new JPanel(new BorderLayout(10, 10));
+                panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+                JPanel contenidoPanel = new JPanel(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridwidth = GridBagConstraints.REMAINDER;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.insets = new Insets(5, 5, 5, 5);
+
+                JProgressBar progressBar = new JProgressBar();
+                progressBar.setIndeterminate(true);
+                progressBar.setStringPainted(true);
+                progressBar.setString("Procesando...");
+
+                JLabel mensajeLabel = new JLabel("Reactivando usuario y enviando notificación...");
+                mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+
+                contenidoPanel.add(mensajeLabel, gbc);
+                contenidoPanel.add(progressBar, gbc);
+                panel.add(contenidoPanel, BorderLayout.CENTER);
+                dialogoProceso.add(panel);
+                dialogoProceso.setSize(400, 150);
+                dialogoProceso.setLocationRelativeTo(this);
+
+                Thread processingThread = new Thread(() -> {
+                    try {
+                        // Obtener el usuario completo
+                        Usuarios usuarioActivado = null;
+                        for (Usuarios usuario : listaUsuariosInactivos) {
+                            if (usuario.getNumeroDPI() == dpi) {
+                                usuarioActivado = usuario;
+                                break;
+                            }
+                        }
+
+                        if (usuarioActivado != null) {
+                            // Reactivar usuario
+                            gestionUsuarios.reactivarUsuario(dpi);
+
+                            try {
+                                // Enviar correo
+                                enviarCorreoActivacionUsuario(correo, usuarioActivado);
+                                SwingUtilities.invokeLater(() -> {
+                                    dialogoProceso.dispose();
+                                    cargarDatos();
+                                    JOptionPane.showMessageDialog(this,
+                                        "Usuario reactivado correctamente y correo enviado.",
+                                        "Éxito",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                });
+                            } catch (IOException e) {
+                                SwingUtilities.invokeLater(() -> {
+                                    dialogoProceso.dispose();
+                                    cargarDatos();
+                                    JOptionPane.showMessageDialog(this,
+                                        "Usuario reactivado pero hubo un error al enviar el correo: " + e.getMessage(),
+                                        "Advertencia",
+                                        JOptionPane.WARNING_MESSAGE);
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                        SwingUtilities.invokeLater(() -> {
+                            dialogoProceso.dispose();
+                            JOptionPane.showMessageDialog(this,
+                                "Error durante el proceso: " + e.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        });
+                    }
+                });
+
+                processingThread.start();
+                dialogoProceso.setVisible(true);
             }
         } catch (Exception e) {
             System.err.println("Error al reactivar el usuario: " + e.getMessage());

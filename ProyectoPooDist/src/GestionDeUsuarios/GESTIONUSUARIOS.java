@@ -56,52 +56,57 @@ public class GESTIONUSUARIOS {
      * @param usuario Usuario a agregar
      */
 // Método para validar si el usuario existe en GESTIONPILOTOS
-    private boolean validarDuplicadosEnPilotos(Usuarios usuario) {
-        GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
-        gestionPilotos.cargarPilotosDesdeExcel(); // Cargar datos de pilotos
+// Método para validar si el usuario existe en GESTIONPILOTOS
+private String validarDuplicadosEnPilotos(Usuarios usuario) {
+    GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
+    gestionPilotos.cargarPilotosDesdeExcel(); // Cargar datos de pilotos
 
-        for (Piloto piloto : gestionPilotos.getPilotos()) {
-            if (piloto.getNumeroDeDpi() == usuario.getNumeroDPI() || 
-                piloto.getNumeroTelefonicoPiloto() == usuario.getNumeroTelefono() || 
-                piloto.getCorreoElectronicoPiloto().equalsIgnoreCase(usuario.getCorreoElectronico())) {
-                return true;
-            }
+    for (Piloto piloto : gestionPilotos.getPilotos()) {
+        if (piloto.getNumeroDeDpi() == usuario.getNumeroDPI()) {
+            return "El DPI ya está registrado en el sistema de pilotos.";
+        } else if (piloto.getNumeroTelefonicoPiloto() == usuario.getNumeroTelefono()) {
+            return "El número de teléfono ya está registrado en el sistema de pilotos.";
+        } else if (piloto.getCorreoElectronicoPiloto().equalsIgnoreCase(usuario.getCorreoElectronico())) {
+            return "El correo electrónico ya está registrado en el sistema de pilotos.";
         }
-        return false;
+    }
+    return null; // No hay duplicados
+}
+
+public void agregarUsuario(Usuarios nuevoUsuario) {
+    // Validar que el usuario no esté duplicado en pilotos
+    String mensajeError = validarDuplicadosEnPilotos(nuevoUsuario);
+    if (mensajeError != null) {
+        throw new IllegalStateException(mensajeError);
+    }
+    
+    // Agregar el usuario si no existe
+    for (Usuarios usuario : usuarios) {
+        if (usuario.getNumeroDPI() == nuevoUsuario.getNumeroDPI()) {
+            throw new IllegalStateException("El usuario ya existe en el sistema.");
+        }
+    }
+    usuarios.add(nuevoUsuario);
+    guardarUsuariosEnExcel();
+}
+
+public void actualizarUsuario(Usuarios usuarioActualizado) {
+    // Validar que el usuario no esté duplicado en pilotos
+    String mensajeError = validarDuplicadosEnPilotos(usuarioActualizado);
+    if (mensajeError != null) {
+        throw new IllegalStateException(mensajeError);
     }
 
-    public void agregarUsuario(Usuarios nuevoUsuario) {
-        // Validar que el usuario no esté duplicado en pilotos
-        if (validarDuplicadosEnPilotos(nuevoUsuario)) {
-            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de pilotos.");
+    // Actualizar usuario
+    for (int i = 0; i < usuarios.size(); i++) {
+        if (usuarios.get(i).getNumeroDPI() == usuarioActualizado.getNumeroDPI()) {
+            usuarios.set(i, usuarioActualizado);
+            guardarUsuariosEnExcel();
+            return; // Salir después de actualizar
         }
-        
-        // Agregar el usuario si no existe
-        for (Usuarios usuario : usuarios) {
-            if (usuario.getNumeroDPI() == nuevoUsuario.getNumeroDPI()) {
-                throw new IllegalStateException("El usuario ya existe en el sistema.");
-            }
-        }
-        usuarios.add(nuevoUsuario);
-        guardarUsuariosEnExcel();
     }
-
-    public void actualizarUsuario(Usuarios usuarioActualizado) {
-        // Validar que el usuario no esté duplicado en pilotos
-        if (validarDuplicadosEnPilotos(usuarioActualizado)) {
-            throw new IllegalStateException("El DPI, teléfono o correo ya está registrado en el sistema de pilotos.");
-        }
-
-        // Actualizar usuario
-        for (int i = 0; i < usuarios.size(); i++) {
-            if (usuarios.get(i).getNumeroDPI() == usuarioActualizado.getNumeroDPI()) {
-                usuarios.set(i, usuarioActualizado);
-                guardarUsuariosEnExcel();
-                return;
-            }
-        }
-        throw new IllegalStateException("El usuario no existe.");
-    }
+    throw new IllegalStateException("El usuario no existe.");
+}
 
     
     /**

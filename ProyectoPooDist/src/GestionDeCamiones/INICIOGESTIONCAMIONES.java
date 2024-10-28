@@ -8,9 +8,12 @@ import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
 import ControlVentas.FrameVentaDiaria;
 import ControlViajes.FormularioViajes;
+import GestionDeUsuarios.GESTIONUSUARIOS;
+import GestionDeUsuarios.Usuarios;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
 import Login.Login;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,8 +24,42 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import java.util.Properties;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.swing.JTextField;
+import javax.swing.table.TableModel;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
+import javax.swing.JTable; // Importa la clase JTable para crear tablas en la interfaz gráfica
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+
 
 // Clase principal para la gestión de camiones
 public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
@@ -33,7 +70,7 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
     private String userRole;
     private LOGINPINEED loginFrame;
     private Vector<Camiones> camionesEnTabla = new Vector<>(); // Nueva variable para trackear los camiones mostrados
-
+   private GESTIONUSUARIOS gestionUsuarios;
     // Modelo de tabla para mostrar los camiones
     DefaultTableModel modeloCamiones = new DefaultTableModel() {
         @Override
@@ -75,7 +112,12 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
         tblRegistroCamiones1.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para la columna "Estado"
         tblRegistroCamiones1.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para la columna "Tipo Combustible"
         tblRegistroCamiones1.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para la columna "Kilometraje"
+    
+      gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel();
 
+        
+        
         cargarCamionesEnTabla();
         this.currentUser = username;
         this.userRole = role;
@@ -797,26 +839,186 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMenuActionPerformed
 
-    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
-        int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            // Usamos el vector de seguimiento en lugar del listaCamiones original
-            Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
-            String placasSeleccionadas = camionSeleccionado.getPlacas();
+    
+    
+    
+    
+    
+    
+    private void enviarCorreoEliminacion(String destinatario, Camiones camionEliminado) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar este camión con placas: " + placasSeleccionadas + "?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                gestionCamiones.eliminarCamion(placasSeleccionadas);
-                actualizarTabla();
-                JOptionPane.showMessageDialog(this, "Camión eliminado correctamente.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para eliminar.");
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
         }
+    });
+
+    try {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario));
+        message.setSubject("Camión Eliminado - PINEED");
+
+        Multipart multipart = new MimeMultipart("related");
+
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Camión Eliminado en PINEED!</strong></h2>" +
+            "<p style='color: #34495e;'>Se ha eliminado un camión del sistema.</p>" +
+            
+            // Datos del Camión Eliminado
+            "<div style='background-color: #ffebee; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #c62828; margin-top: 0;'>Datos del Camión Eliminado:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camionEliminado.getMarca() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camionEliminado.getModelo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camionEliminado.getPlacas() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camionEliminado.getEstado() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camionEliminado.getTipoCombustible() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camionEliminado.getCapacidadCarga() + " kg</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Kilometraje:</strong></td><td>" + camionEliminado.getKilometraje() + " km</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camionEliminado.getAñoFabricacion() + "</td></tr>" +
+            "</table></div>" +
+            
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+        
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+
+        message.setContent(multipart);
+        Transport.send(message);
+
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+    
+    
+    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
+int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+    if (filaSeleccionada >= 0) {
+        Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
+        String placasSeleccionadas = camionSeleccionado.getPlacas();
+        
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Estás seguro de que deseas eliminar el camión con placas: " + placasSeleccionadas + "?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION);
+            
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Crear el diálogo de progreso
+            JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+            dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            
+            JPanel panel = new JPanel(new BorderLayout(10, 10));
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setIndeterminate(true);
+            progressBar.setStringPainted(true);
+            progressBar.setString("Enviando notificaciones...");
+            
+            JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
+            mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+            
+            panel.add(mensajeLabel, BorderLayout.NORTH);
+            panel.add(progressBar, BorderLayout.CENTER);
+            
+            dialogoProceso.add(panel);
+            dialogoProceso.setSize(400, 150);
+            dialogoProceso.setLocationRelativeTo(this);
+
+            // Crear un hilo separado para realizar el envío de correos
+            Thread processingThread = new Thread(() -> {
+                boolean correosEnviados = false;
+                try {
+                    // Obtener la lista de usuarios
+                    Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+
+                    for (Usuarios usuario : usuarios) {
+                        if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                             "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
+                            usuario.getCorreoElectronico() != null &&
+                            !usuario.getCorreoElectronico().isEmpty()) {
+                            
+                            // Enviar correo a cada administrador o secretaria
+                            enviarCorreoEliminacion(usuario.getCorreoElectronico(), camionSeleccionado);
+                            correosEnviados = true;
+                        }
+                    }
+                    
+                    // Eliminar el camión después de enviar los correos
+                    gestionCamiones.eliminarCamion(placasSeleccionadas);
+                    
+                } catch (Exception e) {
+                    correosEnviados = false;
+                } finally {
+                    final boolean exito = correosEnviados;
+                    SwingUtilities.invokeLater(() -> {
+                        dialogoProceso.dispose(); // Cerrar el diálogo de progreso
+                        
+                        if (exito) {
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Camión eliminado exitosamente y se han enviado las notificaciones al personal administrativo.",
+                                "Operación exitosa",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Camión eliminado exitosamente pero no se pudieron enviar las notificaciones.",
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE
+                            );
+                        }
+
+                        // Actualizar la tabla
+                        actualizarTabla();
+                    });
+                }
+            });
+
+            // Iniciar el proceso en un hilo separado
+            processingThread.start();
+            
+            // Mostrar el diálogo mientras se realiza el proceso
+            dialogoProceso.setVisible(true);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para eliminar.");
+    }
     }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void ActivarCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarCamionesActionPerformed

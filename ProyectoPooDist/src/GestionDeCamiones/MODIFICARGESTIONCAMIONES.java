@@ -5,10 +5,15 @@ import Login.LOGINPINEED;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
+import GestionDeUsuarios.GESTIONUSUARIOS;
+import GestionDeUsuarios.Usuarios;
 import com.toedter.calendar.JDateChooser;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -16,6 +21,37 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import java.util.Properties;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.swing.JTextField;
+import javax.swing.table.TableModel;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
+import javax.swing.JTable; // Importa la clase JTable para crear tablas en la interfaz gráfica
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 
 public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
 
@@ -28,6 +64,7 @@ public class MODIFICARGESTIONCAMIONES extends javax.swing.JFrame {
     private String currentUser; // Nombre del usuario actual
     private String userRole; // Rol del usuario actual
     private LOGINPINEED loginFrame; // Objeto de la clase LOGINPINEED
+    private GESTIONUSUARIOS gestionUsuarios;
 
     /**
      * Constructor de la clase MODIFICARGESTIONCAMIONES.
@@ -53,6 +90,9 @@ public MODIFICARGESTIONCAMIONES(Camiones camion, INICIOGESTIONCAMIONES ventanaPr
         this.gestionCamiones = ventanaPrincipal.gestionCamiones;
         this.listaCamiones = gestionCamiones.getCamiones();
     }
+    
+      gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel();
 
     // Primero configuramos los placeholders y listeners
     configurarCamposDeTextoConPlaceholdersCamiones();
@@ -397,58 +437,198 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+    
+            
+private void enviarCorreoModificacion(String destinatario, Camiones camionNuevo, Camiones camionAnterior) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+        }
+    });
+
+    try {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario));
+        message.setSubject("Camión Modificado - PINEED");
+
+        Multipart multipart = new MimeMultipart("related");
+
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Camión Modificado en PINEED!</strong></h2>" +
+            "<p style='color: #34495e;'>Se ha modificado un camión en el sistema.</p>" +
+            
+            // Datos Anteriores
+            "<div style='background-color: #fff3e0; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #e65100; margin-top: 0;'>Datos Anteriores:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camionAnterior.getMarca() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camionAnterior.getModelo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camionAnterior.getPlacas() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camionAnterior.getEstado() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camionAnterior.getTipoCombustible() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camionAnterior.getCapacidadCarga() + " kg</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Kilometraje:</strong></td><td>" + camionAnterior.getKilometraje() + " km</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camionAnterior.getAñoFabricacion() + "</td></tr>" +
+            "</table></div>" +
+            
+            // Nuevos Datos
+            "<div style='background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2e7d32; margin-top: 0;'>Nuevos Datos:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camionNuevo.getMarca() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camionNuevo.getModelo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camionNuevo.getPlacas() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camionNuevo.getEstado() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camionNuevo.getTipoCombustible() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camionNuevo.getCapacidadCarga() + " kg</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Kilometraje:</strong></td><td>" + camionNuevo.getKilometraje() + " km</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camionNuevo.getAñoFabricacion() + "</td></tr>" +
+            "</table></div>" +
+            
+            // Resumen de Cambios
+            "<div style='background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Campos Modificados:</h3>" +
+            "<ul style='list-style-type: none; padding: 0;'>" +
+            ((!camionAnterior.getMarca().equals(camionNuevo.getMarca())) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Marca: " + camionAnterior.getMarca() + " → " + camionNuevo.getMarca() + "</li>" : "") +
+            ((!camionAnterior.getModelo().equals(camionNuevo.getModelo())) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Modelo: " + camionAnterior.getModelo() + " → " + camionNuevo.getModelo() + "</li>" : "") +
+            ((!camionAnterior.getPlacas().equals(camionNuevo.getPlacas())) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Placas: " + camionAnterior.getPlacas() + " → " + camionNuevo.getPlacas() + "</li>" : "") +
+            ((!camionAnterior.getEstado().equals(camionNuevo.getEstado())) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Estado: " + camionAnterior.getEstado() + " → " + camionNuevo.getEstado() + "</li>" : "") +
+            ((!camionAnterior.getTipoCombustible().equals(camionNuevo.getTipoCombustible())) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Tipo de Combustible: " + camionAnterior.getTipoCombustible() + " → " + camionNuevo.getTipoCombustible() + "</li>" : "") +
+            ((camionAnterior.getCapacidadCarga() != camionNuevo.getCapacidadCarga()) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Capacidad de Carga: " + camionAnterior.getCapacidadCarga() + " kg → " + camionNuevo.getCapacidadCarga() + " kg</li>" : "") +
+            ((camionAnterior.getKilometraje() != camionNuevo.getKilometraje()) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Kilometraje: " + camionAnterior.getKilometraje() + " km → " + camionNuevo.getKilometraje() + " km</li>" : "") +
+            ((!camionAnterior.getAñoFabricacion().equals(camionNuevo.getAñoFabricacion())) ? 
+                "<li style='color: #e91e63; padding: 4px 0;'>✓ Año de Fabricación: " + camionAnterior.getAñoFabricacion() + " → " + camionNuevo.getAñoFabricacion() + "</li>" : "") +
+            "</ul></div>" +
+            
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+        
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+
+        message.setContent(multipart);
+        Transport.send(message);
+
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
     private void btnModificarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCamionesSistemaActionPerformed
-        try {
-            // Obtener datos de los campos de entrada
-            String placas = txtPlacasCamionesModificar.getText().trim();
-            String modelo = txtModeloCamionesModificar.getText().trim();
-            String marca = txtMarcaCamionesModificar.getText().trim();
-            String estado = txtEstadoCamionesModificar.getSelectedItem().toString().trim();
-            String tipoCombustible = txtTipoCombustibleCamionesModificar.getSelectedItem().toString().trim();
-            double kilometraje = Double.parseDouble(txtKilometrajeCamionesModificar.getText().trim());
-            double capacidadCarga = Double.parseDouble(txtCapacidadDeCargaCamionesModificar.getText().trim());
+    try {
+        // Obtener datos de los campos de entrada
+        String placas = txtPlacasCamionesModificar.getText().trim();
+        String modelo = txtModeloCamionesModificar.getText().trim();
+        String marca = txtMarcaCamionesModificar.getText().trim();
+        String estado = txtEstadoCamionesModificar.getSelectedItem().toString().trim();
+        String tipoCombustible = txtTipoCombustibleCamionesModificar.getSelectedItem().toString().trim();
+        double kilometraje = Double.parseDouble(txtKilometrajeCamionesModificar.getText().trim());
+        double capacidadCarga = Double.parseDouble(txtCapacidadDeCargaCamionesModificar.getText().trim());
 
-            Date añoFabricacionDate = txtAñoDeFabricacionCamionesModificar.getDate();
-            if (añoFabricacionDate == null) {
-                JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de fabricación válida.");
+        Date añoFabricacionDate = txtAñoDeFabricacionCamionesModificar.getDate();
+        if (añoFabricacionDate == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una fecha de fabricación válida.");
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String añoFabricacion = sdf.format(añoFabricacionDate);
+
+        // Validar campos de entrada
+        if (placas.isEmpty() || modelo.isEmpty() || marca.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
+            return;
+        }
+
+        if (!validarPlacas(placas)) {
+            JOptionPane.showMessageDialog(this, "Las placas deben contener al menos una letra y un número.");
+            return;
+        }
+
+        if (!validarKilometraje(kilometraje)) {
+            JOptionPane.showMessageDialog(this, "El kilometraje debe ser un valor positivo y realista (0 - 1,000,000 km).");
+            return;
+        }
+
+        if (!validarCapacidadCarga(capacidadCarga)) {
+            JOptionPane.showMessageDialog(this, "La capacidad de carga debe ser un valor positivo y realista (100 - 30,000 kg).");
+            return;
+        }
+
+        // Verificar si las placas han cambiado
+        boolean placasCambiadas = !placas.equals(camionActual.getPlacas());
+
+        // Validar que no exista otro camión con las mismas placas
+        for (Camiones camionExistente : listaCamiones) {
+            if (camionExistente != camionActual && placasCambiadas && camionExistente.getPlacas().equals(placas)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
                 return;
             }
+        }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String añoFabricacion = sdf.format(añoFabricacionDate);
+        // Preguntar confirmación antes de modificar
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Estás seguro de que deseas modificar el camión con placas: " + placas + "?",
+            "Confirmar modificación",
+            JOptionPane.YES_NO_OPTION);
+            
+        
+        
+        // Antes de modificar el camión, crear una copia de los datos anteriores
+Camiones camionAnterior = new Camiones();
+camionAnterior.setPlacas(camionActual.getPlacas());
+camionAnterior.setModelo(camionActual.getModelo());
+camionAnterior.setMarca(camionActual.getMarca());
+camionAnterior.setEstado(camionActual.getEstado());
+camionAnterior.setTipoCombustible(camionActual.getTipoCombustible());
+camionAnterior.setKilometraje(camionActual.getKilometraje());
+camionAnterior.setCapacidadCarga(camionActual.getCapacidadCarga());
+camionAnterior.setAñoFabricacion(camionActual.getAñoFabricacion());
 
-            // Validar campos de entrada
-            if (placas.isEmpty() || modelo.isEmpty() || marca.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
-                return;
-            }
 
-            if (!validarPlacas(placas)) {
-                JOptionPane.showMessageDialog(this, "Las placas deben contener al menos una letra y un número.");
-                return;
-            }
-
-            if (!validarKilometraje(kilometraje)) {
-                JOptionPane.showMessageDialog(this, "El kilometraje debe ser un valor positivo y realista (0 - 1,000,000 km).");
-                return;
-            }
-
-            if (!validarCapacidadCarga(capacidadCarga)) {
-                JOptionPane.showMessageDialog(this, "La capacidad de carga debe ser un valor positivo y realista (100 - 30,000 kg).");
-                return;
-            }
-
-            // Verificar si las placas han cambiado
-            boolean placasCambiadas = !placas.equals(camionActual.getPlacas());
-
-            // Validar que no exista otro camión con las mismas placas
-            for (Camiones camionExistente : listaCamiones) {
-                if (camionExistente != camionActual && placasCambiadas && camionExistente.getPlacas().equals(placas)) {
-                    JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
-                    return;
-                }
-            }
-
+        if (confirm == JOptionPane.YES_OPTION) {
             // Actualizar datos del camión
             camionActual.setPlacas(placas);
             camionActual.setModelo(modelo);
@@ -462,19 +642,88 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
             // Actualizar camión en la gestión de camiones
             gestionCamiones.actualizarCamion(camionActual);
 
-            JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.");
+            // Crear el diálogo de progreso
+            JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+            dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            
+            JPanel panel = new JPanel(new BorderLayout(10, 10));
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setIndeterminate(true);
+            progressBar.setStringPainted(true);
+            progressBar.setString("Enviando notificaciones...");
+            
+            JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
+            mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+            
+            panel.add(mensajeLabel, BorderLayout.NORTH);
+            panel.add(progressBar, BorderLayout.CENTER);
+            
+            dialogoProceso.add(panel);
+            dialogoProceso.setSize(400, 150);
+            dialogoProceso.setLocationRelativeTo(this);
 
-            // Actualizar la tabla en la ventana principal
-            ventanaPrincipal.actualizarTabla();
+            // Crear un hilo separado para realizar el envío de correos
+            Thread processingThread = new Thread(() -> {
+                boolean correosEnviados = false;
+                try {
+                    // Obtener la lista de usuarios
+                    Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
 
-            ventanaPrincipal.setVisible(true); // Hacer visible la ventana principal
-            this.dispose(); // Cerrar esta ventana
+                    for (Usuarios usuario : usuarios) {
+                        if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                             "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
+                            usuario.getCorreoElectronico() != null &&
+                            !usuario.getCorreoElectronico().isEmpty()) {
+                            
+                            // Enviar correo a cada administrador o secretaria
+enviarCorreoModificacion(usuario.getCorreoElectronico(), camionActual, camionAnterior);
+                            correosEnviados = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    correosEnviados = false;
+                } finally {
+                    final boolean exito = correosEnviados;
+                    SwingUtilities.invokeLater(() -> {
+                        dialogoProceso.dispose(); // Cerrar el diálogo de progreso
+                        
+                        if (exito) {
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Camión modificado exitosamente y se han enviado las notificaciones al personal administrativo.",
+                                "Operación exitosa",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Camión modificado exitosamente pero no se pudieron enviar las notificaciones.",
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE
+                            );
+                        }
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al modificar camión: " + e.getMessage());
+                        // Actualizar la tabla en la ventana principal
+                        ventanaPrincipal.actualizarTabla();
+                        ventanaPrincipal.setVisible(true); // Hacer visible la ventana principal
+                        this.dispose(); // Cerrar esta ventana
+                    });
+                }
+            });
+
+            // Iniciar el proceso en un hilo separado
+            processingThread.start();
+            
+            // Mostrar el diálogo mientras se realiza el proceso
+            dialogoProceso.setVisible(true);
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Error en el formato de número: " + e.getMessage());
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al modificar camión: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnModificarCamionesSistemaActionPerformed
 
     private void txtEstadoCamionesModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionesModificarActionPerformed

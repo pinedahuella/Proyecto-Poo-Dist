@@ -881,14 +881,15 @@ public void limpiarCamposGastos() {
                     .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(eliminarCamion1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)))
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(actualizarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -1055,7 +1056,7 @@ int filaSeleccionada = tblRegistroGastos.getSelectedRow();
     }//GEN-LAST:event_eliminarCamionActionPerformed
 
     private void agregarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCamionActionPerformed
-   int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
+int filaSeleccionada = tblRegistroCamiones.getSelectedRow();
 
         if (filaSeleccionada < 0) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión de la tabla para modificar.");
@@ -1063,7 +1064,26 @@ int filaSeleccionada = tblRegistroGastos.getSelectedRow();
         }
 
         try {
-            Camiones camiones = listaCamiones.get(filaSeleccionada);
+            // Obtener las placas del camión seleccionado en la tabla
+            String placasSeleccionadas = (String) tblRegistroCamiones.getValueAt(filaSeleccionada, 1);
+            
+            // Buscar el camión correcto en la lista usando las placas
+            Camiones camiones = null;
+            int indiceReal = -1;
+            
+            for (int i = 0; i < listaCamiones.size(); i++) {
+                if (listaCamiones.get(i).getPlacas().equals(placasSeleccionadas)) {
+                    camiones = listaCamiones.get(i);
+                    indiceReal = i;
+                    break;
+                }
+            }
+            
+            if (camiones == null) {
+                JOptionPane.showMessageDialog(this, "No se encontró el camión seleccionado.");
+                return;
+            }
+
             boolean huboModificaciones = false;
             double montoTotal = 0.0;
             String tipoDeGasto = "";

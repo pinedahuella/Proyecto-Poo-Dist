@@ -19,6 +19,7 @@ import GestionDeUsuarios.Usuarios;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
 import Login.Login;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +38,35 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.Normalizer;
+import java.util.Properties;
+import java.util.regex.Pattern;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
 
 public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
     protected GESTIONPILOTOS gestionPilotos;
@@ -752,30 +782,206 @@ private String normalizarTexto(String texto) {
 }
 
 
+
+private void enviarCorreoDesactivacion(String destinatario, Piloto piloto) throws IOException {
+    // Validar el correo electrónico
+    if (destinatario == null || destinatario.trim().isEmpty() || !destinatario.contains("@")) {
+        throw new IOException("Correo electrónico inválido: " + destinatario);
+    }
+
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+    
+    Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+    
+    System.out.println("Intentando enviar correo a: " + destinatario);
+        
+    try {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject("Notificación de Desactivación - PINEED");
+        
+        Multipart multipart = new MimeMultipart("related");
+        BodyPart messageBodyPart = new MimeBodyPart();
+        
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>Notificación de Desactivación en PINEED</strong></h2>" +
+            "<p style='color: #34495e;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
+            "<p style='color: #34495e;'>Lamentamos informarle que su cuenta ha sido desactivada en nuestro sistema.</p>" +
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Piloto:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + piloto.getNombrePiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + piloto.getApellidoPiloto() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+            "</table></div>" +
+            "<p style='color: #34495e;'>Si tiene preguntas o desea más información, no dude en contactarnos.</p>" +
+            "<p style='color: #34495e;'>Atentamente,</p>" +
+            "<p style='color: #34495e;'>El equipo de PINEED</p>" +
+            "<div style='text-align: center; margin-top: 20px;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+            
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+        
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+        
+        message.setContent(multipart);
+        Transport.send(message);
+        System.out.println("Correo enviado exitosamente a: " + destinatario);
+        
+    } catch (MessagingException e) {
+        System.err.println("Error detallado al enviar correo: ");
+        e.printStackTrace();
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+
+
     private void eliminarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPilotoActionPerformed
-int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
+        int filaSeleccionada = tblRegistroPilotos.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
-            // Cambiar el índice a 3 para obtener el DPI correcto
+            // Obtener el DPI
             Object dpiObject = tblRegistroPilotos.getValueAt(filaSeleccionada, 3);
             String dpiString = dpiObject.toString().trim();
+            long numeroDeDpiSeleccionado = Long.parseLong(dpiString);
+String nombrePiloto = tblRegistroPilotos.getValueAt(filaSeleccionada, 1).toString().trim(); // Suponiendo que la columna 1 contiene el nombre
+            String apellidoPiloto = tblRegistroPilotos.getValueAt(filaSeleccionada, 2).toString().trim(); // Suponiendo que la columna 2 contiene el apellido
+            String nombreCompleto = nombrePiloto + " " + apellidoPiloto;
 
-            // Verificar si el DPI tiene 13 dígitos
+
+            // Buscar el piloto completo basado en el DPI
+            Piloto pilotoParaEliminar = null;
+            for (Piloto piloto : listaPilotos) {
+                if (piloto.getNumeroDeDpi() == numeroDeDpiSeleccionado) {
+                    pilotoParaEliminar = piloto;
+                    break;
+                }
+            }
+            
+            if (pilotoParaEliminar == null) {
+                throw new IllegalStateException("No se pudo encontrar la información completa del piloto.");
+            }
+
+            // Validar DPI
             if (dpiString.length() != 13) {
                 throw new NumberFormatException("El DPI debe tener 13 dígitos.");
             }
-
-            long numeroDeDpiSeleccionado = Long.parseLong(dpiString);
-
+            
+            // Diálogo de confirmación
             int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas borrar este piloto con DPI: " + numeroDeDpiSeleccionado + "?",
+                "¿Estás seguro de que deseas borrar el piloto: " + nombreCompleto + "?",
                 "Confirmar eliminación",
                 JOptionPane.YES_NO_OPTION);
-
+                
             if (confirm == JOptionPane.YES_OPTION) {
-                gestionPilotos.eliminarPiloto(numeroDeDpiSeleccionado);
-                actualizarTabla();
-                JOptionPane.showMessageDialog(this, "Piloto eliminado correctamente.");
+                // Crear y mostrar el diálogo de progreso
+                JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+                dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                JPanel panel = new JPanel(new BorderLayout(10, 10));
+                panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+                
+                JPanel contenidoPanel = new JPanel(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridwidth = GridBagConstraints.REMAINDER;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.insets = new Insets(5, 5, 5, 5);
+                
+                JProgressBar progressBar = new JProgressBar();
+                progressBar.setIndeterminate(true);
+                progressBar.setStringPainted(true);
+                progressBar.setString("Procesando...");
+                
+                JLabel mensajeLabel = new JLabel("Desactivando piloto y enviando notificación...");
+                mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+                
+                contenidoPanel.add(mensajeLabel, gbc);
+                contenidoPanel.add(progressBar, gbc);
+                panel.add(contenidoPanel, BorderLayout.CENTER);
+                dialogoProceso.add(panel);
+                dialogoProceso.setSize(400, 150);
+                dialogoProceso.setLocationRelativeTo(this);
+                
+                // Crear una copia final del piloto para usar en el thread
+                final Piloto pilotoFinal = pilotoParaEliminar;
+                
+                Thread processingThread = new Thread(() -> {
+                    try {
+                        String correoSeleccionado = pilotoFinal.getCorreoElectronicoPiloto();
+                        
+                        if (correoSeleccionado == null || correoSeleccionado.trim().isEmpty()) {
+                            throw new IOException("El piloto no tiene un correo electrónico registrado.");
+                        }
+                        
+                        // Enviar correo antes de eliminar
+                        try {
+                            enviarCorreoDesactivacion(correoSeleccionado, pilotoFinal);
+                            // Proceder con la eliminación
+                            gestionPilotos.eliminarPiloto(numeroDeDpiSeleccionado);
+                            
+                            SwingUtilities.invokeLater(() -> {
+                                dialogoProceso.dispose();
+                                actualizarTabla();
+                                JOptionPane.showMessageDialog(this,
+                                    "Piloto eliminado correctamente y notificación enviada.",
+                                    "Éxito",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            });
+                        } catch (IOException e) {
+                            SwingUtilities.invokeLater(() -> {
+                                dialogoProceso.dispose();
+                                JOptionPane.showMessageDialog(this,
+                                    "Error al enviar la notificación: " + e.getMessage() + "\nEl piloto no ha sido eliminado.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                            });
+                        }
+                    } catch (Exception e) {
+                        SwingUtilities.invokeLater(() -> {
+                            dialogoProceso.dispose();
+                            JOptionPane.showMessageDialog(this,
+                                "Error durante el proceso: " + e.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        });
+                    }
+                });
+                
+                processingThread.start();
+                dialogoProceso.setVisible(true);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,

@@ -8,9 +8,12 @@ import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
 import ControlVentas.FrameVentaDiaria;
 import ControlViajes.FormularioViajes;
+import GestionDeUsuarios.GESTIONUSUARIOS;
+import GestionDeUsuarios.Usuarios;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
 import Login.Login;
+import java.awt.BorderLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
@@ -30,8 +33,36 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Properties;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
 import javax.swing.JTextField;
 import javax.swing.table.TableModel;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
+import javax.swing.JTable; // Importa la clase JTable para crear tablas en la interfaz gráfica
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class CAMIONESINACTIVOS extends javax.swing.JFrame {
     
@@ -42,6 +73,7 @@ public class CAMIONESINACTIVOS extends javax.swing.JFrame {
     private String currentUser;
     private String userRole;
     private LOGINPINEED loginFrame;
+    private GESTIONUSUARIOS gestionUsuarios;
 
     public CAMIONESINACTIVOS(String username, String role, LOGINPINEED loginFrame) {
         initComponents();
@@ -69,7 +101,8 @@ public class CAMIONESINACTIVOS extends javax.swing.JFrame {
         tblRegistroCamiones1.getTableHeader().setResizingAllowed(false);
         tblRegistroCamiones1.setRowSelectionAllowed(true);
         tblRegistroCamiones1.setColumnSelectionAllowed(false);
-        
+              gestionUsuarios = new GESTIONUSUARIOS();
+        gestionUsuarios.cargarUsuariosDesdeExcel();
         // Solicitar el foco de la ventana
         SwingUtilities.invokeLater(() -> {
             this.requestFocusInWindow();
@@ -758,11 +791,87 @@ String placeholder = "Ingresa Marca del Camión a buscar";
     }
     
     
+private void enviarCorreoReactivacion(String destinatario, Camiones camion) throws IOException {
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+    final String username = "distribuidorapine@gmail.com";
+    final String password = "aura hcol bzmt plzf";
+
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+        }
+    });
+
+    try {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario));
+        message.setSubject("Camión Reactivado - PINEED");
+
+        Multipart multipart = new MimeMultipart("related");
+
+        // Primera parte - contenido HTML
+        BodyPart messageBodyPart = new MimeBodyPart();
+        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Camión Reactivado en PINEED!</strong></h2>" +
+            "<p style='color: #34495e;'>Se ha reactivado un camión en el sistema.</p>" +
+            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<h3 style='color: #2c3e50; margin-top: 0;'>Detalles del Camión:</h3>" +
+            "<table style='width: 100%; border-collapse: collapse;'>" +
+            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camion.getMarca() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camion.getModelo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camion.getPlacas() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>FUNCIONAL</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camion.getTipoCombustible() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camion.getCapacidadCarga() + " kg</td></tr>" +
+            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camion.getAñoFabricacion() + "</td></tr>" +
+            "</table></div>" +
+            "<div style='margin-top: 20px; text-align: center;'>" +
+            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+            "</div>" +
+            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+            "</div></body></html>";
+        
+        messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Segunda parte - la imagen
+        messageBodyPart = new MimeBodyPart();
+        String rutaImagen = "/Fotos/ImagenTarjetaDePresentacionPine.png";
+        InputStream imageStream = getClass().getResourceAsStream(rutaImagen);
+
+        if (imageStream != null) {
+            DataSource source = new ByteArrayDataSource(imageStream, "image/png");
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setHeader("Content-ID", "<imagen>");
+            messageBodyPart.setDisposition(MimeBodyPart.INLINE);  // Mostrar la imagen en línea
+            multipart.addBodyPart(messageBodyPart);
+        } else {
+            System.out.println("Imagen no encontrada en el classpath.");
+        }
+
+        message.setContent(multipart);
+        Transport.send(message);
+
+    } catch (MessagingException e) {
+        throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+
+    
     private void ActivarCamionEliminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarCamionEliminadoActionPerformed
-int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
-            // Cambiamos el índice de 0 a 3 porque ahora las placas están en la columna 3
             String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 3);
             int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de que deseas reactivar el camión con placas: " +
@@ -771,21 +880,104 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
                 JOptionPane.YES_NO_OPTION);
                 
             if (confirm == JOptionPane.YES_OPTION) {
+                // Llama al método para activar el camión
                 gestionCamiones.activarCamion(placasSeleccionadas);
+                
+                // Cargar los datos para actualizar la vista
                 cargarDatos();
-                JOptionPane.showMessageDialog(this, "Camión reactivado correctamente.");
+
+                // Obtener el camión reactivado
+                Camiones camion = gestionCamiones.obtenerCamionPorPlacas(placasSeleccionadas);
+                if (camion != null) {
+                    // Crear el diálogo de progreso
+                    JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+                    dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                    
+                    JPanel panel = new JPanel(new BorderLayout(10, 10));
+                    panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+                    
+                    JProgressBar progressBar = new JProgressBar();
+                    progressBar.setIndeterminate(true);
+                    progressBar.setStringPainted(true);
+                    progressBar.setString("Enviando notificaciones...");
+                    
+                    JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
+                    mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+                    
+                    panel.add(mensajeLabel, BorderLayout.NORTH);
+                    panel.add(progressBar, BorderLayout.CENTER);
+                    
+                    dialogoProceso.add(panel);
+                    dialogoProceso.setSize(400, 150);
+                    dialogoProceso.setLocationRelativeTo(this);
+
+                    // Crear un hilo separado para realizar el envío de correos
+                    // Crear un hilo separado para realizar el envío de correos
+                    // Crear un hilo separado para realizar el envío de correos
+Thread processingThread = new Thread(() -> {
+    boolean correosEnviados = false;
+    try {
+        // Obtener la lista de usuarios
+        Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+
+        for (Usuarios usuario : usuarios) {
+            if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                 "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
+                usuario.getCorreoElectronico() != null &&
+                !usuario.getCorreoElectronico().isEmpty()) {
+                
+                // Enviar correo a cada administrador o secretaria
+                enviarCorreoReactivacion(usuario.getCorreoElectronico(), camion);
+                correosEnviados = true;
+            }
+        }
+    } catch (Exception e) {
+        correosEnviados = false;
+    } finally {
+        final boolean exito = correosEnviados;
+                            // Cerrar el diálogo y mostrar los resultados en el hilo de la interfaz
+                            // Cerrar el diálogo y mostrar los resultados en el hilo de la interfaz
+                            SwingUtilities.invokeLater(() -> {
+                                dialogoProceso.dispose(); // Cerrar el diálogo de progreso
+                                
+                                if (exito) {
+                                    JOptionPane.showMessageDialog(
+                                        this,
+                                        "Camión reactivado exitosamente y se han enviado las notificaciones al personal administrativo.",
+                                        "Operación exitosa",
+                                        JOptionPane.INFORMATION_MESSAGE
+                                    );
+                                } else {
+                                    JOptionPane.showMessageDialog(
+                                        this,
+                                        "Camión reactivado exitosamente pero no se pudieron enviar las notificaciones.",
+                                        "Advertencia",
+                                        JOptionPane.WARNING_MESSAGE
+                                    );
+                                }
+
+                                // Cargar los datos de nuevo para actualizar la vista
+                                cargarDatos();
+                            });
+                        }
+                    });
+
+                    // Iniciar el proceso en un hilo separado
+                    processingThread.start(); 
+                    
+                    // Mostrar el diálogo mientras se realiza el proceso
+                    dialogoProceso.setVisible(true);
+                }
             }
         } catch (Exception e) {
-            System.err.println("Error al reactivar el camión: " + e.getMessage());
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                "Error al reactivar el camión: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "Error inesperado: " + e.getMessage() + "\nPor favor, contacte al administrador del sistema.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
-    } else {
-        JOptionPane.showMessageDialog(this,
-            "Por favor, selecciona un camión para reactivar.");
-    }
+    }                          
     }//GEN-LAST:event_ActivarCamionEliminadoActionPerformed
 
     private void ActivosCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivosCamionesActionPerformed

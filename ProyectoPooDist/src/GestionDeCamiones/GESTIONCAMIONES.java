@@ -223,8 +223,12 @@ public void eliminarCamion(String placas) {
     }
 }
 
-// Método para activar un camión
+
+
+
+
 public void activarCamion(String placas) {
+    System.out.println("Activando camión con placas: " + placas); // Log para depuración
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
         
@@ -232,10 +236,12 @@ public void activarCamion(String placas) {
         boolean camionActualizado = false;
         
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Skip header
+            if (row.getRowNum() == 0) continue; // Saltar encabezado
             
             Cell placasCell = row.getCell(0);
-            if (placasCell != null && placas.equals(getStringCellValue(placasCell))) {
+            String placasEnExcel = getStringCellValue(placasCell); // Obtener valor de placas desde Excel
+            
+            if (placasCell != null && placas.equals(placasEnExcel)) {
                 // Actualizar estado a FUNCIONAL
                 Cell estadoCell = row.getCell(3); // Columna del estado
                 if (estadoCell == null) {
@@ -252,6 +258,8 @@ public void activarCamion(String placas) {
                 
                 camionActualizado = true;
                 break;
+            } else {
+                System.out.println("No coincide: " + placas + " con " + placasEnExcel); // Log para ver qué se está comparando
             }
         }
         
@@ -262,6 +270,8 @@ public void activarCamion(String placas) {
             }
             // Recargar los camiones
             cargarCamionesDesdeExcel();
+        } else {
+            System.out.println("Camión no encontrado para activar."); // Log si no se encontró el camión
         }
     } catch (IOException e) {
         System.err.println("Error al activar el camión: " + e.getMessage());
@@ -269,6 +279,40 @@ public void activarCamion(String placas) {
         throw new RuntimeException("Error al activar el camión", e);
     }
 }
+
+
+
+
+public Camiones obtenerCamionPorPlacas(String placas) {
+    try (FileInputStream fis = new FileInputStream(excelFilePath);
+         Workbook workbook = new XSSFWorkbook(fis)) {
+        
+        Sheet sheet = workbook.getSheetAt(0);
+        
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Skip header
+            
+            Cell placasCell = row.getCell(0);
+            if (placasCell != null && placas.equals(getStringCellValue(placasCell))) {
+                // Suponiendo que los datos del camión están en columnas específicas
+                String marca = getStringCellValue(row.getCell(1));
+                String modelo = getStringCellValue(row.getCell(2));
+                String estado = getStringCellValue(row.getCell(3));
+                String tipoCombustible = getStringCellValue(row.getCell(4));
+                double capacidadCarga = row.getCell(5).getNumericCellValue();
+                String añoFabricacion = getStringCellValue(row.getCell(6)); // Cambiado a String
+
+                // Debes asegurarte de pasar todos los atributos necesarios al constructor de Camiones
+                return new Camiones(placas, estado, tipoCombustible, 0.0, capacidadCarga, añoFabricacion, modelo, marca, true, 0.0, 0.0, 0.0, 0.0, 0.0, "", "", "", 0.0, 0.0);
+            }
+        }
+    } catch (IOException e) {
+        System.err.println("Error al obtener el camión: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return null; // Retorna null si no se encuentra
+}
+
 
 private void desactivarFechasDelCamion(int indiceCamion) {
     try {
