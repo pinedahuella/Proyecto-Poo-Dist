@@ -326,7 +326,6 @@ public void eliminarCamion(String placaCamion) {
                     Integer nuevoIndice = nuevoMapeo.get(placaCamion);
                     if (nuevoIndice != null) {
                         fechaActual.setIndiceCamion(nuevoIndice);
-                        fechaActual.setActivo(true);
                         seRealizaronCambios = true;
                     }
                 }

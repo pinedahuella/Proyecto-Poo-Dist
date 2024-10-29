@@ -262,7 +262,6 @@ private void actualizarCalendarioYPedidos(
                 for (AsignacionViaje viaje : viajesPiloto) {
                     FechaCalendario fechaActual = fechasActualizadas.get(viaje.indiceCalendario);
                     fechaActual.setIndicePiloto(nuevoIndice);
-                    fechaActual.setActivo(true);
                     seRealizaronCambios = true;
                 }
             }
