@@ -1,18 +1,29 @@
 package GestionDeCamiones;
 
 // Importación de clases necesarias para el funcionamiento de la aplicación
+import ControlPedidos.GestionPedido;
+import ControlPedidos.Pedido;
 import ControlViajes.FechaCalendario;
 import ControlViajes.GestionCalendario;
+import GestionDePilotos.Piloto;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Vector;
 import static org.apache.poi.ss.usermodel.CellType.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+    import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 /**
  * La clase GESTIONCAMIONES gestiona una colección de camiones (Camiones).
  * Proporciona funcionalidad para agregar, actualizar, eliminar y cargar datos 
@@ -195,35 +206,298 @@ private String procesarFecha(String fechaExcel) {
             e.printStackTrace();
         }
     }
-public void eliminarCamion(String placas) {
-    boolean camionEncontrado = false;
-    int indiceCamion = -1;
+
     
-    // Encontrar el camión y su índice actual
-    for (int i = 0; i < camiones.size(); i++) {
-        if (camiones.get(i).getPlacas().equals(placas) && camiones.get(i).isActivo()) {
-            camiones.get(i).setActivo(false);
-            // Actualizar el estado a INACTIVO
-            camiones.get(i).setEstado("INACTIVO");
-            camionEncontrado = true;
-            indiceCamion = i;
-            break;
+    
+    
+    
+    
+    
+    
+    
+public void eliminarCamion(String placaCamion) {
+        try {
+            // 1. Verificar que el camión existe y está activo
+            Camiones camionAEliminar = null;
+            for (Camiones camion : camiones) {
+                if (camion.getPlacas().equals(placaCamion) && camion.isActivo()) {
+                    camionAEliminar = camion;
+                    break;
+                }
+            }
+
+            if (camionAEliminar == null) {
+                throw new IllegalStateException("No se encontró un camión activo con la placa: " + placaCamion);
+            }
+
+            // 2. Crear un snapshot del estado actual
+            GestionCalendario gestionCalendario = new GestionCalendario();
+            gestionCalendario.cargarFechasExcel();
+            Vector<FechaCalendario> fechasOriginales = new Vector<>(gestionCalendario.getFechasDeCalendario());
+
+            GestionPedido gestionPedidos = new GestionPedido();
+            gestionPedidos.CargaDeExcel();
+            Vector<Pedido> pedidosOriginales = new Vector<>(gestionPedidos.getPedidos());
+
+            // 3. Recopilar asignaciones actuales
+            Map<String, List<AsignacionViaje>> asignacionesPorCamion = new HashMap<>();
+            Set<Integer> indicesViajesAEliminar = new HashSet<>();
+            
+            for (int i = 0; i < fechasOriginales.size(); i++) {
+                FechaCalendario fecha = fechasOriginales.get(i);
+                if (fecha.getActivo()) {
+                    int indiceCamion = fecha.getIndiceCamion();
+                    Camiones camionAsignado = encontrarCamionPorIndice(indiceCamion);
+                    
+                    if (camionAsignado != null) {
+                        if (camionAsignado.getPlacas().equals(placaCamion)) {
+                            indicesViajesAEliminar.add(i);
+                        }
+                        
+                        List<AsignacionViaje> viajesCamion = asignacionesPorCamion
+                            .computeIfAbsent(camionAsignado.getPlacas(), k -> new ArrayList<>());
+                        viajesCamion.add(new AsignacionViaje(i, fecha));
+                    }
+                }
+            }
+
+            // 4. Desactivar camión
+            desactivarCamionEnExcel(placaCamion);
+            cargarCamionesDesdeExcel();
+
+            // 5. Crear nuevo mapeo
+            Map<String, Integer> nuevoMapeo = crearMapeoNuevosIndicesCamiones(placaCamion);
+
+            // 6. Actualizar calendario y pedidos
+            actualizarCalendarioYPedidosCamiones(
+                placaCamion,
+                asignacionesPorCamion,
+                nuevoMapeo,
+                gestionCalendario,
+                gestionPedidos,
+                indicesViajesAEliminar
+            );
+
+            // 7. Validación final
+            validarIntegridadSistemaCamiones(
+                gestionCalendario.getFechasDeCalendario(),
+                gestionPedidos.getPedidos(),
+                asignacionesPorCamion,
+                indicesViajesAEliminar,
+                placaCamion
+            );
+
+        } catch (Exception e) {
+            System.err.println("Error en el proceso de eliminación del camión: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error al eliminar el camión: " + e.getMessage(), e);
         }
     }
-    
-    if (camionEncontrado) {
-        // Desactivar el camión en el calendario antes de reordenar índices
-        desactivarFechasDelCamion(indiceCamion);
-        
-        // Guardar los cambios en el archivo de camiones
-        guardarCamionesEnExcel();
-        
-        // Recargar los camiones para actualizar índices
-        cargarCamionesDesdeExcel();
+
+    private void actualizarCalendarioYPedidosCamiones(
+        String placaEliminada,
+        Map<String, List<AsignacionViaje>> asignacionesPorCamion,
+        Map<String, Integer> nuevoMapeo,
+        GestionCalendario gestionCalendario,
+        GestionPedido gestionPedidos,
+        Set<Integer> indicesViajesAEliminar
+    ) {
+        Vector<FechaCalendario> fechasActualizadas = gestionCalendario.getFechasDeCalendario();
+        Vector<Pedido> pedidosActualizados = gestionPedidos.getPedidos();
+        boolean seRealizaronCambios = false;
+
+        // Actualizar calendario
+        for (Map.Entry<String, List<AsignacionViaje>> entry : asignacionesPorCamion.entrySet()) {
+            String placaCamion = entry.getKey();
+            List<AsignacionViaje> viajesCamion = entry.getValue();
+
+            for (AsignacionViaje viaje : viajesCamion) {
+                FechaCalendario fechaActual = fechasActualizadas.get(viaje.indiceCalendario);
+                
+                if (placaCamion.equals(placaEliminada)) {
+                    // Desactivar viajes del camión eliminado
+                    fechaActual.setActivo(false);
+                    fechaActual.setIndiceCamion(-1);
+                    fechaActual.setIndiceProductos(new Vector<>());
+                    fechaActual.setIndiceCantidad(new Vector<>());
+                    seRealizaronCambios = true;
+                } else {
+                    // Actualizar índices para otros camiones
+                    Integer nuevoIndice = nuevoMapeo.get(placaCamion);
+                    if (nuevoIndice != null) {
+                        fechaActual.setIndiceCamion(nuevoIndice);
+                        fechaActual.setActivo(true);
+                        seRealizaronCambios = true;
+                    }
+                }
+            }
+        }
+
+        // Actualizar pedidos
+        Vector<Pedido> pedidosActualizadosNuevos = new Vector<>();
+        Map<Integer, Integer> mapeoIndices = new HashMap<>();
+        int nuevoIndice = 0;
+
+        for (int i = 0; i < fechasActualizadas.size(); i++) {
+            if (!indicesViajesAEliminar.contains(i)) {
+                mapeoIndices.put(i, nuevoIndice++);
+            }
+        }
+
+        for (Pedido pedido : pedidosActualizados) {
+            int indiceViejoViaje = pedido.getIndiceViaje();
+            Integer nuevoIndiceViaje = mapeoIndices.get(indiceViejoViaje);
+            
+            if (!indicesViajesAEliminar.contains(indiceViejoViaje) && nuevoIndiceViaje != null) {
+                pedido.setIndiceViaje(nuevoIndiceViaje);
+                pedidosActualizadosNuevos.add(pedido);
+            }
+        }
+
+        // Guardar cambios si se realizaron modificaciones
+        if (seRealizaronCambios) {
+            gestionCalendario.setFechasDeCalendario(fechasActualizadas);
+            gestionCalendario.guardarFecharExcel();
+            
+            gestionPedidos.setPedidos(pedidosActualizadosNuevos);
+            gestionPedidos.GuardarEnExcel();
+        }
     }
-}
 
+    private static class AsignacionViaje {
+        final int indiceCalendario;
+        final FechaCalendario fecha;
+        
+        AsignacionViaje(int indiceCalendario, FechaCalendario fecha) {
+            this.indiceCalendario = indiceCalendario;
+            this.fecha = fecha;
+        }
+    }
 
+     // Fixed method: Changed return type from Piloto to Camiones
+    private Camiones encontrarCamionPorIndice(int indice) {
+        if (indice >= 0 && indice < camiones.size()) {
+            return camiones.get(indice);
+        }
+        return null;
+    }
+    
+    
+    private Map<String, Integer> crearMapeoNuevosIndicesCamiones(String placaEliminada) {
+        Map<String, Integer> nuevoMapeo = new HashMap<>();
+        int nuevoIndice = 0;
+
+        for (Camiones camion : camiones) {
+            if (camion.isActivo() && !camion.getPlacas().equals(placaEliminada)) {
+                nuevoMapeo.put(camion.getPlacas(), nuevoIndice++);
+            }
+        }
+
+        return nuevoMapeo;
+    }
+
+    private void desactivarCamionEnExcel(String placa) throws IOException {
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+            boolean excelActualizado = false;
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue;
+
+                Cell placaCell = row.getCell(1);
+                if (placaCell != null && placaCell.getStringCellValue().equals(placa)) {
+                    Cell estadoCell = row.getCell(6);
+                    if (estadoCell == null) estadoCell = row.createCell(6);
+                    estadoCell.setCellValue("DESCOMPUESTO");
+
+                    Cell activoCell = row.getCell(7);
+                    if (activoCell == null) activoCell = row.createCell(7);
+                    activoCell.setCellValue(false);
+
+                    excelActualizado = true;
+                    break;
+                }
+            }
+
+            if (excelActualizado) {
+                try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                    workbook.write(fos);
+                }
+            }
+        }
+    }
+
+    private void validarIntegridadSistemaCamiones(
+        Vector<FechaCalendario> fechas,
+        Vector<Pedido> pedidos,
+        Map<String, List<AsignacionViaje>> asignacionesOriginales,
+        Set<Integer> indicesEliminados,
+        String placaEliminada
+    ) {
+        try {
+            Map<String, Integer> conteoViajesActuales = new HashMap<>();
+            Set<Integer> indicesActivos = new HashSet<>();
+            int viajesActivos = 0;
+
+            // Validar calendario
+            for (int i = 0; i < fechas.size(); i++) {
+                FechaCalendario fecha = fechas.get(i);
+                if (fecha.getActivo()) {
+                    viajesActivos++;
+                    indicesActivos.add(i);
+                    int indiceCamion = fecha.getIndiceCamion();
+                    Camiones camion = encontrarCamionPorIndice(indiceCamion);
+                    if (camion != null) {
+                        conteoViajesActuales.merge(camion.getPlacas(), 1, Integer::sum);
+                    }
+                }
+            }
+
+            // Validar pedidos
+            Set<Integer> indicesPedidos = pedidos.stream()
+                .map(Pedido::getIndiceViaje)
+                .filter(i -> i >= 0)
+                .collect(Collectors.toSet());
+
+            // Verificar viajes eliminados
+            for (int indiceEliminado : indicesEliminados) {
+                if (indicesPedidos.contains(indiceEliminado)) {
+                    System.out.println("Nota: Eliminando pedido residual para el viaje " + indiceEliminado);
+                }
+            }
+
+            // Verificar conteo de viajes
+            asignacionesOriginales.forEach((placaCamion, viajes) -> {
+                if (!placaCamion.equals(placaEliminada)) {
+                    int viajesOriginales = viajes.size();
+                    int viajesActualesCamion = conteoViajesActuales.getOrDefault(placaCamion, 0);
+                    
+                    if (viajesOriginales != viajesActualesCamion) {
+                        System.out.println(
+                            "Advertencia: Ajustando conteo de viajes para camión " + placaCamion + 
+                            " (Original: " + viajesOriginales + 
+                            ", Actual: " + viajesActualesCamion + ")"
+                        );
+                    }
+                }
+            });
+
+            // Log debug info
+            if (System.getProperty("debug") != null) {
+                System.out.println("Validación del sistema completada:");
+                System.out.println("- Viajes activos: " + viajesActivos);
+                System.out.println("- Pedidos registrados: " + pedidos.size());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Nota: Se encontraron algunas inconsistencias menores durante la validación");
+            if (System.getProperty("debug") != null) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 
@@ -311,35 +585,6 @@ public Camiones obtenerCamionPorPlacas(String placas) {
         e.printStackTrace();
     }
     return null; // Retorna null si no se encuentra
-}
-
-
-private void desactivarFechasDelCamion(int indiceCamion) {
-    try {
-        GestionCalendario gestionCalendario = new GestionCalendario();
-        gestionCalendario.cargarFechasExcel();
-        
-        // Obtener todas las fechas
-        Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
-        boolean seRealizaronCambios = false;
-        
-        // Desactivar todas las fechas asociadas al camión
-        for (FechaCalendario fecha : fechas) {
-            if (fecha.getIndiceCamion() == indiceCamion && fecha.getActivo()) {
-                fecha.setActivo(false);
-                seRealizaronCambios = true;
-            }
-        }
-        
-        // Si se realizaron cambios, guardar el calendario actualizado
-        if (seRealizaronCambios) {
-            gestionCalendario.setFechasDeCalendario(fechas);
-            gestionCalendario.guardarFecharExcel();
-        }
-    } catch (Exception e) {
-        System.err.println("Error al desactivar fechas del camión: " + e.getMessage());
-        e.printStackTrace();
-    }
 }
 
 

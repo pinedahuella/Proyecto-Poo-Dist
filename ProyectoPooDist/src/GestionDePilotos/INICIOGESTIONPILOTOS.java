@@ -1,9 +1,12 @@
 package GestionDePilotos;
+
+////package GestionDePilotos;
+import GestionDePilotos.PILOTOSINACTIVOS;
+import GestionDePilotos.GESTIONPILOTOS;
 import ControlCliente.FrameClientes;
 import ControlInventario.gestionProductos;
 import ControlInventario.Producto;
 import GestionDePilotos.Piloto;
-import GestionDePilotos.GESTIONPILOTOS;
 import GestionDeCamiones.GESTIONCAMIONES;
 import GestionDeCamiones.Camiones;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
@@ -15,6 +18,7 @@ import ControlPedidos.FormularioPedidos;
 import ControlPlanilla.FramePlanillaSemanal;
 import ControlVentas.FrameVentaDiaria;
 import ControlViajes.FormularioViajes;
+import GestionDePilotos.Piloto;
 import GestionDeUsuarios.Usuarios;
 import Login.LOGINPINEED;
 import Login.GESTIONLOGIN;
@@ -818,27 +822,30 @@ private void enviarCorreoDesactivacion(String destinatario, Piloto piloto) throw
         Multipart multipart = new MimeMultipart("related");
         BodyPart messageBodyPart = new MimeBodyPart();
         
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>Notificación de Desactivación en PINEED</strong></h2>" +
-            "<p style='color: #34495e;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
-            "<p style='color: #34495e;'>Lamentamos informarle que su cuenta ha sido desactivada en nuestro sistema.</p>" +
-            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Piloto:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + piloto.getNombrePiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + piloto.getApellidoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
-            "</table></div>" +
-            "<p style='color: #34495e;'>Si tiene preguntas o desea más información, no dude en contactarnos.</p>" +
-            "<p style='color: #34495e;'>Atentamente,</p>" +
-            "<p style='color: #34495e;'>El equipo de PINEED</p>" +
-            "<div style='text-align: center; margin-top: 20px;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+     String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #c41e3a; text-align: center;'><strong>Notificación de Desactivación en PINEED</strong></h2>" +
+    "<p style='color: #c41e3a;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
+    "<p style='color: #c41e3a;'>Lamentamos informarle que su cuenta ha sido desactivada en nuestro sistema.</p>" +
+    
+    "<div style='background-color: #ffebee; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #c41e3a; margin-top: 0;'>Información del Piloto:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + piloto.getNombrePiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+    "</table></div>" +
+    
+    "<p style='color: #c41e3a;'>Si tiene preguntas o desea más información, no dude en contactarnos.</p>" +
+    "<p style='color: #c41e3a;'>Atentamente,</p>" +
+    "<p style='color: #c41e3a;'>El equipo de PINEED</p>" +
+    "<div style='text-align: center; margin-top: 20px;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
+     
             
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);

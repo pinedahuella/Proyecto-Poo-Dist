@@ -1,5 +1,6 @@
 package GestionDeCamiones;
 // Importación de clases necesarias para el funcionamiento de la aplicación
+import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlCliente.FrameClientes;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
@@ -873,30 +874,31 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Camión Eliminado en PINEED!</strong></h2>" +
-            "<p style='color: #34495e;'>Se ha eliminado un camión del sistema.</p>" +
-            
-            // Datos del Camión Eliminado
-            "<div style='background-color: #ffebee; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #c62828; margin-top: 0;'>Datos del Camión Eliminado:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camionEliminado.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camionEliminado.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camionEliminado.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camionEliminado.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camionEliminado.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camionEliminado.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Kilometraje:</strong></td><td>" + camionEliminado.getKilometraje() + " km</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camionEliminado.getAñoFabricacion() + "</td></tr>" +
-            "</table></div>" +
-            
-            "<div style='margin-top: 20px; text-align: center;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+   String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #c41e3a; text-align: center;'><strong>¡Camión Eliminado en PINEED!</strong></h2>" +
+    "<p style='color: #c41e3a;'>Se ha eliminado un camión del sistema.</p>" +
+    
+    "<div style='background-color: #ffebee; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #c41e3a; margin-top: 0;'>Datos del Camión Eliminado:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Marca:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getMarca() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Modelo:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getModelo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Placas:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getPlacas() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Estado:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getEstado() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getTipoCombustible() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getCapacidadCarga() + " kg</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Kilometraje:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getKilometraje() + " km</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camionEliminado.getAñoFabricacion() + "</td></tr>" +
+    "</table></div>" +
+    
+    "<div style='text-align: center; margin-top: 20px;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
+   
+   
         
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);

@@ -1,5 +1,6 @@
 package GestionDeUsuarios;
 
+import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlCliente.FrameClientes;
 import ControlInventario.gestionProductos;
 import ControlInventario.Producto;
@@ -73,17 +74,17 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 
 public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
     public GESTIONUSUARIOS gestionUsuarios;
     public Vector<Usuarios> listaUsuarios = new Vector<>();
-    // Nueva lista para mantener los usuarios filtrados
     private Vector<Usuarios> listaUsuariosFiltrados = new Vector<>();
     private String currentUser;
     private String userRole;
     private LOGINPINEED loginFrame;
-
     DefaultTableModel modeloUsuarios = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -97,15 +98,14 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
         gestionUsuarios = new GESTIONUSUARIOS();
         gestionUsuarios.cargarUsuariosDesdeExcel();
         
-        String[] columnas = {"Nombre", "Apellido", "DPI", "Cargo", "Teléfono", "Estado"};
+        // Modificado: Agregada la columna "No." al inicio del array de columnas
+        String[] columnas = {"No.", "Nombre", "Apellido", "DPI", "Cargo", "Teléfono", "Estado"};
         modeloUsuarios.setColumnIdentifiers(columnas);
         
         if (gestionUsuarios.getUsuarios() != null) {
             listaUsuarios = gestionUsuarios.getUsuarios();
         }
-
         setupTextField(txtNombreUsuarioBuscar, "Ingresa Nombre del Usuario a buscar");
-
         tblRegistroUsuarios.setModel(modeloUsuarios);
         tblRegistroUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRegistroUsuarios.getTableHeader().setReorderingAllowed(false);
@@ -113,13 +113,14 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
         tblRegistroUsuarios.setRowSelectionAllowed(true);
         tblRegistroUsuarios.setColumnSelectionAllowed(false);
         
-        // Ajustar anchos de columnas
-        tblRegistroUsuarios.getColumnModel().getColumn(0).setPreferredWidth(150); // Ancho para columna "Nombre"
-        tblRegistroUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150); // Ancho para columna "Apellido"
-        tblRegistroUsuarios.getColumnModel().getColumn(2).setPreferredWidth(100); // Ancho para columna "DPI"
-        tblRegistroUsuarios.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para columna "Cargo"
-        tblRegistroUsuarios.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para columna "Teléfono"
-        tblRegistroUsuarios.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Estado"
+        // Modificado: Agregado el ancho para la columna "No."
+        tblRegistroUsuarios.getColumnModel().getColumn(0).setPreferredWidth(30);  // Ancho para columna "No."
+        tblRegistroUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150); // Ancho para columna "Nombre"
+        tblRegistroUsuarios.getColumnModel().getColumn(2).setPreferredWidth(150); // Ancho para columna "Apellido"
+        tblRegistroUsuarios.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para columna "DPI"
+        tblRegistroUsuarios.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para columna "Cargo"
+        tblRegistroUsuarios.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Teléfono"
+        tblRegistroUsuarios.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para columna "Estado"
         
         cargarUsuariosEnTabla();
         this.currentUser = username;
@@ -133,17 +134,15 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
             this.requestFocusInWindow();
         });
     }
-
-    // Cambiar el método de private a public
-    public void actualizarTabla() {
-        gestionUsuarios.cargarUsuariosDesdeExcel();
-        listaUsuarios = gestionUsuarios.getUsuarios();
-        cargarUsuariosEnTabla();
-    }
-
-    public void cargarUsuariosEnTabla() {
+    
+    
+    
+    
+    
+    
+     private void cargarUsuariosEnTabla() {
         modeloUsuarios.setRowCount(0);
-        listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
+        listaUsuariosFiltrados = new Vector<>(); // Inicializar como nuevo vector
         
         Set<String> estadosValidos = new HashSet<>(Arrays.asList(
             "ACTIVO",
@@ -153,24 +152,28 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
             "JUBILADO"
         ));
         
+        int indice = 1;
         for (Usuarios usuario : listaUsuarios) {
             if (estadosValidos.contains(usuario.getEstado())) {
-                Object[] fila = new Object[]{
+                listaUsuariosFiltrados.add(usuario);
+                modeloUsuarios.addRow(new Object[]{
+                    indice++,
                     usuario.getNombre(),
                     usuario.getApellido(),
                     usuario.getNumeroDPI(),
                     usuario.getCargo(),
                     usuario.getNumeroTelefono(),
                     usuario.getEstado()
-                };
-                modeloUsuarios.addRow(fila);
-                listaUsuariosFiltrados.add(usuario); // Añadimos el usuario a la lista filtrada
+                });
             }
         }
     }
 
-    
-
+public void actualizarTabla() {
+        gestionUsuarios.cargarUsuariosDesdeExcel();
+        listaUsuarios = gestionUsuarios.getUsuarios();
+        cargarUsuariosEnTabla();
+    }
 
 
         // Método para configurar el campo de texto con placeholder
@@ -751,31 +754,33 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
         Multipart multipart = new MimeMultipart("related");
         BodyPart messageBodyPart = new MimeBodyPart();
         
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>Notificación de Eliminación de Cuenta - PINEED</strong></h2>" +
-            "<p style='color: #34495e;'>Estimado(a) " + usuario.getNombre() + " " + usuario.getApellido() + ",</p>" +
-            "<p style='color: #34495e;'>Le informamos que su cuenta ha sido eliminada del sistema de PINEED.</p>" +
-            
-            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Usuario:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + usuario.getNombre() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + usuario.getApellido() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Cargo:</strong></td><td>" + usuario.getCargo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + usuario.getCorreoElectronico() + "</td></tr>" +
-            "</table></div>" +
-            
-            "<p style='color: #34495e;'>Si tiene alguna pregunta sobre esta acción, por favor contacte al administrador del sistema.</p>" +
-            "<p style='color: #34495e;'>Atentamente,</p>" +
-            "<p style='color: #34495e;'>El equipo de PINEED</p>" +
+ String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #c41e3a; text-align: center;'><strong>Notificación de Eliminación de Cuenta - PINEED</strong></h2>" +
+    "<p style='color: #c41e3a;'>Estimado(a) " + usuario.getNombre() + " " + usuario.getApellido() + ",</p>" +
+    "<p style='color: #c41e3a;'>Le informamos que su cuenta ha sido eliminada del sistema de PINEED.</p>" +
+    
+    "<div style='background-color: #ffebee; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #c41e3a; margin-top: 0;'>Información del Usuario:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + usuario.getNombre() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + usuario.getApellido() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + usuario.getNumeroDPI() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Cargo:</strong></td><td style='color: #ffffff;'>" + usuario.getCargo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #c41e3a;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
+    "</table></div>" +
+    
+    "<p style='color: #c41e3a;'>Si tiene alguna pregunta sobre esta acción, por favor contacte al administrador del sistema.</p>" +
+    "<p style='color: #c41e3a;'>Atentamente,</p>" +
+    "<p style='color: #c41e3a;'>El equipo de PINEED</p>" +
+    "<div style='text-align: center; margin-top: 20px;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
 
-            "<div style='text-align: center; margin-top: 20px;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+ 
+ 
             
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
@@ -805,135 +810,145 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
 
 
     private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
-int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
-    if (filaSeleccionada >= 0) {
-        try {
-            // Obtener el usuario seleccionado
-            Usuarios usuarioSeleccionado = listaUsuarios.get(filaSeleccionada);
-            String nombreCompleto = usuarioSeleccionado.getNombre() + " " + usuarioSeleccionado.getApellido();
-            String correo = usuarioSeleccionado.getCorreoElectronico();
+         int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            try {
+                Usuarios usuarioSeleccionado = listaUsuariosFiltrados.get(filaSeleccionada);
+                String nombreCompleto = usuarioSeleccionado.getNombre() + " " + usuarioSeleccionado.getApellido();
+                String correo = usuarioSeleccionado.getCorreoElectronico();
 
-            int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Está seguro de que desea eliminar el usuario: " + nombreCompleto + "?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(this,
+                    "¿Está seguro de que desea eliminar el usuario: " + nombreCompleto + "?",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION);
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                // Crear y mostrar el diálogo de progreso
-                JDialog dialogoProceso = new JDialog(this, "Procesando", true);
-                dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-                JPanel panel = new JPanel(new BorderLayout(10, 10));
-                panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+                if (confirm == JOptionPane.YES_OPTION) {
+                    JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+                    dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                    JPanel panel = new JPanel(new BorderLayout(10, 10));
+                    panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-                JPanel contenidoPanel = new JPanel(new GridBagLayout());
-                GridBagConstraints gbc = new GridBagConstraints();
-                gbc.gridwidth = GridBagConstraints.REMAINDER;
-                gbc.fill = GridBagConstraints.HORIZONTAL;
-                gbc.insets = new Insets(5, 5, 5, 5);
+                    JPanel contenidoPanel = new JPanel(new GridBagLayout());
+                    GridBagConstraints gbc = new GridBagConstraints();
+                    gbc.gridwidth = GridBagConstraints.REMAINDER;
+                    gbc.fill = GridBagConstraints.HORIZONTAL;
+                    gbc.insets = new Insets(5, 5, 5, 5);
 
-                JProgressBar progressBar = new JProgressBar();
-                progressBar.setIndeterminate(true);
-                progressBar.setStringPainted(true);
-                progressBar.setString("Procesando...");
+                    JProgressBar progressBar = new JProgressBar();
+                    progressBar.setIndeterminate(true);
+                    progressBar.setStringPainted(true);
+                    progressBar.setString("Procesando...");
 
-                JLabel mensajeLabel = new JLabel("Desactivando usuario y enviando notificación...");
-                mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+                    JLabel mensajeLabel = new JLabel("Desactivando usuario y enviando notificación...");
+                    mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
 
-                contenidoPanel.add(mensajeLabel, gbc);
-                contenidoPanel.add(progressBar, gbc);
-                panel.add(contenidoPanel, BorderLayout.CENTER);
-                dialogoProceso.add(panel);
-                dialogoProceso.setSize(400, 150);
-                dialogoProceso.setLocationRelativeTo(this);
+                    contenidoPanel.add(mensajeLabel, gbc);
+                    contenidoPanel.add(progressBar, gbc);
+                    panel.add(contenidoPanel, BorderLayout.CENTER);
+                    dialogoProceso.add(panel);
+                    dialogoProceso.setSize(400, 150);
+                    dialogoProceso.setLocationRelativeTo(this);
 
-                Thread processingThread = new Thread(() -> {
-                    try {
-                        // Enviar correo antes de eliminar el usuario
-                        enviarCorreoEliminacionUsuario(correo, usuarioSeleccionado);
-                        
-                        // Eliminar usuario
-                        gestionUsuarios.eliminarUsuario(usuarioSeleccionado.getNumeroDPI());
+                    Thread processingThread = new Thread(() -> {
+                        try {
+                            // Enviar correo antes de eliminar el usuario
+                            enviarCorreoEliminacionUsuario(correo, usuarioSeleccionado);
+                            
+                            // Eliminar usuario
+                            gestionUsuarios.eliminarUsuario(usuarioSeleccionado.getNumeroDPI());
+                            
+                            SwingUtilities.invokeLater(() -> {
+                                dialogoProceso.dispose();
+                                // En lugar de solo remover la fila, actualizamos toda la tabla
+                                actualizarTabla();
+                                JOptionPane.showMessageDialog(this,
+                                    "Usuario eliminado correctamente y notificación enviada.",
+                                    "Éxito",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            });
+                        } catch (IOException e) {
+                            SwingUtilities.invokeLater(() -> {
+                                dialogoProceso.dispose();
+                                JOptionPane.showMessageDialog(this,
+                                    "Usuario eliminado pero hubo un error al enviar el correo: " + e.getMessage(),
+                                    "Advertencia",
+                                    JOptionPane.WARNING_MESSAGE);
+                            });
+                        } catch (Exception e) {
+                            SwingUtilities.invokeLater(() -> {
+                                dialogoProceso.dispose();
+                                JOptionPane.showMessageDialog(this,
+                                    "Error durante el proceso: " + e.getMessage(),
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                            });
+                        }
+                    });
 
-                        SwingUtilities.invokeLater(() -> {
-                            dialogoProceso.dispose();
-                            cargarUsuariosEnTabla(); // Actualizar la tabla
-                            JOptionPane.showMessageDialog(this,
-                                "Usuario eliminado correctamente y notificación enviada.",
-                                "Éxito",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        });
-                    } catch (IOException e) {
-                        SwingUtilities.invokeLater(() -> {
-                            dialogoProceso.dispose();
-                            JOptionPane.showMessageDialog(this,
-                                "Usuario eliminado pero hubo un error al enviar el correo: " + e.getMessage(),
-                                "Advertencia",
-                                JOptionPane.WARNING_MESSAGE);
-                        });
-                    } catch (Exception e) {
-                        SwingUtilities.invokeLater(() -> {
-                            dialogoProceso.dispose();
-                            JOptionPane.showMessageDialog(this,
-                                "Error durante el proceso: " + e.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        });
-                    }
-                });
-
-                processingThread.start();
-                dialogoProceso.setVisible(true);
+                    processingThread.start();
+                    dialogoProceso.setVisible(true);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                    "Error al eliminar el usuario: " + e.getMessage(),
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception e) {
-            System.err.println("Error al eliminar el usuario: " + e.getMessage());
+        } else {
             JOptionPane.showMessageDialog(this,
-                "Error al eliminar el usuario: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
+                "Por favor, seleccione un usuario para eliminar.");
         }
-    } else {
-        JOptionPane.showMessageDialog(this,
-            "Por favor, seleccione un usuario para eliminar.");
-    }
     }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-if (txtNombreUsuarioBuscar.getText().trim().isEmpty() || 
+    if (txtNombreUsuarioBuscar.getText().trim().isEmpty() || 
             txtNombreUsuarioBuscar.getText().equals("Ingresa Nombre del Usuario a buscar")) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
-            return;
+        JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
+        return;
+    }
+    
+    String nombreBuscado = normalizarTexto(txtNombreUsuarioBuscar.getText().trim());
+    modeloUsuarios.setRowCount(0);
+    listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
+    boolean hayCoincidencias = false;
+    int indice = 1; // Inicializamos el contador para el índice
+    
+    for (Usuarios usuario : listaUsuarios) {
+        String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
+        if (nombreUsuarioNormalizado.contains(nombreBuscado)) {
+            modeloUsuarios.addRow(new Object[]{
+                indice, // Añadimos el índice como primera columna
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            });
+            listaUsuariosFiltrados.add(usuario); // Añadimos el usuario encontrado a la lista filtrada
+            hayCoincidencias = true;
+            indice++; // Incrementamos el índice para la siguiente coincidencia
         }
-
-        String nombreBuscado = normalizarTexto(txtNombreUsuarioBuscar.getText().trim());
-        modeloUsuarios.setRowCount(0);
-        listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
-        boolean hayCoincidencias = false;
-
-        for (Usuarios usuario : listaUsuarios) {
-            String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
-
-            if (nombreUsuarioNormalizado.contains(nombreBuscado)) {
-                modeloUsuarios.addRow(new Object[]{
-                    usuario.getNombre(),
-                    usuario.getApellido(),
-                    usuario.getNumeroDPI(),
-                    usuario.getCargo(),
-                    usuario.getNumeroTelefono(),
-                    usuario.getEstado()
-                });
-                listaUsuariosFiltrados.add(usuario); // Añadimos el usuario encontrado a la lista filtrada
-                hayCoincidencias = true;
-            }
-        }
-
-        if (!hayCoincidencias) {
-            JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-            cargarUsuariosEnTabla(); // Volver a cargar todos los usuarios
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
-            txtNombreUsuarioBuscar.setForeground(Color.GRAY);
-        });
+    }
+    
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        cargarUsuariosEnTabla(); // Volver a cargar todos los usuarios
+    }
+    
+    // Aseguramos que las columnas mantengan sus anchos preferidos
+    SwingUtilities.invokeLater(() -> {
+        tblRegistroUsuarios.getColumnModel().getColumn(0).setPreferredWidth(30);  // Ancho para columna "No."
+        tblRegistroUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150); // Ancho para columna "Nombre"
+        tblRegistroUsuarios.getColumnModel().getColumn(2).setPreferredWidth(150); // Ancho para columna "Apellido"
+        tblRegistroUsuarios.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para columna "DPI"
+        tblRegistroUsuarios.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para columna "Cargo"
+        tblRegistroUsuarios.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Teléfono"
+        tblRegistroUsuarios.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para columna "Estado"
+        
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setForeground(Color.GRAY);
+    });
     }//GEN-LAST:event_buscarUsuarioActionPerformed
 
     // Método para normalizar texto eliminando tildes y convirtiendo a minúsculas

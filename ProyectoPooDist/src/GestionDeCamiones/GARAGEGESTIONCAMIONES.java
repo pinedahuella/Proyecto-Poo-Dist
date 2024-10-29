@@ -1,6 +1,7 @@
 package GestionDeCamiones;
 
 // Importación de clases necesarias para la gestión de camiones y otras funcionalidades de la aplicación
+import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlInventario.FrameInventario; // Importa la clase FrameInventario para gestionar la interfaz de inventario
 import ControlPedidos.FormularioPedidos; // Importa la clase FormularioPedidos para gestionar pedidos de productos
 import ControlPlanilla.FramePlanillaSemanal; // Importa la clase FramePlanillaSemanal para manejar la planilla semanal

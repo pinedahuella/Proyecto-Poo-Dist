@@ -1,5 +1,6 @@
 package GestionDeCamiones;
 
+import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlCliente.FrameClientes;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
@@ -819,27 +820,29 @@ private void enviarCorreoReactivacion(String destinatario, Camiones camion) thro
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Camión Reactivado en PINEED!</strong></h2>" +
-            "<p style='color: #34495e;'>Se ha reactivado un camión en el sistema.</p>" +
-            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Detalles del Camión:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camion.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camion.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camion.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>FUNCIONAL</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camion.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camion.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camion.getAñoFabricacion() + "</td></tr>" +
-            "</table></div>" +
-            "<div style='margin-top: 20px; text-align: center;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
-        
+       String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Camión Reactivado en PINEED!</strong></h2>" +
+    "<p style='color: #1e88e5;'>Se ha reactivado un camión en el sistema.</p>" +
+    
+    "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #1e88e5; margin-top: 0;'>Detalles del Camión:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Marca:</strong></td><td style='color: #ffffff;'>" + camion.getMarca() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Modelo:</strong></td><td style='color: #ffffff;'>" + camion.getModelo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Placas:</strong></td><td style='color: #ffffff;'>" + camion.getPlacas() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Estado:</strong></td><td style='color: #ffffff;'>FUNCIONAL</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camion.getTipoCombustible() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camion.getCapacidadCarga() + " kg</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camion.getAñoFabricacion() + "</td></tr>" +
+    "</table></div>" +
+    
+    "<div style='margin-top: 20px; text-align: center;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
+       
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
 

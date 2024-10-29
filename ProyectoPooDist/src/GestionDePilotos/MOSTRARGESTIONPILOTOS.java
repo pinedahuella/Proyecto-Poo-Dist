@@ -2,6 +2,7 @@ package GestionDePilotos;
 
 import GestionDePilotos.INICIOGESTIONPILOTOS;
 import GestionDePilotos.GESTIONPILOTOS;
+import GestionDePilotos.Piloto;
 import com.toedter.calendar.JDateChooser;
 import java.text.SimpleDateFormat;
 import java.util.Vector;

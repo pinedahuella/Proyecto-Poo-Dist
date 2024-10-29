@@ -94,35 +94,43 @@ public class GestionCalendario {
      * Carga las fechas desde el archivo Excel
      * Solo carga fechas activas con camiones activos
      */
-    public void cargarFechasExcel() {
-        
-        int indiceactual = 0;
- 
+public void cargarFechasExcel() {
+    int indiceactual = 0;
     fechasDeCalendario.clear();
-    
+
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
-
         Sheet sheet = workbook.getSheetAt(0);
-          //cargamos los pedidos
+        //cargamos los pedidos
         GestionPedido gespedidos = new GestionPedido();
         gespedidos.CargaDeExcel();
-        
+
         // Cargar camiones activos y sus índices
         GESTIONCAMIONES gestionCamiones = new GESTIONCAMIONES();
         gestionCamiones.cargarCamionesDesdeExcel();
         Vector<Camiones> camionesActivos = gestionCamiones.getCamiones();
-        
+
+        // Cargar camiones activos y sus índices
+        GESTIONPILOTOS gestionPilotos = new GESTIONPILOTOS();
+        gestionPilotos.cargarPilotosDesdeExcel();
+        Vector<Piloto> pilotosActivos = gestionPilotos.getPilotos();
+
         // Crear mapa de índices válidos de camiones
         Map<Integer, Boolean> indicesCamionesValidos = new HashMap<>();
         for (int i = 0; i < camionesActivos.size(); i++) {
             indicesCamionesValidos.put(i, true);
         }
-        
+
+        // Crear mapa de índices válidos de camiones
+        Map<Integer, Boolean> indicesPilotosValidos = new HashMap<>();
+        for (int i = 0; i < pilotosActivos.size(); i++) {
+            indicesPilotosValidos.put(i, true);
+        }
+
         // Procesar cada fila del calendario
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue; // Skip header
-            
+
             try {
                 Date fechac = leerFechaCelda(row.getCell(0));
                 Date fechad = leerFechaCelda(row.getCell(1));
@@ -130,49 +138,50 @@ public class GestionCalendario {
                 int indiceCamion = (int) row.getCell(3).getNumericCellValue();
                 boolean activo = row.getCell(4).getBooleanCellValue();
                 boolean compra = row.getCell(5).getBooleanCellValue();
-                
+
                 // Solo cargar la fecha si:
                 // 1. Está activa
                 // 2. El índice del camión es válido
                 // 3. El camión referenciado está activo
-                if (indicesCamionesValidos.containsKey(indiceCamion)) {
+                if (indicesCamionesValidos.containsKey(indiceCamion) && indicesPilotosValidos.containsKey(indicePiloto)) {
                     Vector<Integer> indiceProductos = new Vector<>();
                     Vector<Integer> indiceCantidad = new Vector<>();
-                    
+
                     // Leer productos y cantidades
                     for (int i = 6; i < row.getLastCellNum(); i += 2) {
                         Cell productoCell = row.getCell(i);
                         Cell cantidadCell = row.getCell(i + 1);
-                        
+
                         if (productoCell != null && productoCell.getCellType() == CellType.NUMERIC) {
                             indiceProductos.add((int) productoCell.getNumericCellValue());
                             indiceCantidad.add(cantidadCell != null ? 
                                 (int) cantidadCell.getNumericCellValue() : 0);
                         }
                     }
-                    
+
                     FechaCalendario fechaCalendario = new FechaCalendario(
                         fechac, fechad, indicePiloto, indiceCamion,
                         indiceProductos, indiceCantidad, activo, compra
                     );
                     fechasDeCalendario.add(fechaCalendario);
-                }else{
+                } else {
                     gespedidos.actualizarIndiceCalendario(indiceactual);
                 }
-                
+
                 indiceactual++;
             } catch (Exception e) {
                 System.err.println("Error al procesar la fila " + row.getRowNum() + ": " + e.getMessage());
             }
         }
-        
-        gespedidos.GuardarEnExcel();
 
+        gespedidos.GuardarEnExcel();
     } catch (IOException e) {
         System.err.println("Error al cargar el archivo Excel: " + e.getMessage());
         e.printStackTrace();
     }
 }
+
+
     /**
      * Lee una fecha desde una celda de Excel
      * @param cell Celda a leer
@@ -277,28 +286,4 @@ public class GestionCalendario {
         }
     }
     
-
-    /**
-     * Verifica si existe alguna fecha activa para un camión específico
-     * @param indiceCamion Índice del camión a verificar
-     * @return true si existen fechas activas para el camión
-     */
-    public boolean existenFechasActivasPorCamion(int indiceCamion) {
-        for (FechaCalendario fecha : fechasDeCalendario) {
-            if (fecha.getIndiceCamion() == indiceCamion && fecha.getActivo()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public boolean existenFechasActivasPorPiloto(int indicePiloto) {
-        for (FechaCalendario fecha : fechasDeCalendario) {
-            if (fecha.getIndicePiloto() == indicePiloto && fecha.getActivo()) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

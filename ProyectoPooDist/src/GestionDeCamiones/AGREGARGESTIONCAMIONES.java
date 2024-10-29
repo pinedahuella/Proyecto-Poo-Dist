@@ -315,10 +315,10 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
         BodyPart messageBodyPart = new MimeBodyPart();
         String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
             "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" +
-            "<p style='color: #34495e;'>Se ha agregado un nuevo camión al sistema.</p>" +
-            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Detalles del Camión:</h3>" +
+            "<h2 style='color: #155724; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" + // Verde fuerte
+            "<p style='color: #155724;'>Se ha agregado un nuevo camión al sistema.</p>" + // Verde fuerte
+            "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" + // Fondo verde claro
+            "<h3 style='color: #155724; margin-top: 0;'>Detalles del Camión:</h3>" + // Verde fuerte
             "<table style='width: 100%; border-collapse: collapse;'>" +
             "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camion.getMarca() + "</td></tr>" +
             "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camion.getModelo() + "</td></tr>" +

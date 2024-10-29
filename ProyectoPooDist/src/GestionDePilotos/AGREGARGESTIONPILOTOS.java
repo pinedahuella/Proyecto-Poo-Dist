@@ -2,6 +2,8 @@ package GestionDePilotos;
 
 import GestionDePilotos.GESTIONPILOTOS;
 import GestionDePilotos.INICIOGESTIONPILOTOS;
+import GestionDePilotos.INICIOGESTIONPILOTOS;
+import GestionDePilotos.Piloto;
 import GestionDePilotos.Piloto;
 import Login.LOGINPINEED;
 import com.toedter.calendar.JDateChooser;
@@ -29,8 +31,10 @@ import javax.activation.FileDataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 import javax.mail.util.ByteArrayDataSource;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -234,6 +238,15 @@ public void limpiarCampos() {
         });
     }
     
+    
+    
+        // Método para eliminar tildes y espacios adicionales
+    public static String eliminarTildes(String texto) {
+        String normalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);
+        Pattern patron = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return patron.matcher(normalizado).replaceAll("").trim().replaceAll("\\s+", ""); // Elimina espacios
+    
+    }
 private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throws IOException {
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
@@ -265,39 +278,50 @@ private void enviarCorreoActualizacion(String destinatario, Piloto piloto) throw
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
 
-        String nombreUsuario = piloto.getNombrePiloto().toLowerCase() + "." + 
-                               piloto.getApellidoPiloto().toLowerCase() + "&pineed";
+ String[] nombres = eliminarTildes(piloto.getNombrePiloto()).toLowerCase().split(" ");
+            String[] apellidos = eliminarTildes(piloto.getApellidoPiloto()).toLowerCase().split(" ");
 
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Bienvenido a PINEED!</strong></h2>" +
-            "<p style='color: #34495e;'>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
-            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Registro:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + piloto.getNombrePiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + piloto.getApellidoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Tipo de Licencia:</strong></td><td>" + piloto.getTipoLicencia() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Teléfono:</strong></td><td>" + piloto.getNumeroTelefonicoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Género:</strong></td><td>" + piloto.getGeneroPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Fecha de Nacimiento:</strong></td><td>" + piloto.getFechaDeNacimiento() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + piloto.getEstadoPiloto() + "</td></tr>" +
-            "</table></div>" +
+            // Concatenar los nombres y apellidos sin espacios
+            String nombreCompleto = String.join("", nombres); // Unir los nombres sin espacios
+            String apellidoCompleto = String.join("", apellidos); // Unir los apellidos sin espacios
 
-            // Sección de Información de Acceso al Sistema con fondo cuadrado
-            "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
-            "<p><strong>Nombre de Usuario:</strong> " + nombreUsuario + "</p>" +
-            "<p><strong>Contraseña:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
-            "</div>" +
+            // Formar el nombre de usuario
+            String nombreUsuario = nombreCompleto + "." + apellidoCompleto + "&pineed";
+            
+            
 
-            "<div style='text-align: center; margin-top: 20px;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+       String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #155724; text-align: center;'><strong>¡Bienvenido a PINEED!</strong></h2>" +
+    "<p style='color: #155724;'>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
+    
+    // Sección de Información del Registro
+    "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #155724; margin-top: 0;'>Información del Registro:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + piloto.getNombrePiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + piloto.getApellidoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Tipo de Licencia:</strong></td><td>" + piloto.getTipoLicencia() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Teléfono:</strong></td><td>" + piloto.getNumeroTelefonicoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Género:</strong></td><td>" + piloto.getGeneroPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Fecha de Nacimiento:</strong></td><td>" + piloto.getFechaDeNacimiento() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + piloto.getEstadoPiloto() + "</td></tr>" +
+    "</table></div>" +
+
+    // Sección de Información de Acceso al Sistema con fondo verde claro
+    "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #155724; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
+    "<p><strong>Nombre de Usuario:</strong> " + nombreUsuario + "</p>" +
+    "<p><strong>Contraseña:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
+    "</div>" +
+
+    "<div style='text-align: center; margin-top: 20px;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
 
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);

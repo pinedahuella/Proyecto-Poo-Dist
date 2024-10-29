@@ -1,6 +1,7 @@
 package InicioApp;
 
 // Importación de clases necesarias para la funcionalidad de inicio de sesión
+import GestionDePilotos.INICIOGESTIONPILOTOS;
 import ControlCliente.FrameClientes;
 import ControlInventario.gestionProductos;
 import ControlInventario.Producto;

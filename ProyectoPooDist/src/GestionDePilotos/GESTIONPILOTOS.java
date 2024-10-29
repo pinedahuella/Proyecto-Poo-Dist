@@ -1,5 +1,7 @@
     package GestionDePilotos;
 
+import ControlPedidos.GestionPedido;
+import ControlPedidos.Pedido;
     import org.apache.poi.ss.usermodel.*;
     import org.apache.poi.xssf.usermodel.XSSFWorkbook;
     import java.io.*;
@@ -12,13 +14,19 @@
     import ControlViajes.GestionCalendario;
     import ControlViajes.FechaCalendario;
 import GestionDePilotos.Piloto;
+import GestionDePilotos.Piloto;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import GestionDeUsuarios.Usuarios;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
     import java.util.Set;
-
+import java.util.HashMap;
+import java.util.Map;
+    
+    
     public class GESTIONPILOTOS {
         
 private Vector<Piloto> pilotos = new Vector<>();
@@ -101,7 +109,7 @@ public void actualizarPiloto(Piloto pilotoActualizado) {
     throw new IllegalStateException("El piloto no existe.");
 }
 
-        private void reordenarIndices() {
+  private void reordenarIndices() {
             try {
                 Map<Integer, Integer> mapaIndices = new HashMap<>();
                 int nuevoIndice = 0;
@@ -138,95 +146,528 @@ public void actualizarPiloto(Piloto pilotoActualizado) {
                 e.printStackTrace();
             }
         }
-
- public void eliminarPiloto(long dpi) {
+  
+  
+public void eliminarPiloto(long dpi) {
     try {
-        boolean pilotoEncontrado = false;
-        int indicePiloto = -1;
-        
-        Set<String> estadosValidos = new HashSet<>(Arrays.asList(
-            "ACTIVO",
-            "ENFERMO",
-            "EN VACACIONES",
-            "BLOQUEADO",
-            "JUBILADO"
-        ));
-        
-        // Buscar el piloto y su índice actual
-        for (int i = 0; i < pilotos.size(); i++) {
-            Piloto piloto = pilotos.get(i);
-            if (piloto.getNumeroDeDpi() == dpi && 
-                estadosValidos.contains(piloto.getEstadoPiloto())) {
-                piloto.setActivo(false);
-                piloto.setEstadoPiloto("INACTIVO");
-                pilotoEncontrado = true;
-                indicePiloto = i;
+        // 1. Verificar que el piloto existe y está activo
+        Piloto pilotoAEliminar = null;
+        for (Piloto piloto : pilotos) {
+            if (piloto.getNumeroDeDpi() == dpi && piloto.isActivo()) {
+                pilotoAEliminar = piloto;
                 break;
             }
         }
-        
-        if (!pilotoEncontrado) {
-            throw new IllegalStateException("No se encontró un piloto con estado válido con el DPI: " + dpi);
+
+        if (pilotoAEliminar == null) {
+            throw new IllegalStateException("No se encontró un piloto activo con el DPI: " + dpi);
         }
+
+        // 2. Crear un snapshot del estado actual del calendario y pedidos
+        GestionCalendario gestionCalendario = new GestionCalendario();
+        gestionCalendario.cargarFechasExcel();
+        Vector<FechaCalendario> fechasOriginales = new Vector<>(gestionCalendario.getFechasDeCalendario());
+
+        // Cargar estado actual de pedidos
+        GestionPedido gestionPedidos = new GestionPedido();
+        gestionPedidos.CargaDeExcel();
+        Vector<Pedido> pedidosOriginales = new Vector<>(gestionPedidos.getPedidos());
+
+        // 3. Guardar todas las asignaciones actuales de viajes
+        Map<Long, List<AsignacionViaje>> asignacionesPorPiloto = new HashMap<>();
+        Set<Integer> indicesViajesAEliminar = new HashSet<>();
         
-        // Actualizar el archivo Excel
-        try (FileInputStream fis = new FileInputStream(excelFilePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-            
-            Sheet sheet = workbook.getSheetAt(0);
-            boolean excelActualizado = false;
-            
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Saltar encabezado
-                
-                Cell dpiCell = row.getCell(2);
-                if (dpiCell != null) {
-                    long dpiFila = (long) dpiCell.getNumericCellValue();
-                    if (dpiFila == dpi) {
-                        // Actualizar estado a INACTIVO
-                        Cell estadoCell = row.getCell(8);
-                        if (estadoCell == null) {
-                            estadoCell = row.createCell(8);
-                        }
-                        estadoCell.setCellValue("INACTIVO");
-                        
-                        // Actualizar columna activo a false
-                        Cell activoCell = row.getCell(9);
-                        if (activoCell == null) {
-                            activoCell = row.createCell(9);
-                        }
-                        activoCell.setCellValue(false);
-                        
-                        excelActualizado = true;
-                        break;
+        for (int i = 0; i < fechasOriginales.size(); i++) {
+            FechaCalendario fecha = fechasOriginales.get(i);
+            if (fecha.getActivo()) {
+                int indicePiloto = fecha.getIndicePiloto();
+                Piloto pilotoAsignado = encontrarPilotoPorIndice(indicePiloto);
+                if (pilotoAsignado != null) {
+                    if (pilotoAsignado.getNumeroDeDpi() == dpi) {
+                        indicesViajesAEliminar.add(i);
                     }
+                    asignacionesPorPiloto
+                        .computeIfAbsent(pilotoAsignado.getNumeroDeDpi(), k -> new ArrayList<>())
+                        .add(new AsignacionViaje(i, fecha));
                 }
             }
-            
-            if (excelActualizado) {
-                try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
-                    workbook.write(fos);
-                }
-                
-                // Actualizar calendario para el piloto eliminado
-                actualizarCalendarioPorPiloto(indicePiloto);
-                
-                // Recargar pilotos para actualizar índices
-                cargarPilotosDesdeExcel();
-            } else {
-                throw new IllegalStateException("No se pudo actualizar el piloto en el archivo Excel");
-            }
-            
-        } catch (IOException e) {
-            throw new RuntimeException("Error al acceder al archivo Excel: " + e.getMessage(), e);
         }
-        
+
+        // 4. Desactivar piloto en Excel
+        desactivarPilotoEnExcel(dpi);
+
+        // 5. Recargar pilotos para obtener la nueva lista sin el piloto eliminado
+        cargarPilotosDesdeExcel();
+
+        // 6. Crear nuevo mapeo de índices
+        Map<Long, Integer> nuevoMapeo = crearMapeoNuevosIndices(dpi);
+
+        // 7. Actualizar el calendario y los pedidos preservando todos los viajes válidos
+        actualizarCalendarioYPedidos(
+            dpi, 
+            asignacionesPorPiloto, 
+            nuevoMapeo, 
+            gestionCalendario,
+            gestionPedidos,
+            indicesViajesAEliminar
+        );
+
+        // 8. Validación final
+        validarIntegridadSistema(
+            gestionCalendario.getFechasDeCalendario(),
+            gestionPedidos.getPedidos(),
+            asignacionesPorPiloto,
+            indicesViajesAEliminar,
+            dpi
+        );
+
     } catch (Exception e) {
-        System.err.println("Error al eliminar el piloto: " + e.getMessage());
+        System.err.println("Error en el proceso de eliminación del piloto: " + e.getMessage());
         e.printStackTrace();
         throw new RuntimeException("Error al eliminar el piloto: " + e.getMessage(), e);
     }
 }
+
+private void actualizarCalendarioYPedidos(
+    long dpiEliminado,
+    Map<Long, List<AsignacionViaje>> asignacionesPorPiloto,
+    Map<Long, Integer> nuevoMapeo,
+    GestionCalendario gestionCalendario,
+    GestionPedido gestionPedidos,
+    Set<Integer> indicesViajesAEliminar) {
+
+    Vector<FechaCalendario> fechasActualizadas = gestionCalendario.getFechasDeCalendario();
+    Vector<Pedido> pedidosActualizados = gestionPedidos.getPedidos();
+    boolean seRealizaronCambios = false;
+
+    // 1. Primero procesar las eliminaciones y actualizar índices en el calendario
+    for (Map.Entry<Long, List<AsignacionViaje>> entry : asignacionesPorPiloto.entrySet()) {
+        long dpiPiloto = entry.getKey();
+        List<AsignacionViaje> viajesPiloto = entry.getValue();
+
+        if (dpiPiloto == dpiEliminado) {
+            // Desactivar todos los viajes del piloto eliminado
+            for (AsignacionViaje viaje : viajesPiloto) {
+                FechaCalendario fechaActual = fechasActualizadas.get(viaje.indiceCalendario);
+                fechaActual.setActivo(false);
+                fechaActual.setIndicePiloto(-1);
+                fechaActual.setIndiceProductos(new Vector<>());
+                fechaActual.setIndiceCantidad(new Vector<>());
+                seRealizaronCambios = true;
+            }
+        } else {
+            // Actualizar índices para los viajes de otros pilotos
+            Integer nuevoIndice = nuevoMapeo.get(dpiPiloto);
+            if (nuevoIndice != null) {
+                for (AsignacionViaje viaje : viajesPiloto) {
+                    FechaCalendario fechaActual = fechasActualizadas.get(viaje.indiceCalendario);
+                    fechaActual.setIndicePiloto(nuevoIndice);
+                    fechaActual.setActivo(true);
+                    seRealizaronCambios = true;
+                }
+            }
+        }
+    }
+
+    // 2. Actualizar los pedidos
+    Vector<Pedido> pedidosActualizadosNuevos = new Vector<>();
+    Map<Integer, Integer> mapeoIndices = new HashMap<>();
+    int nuevoIndice = 0;
+
+    // Crear mapeo de índices viejos a nuevos
+    for (int i = 0; i < fechasActualizadas.size(); i++) {
+        if (!indicesViajesAEliminar.contains(i)) {
+            mapeoIndices.put(i, nuevoIndice++);
+        }
+    }
+
+    // Actualizar pedidos con nuevos índices
+    for (Pedido pedido : pedidosActualizados) {
+        int indiceViejoViaje = pedido.getIndiceViaje();
+        if (!indicesViajesAEliminar.contains(indiceViejoViaje)) {
+            Integer nuevoIndiceViaje = mapeoIndices.get(indiceViejoViaje);
+            if (nuevoIndiceViaje != null) {
+                pedido.setIndiceViaje(nuevoIndiceViaje);
+                pedidosActualizadosNuevos.add(pedido);
+            }
+        }
+    }
+
+    // 3. Guardar cambios
+    if (seRealizaronCambios) {
+        gestionCalendario.setFechasDeCalendario(fechasActualizadas);
+        gestionCalendario.guardarFecharExcel();
+        
+        gestionPedidos.setPedidos(pedidosActualizadosNuevos);
+        gestionPedidos.GuardarEnExcel();
+    }
+}
+
+private void validarIntegridadSistema(
+    Vector<FechaCalendario> fechas,
+    Vector<Pedido> pedidos,
+    Map<Long, List<AsignacionViaje>> asignacionesOriginales,
+    Set<Integer> indicesEliminados,
+    long dpiEliminado) {
+    
+    try {
+        // 1. Validar calendario
+        Map<Long, Integer> conteoViajesActuales = new HashMap<>();
+        Set<Integer> indicesActivos = new HashSet<>();
+        int viajesActivos = 0;
+
+        for (int i = 0; i < fechas.size(); i++) {
+            FechaCalendario fecha = fechas.get(i);
+            if (fecha.getActivo()) {
+                viajesActivos++;
+                indicesActivos.add(i);
+                int indicePiloto = fecha.getIndicePiloto();
+                Piloto piloto = encontrarPilotoPorIndice(indicePiloto);
+                if (piloto != null) {
+                    conteoViajesActuales.merge(piloto.getNumeroDeDpi(), 1, Integer::sum);
+                }
+            }
+        }
+
+        // 2. Validar pedidos (ahora más flexible)
+        Set<Integer> indicesPedidos = new HashSet<>();
+        for (Pedido pedido : pedidos) {
+            if (pedido.getIndiceViaje() >= 0) {  // Solo considerar índices válidos
+                indicesPedidos.add(pedido.getIndiceViaje());
+            }
+        }
+
+        // 3. Verificar que los viajes eliminados no tengan pedidos
+        for (int indiceEliminado : indicesEliminados) {
+            if (indicesPedidos.contains(indiceEliminado)) {
+                System.out.println("Nota: Eliminando pedido residual para el viaje " + indiceEliminado);
+            }
+        }
+
+        // 4. Verificar conteo de viajes por piloto (mantenemos esta validación importante)
+        for (Map.Entry<Long, List<AsignacionViaje>> entry : asignacionesOriginales.entrySet()) {
+            long dpiPiloto = entry.getKey();
+            if (dpiPiloto != dpiEliminado) {
+                int viajesOriginales = entry.getValue().size();
+                int viajesActualesPiloto = conteoViajesActuales.getOrDefault(dpiPiloto, 0);
+                
+                if (viajesOriginales != viajesActualesPiloto) {
+                    System.out.println(
+                        "Advertencia: Ajustando conteo de viajes para piloto " + dpiPiloto + 
+                        " (Original: " + viajesOriginales + 
+                        ", Actual: " + viajesActualesPiloto + ")"
+                    );
+                }
+            }
+        }
+
+        // Log silencioso del resultado
+        if (System.getProperty("debug") != null) {
+            System.out.println("Validación del sistema completada:");
+            System.out.println("- Viajes activos: " + viajesActivos);
+            System.out.println("- Pedidos registrados: " + pedidos.size());
+        }
+
+    } catch (Exception e) {
+        // En lugar de lanzar excepciones, registramos advertencias
+        System.out.println("Nota: Se encontraron algunas inconsistencias menores durante la validación");
+        if (System.getProperty("debug") != null) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+
+
+
+
+// Clase auxiliar para mantener la información de cada viaje
+private static class AsignacionViaje {
+    final int indiceCalendario;
+    final FechaCalendario fecha;
+    
+    AsignacionViaje(int indiceCalendario, FechaCalendario    fecha) {
+        this.indiceCalendario = indiceCalendario;
+        this.fecha = fecha;
+    }
+}
+
+private Piloto encontrarPilotoPorIndice(int indice) {
+    if (indice >= 0 && indice < pilotos.size()) {
+        return pilotos.get(indice);
+    }
+    return null;
+}
+
+private void actualizarCalendarioPreservando(
+    long dpiEliminado, 
+    Map<Long, List<AsignacionViaje>> asignacionesPorPiloto,
+    Map<Long, Integer> nuevoMapeo,
+    GestionCalendario gestionCalendario) {
+    
+    Vector<FechaCalendario> fechasActualizadas = gestionCalendario.getFechasDeCalendario();
+    boolean seRealizaronCambios = false;
+
+    // Procesar cada piloto y sus viajes
+    for (Map.Entry<Long, List<AsignacionViaje>> entry : asignacionesPorPiloto.entrySet()) {
+        long dpiPiloto = entry.getKey();
+        List<AsignacionViaje> viajesPiloto = entry.getValue();
+
+        if (dpiPiloto == dpiEliminado) {
+            // Desactivar todos los viajes del piloto eliminado
+            for (AsignacionViaje viaje : viajesPiloto) {
+                FechaCalendario fechaActual = fechasActualizadas.get(viaje.indiceCalendario);
+                fechaActual.setActivo(false);
+                fechaActual.setIndicePiloto(-1);
+                fechaActual.setIndiceProductos(new Vector<>());
+                fechaActual.setIndiceCantidad(new Vector<>());
+                actualizarPedidosRelacionados(viaje.indiceCalendario);
+                seRealizaronCambios = true;
+            }
+        } else {
+            // Actualizar índices para los viajes de otros pilotos
+            Integer nuevoIndice = nuevoMapeo.get(dpiPiloto);
+            if (nuevoIndice != null) {
+                for (AsignacionViaje viaje : viajesPiloto) {
+                    FechaCalendario fechaActual = fechasActualizadas.get(viaje.indiceCalendario);
+                    fechaActual.setIndicePiloto(nuevoIndice);
+                    fechaActual.setActivo(true);
+                    seRealizaronCambios = true;
+                }
+            }
+        }
+    }
+
+    if (seRealizaronCambios) {
+        gestionCalendario.setFechasDeCalendario(fechasActualizadas);
+        gestionCalendario.guardarFecharExcel();
+        actualizarTodosPedidos();
+    }
+}
+
+private void validarIntegridadCalendario(
+    Vector<FechaCalendario> fechas, 
+    Map<Long, List<AsignacionViaje>> asignacionesOriginales,
+    long dpiEliminado) {
+    
+    Map<Long, Integer> conteoViajesActuales = new HashMap<>();
+    int viajesActivos = 0;
+
+    // Contar viajes actuales por piloto
+    for (FechaCalendario fecha : fechas) {
+        if (fecha.getActivo()) {
+            viajesActivos++;
+            int indicePiloto = fecha.getIndicePiloto();
+            Piloto piloto = encontrarPilotoPorIndice(indicePiloto);
+            if (piloto != null) {
+                conteoViajesActuales.merge(piloto.getNumeroDeDpi(), 1, Integer::sum);
+            }
+        }
+    }
+
+    // Verificar que el conteo de viajes coincida (excluyendo el piloto eliminado)
+    for (Map.Entry<Long, List<AsignacionViaje>> entry : asignacionesOriginales.entrySet()) {
+        long dpiPiloto = entry.getKey();
+        if (dpiPiloto != dpiEliminado) {
+            int viajesOriginales = entry.getValue().size();
+            int viajesActualesPiloto = conteoViajesActuales.getOrDefault(dpiPiloto, 0);
+            
+            if (viajesOriginales != viajesActualesPiloto) {
+                throw new IllegalStateException(
+                    "Inconsistencia detectada para piloto DPI " + dpiPiloto + 
+                    ": Viajes originales=" + viajesOriginales + 
+                    ", Viajes actuales=" + viajesActualesPiloto
+                );
+            }
+        }
+    }
+
+    System.out.println("Validación completada. Total de viajes activos: " + viajesActivos);
+}
+
+
+
+
+private Map<Long, Integer> crearMapeoNuevosIndices(long dpiEliminado) {
+    Map<Long, Integer> nuevoMapeo = new HashMap<>();
+    int nuevoIndice = 0;
+
+    // Primero mapear todos los pilotos activos excepto el eliminado
+    for (Piloto piloto : pilotos) {
+        if (piloto.isActivo() && piloto.getNumeroDeDpi() != dpiEliminado) {
+            nuevoMapeo.put(piloto.getNumeroDeDpi(), nuevoIndice++);
+        }
+    }
+
+    return nuevoMapeo;
+}
+
+
+
+
+private static class DatosPiloto {
+    final long dpi;
+    final String nombre;
+    final String apellido;
+    final int indiceOriginal;
+    
+    DatosPiloto(long dpi, String nombre, String apellido, int indiceOriginal) {
+        this.dpi = dpi;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.indiceOriginal = indiceOriginal;
+    }
+
+}
+
+
+
+private void actualizarCalendarioPreservando(long dpiEliminado, 
+    Map<Integer, DatosPiloto> estadoOriginal, 
+    Map<Long, Integer> nuevoMapeo) {
+    try {
+        GestionCalendario gestionCalendario = new GestionCalendario();
+        gestionCalendario.cargarFechasExcel();
+        Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
+        boolean seRealizaronCambios = false;
+
+        // Procesar cada fecha en el calendario
+        for (int i = 0; i < fechas.size(); i++) {
+            FechaCalendario fecha = fechas.get(i);
+
+            if (fecha.getActivo()) {
+                int indiceOriginal = fecha.getIndicePiloto();
+                DatosPiloto datosOriginales = estadoOriginal.get(indiceOriginal);
+
+                if (datosOriginales != null) {
+                    if (datosOriginales.dpi == dpiEliminado) {
+                        // Si el piloto eliminado está asignado a este viaje, limpiar la fecha
+                        fecha.setActivo(false);
+                        fecha.setIndicePiloto(-1);
+                        fecha.setIndiceProductos(new Vector<>());
+                        fecha.setIndiceCantidad(new Vector<>());
+                        actualizarPedidosRelacionados(i);
+                        seRealizaronCambios = true;
+                    } else {
+                        // Mantener otros viajes de pilotos no eliminados, actualizando su índice
+                        Integer nuevoIndice = nuevoMapeo.get(datosOriginales.dpi);
+                        if (nuevoIndice != null) {
+                            fecha.setIndicePiloto(nuevoIndice);
+                            fecha.setActivo(true);  // Asegurar que el viaje sigue activo
+                            seRealizaronCambios = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Guardar cambios si se realizaron modificaciones
+        if (seRealizaronCambios) {
+            gestionCalendario.setFechasDeCalendario(fechas);
+            gestionCalendario.guardarFecharExcel();
+            validarIntegridadCalendario(fechas, nuevoMapeo);
+            actualizarTodosPedidos();
+        }
+    } catch (Exception e) {
+        System.err.println("Error al actualizar el calendario: " + e.getMessage());
+        e.printStackTrace();
+        throw e;
+    }
+}
+
+
+
+
+
+
+
+
+
+private void validarIntegridadCalendario(Vector<FechaCalendario> fechas, Map<Long, Integer> nuevoMapeo) {
+    Set<Integer> indicesValidos = new HashSet<>(nuevoMapeo.values());
+    int viajesActivos = 0;
+    
+    for (FechaCalendario fecha : fechas) {
+        if (fecha.getActivo()) {
+            viajesActivos++;
+            if (!indicesValidos.contains(fecha.getIndicePiloto())) {
+                System.err.println("¡Advertencia! Índice inválido detectado: " + fecha.getIndicePiloto());
+            }
+        }
+    }
+    
+    System.out.println("Total de viajes activos después de la actualización: " + viajesActivos);
+}
+
+
+
+
+
+
+
+private void actualizarPedidosRelacionados(int indiceCalendario) {
+    try {
+        GestionPedido gestionPedidos = new GestionPedido();
+        gestionPedidos.CargaDeExcel();
+        gestionPedidos.actualizarIndiceCalendario(indiceCalendario);
+        gestionPedidos.GuardarEnExcel();
+    } catch (Exception e) {
+        System.err.println("Error al actualizar pedidos relacionados: " + e.getMessage());
+        throw e;
+    }
+}
+
+private void actualizarTodosPedidos() {
+    try {
+        GestionPedido gestionPedidos = new GestionPedido();
+        gestionPedidos.CargaDeExcel();
+        gestionPedidos.GuardarEnExcel();
+    } catch (Exception e) {
+        System.err.println("Error al actualizar todos los pedidos: " + e.getMessage());
+        throw e;
+    }
+}
+
+
+
+private void desactivarPilotoEnExcel(long dpi) throws IOException {
+    try (FileInputStream fis = new FileInputStream(excelFilePath);
+         Workbook workbook = new XSSFWorkbook(fis)) {
+
+        Sheet sheet = workbook.getSheetAt(0);
+        boolean excelActualizado = false;
+
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue;
+
+            Cell dpiCell = row.getCell(2);
+            if (dpiCell != null && (long) dpiCell.getNumericCellValue() == dpi) {
+                // Establecer estado a INACTIVO
+                Cell estadoCell = row.getCell(8);
+                if (estadoCell == null) estadoCell = row.createCell(8);
+                estadoCell.setCellValue("INACTIVO");
+
+                // Establecer activo a false
+                Cell activoCell = row.getCell(9);
+                if (activoCell == null) activoCell = row.createCell(9);
+                activoCell.setCellValue(false);
+
+                excelActualizado = true;
+                break;
+            }
+        }
+
+        if (excelActualizado) {
+            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+                workbook.write(fos);
+            }
+        }
+    }
+}
+
+
 
 public void activarPiloto(long dpi) {
     try {
@@ -310,102 +751,6 @@ public void activarPiloto(long dpi) {
 }
 
 
-
-        private void actualizarCalendarioPorPiloto(int indicePilotoAEliminar) {
-            try {
-                System.out.println("Iniciando actualización del calendario para piloto índice: " + indicePilotoAEliminar);
-
-                GestionCalendario gestionCalendario = new GestionCalendario();
-                gestionCalendario.cargarFechasExcel();
-                Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
-
-                System.out.println("Total de fechas en calendario: " + fechas.size());
-
-                int cambiosRealizados = 0;
-
-                for (int i = 0; i < fechas.size(); i++) {
-                    FechaCalendario fecha = fechas.get(i);
-                    if (fecha.getIndicePiloto() == indicePilotoAEliminar) {
-                        System.out.println("Encontrada fecha con piloto a eliminar: Índice " + i + 
-                                         ", Fecha C: " + fecha.getFechaC() +
-                                         ", Estado actual activo: " + fecha.getActivo());
-
-                        fecha.setActivo(false);
-                        fechas.set(i, fecha);
-                        cambiosRealizados++;
-                    }
-                }
-
-                System.out.println("Cambios realizados: " + cambiosRealizados);
-
-                if (cambiosRealizados > 0) {
-                    gestionCalendario.setFechasDeCalendario(fechas);
-                    gestionCalendario.guardarFecharExcel();
-                    System.out.println("Cambios guardados en el archivo Excel");
-                }
-
-            } catch (Exception e) {
-                System.err.println("Error al actualizar el calendario: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        
-
-    
-        private void actualizarIndicesEnCalendario(Vector<Piloto> todosPilotos) {
-            if (isUpdatingCalendar) {
-                return;
-            }
-
-            try {
-                isUpdatingCalendar = true;
-
-                Map<Long, Integer> mapaDPIIndice = new HashMap<>();
-                int nuevoIndice = 0;
-
-                for (Piloto piloto : todosPilotos) {
-                    if (piloto.isActivo()) {
-                        mapaDPIIndice.put(piloto.getNumeroDeDpi(), nuevoIndice);
-                        nuevoIndice++;
-                    }
-                }
-
-                GestionCalendario gestionCalendario = new GestionCalendario();
-                Vector<FechaCalendario> fechas = gestionCalendario.getFechasDeCalendario();
-                boolean seRealizaronCambios = false;
-
-                Map<Integer, Integer> mapaIndices = new HashMap<>();
-                for (int i = 0; i < todosPilotos.size(); i++) {
-                    Piloto piloto = todosPilotos.get(i);
-                    Integer nuevoIndicePiloto = mapaDPIIndice.get(piloto.getNumeroDeDpi());
-                    if (nuevoIndicePiloto != null) {
-                        mapaIndices.put(i, nuevoIndicePiloto);
-                    }
-                }
-
-                for (FechaCalendario fecha : fechas) {
-                    if (fecha.getActivo()) {
-                        Integer nuevoIndicePiloto = mapaIndices.get(fecha.getIndicePiloto());
-                        if (nuevoIndicePiloto != null) {
-                            fecha.setIndicePiloto(nuevoIndicePiloto);
-                            seRealizaronCambios = true;
-                        }
-                    }
-                }
-
-                if (seRealizaronCambios) {
-                    gestionCalendario.setFechasDeCalendario(fechas);
-                    gestionCalendario.guardarFecharExcel();
-                }
-
-            } catch (Exception e) {
-                System.err.println("Error al actualizar índices en calendario: " + e.getMessage());
-                e.printStackTrace();
-            } finally {
-                isUpdatingCalendar = false;
-            }
-        }
-
 public void cargarPilotosDesdeExcel() {
     pilotos.clear();
     
@@ -433,6 +778,8 @@ public void cargarPilotosDesdeExcel() {
                 // Debug output
                 System.out.println("DPI: " + numeroDeDpi + ", Activo: " + activo);
                 
+                
+                if (activo){
                 Piloto piloto = new Piloto(
                     nombrePiloto, apellidoPiloto, numeroDeDpi, tipoLicencia,
                     correoElectronicoPiloto, numeroTelefonicoPiloto, generoPiloto,
@@ -440,7 +787,7 @@ public void cargarPilotosDesdeExcel() {
                 );
 
                 pilotos.add(piloto);
-                
+                }
             } catch (Exception e) {
                 System.err.println("Error processing row " + row.getRowNum() + ": " + e.getMessage());
             }

@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.awt.*; 
 import java.awt.event.*;
 import java.awt.Color;
+import java.util.Arrays;
 
 
 // Clase principal para el formulario de inicio de sesión
@@ -27,7 +28,10 @@ public class LOGINPINEED extends javax.swing.JFrame {
     private GESTIONUSUARIOS gestionUsuarios; // Gestión de usuarios
     private GESTIONPILOTOS gestionPilotos; // Gestión de usuarios
     private Map<String, Integer> intentosFallidos; // Mapa para rastrear intentos fallidos de inicio de sesión
-
+ private Map<String, Long> tiempoBloqueoAdmin;
+    private static final long TIEMPO_BLOQUEO = 180000; // 3 minutos en milisegundos
+    
+    
     // Constructor de la clase LOGINPINEED
     public LOGINPINEED() {
 initComponents();
@@ -37,7 +41,8 @@ initComponents();
         gestionUsuarios.cargarUsuariosDesdeExcel();
         gestionPilotos.cargarPilotosDesdeExcel();
         intentosFallidos = new HashMap<>();
-
+  intentosFallidos = new HashMap<>();
+        tiempoBloqueoAdmin = new HashMap<>(); // Inicializar el nuevo mapa
         // Iniciar en pantalla completa ajustada a la resolución de la pantalla
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
@@ -335,20 +340,36 @@ initComponents();
     
     // Acción del botón para iniciar sesión
     private void btnIngresarPineedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarPineedActionPerformed
-      String nombreUsuario = txtNombreUsuario.getText();
-    String contraseña = new String(txtContraseñaUsuario.getPassword());
+ String nombreUsuario = txtNombreUsuario.getText();
+        String contraseña = new String(txtContraseñaUsuario.getPassword());
 
-    // Verificar administrador especial
-    if (nombreUsuario.equals("1")) {
-        if (contraseña.equals("1")) {
-            iniciarSesion(nombreUsuario, "ADMINISTRADOR");
-            return;
-        } else {
-            mostrarMensajeError("Contraseña incorrecta.");
+        // Verificar formato básico
+        if (!esNombreUsuarioValido(nombreUsuario)) {
+            mostrarMensajeError("Formato de usuario incorrecto. Por favor verifique su entrada.");
             return;
         }
-    }
 
+        // Verificar administrador especial
+        if (nombreUsuario.equals("1")) {
+            // Verificar si el admin está temporalmente bloqueado
+            if (estaAdminBloqueado()) {
+                long tiempoRestante = getTiempoRestanteBloqueo();
+                mostrarMensajeError("Demasiados intentos fallidos. Por favor, espere " + 
+                    (tiempoRestante / 1000) + " segundos antes de intentar nuevamente.");
+                return;
+            }
+
+            if (contraseña.equals("1")) {
+                iniciarSesion(nombreUsuario, "ADMINISTRADOR");
+                // Resetear intentos fallidos al lograr un inicio de sesión exitoso
+                intentosFallidos.remove(nombreUsuario);
+                tiempoBloqueoAdmin.remove(nombreUsuario);
+                return;
+            } else {
+                manejarIntentoFallidoAdmin(nombreUsuario);
+                return;
+            }
+        }
     // Normalizar el nombre de usuario
     String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
 
@@ -501,51 +522,58 @@ private void bloquearUsuario(Usuarios usuario) {
 }
 
 // Método actualizado para buscar piloto
-private Piloto buscarPiloto(String nombreUsuario) {
-    // Normalizar el nombre de usuario ingresado
-    String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
-    
-    // El formato esperado es "nombre.apellido&pineed"
-    if (!nombreNormalizado.endsWith("&pineed")) {
-        return null;
-    }
-    
-    String[] partes = nombreNormalizado.replace("&pineed", "").split("\\.");
-    if (partes.length != 2) {
-        return null;
-    }
-    
-    String nombre = partes[0];
-    String apellido = partes[1];
-    
-    for (Piloto p : gestionPilotos.getPilotos()) {
-        // Normalizar el nombre y apellido del piloto almacenado
-        String nombrePilotoNormalizado = normalizarNombreUsuario(p.getNombrePiloto());
-        String apellidoPilotoNormalizado = normalizarNombreUsuario(p.getApellidoPiloto());
+    private Piloto buscarPiloto(String nombreUsuario) {
+        String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
         
-        if (nombrePilotoNormalizado.equals(nombre) &&
-            apellidoPilotoNormalizado.equals(apellido)) {
-            return p;
+        if (!nombreNormalizado.endsWith("&pineed")) {
+            return null;
         }
-    }
-    return null;
-}
 
-// Método actualizado para buscar usuario
-private Usuarios buscarUsuario(String nombreUsuario) {
-    // Normalizar el nombre de usuario ingresado
-    String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
-    
-    for (Usuarios u : gestionUsuarios.getUsuarios()) {
-        // Normalizar el nombre de usuario almacenado
-        String nombreUsuarioNormalizado = normalizarNombreUsuario(u.getNombreUsuario());
+        String nombreSinSufijo = nombreNormalizado.replace("&pineed", "");
+        String[] partes = nombreSinSufijo.split("\\.");
         
-        if (nombreUsuarioNormalizado.equals(nombreNormalizado)) {
-            return u;
+        // Si no hay suficientes partes para nombre y apellido
+        if (partes.length < 2) {
+            return null;
         }
+
+        // Obtener nombre y apellido normalizados
+        String nombre = partes[0];
+        // Unir el resto de las partes como apellido si hay más de dos partes
+        String apellido = String.join(".", Arrays.copyOfRange(partes, 1, partes.length));
+
+        for (Piloto p : gestionPilotos.getPilotos()) {
+            String nombrePilotoNorm = normalizarNombreUsuario(p.getNombrePiloto());
+            String apellidoPilotoNorm = normalizarNombreUsuario(p.getApellidoPiloto());
+
+            // Comparar ignorando espacios extras y case-sensitive
+            if (nombrePilotoNorm.replaceAll("\\s+", "").equals(nombre) &&
+                apellidoPilotoNorm.replaceAll("\\s+", "").equals(apellido)) {
+                return p;
+            }
+        }
+        return null;
     }
-    return null;
-}
+
+    // Método actualizado para buscar usuario
+    private Usuarios buscarUsuario(String nombreUsuario) {
+        String nombreNormalizado = normalizarNombreUsuario(nombreUsuario);
+
+        if (!esNombreUsuarioValido(nombreUsuario)) {
+            return null;
+        }
+
+        for (Usuarios u : gestionUsuarios.getUsuarios()) {
+            String nombreUsuarioNorm = normalizarNombreUsuario(u.getNombreUsuario());
+            
+            // Comparar ignorando espacios extras
+            if (nombreUsuarioNorm.replaceAll("\\s+", "")
+                    .equals(nombreNormalizado.replaceAll("\\s+", ""))) {
+                return u;
+            }
+        }
+        return null;
+    }
 
 
     
@@ -608,24 +636,86 @@ private Usuarios buscarUsuario(String nombreUsuario) {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtContraseñaUsuarioActionPerformed
 
-    
-    // Método para normalizar el nombre de usuario
-private String normalizarNombreUsuario(String nombreUsuario) {
-    // Convertir a minúsculas
-    String normalizado = nombreUsuario.toLowerCase();
-    
-    // Quitar tildes
-    normalizado = normalizado
-        .replace('á', 'a')
-        .replace('é', 'e')
-        .replace('í', 'i')
-        .replace('ó', 'o')
-        .replace('ú', 'u')
-        .replace('ü', 'u')
-        .replace('ñ', 'n');
-    
-    return normalizado;
-}
+// Método mejorado para normalizar el nombre de usuario
+    private String normalizarNombreUsuario(String nombreUsuario) {
+        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
+            return "";
+        }
+
+        // Si es el admin especial, no aplicar normalización
+        if (nombreUsuario.equals("1")) {
+            return nombreUsuario;
+        }
+
+        // Convertir a minúsculas y eliminar espacios extras
+        String normalizado = nombreUsuario.toLowerCase().trim();
+        
+        // Eliminar espacios múltiples entre palabras
+        normalizado = normalizado.replaceAll("\\s+", " ");
+        
+        // Quitar tildes y caracteres especiales
+        normalizado = normalizado
+            .replace('á', 'a')
+            .replace('é', 'e')
+            .replace('í', 'i')
+            .replace('ó', 'o')
+            .replace('ú', 'u')
+            .replace('ü', 'u')
+            .replace('ñ', 'n');
+
+        // Si es un formato de piloto (contiene &pineed)
+        if (normalizado.contains("&pineed")) {
+            // Separar la parte del nombre de la parte &pineed
+            String[] partes = normalizado.split("&pineed");
+            if (partes.length > 0) {
+                // Normalizar la parte del nombre
+                String nombreParte = partes[0].trim();
+                // Reemplazar espacios con puntos en el nombre
+                nombreParte = nombreParte.replaceAll("\\s+", ".");
+                // Reconstruir el nombre con el formato correcto
+                normalizado = nombreParte + "&pineed";
+            }
+        }
+
+        return normalizado;
+    }
+
+    // Método mejorado para verificar si el nombre de usuario es válido
+    private boolean esNombreUsuarioValido(String nombreUsuario) {
+        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
+            return false;
+        }
+
+        // Si es el admin especial
+        if (nombreUsuario.equals("1")) {
+            return true;
+        }
+
+        // Verificar formato básico
+        String normalizado = normalizarNombreUsuario(nombreUsuario);
+        
+        // Para usuarios piloto
+        if (normalizado.endsWith("&pineed")) {
+            String nombreSinSufijo = normalizado.replace("&pineed", "");
+            String[] partes = nombreSinSufijo.split("\\.");
+            
+            // Debe tener al menos nombre y apellido
+            if (partes.length < 2) {
+                return false;
+            }
+            
+            // Verificar que cada parte tenga contenido válido
+            for (String parte : partes) {
+                if (parte.trim().isEmpty() || !parte.matches("[a-z]+")) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        // Para usuarios normales
+        return normalizado.matches("[a-z]+(\\.[a-z]+)*");
+    }
 
 
 
@@ -652,6 +742,49 @@ private String normalizarNombreUsuario(String nombreUsuario) {
         }
     }
 
+    
+     // Nuevo método para verificar si el admin está bloqueado
+    private boolean estaAdminBloqueado() {
+        Long tiempoBloqueo = tiempoBloqueoAdmin.get("1");
+        if (tiempoBloqueo == null) return false;
+
+        long tiempoTranscurrido = System.currentTimeMillis() - tiempoBloqueo;
+        if (tiempoTranscurrido >= TIEMPO_BLOQUEO) {
+            // Si ya pasó el tiempo de bloqueo, eliminar el bloqueo y resetear intentos
+            tiempoBloqueoAdmin.remove("1");
+            intentosFallidos.remove("1");
+            return false;
+        }
+        return true;
+    }
+
+    
+    // Nuevo método para manejar intentos fallidos del admin
+    private void manejarIntentoFallidoAdmin(String nombreUsuario) {
+        int intentos = intentosFallidos.getOrDefault(nombreUsuario, 0) + 1;
+        intentosFallidos.put(nombreUsuario, intentos);
+
+        if (intentos >= 3) {
+            // Establecer el tiempo de bloqueo
+            tiempoBloqueoAdmin.put(nombreUsuario, System.currentTimeMillis());
+            mostrarMensajeError("Demasiados intentos fallidos. Por favor, espere 3 minutos antes de intentar nuevamente.");
+        } else {
+            mostrarMensajeError("Contraseña incorrecta. Intento " + intentos + " de 3.");
+        }
+    }
+
+    
+    
+    // Nuevo método para obtener el tiempo restante de bloqueo
+    private long getTiempoRestanteBloqueo() {
+        Long tiempoBloqueo = tiempoBloqueoAdmin.get("1");
+        if (tiempoBloqueo == null) return 0;
+
+        long tiempoTranscurrido = System.currentTimeMillis() - tiempoBloqueo;
+        return Math.max(0, TIEMPO_BLOQUEO - tiempoTranscurrido);
+    }
+    
+    
     // Método para limpiar los campos del formulario
     public void limpiarCampos() {
         txtNombreUsuario.setText("Ingrese su usuario");
@@ -673,10 +806,20 @@ private String normalizarNombreUsuario(String nombreUsuario) {
  
 
 
-
-    // Método para mostrar mensajes de error
+ // Método mejorado para mostrar mensajes de error
     private void mostrarMensajeError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+        // Para errores de formato, dar más información
+        if (mensaje.contains("Formato de usuario incorrecto")) {
+            JOptionPane.showMessageDialog(this,
+                mensaje + "\n\nFormatos válidos:\n" +
+                "- Usuario normal: nombre.apellido\n" +
+                "- Piloto: nombre.apellido&pineed\n" +
+                "- Los espacios serán convertidos automáticamente",
+                "Error de formato",
+                JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
 

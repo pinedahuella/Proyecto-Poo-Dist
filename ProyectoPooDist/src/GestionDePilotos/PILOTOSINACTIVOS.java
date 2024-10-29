@@ -1,5 +1,6 @@
 package GestionDePilotos;
 
+import GestionDePilotos.GESTIONPILOTOS;
 import ControlCliente.FrameClientes;
 import ControlInventario.FrameInventario;
 import ControlPedidos.FormularioPedidos;
@@ -8,6 +9,7 @@ import ControlVentas.FrameVentaDiaria;
 import ControlViajes.FormularioViajes;
 import GestionDeCamiones.CAMIONESINACTIVOS;
 import GestionDeCamiones.INICIOGESTIONCAMIONES;
+import GestionDePilotos.Piloto;
 import GestionDeUsuarios.INICIOGESTIONUSUARIOS;
 import Login.GESTIONLOGIN;
 import javax.swing.*;
@@ -784,29 +786,30 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         BodyPart messageBodyPart = new MimeBodyPart();
 
         String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #2c3e50; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
-            "<p style='color: #34495e;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
-            "<p style='color: #34495e;'>Nos complace informarle que su cuenta ha sido reactivada en nuestro sistema.</p>" +
-            "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Información del Piloto:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + piloto.getNombrePiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + piloto.getApellidoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
-            "</table></div>" +
-            "<div style='background-color: #eaf2f8; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #2c3e50; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
-            "<p style='color: #34495e;'><strong>Usuario:</strong> " + piloto.getNombrePiloto().toLowerCase() + "." + piloto.getApellidoPiloto().toLowerCase() + "&pineed</p>" +
-            "<p style='color: #34495e;'><strong>Contraseña:</strong> " + piloto.getNumeroDeDpi() + "</p>" +
-            "</div>" +
-            "<p style='color: #34495e;'>Su cuenta está nuevamente activa y puede acceder al sistema con sus credenciales habituales.</p>" +
-            "<div style='text-align: center; margin-top: 20px;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
+    "<p style='color: #1e88e5;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
+    "<p style='color: #1e88e5;'>Nos complace informarle que su cuenta ha sido reactivada en nuestro sistema.</p>" +
+    "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #1e88e5; margin-top: 0;'>Información del Piloto:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + piloto.getNombrePiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+    "</table></div>" +
+    "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #1e88e5; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
+    "<p style='color: #1e88e5;'><strong>Usuario:</strong> <span style='color: #ffffff;'>" + piloto.getNombrePiloto().toLowerCase() + "." + piloto.getApellidoPiloto().toLowerCase() + "&pineed</span></p>" +
+    "<p style='color: #1e88e5;'><strong>Contraseña:</strong> <span style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</span></p>" +
+    "</div>" +
+    "<p style='color: #1e88e5;'>Su cuenta está nuevamente activa y puede acceder al sistema con sus credenciales habituales.</p>" +
+    "<div style='text-align: center; margin-top: 20px;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
+        
 
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
