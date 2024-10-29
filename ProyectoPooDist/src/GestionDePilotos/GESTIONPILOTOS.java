@@ -179,7 +179,7 @@ public void eliminarPiloto(long dpi) {
         
         for (int i = 0; i < fechasOriginales.size(); i++) {
             FechaCalendario fecha = fechasOriginales.get(i);
-            if (fecha.getActivo()) {
+            if (true) {
                 int indicePiloto = fecha.getIndicePiloto();
                 Piloto pilotoAsignado = encontrarPilotoPorIndice(indicePiloto);
                 if (pilotoAsignado != null) {
@@ -268,6 +268,7 @@ private void actualizarCalendarioYPedidos(
             }
         }
     }
+    
 
     // 2. Actualizar los pedidos
     Vector<Pedido> pedidosActualizadosNuevos = new Vector<>();
@@ -298,9 +299,14 @@ private void actualizarCalendarioYPedidos(
         gestionCalendario.setFechasDeCalendario(fechasActualizadas);
         gestionCalendario.guardarFecharExcel();
         
+        gestionCalendario.cargarFechasExcel();
+        gestionCalendario.guardarFecharExcel();
+        
         gestionPedidos.setPedidos(pedidosActualizadosNuevos);
         gestionPedidos.GuardarEnExcel();
     }
+    
+
 }
 
 private void validarIntegridadSistema(

@@ -280,6 +280,13 @@ public FormularioViajes(String username, String role, LOGINPINEED loginFrame) {
     SwingUtilities.invokeLater(() -> {
         this.requestFocusInWindow();
     });
+    
+    
+    if (comboPedidosLista.getSelectedIndex() > -1) {
+        //igualamos las fechas
+                txtFechaDeCargaViaje.setDate(FechaTablaNew.get(0).getFechaC());    
+                txtFechaDeDescargaViaje.setDate(FechaTablaNew.get(0).getFechaD());
+    }
 }
     
 
@@ -2027,10 +2034,11 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
     Date newFechaDescarga = txtFechaDeDescargaAgregar.getDate();
     
     // Obtener la fecha actual
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(new Date());
-    calendar.add(Calendar.DAY_OF_MONTH, -1);
-    Date fechaActualMenosUnDia = calendar.getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        // Restar un día a la fecha actual
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        Date fechaActualMenosUnDia = calendar.getTime();
     
     try {
         // Primero verificamos si el piloto está disponible
@@ -2043,11 +2051,12 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
         if (!isCamionDisponible(newIndiceCamion)) {
         return;
         }
+        
         //verifica que las fechas sean validas
-        if (newFechaCarga != null && newFechaDescarga != null && 
-            !newFechaCarga.before(fechaActualMenosUnDia) && 
-            !newFechaDescarga.before(fechaActualMenosUnDia) && 
-            !newFechaDescarga.before(newFechaCarga)) {
+        if (newFechaCarga != null && newFechaDescarga != null 
+    && !newFechaCarga.before(fechaActualMenosUnDia) 
+    && !newFechaDescarga.before(fechaActualMenosUnDia) 
+    && !newFechaDescarga.before(newFechaCarga)) {
 
             //miramos si el viaje es una compra o una venta
             boolean newcompra;
@@ -2179,10 +2188,22 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
         nuevaFecha = calendar.getTime();
         }
  
+        Date nuevaFechaB = new Date();
+        
+        // Crear una instancia de Calendar y establecer la fechaAntigua
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newFechaCarga);
+        // Restar un día
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        // Obtener la nueva fecha
+        nuevaFechaB = calendar.getTime();
         
         //verifica que las fechas sean validas
         if (newFechaCarga != null && newFechaDescarga != null && 
-            indiceActual > -1 && !newFechaDescarga.before(newFechaCarga) && nuevaFecha.before(newFechaCarga) && nuevaFecha.before(newFechaDescarga)) {
+            indiceActual > -1 
+    && !newFechaCarga.before(nuevaFecha) 
+    && !newFechaDescarga.before(nuevaFecha) 
+    && !newFechaDescarga.before(nuevaFechaB)) {
             
   
             
@@ -2453,11 +2474,17 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
                     colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaC(), pastelGreen);
                     colorearFecha(FechaTablaNew.get(indiceAntiguo).getFechaD(), pastelRed );
                  }
+                 
+                 System.out.println(indiceSeleccionado);
                 
                 //hacemos que el indice actual sea igual al seleccionado 
                 indiceActual = indiceSeleccionado;
                 
                 //ahora hacemos que cada cada elemento se iguale a la fecha seleccionada
+                
+                //igualamos las fechas
+                txtFechaDeCargaViaje.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaC());    
+                txtFechaDeDescargaViaje.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaD());
                 
                 //igualamos las fechas
                 txtFechaDeCargaViaje.setDate(FechaTablaNew.get(indiceSeleccionado).getFechaC());    
