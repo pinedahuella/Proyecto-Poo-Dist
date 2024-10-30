@@ -164,11 +164,12 @@ public void cargarFechasExcel() {
                         indiceProductos, indiceCantidad, activo, compra
                     );
                     fechasDeCalendario.add(fechaCalendario);
-                } else {
+                } /*else {
                     gespedidos.actualizarIndiceCalendario(indiceactual);
                 }
 
                 indiceactual++;
+                */
             } catch (Exception e) {
                 System.err.println("Error al procesar la fila " + row.getRowNum() + ": " + e.getMessage());
             }

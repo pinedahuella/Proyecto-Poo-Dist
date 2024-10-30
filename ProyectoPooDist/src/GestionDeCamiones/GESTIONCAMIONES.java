@@ -245,7 +245,7 @@ public void eliminarCamion(String placaCamion) {
             
             for (int i = 0; i < fechasOriginales.size(); i++) {
                 FechaCalendario fecha = fechasOriginales.get(i);
-                if (fecha.getActivo()) {
+                if (true) {
                     int indiceCamion = fecha.getIndiceCamion();
                     Camiones camionAsignado = encontrarCamionPorIndice(indiceCamion);
                     
@@ -326,7 +326,6 @@ public void eliminarCamion(String placaCamion) {
                     Integer nuevoIndice = nuevoMapeo.get(placaCamion);
                     if (nuevoIndice != null) {
                         fechaActual.setIndiceCamion(nuevoIndice);
-                        fechaActual.setActivo(true);
                         seRealizaronCambios = true;
                     }
                 }
@@ -357,6 +356,9 @@ public void eliminarCamion(String placaCamion) {
         // Guardar cambios si se realizaron modificaciones
         if (seRealizaronCambios) {
             gestionCalendario.setFechasDeCalendario(fechasActualizadas);
+            gestionCalendario.guardarFecharExcel();
+            
+            gestionCalendario.cargarFechasExcel();
             gestionCalendario.guardarFecharExcel();
             
             gestionPedidos.setPedidos(pedidosActualizadosNuevos);
