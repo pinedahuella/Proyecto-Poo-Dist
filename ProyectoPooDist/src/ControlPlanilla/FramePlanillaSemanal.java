@@ -1723,8 +1723,7 @@ private void cerrarSesionYRegresarLogin() {
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
         FrameHistorialTrabajadores abrir = new FrameHistorialTrabajadores(currentUser, userRole, loginFrame);
-        abrir.setVisible(true);
-        this.dispose();
+ abrir.setVisible(true);
     }//GEN-LAST:event_txtReactivarTrabajadorEliminadoActionPerformed
 
     /**

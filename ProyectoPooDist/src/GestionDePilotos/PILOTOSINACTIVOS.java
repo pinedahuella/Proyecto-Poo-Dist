@@ -785,7 +785,7 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         Multipart multipart = new MimeMultipart("related");
         BodyPart messageBodyPart = new MimeBodyPart();
 
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+      String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
     "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
     "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
     "<p style='color: #1e88e5;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
@@ -793,10 +793,10 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Información del Piloto:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + piloto.getNombrePiloto() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Nombre:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getNombrePiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Apellido:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>DPI:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
     "</table></div>" +
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
@@ -809,6 +809,7 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     "</div>" +
     "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
     "</div></body></html>";
+
         
 
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");

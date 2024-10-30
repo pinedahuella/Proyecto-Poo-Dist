@@ -262,38 +262,48 @@ private void enviarCorreoActualizacionPiloto(String destinatario, Piloto piloto)
             // Formar el nombre de usuario
             String nombreUsuario = nombreCompleto + "." + apellidoCompleto + "&pineed";
         
-        
         String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #6a0dad; text-align: center;'><strong>Modificación de Datos en PINEED</strong></h2>" +
-            "<p style='color: #ffffff; background-color: #9370db; padding: 10px; border-radius: 5px;'>Sus datos han sido modificados exitosamente en nuestro sistema.</p>" +
-            
-            "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #6a0dad; margin-top: 0;'>Información del Registro:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Nombre:</strong></td><td style='color: #ffffff;'>" + piloto.getNombrePiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Apellido:</strong></td><td style='color: #ffffff;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>DPI:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Tipo de Licencia:</strong></td><td style='color: #ffffff;'>" + piloto.getTipoLicencia() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Correo Electrónico:</strong></td><td style='color: #ffffff;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Teléfono:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroTelefonicoPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Género:</strong></td><td style='color: #ffffff;'>" + piloto.getGeneroPiloto() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Fecha de Nacimiento:</strong></td><td style='color: #ffffff;'>" + piloto.getFechaDeNacimiento() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Estado:</strong></td><td style='color: #ffffff;'>" + piloto.getEstadoPiloto() + "</td></tr>" +
-            "</table></div>" +
-            
-            "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #6a0dad; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Nombre de Usuario:</strong></td><td style='color: #ffffff;'>" + nombreUsuario + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Contraseña:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-            "</table></div>" +
-            
-            "<div style='text-align: center; margin-top: 20px;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
-            "</div>" +
-            "<p style='color: #6a0dad; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+    "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #6a0dad; text-align: center;'><strong>Modificación de Datos en PINEED</strong></h2>" +
+    "<p style='color: #ffffff; background-color: #9370db; padding: 10px; border-radius: 5px;'>Sus datos han sido modificados exitosamente en nuestro sistema.</p>" +
+
+    "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #6a0dad; margin-top: 0;'>Información del Registro:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Nombre:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getNombrePiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Apellido:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>DPI:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Tipo de Licencia:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getTipoLicencia() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;max-width: 200px; white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'><strong style='color: #6a0dad;'>Correo Electrónico:</strong></td>" +
+    "<td style='color: #ffffff;max-width: 250px; overflow: hidden; text-overflow: ellipsis;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Teléfono:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getNumeroTelefonicoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Género:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getGeneroPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Fecha de Nacimiento:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getFechaDeNacimiento() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Estado:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getEstadoPiloto() + "</td></tr>" +
+    "</table></div>" +
+
+    "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+    "<h3 style='color: #6a0dad; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
+    "<table style='width: 100%; border-collapse: collapse;'>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Nombre de Usuario:</strong></td>" +
+    "<td style='color: #ffffff;'>" + nombreUsuario + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;white-space: normal; word-wrap: break-word;'><strong style='color: #6a0dad;'>Contraseña:</strong></td>" +
+    "<td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "</table></div>" +
+
+    "<div style='text-align: center; margin-top: 20px;'>" +
+    "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
+    "</div>" +
+    "<p style='color: #6a0dad; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+    "</div></body></html>";
             
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);

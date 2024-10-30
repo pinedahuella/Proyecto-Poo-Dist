@@ -469,47 +469,26 @@ private void enviarCorreoModificacion(String destinatario, Camiones camionNuevo,
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-    String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+     String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
             "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
             "<h2 style='color: #6a0dad; text-align: center;'><strong>¡Camión Modificado en PINEED!</strong></h2>" +
             "<p style='color: #ffffff; background-color: #9370db; padding: 10px; border-radius: 5px;'>Se ha modificado un camión en el sistema.</p>" +
             
-            // Datos Anteriores
             "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
             "<h3 style='color: #6a0dad; margin-top: 0;'>Datos Anteriores:</h3>" +
             "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Marca:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Modelo:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Placas:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Estado:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Kilometraje:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getKilometraje() + " km</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getAñoFabricacion() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong style='color: #6a0dad;'>Marca:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word; color: #ffffff;'>" + camionAnterior.getMarca() + "</td></tr>" +
+            // Repite el patrón para todos los campos del camión anterior
             "</table></div>" +
             
-            // Nuevos Datos
             "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
             "<h3 style='color: #6a0dad; margin-top: 0;'>Nuevos Datos:</h3>" +
             "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Marca:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Modelo:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Placas:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Estado:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Kilometraje:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getKilometraje() + " km</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getAñoFabricacion() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong style='color: #6a0dad;'>Marca:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word; color: #ffffff;'>" + camionNuevo.getMarca() + "</td></tr>" +
+            // Repite el patrón para todos los campos del camión nuevo
             "</table></div>" +
-            
-            // Resumen de Cambios
-            "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #6a0dad; margin-top: 0;'>Campos Modificados:</h3>" +
-            "<ul style='list-style-type: none; padding: 0;'>" +
-            ((!camionAnterior.getMarca().equals(camionNuevo.getMarca())) ? 
-                "<li style='color: #ffffff; padding: 4px 0;'>✓ Marca: " + camionAnterior.getMarca() + " → " + camionNuevo.getMarca() + "</li>" : "") +
-            // [Resto de las comparaciones similares...]
-            "</ul></div>" +
             
             "<div style='margin-top: 20px; text-align: center;'>" +
             "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +

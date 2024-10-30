@@ -35,6 +35,7 @@ public class GESTIONCAMIONES {
     private Vector<Camiones> camiones = new Vector<>();
     private String excelFilePath;
     private boolean isUpdatingCalendar = false; // Add flag to prevent recursive calls
+private Map<String, Integer> posicionesOriginalesCamiones = new HashMap<>(); // Almacena placas y posición original para reactivos
 
     /**
      * Constructor por defecto que inicializa la ruta del archivo Excel.
@@ -262,7 +263,7 @@ public void eliminarCamion(String placaCamion) {
             }
 
             // 4. Desactivar camión
-            desactivarCamionEnExcel(placaCamion);
+            desactivarCamion(placaCamion);
             cargarCamionesDesdeExcel();
 
             // 5. Crear nuevo mapeo
@@ -398,39 +399,7 @@ public void eliminarCamion(String placaCamion) {
         return nuevoMapeo;
     }
 
-    private void desactivarCamionEnExcel(String placa) throws IOException {
-        try (FileInputStream fis = new FileInputStream(excelFilePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-
-            Sheet sheet = workbook.getSheetAt(0);
-            boolean excelActualizado = false;
-
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue;
-
-                Cell placaCell = row.getCell(1);
-                if (placaCell != null && placaCell.getStringCellValue().equals(placa)) {
-                    Cell estadoCell = row.getCell(6);
-                    if (estadoCell == null) estadoCell = row.createCell(6);
-                    estadoCell.setCellValue("DESCOMPUESTO");
-
-                    Cell activoCell = row.getCell(7);
-                    if (activoCell == null) activoCell = row.createCell(7);
-                    activoCell.setCellValue(false);
-
-                    excelActualizado = true;
-                    break;
-                }
-            }
-
-            if (excelActualizado) {
-                try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
-                    workbook.write(fos);
-                }
-            }
-        }
-    }
-
+  
     private void validarIntegridadSistemaCamiones(
         Vector<FechaCalendario> fechas,
         Vector<Pedido> pedidos,
@@ -503,65 +472,10 @@ public void eliminarCamion(String placaCamion) {
 
 
 
-public void activarCamion(String placas) {
-    System.out.println("Activando camión con placas: " + placas); // Log para depuración
-    try (FileInputStream fis = new FileInputStream(excelFilePath);
-         Workbook workbook = new XSSFWorkbook(fis)) {
-        
-        Sheet sheet = workbook.getSheetAt(0);
-        boolean camionActualizado = false;
-        
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Saltar encabezado
-            
-            Cell placasCell = row.getCell(0);
-            String placasEnExcel = getStringCellValue(placasCell); // Obtener valor de placas desde Excel
-            
-            if (placasCell != null && placas.equals(placasEnExcel)) {
-                // Actualizar estado a FUNCIONAL
-                Cell estadoCell = row.getCell(3); // Columna del estado
-                if (estadoCell == null) {
-                    estadoCell = row.createCell(3);
-                }
-                estadoCell.setCellValue("FUNCIONAL");
-                
-                // Actualizar columna activo
-                Cell activoCell = row.getCell(18);
-                if (activoCell == null) {
-                    activoCell = row.createCell(18);
-                }
-                activoCell.setCellValue(true);
-                
-                camionActualizado = true;
-                break;
-            } else {
-                System.out.println("No coincide: " + placas + " con " + placasEnExcel); // Log para ver qué se está comparando
-            }
-        }
-        
-        if (camionActualizado) {
-            // Guardar los cambios en el archivo
-            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
-                workbook.write(fos);
-            }
-            // Recargar los camiones
-            cargarCamionesDesdeExcel();
-        } else {
-            System.out.println("Camión no encontrado para activar."); // Log si no se encontró el camión
-        }
-    } catch (IOException e) {
-        System.err.println("Error al activar el camión: " + e.getMessage());
-        e.printStackTrace();
-        throw new RuntimeException("Error al activar el camión", e);
-    }
-}
-
-
-
 
 public Camiones obtenerCamionPorPlacas(String placas) {
     try (FileInputStream fis = new FileInputStream(excelFilePath);
-         Workbook workbook = new XSSFWorkbook(fis)) {
+         Workbook workbook = new XSSFWorkbook(fis)) {       
         
         Sheet sheet = workbook.getSheetAt(0);
         
@@ -724,6 +638,166 @@ private void actualizarIndicesEnCalendario(Vector<Camiones> todosLosCamiones) {
         }
     }
 
+public void desactivarCamion(String placas) {
+    try {
+        int camionIndex = -1;
+        for (int i = 0; i < camiones.size(); i++) {
+            if (camiones.get(i).getPlacas().equals(placas) && "FUNCIONAL".equals(camiones.get(i).getEstado())) {
+                camionIndex = i;
+                break;
+            }
+        }
+
+        if (camionIndex == -1) {
+            throw new IllegalStateException("No se encontró un camión activo con las placas: " + placas);
+        }
+
+        Camiones camionADesactivar = camiones.get(camionIndex);
+        camionADesactivar.setActivo(false);
+        camionADesactivar.setEstado("INACTIVO");
+        
+        // Guardamos en Excel antes de modificar la lista en memoria
+        guardarCamionesEnExcel();
+        
+        // Actualizamos la lista en memoria
+        camiones.remove(camionIndex);
+        
+        // Recargamos todos los camiones para mantener la sincronización
+        cargarCamionesDesdeExcel();
+    } catch (Exception e) {
+        System.err.println("Error al desactivar el camión: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
+
+public void activarCamion(String placas) {
+    try {
+        // Primero verificamos si el camión existe en el Excel y está inactivo
+        boolean camionEncontrado = false;
+        Camiones camionAActivar = null;
+        
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            
+            Sheet sheet = workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue;
+                
+                String placasExcel = getStringCellValue(row.getCell(0));
+                boolean activoExcel = row.getCell(18) != null ? row.getCell(18).getBooleanCellValue() : true;
+                
+                if (placas.equals(placasExcel) && !activoExcel) {
+                    camionEncontrado = true;
+                    
+                    // Crear objeto Camiones con todos los datos
+                    camionAActivar = new Camiones(
+                        placasExcel,
+                        "FUNCIONAL", // Cambiamos el estado a FUNCIONAL
+                        getStringCellValue(row.getCell(4)),
+                        getNumericCellValue(row.getCell(5)),
+                        getNumericCellValue(row.getCell(6)),
+                        getStringCellValue(row.getCell(7)),
+                        getStringCellValue(row.getCell(1)),
+                        getStringCellValue(row.getCell(2)),
+                        true, // Lo marcamos como activo
+                        getNumericCellValue(row.getCell(8)),
+                        getNumericCellValue(row.getCell(9)),
+                        getNumericCellValue(row.getCell(10)),
+                        getNumericCellValue(row.getCell(11)),
+                        getNumericCellValue(row.getCell(12)),
+                        getStringCellValue(row.getCell(13)),
+                        getStringCellValue(row.getCell(14)),
+                        getStringCellValue(row.getCell(15)),
+                        getNumericCellValue(row.getCell(16)),
+                        getNumericCellValue(row.getCell(17))
+                    );
+                    break;
+                }
+            }
+        }
+        
+        if (!camionEncontrado) {
+            throw new IllegalStateException("No se encontró un camión inactivo con las placas: " + placas);
+        }
+        
+        // Agregamos el camión a la lista de activos
+        camiones.add(camionAActivar);
+        
+        // Actualizamos el Excel
+        guardarCamionesEnExcel();
+        
+    } catch (Exception e) {
+        System.err.println("Error al activar el camión: " + e.getMessage());
+        e.printStackTrace();
+        throw new IllegalStateException("Error al activar el camión: " + e.getMessage());
+    }
+}
+
+
+private int calcularPosicionFinalActivosCamiones() {
+    int posicionFinalActivos = 0;
+    for (int i = 0; i < camiones.size(); i++) {
+        if ("FUNCIONAL".equals(camiones.get(i).getEstado())) {
+            posicionFinalActivos = i + 1;
+        } else {
+            break;
+        }
+    }
+    return posicionFinalActivos;
+}
+
+private void actualizarCamionesEnExcel() {
+    try (Workbook workbook = new XSSFWorkbook();
+         FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+
+        Sheet sheet = workbook.createSheet("Camiones");
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {
+            "Placas", "Modelo", "Marca", "Estado", "Tipo de Combustible", "Kilometraje", "Capacidad de Carga",
+            "Año de Fabricación", "Costo de Reparación", "Costo por Galón", "Galones", "Costo de Mantenimiento",
+            "Gasto No Especificado", "Descripción del Gasto", "Tiempo en Reparación", "Fecha de Mantenimiento",
+            "Total", "Costo Total de Combustible", "Activo"
+        };
+
+        for (int i = 0; i < headers.length; i++) {
+            headerRow.createCell(i).setCellValue(headers[i]);
+        }
+
+        for (int i = 0; i < camiones.size(); i++) {
+            Row row = sheet.createRow(i + 1);
+            Camiones camion = camiones.get(i);
+
+            row.createCell(0).setCellValue(camion.getPlacas());
+            row.createCell(1).setCellValue(camion.getModelo());
+            row.createCell(2).setCellValue(camion.getMarca());
+            row.createCell(3).setCellValue(camion.getEstado());
+            row.createCell(4).setCellValue(camion.getTipoCombustible());
+            row.createCell(5).setCellValue(camion.getKilometraje());
+            row.createCell(6).setCellValue(camion.getCapacidadCarga());
+            row.createCell(7).setCellValue(camion.getAñoFabricacion());
+            row.createCell(8).setCellValue(camion.getCostoReparacion());
+            row.createCell(9).setCellValue(camion.getCostoGalon());
+            row.createCell(10).setCellValue(camion.getGalones());
+            row.createCell(11).setCellValue(camion.getCostoMantenimiento());
+            row.createCell(12).setCellValue(camion.getGastoNoEspecificado());
+            row.createCell(13).setCellValue(camion.getDescripcionDelGasto());
+            row.createCell(14).setCellValue(camion.getTiempoEnReparacion());
+            row.createCell(15).setCellValue(camion.getFechaDeMantenimiento());
+            row.createCell(16).setCellValue(camion.getTotal());
+            row.createCell(17).setCellValue(camion.getCostoTotalCombustible());
+            row.createCell(18).setCellValue(camion.isActivo());
+        }
+
+        workbook.write(fos);
+    } catch (IOException e) {
+        System.err.println("Error al escribir en el archivo Excel: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
+
+
 public void cargarCamionesDesdeExcel() {
     camiones.clear();
     
@@ -732,58 +806,41 @@ public void cargarCamionesDesdeExcel() {
 
         Sheet sheet = workbook.getSheetAt(0);
         
-        // Primero cargar todos los camiones
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue; // Skip header
             
-            // Leer datos del camión
             String placas = getStringCellValue(row.getCell(0));
-                String modelo = getStringCellValue(row.getCell(1));
-                String marca = getStringCellValue(row.getCell(2));
-                String estado = getStringCellValue(row.getCell(3));
-                String tipoCombustible = getStringCellValue(row.getCell(4));
-                double kilometraje = getNumericCellValue(row.getCell(5));
-                double capacidadCarga = getNumericCellValue(row.getCell(6));
-                String añoFabricacion = procesarFecha(getStringCellValue(row.getCell(7)));
-                double costoReparacion = getNumericCellValue(row.getCell(8));
-                double costoGalon = getNumericCellValue(row.getCell(9));
-                double galones = getNumericCellValue(row.getCell(10));
-                double costoMantenimiento = getNumericCellValue(row.getCell(11));
-                double gastoNoEspecificado = getNumericCellValue(row.getCell(12));
-                String descripcionDelGasto = getStringCellValue(row.getCell(13));
-                String tiempoEnReparacion = getStringCellValue(row.getCell(14));
-                String fechaDeMantenimiento = procesarFecha(getStringCellValue(row.getCell(15)));
-                double total = getNumericCellValue(row.getCell(16));
-                double costoTotalCombustible = getNumericCellValue(row.getCell(17));
-                boolean activo = true;
+            String modelo = getStringCellValue(row.getCell(1));
+            String marca = getStringCellValue(row.getCell(2));
+            String estado = getStringCellValue(row.getCell(3));
+            String tipoCombustible = getStringCellValue(row.getCell(4));
+            double kilometraje = getNumericCellValue(row.getCell(5));
+            double capacidadCarga = getNumericCellValue(row.getCell(6));
+            String añoFabricacion = procesarFecha(getStringCellValue(row.getCell(7)));
+            double costoReparacion = getNumericCellValue(row.getCell(8));
+            double costoGalon = getNumericCellValue(row.getCell(9));
+            double galones = getNumericCellValue(row.getCell(10));
+            double costoMantenimiento = getNumericCellValue(row.getCell(11));
+            double gastoNoEspecificado = getNumericCellValue(row.getCell(12));
+            String descripcionDelGasto = getStringCellValue(row.getCell(13));
+            String tiempoEnReparacion = getStringCellValue(row.getCell(14));
+            String fechaDeMantenimiento = procesarFecha(getStringCellValue(row.getCell(15)));
+            double total = getNumericCellValue(row.getCell(16));
+            double costoTotalCombustible = getNumericCellValue(row.getCell(17));
+            boolean activo = true;
 
-                // Verificar si existe la columna de activo
-                if (row.getCell(18) != null) {
-                    activo = row.getCell(18).getBooleanCellValue();
-                }
+            if (row.getCell(18) != null) {
+                activo = row.getCell(18).getBooleanCellValue();
+            }
 
-                if (activo) {
-                // Crear el objeto Camiones
+            // Solo cargamos camiones activos a la lista en memoria
+            if (activo && "FUNCIONAL".equals(estado)) {
                 Camiones camion = new Camiones(
-                    placas,
-                    estado,
-                    tipoCombustible,
-                    kilometraje,
-                    capacidadCarga,
-                    añoFabricacion,
-                    modelo,
-                    marca,
-                    activo,
-                    costoReparacion,
-                    costoGalon,
-                    galones,
-                    costoMantenimiento,
-                    gastoNoEspecificado,
-                    descripcionDelGasto,
-                    tiempoEnReparacion,
-                    fechaDeMantenimiento,
-                    total,
-                    costoTotalCombustible
+                    placas, estado, tipoCombustible, kilometraje, capacidadCarga,
+                    añoFabricacion, modelo, marca, activo, costoReparacion,
+                    costoGalon, galones, costoMantenimiento, gastoNoEspecificado,
+                    descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento,
+                    total, costoTotalCombustible
                 );
                 camiones.add(camion);
             }
@@ -797,50 +854,6 @@ public void cargarCamionesDesdeExcel() {
 
 
 
-
-    /**
-     * Obtiene el valor de una celda como cadena.
-     * 
-     * @param cell La celda a procesar.
-     * @return El valor de la celda como cadena.
-     */
-    private String getStringCellValue(Cell cell) {
-        if (cell == null) {
-            return "";
-        }
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                return String.valueOf(cell.getNumericCellValue());
-            default:
-                return "";
-        }
-    }
-
-    /**
-     * Obtiene el valor de una celda como número.
-     * 
-     * @param cell La celda a procesar.
-     * @return El valor de la celda como número.
-     */
-    private double getNumericCellValue(Cell cell) {
-        if (cell == null) {
-            return 0.0;
-        }
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                return cell.getNumericCellValue();
-            case STRING:
-                try {
-                    return Double.parseDouble(cell.getStringCellValue());
-                } catch (NumberFormatException e) {
-                    return 0.0;
-                }
-            default:
-                return 0.0;
-        }
-    }
 
 public void guardarCamionesEnExcel() {
     try {
@@ -954,4 +967,51 @@ public void guardarCamionesEnExcel() {
         e.printStackTrace();
     }
   }
+
+
+    /**
+     * Obtiene el valor de una celda como cadena.
+     * 
+     * @param cell La celda a procesar.
+     * @return El valor de la celda como cadena.
+     */
+    private String getStringCellValue(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Obtiene el valor de una celda como número.
+     * 
+     * @param cell La celda a procesar.
+     * @return El valor de la celda como número.
+     */
+    private double getNumericCellValue(Cell cell) {
+        if (cell == null) {
+            return 0.0;
+        }
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                return cell.getNumericCellValue();
+            case STRING:
+                try {
+                    return Double.parseDouble(cell.getStringCellValue());
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            default:
+                return 0.0;
+        }
+    }
+
+
 }

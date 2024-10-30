@@ -32,7 +32,10 @@ import java.util.Map;
 private Vector<Piloto> pilotos = new Vector<>();
     private String excelFilePath;
     private boolean isUpdatingCalendar = false;
+    private Map<Long, Integer> posicionesOriginales = new HashMap<>(); // Almacena DPI y posición original para reactivos
 
+    
+    
         public GESTIONPILOTOS() {
             excelFilePath = "excels/PINEED.xlsx";
                     cargarPilotosDesdeExcel(); // Cargar datos al iniciar
@@ -74,42 +77,8 @@ private String validarDuplicadosEnUsuarios(Piloto piloto) {
     return null; // No hay duplicados
 }
 
-public void agregarPiloto(Piloto nuevoPiloto) {
-    // Validar que el piloto no esté duplicado en usuarios
-    String mensajeError = validarDuplicadosEnUsuarios(nuevoPiloto);
-    if (mensajeError != null) {
-        throw new IllegalStateException(mensajeError);
-    }
 
-    // Agregar el piloto si no existe
-    for (Piloto piloto : pilotos) {
-        if (piloto.getNumeroDeDpi() == nuevoPiloto.getNumeroDeDpi()) {
-            throw new IllegalStateException("El piloto ya existe en el sistema.");
-        }
-    }
-    pilotos.add(nuevoPiloto);
-    guardarPilotosEnExcel();
-}
-
-public void actualizarPiloto(Piloto pilotoActualizado) {
-    // Validar que el piloto no esté duplicado en usuarios
-    String mensajeError = validarDuplicadosEnUsuarios(pilotoActualizado);
-    if (mensajeError != null) {
-        throw new IllegalStateException(mensajeError);
-    }
-
-    // Actualizar piloto
-    for (int i = 0; i < pilotos.size(); i++) {
-        if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
-            pilotos.set(i, pilotoActualizado);
-            guardarPilotosEnExcel();
-            return;
-        }
-    }
-    throw new IllegalStateException("El piloto no existe.");
-}
-
-  private void reordenarIndices() {
+ private void reordenarIndices() {
             try {
                 Map<Integer, Integer> mapaIndices = new HashMap<>();
                 int nuevoIndice = 0;
@@ -146,6 +115,43 @@ public void actualizarPiloto(Piloto pilotoActualizado) {
                 e.printStackTrace();
             }
         }
+ 
+ 
+public void agregarPiloto(Piloto nuevoPiloto) {
+    // Validar que el piloto no esté duplicado en usuarios
+    String mensajeError = validarDuplicadosEnUsuarios(nuevoPiloto);
+    if (mensajeError != null) {
+        throw new IllegalStateException(mensajeError);
+    }
+
+    // Agregar el piloto si no existe
+    for (Piloto piloto : pilotos) {
+        if (piloto.getNumeroDeDpi() == nuevoPiloto.getNumeroDeDpi()) {
+            throw new IllegalStateException("El piloto ya existe en el sistema.");
+        }
+    }
+    pilotos.add(nuevoPiloto);
+    guardarPilotosEnExcel();
+}
+
+public void actualizarPiloto(Piloto pilotoActualizado) {
+    // Validar que el piloto no esté duplicado en usuarios
+    String mensajeError = validarDuplicadosEnUsuarios(pilotoActualizado);
+    if (mensajeError != null) {
+        throw new IllegalStateException(mensajeError);
+    }
+
+    // Actualizar piloto
+    for (int i = 0; i < pilotos.size(); i++) {
+        if (pilotos.get(i).getNumeroDeDpi() == pilotoActualizado.getNumeroDeDpi()) {
+            pilotos.set(i, pilotoActualizado);
+            guardarPilotosEnExcel();
+            return;
+        }
+    }
+    throw new IllegalStateException("El piloto no existe.");
+}
+
   
   
 public void eliminarPiloto(long dpi) {
@@ -194,7 +200,7 @@ public void eliminarPiloto(long dpi) {
         }
 
         // 4. Desactivar piloto en Excel
-        desactivarPilotoEnExcel(dpi);
+        desactivarPiloto(dpi);
 
         // 5. Recargar pilotos para obtener la nueva lista sin el piloto eliminado
         cargarPilotosDesdeExcel();
@@ -637,124 +643,123 @@ private void actualizarTodosPedidos() {
 
 
 
-private void desactivarPilotoEnExcel(long dpi) throws IOException {
-    try (FileInputStream fis = new FileInputStream(excelFilePath);
-         Workbook workbook = new XSSFWorkbook(fis)) {
 
-        Sheet sheet = workbook.getSheetAt(0);
-        boolean excelActualizado = false;
-
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue;
-
-            Cell dpiCell = row.getCell(2);
-            if (dpiCell != null && (long) dpiCell.getNumericCellValue() == dpi) {
-                // Establecer estado a INACTIVO
-                Cell estadoCell = row.getCell(8);
-                if (estadoCell == null) estadoCell = row.createCell(8);
-                estadoCell.setCellValue("INACTIVO");
-
-                // Establecer activo a false
-                Cell activoCell = row.getCell(9);
-                if (activoCell == null) activoCell = row.createCell(9);
-                activoCell.setCellValue(false);
-
-                excelActualizado = true;
-                break;
-            }
-        }
-
-        if (excelActualizado) {
-            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
-                workbook.write(fos);
-            }
-        }
-    }
-}
-
-
-
-public void activarPiloto(long dpi) {
-    try {
-        // Verificar si el piloto existe y está inactivo
-        boolean pilotoEncontrado = false;
-        Piloto pilotoAActivar = null;
-        
-        for (Piloto piloto : pilotos) {
-            if (piloto.getNumeroDeDpi() == dpi && 
-                "INACTIVO".equals(piloto.getEstadoPiloto())) {
-                pilotoAActivar = piloto;
-                pilotoEncontrado = true;
-                break;
-            }
-        }
-        
-        if (!pilotoEncontrado) {
-            throw new IllegalStateException("No se encontró un piloto inactivo con el DPI: " + dpi);
-        }
-        
-        // Activar el piloto en memoria
-        pilotoAActivar.setActivo(true);
-        pilotoAActivar.setEstadoPiloto("ACTIVO");
-        
-        // Actualizar el archivo Excel
-        try (FileInputStream fis = new FileInputStream(excelFilePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-            
-            Sheet sheet = workbook.getSheetAt(0);
-            boolean actualizadoEnExcel = false;
-            
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue;
-                
-                Cell dpiCell = row.getCell(2);
-                if (dpiCell != null) {
-                    long dpiFila = (long) dpiCell.getNumericCellValue();
-                    if (dpiFila == dpi) {
-                        // Actualizar estado a ACTIVO
-                        Cell estadoCell = row.getCell(8);
-                        if (estadoCell == null) {
-                            estadoCell = row.createCell(8);
-                        }
-                        estadoCell.setCellValue("ACTIVO");
-                        
-                        // Actualizar columna activo
-                        Cell activoCell = row.getCell(9);
-                        if (activoCell == null) {
-                            activoCell = row.createCell(9);
-                        }
-                        activoCell.setCellValue(true);
-                        
-                        actualizadoEnExcel = true;
-                        break;
-                    }
+ public void activarPiloto(long dpi) {
+        try {
+            int pilotoIndex = -1;
+            for (int i = 0; i < pilotos.size(); i++) {
+                if (pilotos.get(i).getNumeroDeDpi() == dpi && "INACTIVO".equals(pilotos.get(i).getEstadoPiloto())) {
+                    pilotoIndex = i;
+                    break;
                 }
             }
-            
-            if (!actualizadoEnExcel) {
-                throw new IllegalStateException("No se pudo actualizar el piloto en el archivo Excel");
-            }
-            
-            // Guardar cambios
-            try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
-                workbook.write(fos);
-            }
-            
-            // Recargar pilotos y reordenar índices
-            cargarPilotosDesdeExcel();
-            reordenarIndices();
-            
-        } catch (IOException e) {
-            throw new RuntimeException("Error al acceder al archivo Excel: " + e.getMessage(), e);
-        }
-        
-    } catch (Exception e) {
-        System.err.println("Error al activar el piloto: " + e.getMessage());
-        e.printStackTrace();
-        throw new RuntimeException("Error al activar el piloto: " + e.getMessage(), e);
-    }
-}
 
+            if (pilotoIndex == -1) {
+                throw new IllegalStateException("No se encontró un piloto inactivo con el DPI: " + dpi);
+            }
+
+            Piloto pilotoAActivar = pilotos.get(pilotoIndex);
+            pilotoAActivar.setActivo(true);
+            pilotoAActivar.setEstadoPiloto("ACTIVO");
+
+            pilotos.remove(pilotoIndex); // Remueve de su posición actual
+
+            // Inserta el piloto al final de los activos
+            int posicionParaInsertar = calcularPosicionFinalActivos();
+            pilotos.add(posicionParaInsertar, pilotoAActivar);
+
+            posicionesOriginales.remove(dpi); // Elimina la posición almacenada ya que está activo
+
+            actualizarPilotosEnExcel();
+        } catch (Exception e) {
+            System.err.println("Error al activar el piloto: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void desactivarPiloto(long dpi) {
+        try {
+            int pilotoIndex = -1;
+            for (int i = 0; i < pilotos.size(); i++) {
+                if (pilotos.get(i).getNumeroDeDpi() == dpi && "ACTIVO".equals(pilotos.get(i).getEstadoPiloto())) {
+                    pilotoIndex = i;
+                    break;
+                }
+            }
+
+            if (pilotoIndex == -1) {
+                throw new IllegalStateException("No se encontró un piloto activo con el DPI: " + dpi);
+            }
+
+            Piloto pilotoADesactivar = pilotos.get(pilotoIndex);
+            pilotoADesactivar.setActivo(false);
+            pilotoADesactivar.setEstadoPiloto("INACTIVO");
+
+            // Guarda la posición actual del piloto activo
+            posicionesOriginales.put(dpi, pilotoIndex);
+
+            pilotos.remove(pilotoIndex); // Remueve de su posición actual
+            pilotos.add(pilotoADesactivar); // Lo coloca al final de la lista (inactivos van al final)
+
+            actualizarPilotosEnExcel();
+        } catch (Exception e) {
+            System.err.println("Error al desactivar el piloto: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private int calcularPosicionFinalActivos() {
+        int posicionFinalActivos = 0;
+        for (int i = 0; i < pilotos.size(); i++) {
+            if ("ACTIVO".equals(pilotos.get(i).getEstadoPiloto())) {
+                posicionFinalActivos = i + 1;
+            } else {
+                break;
+            }
+        }
+        return posicionFinalActivos;
+    }
+
+    private void actualizarPilotosEnExcel() {
+        try (Workbook workbook = new XSSFWorkbook();
+             FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+
+            Sheet sheet = workbook.createSheet("Pilotos");
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {
+                "Nombre Piloto", "Apellido Piloto", "DPI", "Tipo Licencia",
+                "Correo Electrónico", "Número Telefónico", "Género",
+                "Fecha de Nacimiento", "Estado", "Activo"
+            };
+
+            for (int i = 0; i < headers.length; i++) {
+                headerRow.createCell(i).setCellValue(headers[i]);
+            }
+
+            for (int i = 0; i < pilotos.size(); i++) {
+                Row row = sheet.createRow(i + 1);
+                Piloto piloto = pilotos.get(i);
+
+                row.createCell(0).setCellValue(piloto.getNombrePiloto());
+                row.createCell(1).setCellValue(piloto.getApellidoPiloto());
+                row.createCell(2).setCellValue(piloto.getNumeroDeDpi());
+                row.createCell(3).setCellValue(piloto.getTipoLicencia());
+                row.createCell(4).setCellValue(piloto.getCorreoElectronicoPiloto());
+                row.createCell(5).setCellValue(piloto.getNumeroTelefonicoPiloto());
+                row.createCell(6).setCellValue(piloto.getGeneroPiloto());
+                row.createCell(7).setCellValue(piloto.getFechaDeNacimiento());
+                row.createCell(8).setCellValue(piloto.getEstadoPiloto());
+                row.createCell(9).setCellValue(piloto.isActivo());
+            }
+
+            workbook.write(fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
 
 public void cargarPilotosDesdeExcel() {
     pilotos.clear();

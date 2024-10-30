@@ -820,7 +820,7 @@ private void enviarCorreoReactivacion(String destinatario, Camiones camion) thro
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-       String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+      String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
     "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
     "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Camión Reactivado en PINEED!</strong></h2>" +
     "<p style='color: #1e88e5;'>Se ha reactivado un camión en el sistema.</p>" +
@@ -828,13 +828,13 @@ private void enviarCorreoReactivacion(String destinatario, Camiones camion) thro
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Detalles del Camión:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Marca:</strong></td><td style='color: #ffffff;'>" + camion.getMarca() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Modelo:</strong></td><td style='color: #ffffff;'>" + camion.getModelo() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Placas:</strong></td><td style='color: #ffffff;'>" + camion.getPlacas() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Estado:</strong></td><td style='color: #ffffff;'>FUNCIONAL</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camion.getTipoCombustible() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camion.getCapacidadCarga() + " kg</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camion.getAñoFabricacion() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Marca:</strong></td><td style='color: #ffffff; width: 30%;'>" + camion.getMarca() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Modelo:</strong></td><td style='color: #ffffff; width: 30%;'>" + camion.getModelo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Placas:</strong></td><td style='color: #ffffff; width: 30%;'>" + camion.getPlacas() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Estado:</strong></td><td style='color: #ffffff; width: 30%;'>FUNCIONAL</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Tipo de Combustible:</strong></td><td style='color: #ffffff; width: 30%;'>" + camion.getTipoCombustible() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Capacidad de Carga:</strong></td><td style='color: #ffffff; width: 30%;'>" + camion.getCapacidadCarga() + " kg</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Año de Fabricación:</strong></td><td style='color: #ffffff; width: 30%;'>" + camion.getAñoFabricacion() + "</td></tr>" +
     "</table></div>" +
     
     "<div style='margin-top: 20px; text-align: center;'>" +

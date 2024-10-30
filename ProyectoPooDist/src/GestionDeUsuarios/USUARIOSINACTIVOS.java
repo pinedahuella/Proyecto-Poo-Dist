@@ -696,7 +696,7 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
         Multipart multipart = new MimeMultipart("related");
         BodyPart messageBodyPart = new MimeBodyPart();
         
-    String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+   String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
     "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
     "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
     "<p style='color: #1e88e5;'>Nos complace informarle que su cuenta de usuario ha sido reactivada en nuestro sistema.</p>" +
@@ -704,18 +704,18 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Información del Usuario:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + usuario.getNombre() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + usuario.getApellido() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + usuario.getNumeroDPI() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Cargo:</strong></td><td style='color: #ffffff;'>" + usuario.getCargo() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff; word-break: break-all;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Nombre:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getNombre() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Apellido:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getApellido() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>DPI:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getNumeroDPI() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Cargo:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getCargo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff; word-break: break-all; width: 70%;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
     "</table></div>" +
     
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Usuario:</strong></td><td style='color: #ffffff;'>" + usuario.getNombreUsuario() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Contraseña:</strong></td><td style='color: #ffffff;'>" + usuario.getContrasenaUsuario() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Usuario:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getNombreUsuario() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Contraseña:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getContrasenaUsuario() + "</td></tr>" +
     "</table>" +
     "</div>" +
     
@@ -724,7 +724,6 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     "</div>" +
     "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
     "</div></body></html>";
-
             
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);

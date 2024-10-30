@@ -280,29 +280,38 @@ String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
     "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
     "<h2 style='color: #155724; text-align: center;'><strong>¡Bienvenido a PINEED!</strong></h2>" +
     "<p style='color: #155724;'>Estimado(a) " + usuario.getNombre() + " " + usuario.getApellido() + ",</p>" +
-    "<p style='color: #155724;'>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
+    "<p style='color: #155724; line-height: 1.3;'>Sus datos han sido registrados exitosamente en nuestro sistema.</p>" +
 
-    // Sección de información del registro
     "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #155724; margin-top: 0;'>Información del Registro:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + usuario.getNombre() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + usuario.getApellido() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Cargo:</strong></td><td>" + usuario.getCargo() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + usuario.getCorreoElectronico() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Teléfono:</strong></td><td>" + usuario.getNumeroTelefono() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Género:</strong></td><td>" + usuario.getGenero() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Fecha de Nacimiento:</strong></td><td>" + usuario.getFechaNacimiento() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + usuario.getEstado() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Nombre:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNombre() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Apellido:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getApellido() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>DPI:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNumeroDPI() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Cargo:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getCargo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Correo Electrónico:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Teléfono:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNumeroTelefono() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Género:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getGenero() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Fecha de Nacimiento:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getFechaNacimiento() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Estado:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getEstado() + "</td></tr>" +
     "</table></div>" +
 
-    // Sección de credenciales de acceso
     "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #155724; margin-top: 0;'>Información de Acceso al Sistema:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0;'><strong>Nombre de Usuario:</strong></td><td>" + usuario.getNombreUsuario() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0;'><strong>Contraseña:</strong></td><td>" + usuario.getContrasenaUsuario() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Nombre de Usuario:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNombreUsuario() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; vertical-align: top;'><strong>Contraseña:</strong></td>" +
+    "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getContrasenaUsuario() + "</td></tr>" +
     "</table></div>" +
 
     "<p style='color: #155724;'>Atentamente,</p>" +

@@ -313,26 +313,26 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #155724; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" + // Verde fuerte
-            "<p style='color: #155724;'>Se ha agregado un nuevo camión al sistema.</p>" + // Verde fuerte
-            "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" + // Fondo verde claro
-            "<h3 style='color: #155724; margin-top: 0;'>Detalles del Camión:</h3>" + // Verde fuerte
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camion.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camion.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camion.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camion.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camion.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camion.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camion.getAñoFabricacion() + "</td></tr>" +
-            "</table></div>" +
-            "<div style='margin-top: 20px; text-align: center;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +  // Referencia a la imagen
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+       String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+        "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+        "<h2 style='color: #155724; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" + // Verde fuerte
+        "<p style='color: #155724;'>Se ha agregado un nuevo camión al sistema.</p>" + // Verde fuerte
+        "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" + // Fondo verde claro
+        "<h3 style='color: #155724; margin-top: 0;'>Detalles del Camión:</h3>" + // Verde fuerte
+        "<table style='width: 100%; border-collapse: collapse;'>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Marca:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getMarca() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Modelo:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getModelo() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Placas:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getPlacas() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Estado:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getEstado() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Tipo de Combustible:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getTipoCombustible() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Capacidad de Carga:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getCapacidadCarga() + " kg</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Año de Fabricación:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getAñoFabricacion() + "</td></tr>" +
+        "</table></div>" +
+        "<div style='margin-top: 20px; text-align: center;'>" +
+        "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +  // Referencia a la imagen
+        "</div>" +
+        "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+        "</div></body></html>";
 
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
