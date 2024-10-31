@@ -164,8 +164,18 @@ private void setupTextFieldPrecioCosto(JTextField textField, String placeholder)
             }
         }
     });
+   textField.addFocusListener(new FocusAdapter() {
+    @Override
+    public void focusLost(FocusEvent e) {
+        // Solo restablece el placeholder si el campo está vacío
+        if (textField.getText().isEmpty()) {
+            textField.setForeground(Color.GRAY);
+            textField.setText(placeholder);
+        }
+    }
+});
+    
 }
-
 // Método para configurar todos los campos de precio y costo con placeholders
 private void configurarCamposPrecioCosto() {
     setupTextFieldPrecioCosto(textoPrecioCostoAgregar, "Ingrese precio");
@@ -1244,6 +1254,7 @@ private void cerrarSesionYRegresarLogin() {
                 //actualizamos la tabla de ventas
                 actualizarTablaVentas(); 
                 
+                limpiarCamposPrecioCosto();
                 //cambiamos las existencias en el inventario
                 gesproductos.setCantidad(newindiceproducto, newcantidad, "-");
                 //actualizamos el inventario
@@ -1316,7 +1327,8 @@ private void cerrarSesionYRegresarLogin() {
                 
                txtPrecioAgregar.setText("" + vectorproductos.get(newindiceproducto).getPrecioFlete());
                textoPrecioCostoAgregar.setText("" + vectorproductos.get(newindiceproducto).getPrecioCosto());
-               
+                               limpiarCamposPrecioCosto();
+
                //esta variable nos ayudara a ver si el producto fue encontrado en la lista del cliente
                boolean tieneproducto = false;
                
@@ -1380,7 +1392,8 @@ private void cerrarSesionYRegresarLogin() {
                 
                 //vemos si es un credito o no
                 boolean newcredito = false;
-                
+                                limpiarCamposPrecioCosto();
+
                 //preguntamos is hay suficientes existencias para completar el pedido
                 if (vectorproductos.get(newindiceproducto).getExistencias() + cantidadAntigua >= newcantidad ) {
                    
@@ -1458,6 +1471,7 @@ private void cerrarSesionYRegresarLogin() {
                 // Si el usuario selecciona "Sí"
                 if (respuesta == JOptionPane.YES_OPTION) {
                     
+                limpiarCamposPrecioCosto();
 
         // Obtener la fecha actual
         Date fechaActual = new Date();
@@ -1591,7 +1605,8 @@ private void cerrarSesionYRegresarLogin() {
                 //actualizamos las tablas correspondientes               
                 actualizarTablaVentas();
                 ActualizarGananciaTotal();
-                
+                                limpiarCamposPrecioCosto();
+
                 gesventas.guardarExcelVentas();
                 //mostramos mesaje 
                 JOptionPane.showMessageDialog(null, "Venta eliminada correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);      
@@ -1606,6 +1621,7 @@ private void cerrarSesionYRegresarLogin() {
         String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
         String role = this.userRole;        // Suponiendo que userRole contiene el rol
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
+                limpiarCamposPrecioCosto();
 
         FrameHistorialVenta abrir = new FrameHistorialVenta(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
@@ -1648,7 +1664,8 @@ private void cerrarSesionYRegresarLogin() {
                 txtPrecioVentarModificar.setText("" + vectorventas.get(indiceGeneral).getPrecio());
                 txtPrecioFleteModificar.setText("" + vectorventas.get(indiceGeneral).getPrecioFlete());
                 txtPrecioCostoModificar.setText("" + vectorventas.get(indiceGeneral).getPrecioCosto());
-                
+                                limpiarCamposPrecioCosto();
+
                 labelGanaciaVenta.setText("" + vectorventas.get(indiceGeneral).getGanancia());
                 
                 //reguntamos si es un credito para no mostrar el boton de modificar

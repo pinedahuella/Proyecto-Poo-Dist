@@ -652,7 +652,7 @@ private void abrirVentanaMostrar(Usuarios usuario) {
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -901,13 +901,16 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
     }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-    if (txtNombreUsuarioBuscar.getText().trim().isEmpty() || 
-            txtNombreUsuarioBuscar.getText().equals("Ingresa Nombre del Usuario a buscar")) {
+  String criterioBusqueda = txtNombreUsuarioBuscar.getText().trim();
+    
+    // Validar si el campo está vacío o es el placeholder
+    if (criterioBusqueda.isEmpty() || 
+            criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Usuario a buscar")) {
         JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
         return;
     }
     
-    String nombreBuscado = normalizarTexto(txtNombreUsuarioBuscar.getText().trim());
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
     modeloUsuarios.setRowCount(0);
     listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
     boolean hayCoincidencias = false;
@@ -915,9 +918,26 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
     
     for (Usuarios usuario : listaUsuarios) {
         String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
-        if (nombreUsuarioNormalizado.contains(nombreBuscado)) {
+        String apellidoUsuarioNormalizado = normalizarTexto(usuario.getApellido());
+        
+        // Comparar DPI como long
+        boolean coincidenciaDPI = false;
+        try {
+            long criterioDPI = Long.parseLong(criterioBusqueda);
+            coincidenciaDPI = usuario.getNumeroDPI() == criterioDPI;
+        } catch (NumberFormatException e) {
+            // Si no es un número válido, no se hace nada
+            coincidenciaDPI = false;
+        }
+
+        // Comprobar si coincide con nombre, apellido o DPI
+        boolean coincidencia = nombreUsuarioNormalizado.contains(criterioBusquedaNormalizado) ||
+                               apellidoUsuarioNormalizado.contains(criterioBusquedaNormalizado) ||
+                               coincidenciaDPI;
+
+        if (coincidencia) {
             modeloUsuarios.addRow(new Object[]{
-                indice, // Añadimos el índice como primera columna
+                indice++, // Añadimos el índice
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getNumeroDPI(),
@@ -926,8 +946,7 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
                 usuario.getEstado()
             });
             listaUsuariosFiltrados.add(usuario); // Añadimos el usuario encontrado a la lista filtrada
-            hayCoincidencias = true;
-            indice++; // Incrementamos el índice para la siguiente coincidencia
+            hayCoincidencias = true; // Hay al menos una coincidencia
         }
     }
     
@@ -946,7 +965,8 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
         tblRegistroUsuarios.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Teléfono"
         tblRegistroUsuarios.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para columna "Estado"
         
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        // Restablecer el campo de búsqueda
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre, Apellido o DPI del Usuario a buscar");
         txtNombreUsuarioBuscar.setForeground(Color.GRAY);
     });
     }//GEN-LAST:event_buscarUsuarioActionPerformed

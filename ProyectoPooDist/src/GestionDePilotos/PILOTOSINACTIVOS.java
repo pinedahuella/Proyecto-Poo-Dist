@@ -77,7 +77,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
         
         
         // Configurar el placeholder para el campo de búsqueda
-        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre del Piloto a buscar");
+        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre, Apellido o DPI del Piloto a buscar");
         
         // Configuración de la interfaz
         addWindowListener();
@@ -125,7 +125,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+        txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
         txtNombrePilotoBuscar.setForeground(Color.GRAY);
     }
 
@@ -517,9 +517,14 @@ private void cerrarSesionYRegresarLogin() {
         });
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        jLabel4.setText("NOMBRE");
+        jLabel4.setText("PILOTO");
 
         txtNombrePilotoBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombrePilotoBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombrePilotoBuscarActionPerformed(evt);
+            }
+        });
 
         tblRegistroPilotos.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
@@ -610,7 +615,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -634,9 +639,9 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -658,21 +663,21 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-    // Verificar si el campo de búsqueda está vacío o contiene el placeholder
+     // Verificar si el campo de búsqueda está vacío o contiene el placeholder
     if (txtNombrePilotoBuscar.getText().trim().isEmpty() || 
-        txtNombrePilotoBuscar.getText().equals("Ingresa Nombre del Piloto a buscar")) {
+        txtNombrePilotoBuscar.getText().equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
         JOptionPane.showMessageDialog(this,
-            "Por favor, ingresa el nombre del piloto para buscar.");
+            "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
-
-    String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
+    
+    String criterioBusqueda = txtNombrePilotoBuscar.getText().trim();
     modeloPilotos.setRowCount(0);
     boolean hayCoincidencias = false;
-
+    
     // Normalizar el texto buscado
-    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
-
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
+    
     try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
          Workbook workbook = new XSSFWorkbook(fis)) {
         
@@ -696,14 +701,23 @@ private void cerrarSesionYRegresarLogin() {
             // Solo procesar pilotos inactivos
             if (!isActive) {
                 String nombrePiloto = getCellValueAsString(row.getCell(0));
-                String nombrePilotoNormalizado = normalizarTexto(nombrePiloto);
+                String apellidoPiloto = getCellValueAsString(row.getCell(1));
+                String dpiPiloto = getCellValueAsString(row.getCell(2));
                 
-                if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
-                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número de índice
-                    fila[0] = rowIndex++; // Agregar el número de índice
-                    fila[1] = getCellValueAsString(row.getCell(0)); // Nombre
-                    fila[2] = getCellValueAsString(row.getCell(1)); // Apellido
-                    fila[3] = getCellValueAsString(row.getCell(2)); // DPI
+                String nombrePilotoNormalizado = normalizarTexto(nombrePiloto);
+                String apellidoPilotoNormalizado = normalizarTexto(apellidoPiloto);
+                
+                // Buscar por nombre, apellido o DPI
+                boolean coincidencia = nombrePilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                       apellidoPilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                       dpiPiloto.contains(criterioBusqueda);
+                
+                if (coincidencia) {
+                    Object[] fila = new Object[8]; // 8 columnas
+                    fila[0] = rowIndex++; // Número de índice
+                    fila[1] = nombrePiloto; // Nombre
+                    fila[2] = apellidoPiloto; // Apellido
+                    fila[3] = dpiPiloto; // DPI
                     fila[4] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
                     fila[5] = getCellValueAsString(row.getCell(4)); // Correo
                     fila[6] = getCellValueAsString(row.getCell(5)); // Teléfono
@@ -721,13 +735,13 @@ private void cerrarSesionYRegresarLogin() {
             "Error al buscar pilotos: " + e.getMessage(),
             "Error", JOptionPane.ERROR_MESSAGE);
     }
-
+    
     if (!hayCoincidencias) {
         JOptionPane.showMessageDialog(this,
-            "No se encontraron pilotos inactivos con el nombre especificado.");
+            "No se encontraron pilotos inactivos que coincidan con el criterio de búsqueda.");
         cargarDatos(); // Recargar todos los pilotos inactivos
     }
-
+    
     // Reseteamos el campo después de la búsqueda
     SwingUtilities.invokeLater(() -> {
         txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
@@ -986,6 +1000,10 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_ActivosPilotosActionPerformed
+
+    private void txtNombrePilotoBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombrePilotoBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombrePilotoBuscarActionPerformed
 
     /**
      * @param args the command line arguments

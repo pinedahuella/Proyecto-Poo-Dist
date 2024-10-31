@@ -89,7 +89,7 @@ public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
         // Set frame properties 
         setResizable(false);
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre del Piloto a buscar");
+        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre/Apellido/DPI del Piloto a buscar");
 
         // Initialize instance variables 
         this.currentUser = username;
@@ -432,7 +432,7 @@ private void cerrarSesionYRegresarLogin() {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+        txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
         txtNombrePilotoBuscar.setForeground(Color.GRAY);
     }
     
@@ -497,7 +497,7 @@ private void cerrarSesionYRegresarLogin() {
         txtNombrePilotoBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        jLabel4.setText("NOMBRE");
+        jLabel4.setText("PILOTO");
 
         editarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         editarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -618,8 +618,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(220, 220, 220)
+                            .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(169, 169, 169)
                             .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -719,26 +719,39 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }//GEN-LAST:event_refrescarPilotoActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
-
+   String criterioBusqueda = txtNombrePilotoBuscar.getText().trim();
     // Validar si el campo está vacío o es el placeholder
-    if (nombreBuscado.isEmpty() || nombreBuscado.equals("Ingresa Nombre del Piloto a buscar")) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre para buscar.");
+    if (criterioBusqueda.isEmpty() || criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
-
+    
     modeloPilotos.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
     pilotosFiltrados = new Vector<>(); // Reset lista filtrada
     boolean hayCoincidencias = false;
-
-    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
     int indice = 1; // Inicializamos el índice para la numeración
-
+    
     for (Piloto piloto : listaPilotos) {
         String nombrePilotoNormalizado = normalizarTexto(piloto.getNombrePiloto());
-
-        // Comprobar si el nombre del piloto contiene el texto buscado
-        if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
+        String apellidoPilotoNormalizado = normalizarTexto(piloto.getApellidoPiloto());
+        
+        // Comparación de DPI como long
+        boolean coincidenciaDPI = false;
+        try {
+            long criterioDPI = Long.parseLong(criterioBusqueda);
+            coincidenciaDPI = piloto.getNumeroDeDpi() == criterioDPI;
+        } catch (NumberFormatException e) {
+            // Si no es un número válido, no hace nada
+            coincidenciaDPI = false;
+        }
+        
+        // Comprobar si coincide con nombre, apellido o DPI
+        boolean coincidencia = nombrePilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                apellidoPilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                coincidenciaDPI;
+        
+        if (coincidencia) {
             pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
             modeloPilotos.addRow(new Object[]{
                 indice++, // Añadimos el índice
@@ -752,10 +765,10 @@ String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
             hayCoincidencias = true;
         }
     }
-
+    
     // Si no hay coincidencias, mostrar un mensaje y restaurar la tabla completa
     if (!hayCoincidencias) {
-        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos que coincidan con el criterio de búsqueda.");
         cargarPilotosEnTabla(); // Restaurar la tabla completa
     } else {
         // Si hay resultados, seleccionar el primer resultado
@@ -763,14 +776,14 @@ String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
             tblRegistroPilotos.setRowSelectionInterval(0, 0);
         }
     }
-
+    
     // No restaurar el placeholder si hay resultados
     if (hayCoincidencias) {
         txtNombrePilotoBuscar.setForeground(Color.BLACK); // Cambiar el color del texto
     } else {
         // Restaurar el placeholder
         SwingUtilities.invokeLater(() -> {
-            txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+            txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
             txtNombrePilotoBuscar.setForeground(Color.GRAY);
         });
     }

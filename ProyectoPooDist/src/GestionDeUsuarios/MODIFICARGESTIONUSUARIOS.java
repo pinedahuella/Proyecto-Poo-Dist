@@ -381,7 +381,6 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         txtNumeroDeDpiUsuarioModificarModificar = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         txtCorreoElectronicoUsuarioModificarModificar = new javax.swing.JTextField();
-        btnMostrarContraseña = new javax.swing.JButton();
         txtContraseñaUsuarioModificarModificar = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -458,17 +457,6 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
 
         txtCorreoElectronicoUsuarioModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
-        btnMostrarContraseña.setBackground(new java.awt.Color(153, 153, 255));
-        btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        btnMostrarContraseña.setForeground(new java.awt.Color(255, 255, 255));
-        btnMostrarContraseña.setText("MOSTRAR");
-        btnMostrarContraseña.setBorder(null);
-        btnMostrarContraseña.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarContraseñaActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -525,9 +513,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
                                 .addComponent(jLabel10)
                                 .addGap(54, 54, 54)
                                 .addComponent(txtContraseñaUsuarioModificarModificar)))
-                        .addGap(14, 14, 14)
-                        .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(202, 202, 202))))
+                        .addGap(295, 295, 295))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnModificarUsuariosSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -551,9 +537,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
                             .addComponent(txtNombreDeUsuarioUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContraseñaUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtContraseñaUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -968,24 +952,7 @@ private String removeTildes(String input) {
                .replace('Ñ', 'n');
 }
 
-
-
-    private boolean isPasswordVisible = false;
-
     
-    private void btnMostrarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarContraseñaActionPerformed
-    if (!isPasswordVisible) {
-        // Mostrar contraseña
-        txtContraseñaUsuarioModificarModificar.setEchoChar((char)0);
-        btnMostrarContraseña.setText("OCULTAR");
-    } else {
-        // Ocultar contraseña
-        txtContraseñaUsuarioModificarModificar.setEchoChar('*');
-        btnMostrarContraseña.setText("MOSTRAR");
-    }
-    isPasswordVisible = !isPasswordVisible;
-    }//GEN-LAST:event_btnMostrarContraseñaActionPerformed
-
     
     private boolean validarContrasena(String contrasena) {
     // Verificar longitud mínima
@@ -1058,7 +1025,6 @@ private String removeTildes(String input) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnModificarUsuariosSistema;
-    private javax.swing.JButton btnMostrarContraseña;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;

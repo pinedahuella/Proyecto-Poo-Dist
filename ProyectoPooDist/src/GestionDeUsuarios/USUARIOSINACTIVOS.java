@@ -541,7 +541,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -606,26 +606,40 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     }//GEN-LAST:event_ActivosUsuariosActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-   if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this,
-            "Por favor, ingrese el nombre del usuario para buscar.");
+   String criterioBusqueda = txtNombreUsuarioBuscar.getText().trim();
+    
+    // Validar si el campo está vacío
+    if (criterioBusqueda.isEmpty() || criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Usuario a buscar")) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
 
-    String nombreBuscado = txtNombreUsuarioBuscar.getText().trim();
-    modeloUsuarios.setRowCount(0);
+    modeloUsuarios.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
     boolean encontrado = false;
     int numeroFila = 1; // Contador para la numeración
 
-    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
 
     for (Usuarios usuario : listaUsuariosInactivos) {
         String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
-        String nombreUsuarioLoginNormalizado = normalizarTexto(usuario.getNombreUsuario());
+        String apellidoUsuarioNormalizado = normalizarTexto(usuario.getApellido());
+        
+        // Comparar DPI como long
+        boolean coincidenciaDPI = false;
+        try {
+            long criterioDPI = Long.parseLong(criterioBusqueda);
+            coincidenciaDPI = usuario.getNumeroDPI() == criterioDPI;
+        } catch (NumberFormatException e) {
+            // Si no es un número válido, no se hace nada
+            coincidenciaDPI = false;
+        }
 
-        if (nombreUsuarioNormalizado.contains(nombreBuscadoNormalizado) ||
-            nombreUsuarioLoginNormalizado.contains(nombreBuscadoNormalizado)) {
+        // Comprobar si coincide con nombre, apellido o DPI
+        boolean coincidencia = nombreUsuarioNormalizado.contains(criterioBusquedaNormalizado) ||
+                               apellidoUsuarioNormalizado.contains(criterioBusquedaNormalizado) ||
+                               coincidenciaDPI;
 
+        if (coincidencia) {
             Object[] fila = {
                 numeroFila++, // Agregar el número de fila
                 usuario.getNombreUsuario(),
@@ -643,13 +657,13 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     }
 
     if (!encontrado) {
-        JOptionPane.showMessageDialog(this,
-            "No se encontraron usuarios inactivos con el nombre especificado.");
-        cargarDatos();
+        JOptionPane.showMessageDialog(this, "No se encontraron usuarios inactivos con el criterio especificado.");
+        cargarDatos(); // Restaurar los datos completos
     }
 
+    // Restablecer el campo de búsqueda
     SwingUtilities.invokeLater(() -> {
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre, Apellido o DPI del Usuario a buscar");
         txtNombreUsuarioBuscar.setForeground(Color.GRAY);
     });
     }//GEN-LAST:event_buscarUsuarioActionPerformed

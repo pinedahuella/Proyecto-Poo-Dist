@@ -183,7 +183,7 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtMarcaCamionBuscar.setText("Ingresa Marca del Camión a buscar");
+        txtMarcaCamionBuscar.setText("Ingresa Marca, modelo o placas del Camión a buscar");
         txtMarcaCamionBuscar.setForeground(Color.GRAY);
     }
     
@@ -466,7 +466,7 @@ private void cerrarSesionYRegresarLogin() {
         });
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        jLabel4.setText("MARCA");
+        jLabel4.setText("CAMION");
 
         txtMarcaCamionBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
@@ -711,46 +711,58 @@ private void cerrarSesionYRegresarLogin() {
      * @param evt el evento que activó esta acción
      */
     private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-     if (txtMarcaCamionBuscar.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingresa la marca del camión para buscar.");
+    String criterioBusqueda = txtMarcaCamionBuscar.getText().trim();
+    
+    // Verificar si el campo está vacío
+    if (criterioBusqueda.isEmpty() || criterioBusqueda.equals("Ingresa Marca, modelo o placas del Camión a buscar")) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa un criterio de búsqueda.");
         return;
     }
-
-    String marcaBuscada = txtMarcaCamionBuscar.getText().trim();
+    
+    // Limpiar la tabla y el vector de seguimiento
     modeloCamiones.setRowCount(0);
-    camionesEnTabla.clear(); // Limpiamos el vector de seguimiento
+    camionesEnTabla.clear();
+    
     boolean hayCoincidencias = false;
-
-    int indice = 1; // Inicializamos el índice
-
+    int indice = 1;
+    
+    // Convertir el criterio de búsqueda a minúsculas para hacer la búsqueda insensible a mayúsculas
+    String criterioBusquedaLower = criterioBusqueda.toLowerCase();
+    
     for (Camiones camion : listaCamiones) {
-        if (camion.getMarca().toLowerCase().contains(marcaBuscada.toLowerCase())) {
+        // Buscar por marca, modelo o placas
+        if (camion.getMarca().toLowerCase().contains(criterioBusquedaLower) || 
+            camion.getModelo().toLowerCase().contains(criterioBusquedaLower) || 
+            camion.getPlacas().toLowerCase().contains(criterioBusquedaLower)) {
+            
             modeloCamiones.addRow(new Object[]{
-                indice++, // Añadimos el índice
-                camion.getMarca(), // Primero la marca
+                indice++, 
+                camion.getMarca(), 
                 camion.getModelo(),
                 camion.getPlacas(),
                 camion.getEstado(),
                 camion.getTipoCombustible(),
                 camion.getKilometraje()
             });
-            camionesEnTabla.add(camion); // Agregamos solo los camiones filtrados
+            
+            camionesEnTabla.add(camion);
             hayCoincidencias = true;
         }
     }
-
+    
     if (!hayCoincidencias) {
-        JOptionPane.showMessageDialog(this, "No se encontraron camiones de la marca especificada.");
-        cargarCamionesEnTabla();
+        JOptionPane.showMessageDialog(this, "No se encontraron camiones que coincidan con el criterio de búsqueda.");
+        cargarCamionesEnTabla(); // Volver a cargar todos los camiones
     } else {
         tblRegistroCamiones1.setVisible(true);
         if (tblRegistroCamiones1.getRowCount() > 0) {
             tblRegistroCamiones1.setRowSelectionInterval(0, 0);
         }
     }
-
+    
+    // Restablecer el campo de búsqueda
     SwingUtilities.invokeLater(() -> {
-        txtMarcaCamionBuscar.setText("Ingresa Marca del Camión a buscar");
+        txtMarcaCamionBuscar.setText("Ingresa Marca, modelo o placas del Camión a buscar");
         txtMarcaCamionBuscar.setForeground(Color.GRAY);
     });
     }//GEN-LAST:event_buscarCamionActionPerformed
