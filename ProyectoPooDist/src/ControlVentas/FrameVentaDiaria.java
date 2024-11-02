@@ -125,7 +125,6 @@ if (role.equalsIgnoreCase("ADMINISTRADOR")) {
         
         //calculamos la ganancias total
         ActualizarGananciaTotal();
-        configurarCamposPrecioCosto();
         //iniciamos el bucle infinito
        iniciarBucleEnHilo(); 
         this.currentUser = username;
@@ -139,74 +138,6 @@ if (role.equalsIgnoreCase("ADMINISTRADOR")) {
             this.requestFocusInWindow();
         });
     }
-    
-// Método para configurar el placeholder en campos de texto de precio y costo
-private void setupTextFieldPrecioCosto(JTextField textField, String placeholder) {
-    textField.setText(placeholder);
-    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
-
-    textField.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            // Limpia el placeholder al enfocar
-            if (textField.getText().equals(placeholder)) {
-                textField.setText("");
-                textField.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            // Restablece el placeholder si el campo está vacío
-            if (textField.getText().isEmpty()) {
-                textField.setForeground(Color.GRAY);
-                textField.setText(placeholder);
-            }
-        }
-    });
-   textField.addFocusListener(new FocusAdapter() {
-    @Override
-    public void focusLost(FocusEvent e) {
-        // Solo restablece el placeholder si el campo está vacío
-        if (textField.getText().isEmpty()) {
-            textField.setForeground(Color.GRAY);
-            textField.setText(placeholder);
-        }
-    }
-});
-    
-}
-// Método para configurar todos los campos de precio y costo con placeholders
-private void configurarCamposPrecioCosto() {
-    setupTextFieldPrecioCosto(textoPrecioCostoAgregar, "Ingrese precio");
-    setupTextFieldPrecioCosto(textoPrecioVentaAgregar, "Ingrese precio");
-    setupTextFieldPrecioCosto(txtPrecioAgregar, "Ingrese precio");
-    setupTextFieldPrecioCosto(txtPrecioCostoModificar, "Ingrese precio");
-    setupTextFieldPrecioCosto(txtPrecioFleteModificar, "Ingrese precio");
-    setupTextFieldPrecioCosto(txtPrecioVentarModificar, "Ingrese precio");
-}
-
-// Método para limpiar y restablecer los placeholders de los campos de precio y costo
-public void limpiarCamposPrecioCosto() {
-    textoPrecioCostoAgregar.setText("Ingrese precio");
-    textoPrecioCostoAgregar.setForeground(Color.GRAY);
-
-    textoPrecioVentaAgregar.setText("Ingrese precio");
-    textoPrecioVentaAgregar.setForeground(Color.GRAY);
-
-    txtPrecioAgregar.setText("Ingrese precio");
-    txtPrecioAgregar.setForeground(Color.GRAY);
-
-    txtPrecioCostoModificar.setText("Ingrese precio");
-    txtPrecioCostoModificar.setForeground(Color.GRAY);
-
-    txtPrecioFleteModificar.setText("Ingrese precio");
-    txtPrecioFleteModificar.setForeground(Color.GRAY);
-
-    txtPrecioVentarModificar.setText("Ingrese precio");
-    txtPrecioVentarModificar.setForeground(Color.GRAY);
-}
-
 
     /**
      * Añade opciones al ComboBox para el rol de ADMINISTRADOR.
@@ -742,6 +673,11 @@ private void cerrarSesionYRegresarLogin() {
         jLabel6.setText("Flete");
 
         txtPrecioAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtPrecioAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrecioAgregarActionPerformed(evt);
+            }
+        });
 
         labelpreciocosto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         labelpreciocosto.setText("Precio Costo");
@@ -1254,7 +1190,6 @@ private void cerrarSesionYRegresarLogin() {
                 //actualizamos la tabla de ventas
                 actualizarTablaVentas(); 
                 
-                limpiarCamposPrecioCosto();
                 //cambiamos las existencias en el inventario
                 gesproductos.setCantidad(newindiceproducto, newcantidad, "-");
                 //actualizamos el inventario
@@ -1327,7 +1262,6 @@ private void cerrarSesionYRegresarLogin() {
                 
                txtPrecioAgregar.setText("" + vectorproductos.get(newindiceproducto).getPrecioFlete());
                textoPrecioCostoAgregar.setText("" + vectorproductos.get(newindiceproducto).getPrecioCosto());
-                               limpiarCamposPrecioCosto();
 
                //esta variable nos ayudara a ver si el producto fue encontrado en la lista del cliente
                boolean tieneproducto = false;
@@ -1392,7 +1326,6 @@ private void cerrarSesionYRegresarLogin() {
                 
                 //vemos si es un credito o no
                 boolean newcredito = false;
-                                limpiarCamposPrecioCosto();
 
                 //preguntamos is hay suficientes existencias para completar el pedido
                 if (vectorproductos.get(newindiceproducto).getExistencias() + cantidadAntigua >= newcantidad ) {
@@ -1471,7 +1404,6 @@ private void cerrarSesionYRegresarLogin() {
                 // Si el usuario selecciona "Sí"
                 if (respuesta == JOptionPane.YES_OPTION) {
                     
-                limpiarCamposPrecioCosto();
 
         // Obtener la fecha actual
         Date fechaActual = new Date();
@@ -1605,7 +1537,6 @@ private void cerrarSesionYRegresarLogin() {
                 //actualizamos las tablas correspondientes               
                 actualizarTablaVentas();
                 ActualizarGananciaTotal();
-                                limpiarCamposPrecioCosto();
 
                 gesventas.guardarExcelVentas();
                 //mostramos mesaje 
@@ -1621,11 +1552,14 @@ private void cerrarSesionYRegresarLogin() {
         String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
         String role = this.userRole;        // Suponiendo que userRole contiene el rol
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
-                limpiarCamposPrecioCosto();
 
         FrameHistorialVenta abrir = new FrameHistorialVenta(currentUser, userRole, loginFrame);
         abrir.setVisible(true);
     }//GEN-LAST:event_txtHistorialVentasActionPerformed
+
+    private void txtPrecioAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioAgregarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrecioAgregarActionPerformed
 
     //creamos el bucle infinito
     private void iniciarBucleEnHilo() {
@@ -1664,7 +1598,6 @@ private void cerrarSesionYRegresarLogin() {
                 txtPrecioVentarModificar.setText("" + vectorventas.get(indiceGeneral).getPrecio());
                 txtPrecioFleteModificar.setText("" + vectorventas.get(indiceGeneral).getPrecioFlete());
                 txtPrecioCostoModificar.setText("" + vectorventas.get(indiceGeneral).getPrecioCosto());
-                                limpiarCamposPrecioCosto();
 
                 labelGanaciaVenta.setText("" + vectorventas.get(indiceGeneral).getGanancia());
                 

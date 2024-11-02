@@ -49,6 +49,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.util.Arrays;
 import javax.swing.JPanel;
 
 public class USUARIOSINACTIVOS extends javax.swing.JFrame {
@@ -123,7 +124,7 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre, Apellido o DPI del Usuario a buscar");
         txtNombreUsuarioBuscar.setForeground(java.awt.Color.GRAY);
     }
 
@@ -435,6 +436,7 @@ private void cerrarSesionYRegresarLogin() {
         ActivosUsuarios = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         txtMenu10 = new javax.swing.JComboBox<>();
+        refrescarUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -531,6 +533,17 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        refrescarUsuario.setBackground(new java.awt.Color(85, 111, 169));
+        refrescarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        refrescarUsuario.setForeground(new java.awt.Color(255, 255, 255));
+        refrescarUsuario.setText("REFRESCAR");
+        refrescarUsuario.setBorder(null);
+        refrescarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarUsuarioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -544,6 +557,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ActivarUsuarioEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -566,7 +581,8 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ActivarUsuarioEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ActivarUsuarioEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
@@ -606,7 +622,7 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     }//GEN-LAST:event_ActivosUsuariosActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-   String criterioBusqueda = txtNombreUsuarioBuscar.getText().trim();
+String criterioBusqueda = txtNombreUsuarioBuscar.getText().trim();
     
     // Validar si el campo está vacío
     if (criterioBusqueda.isEmpty() || criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Usuario a buscar")) {
@@ -618,25 +634,27 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     boolean encontrado = false;
     int numeroFila = 1; // Contador para la numeración
 
+    // Normalizar el criterio de búsqueda
     String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
 
     for (Usuarios usuario : listaUsuariosInactivos) {
+        // Normalizar nombre, apellido y DPI
         String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
         String apellidoUsuarioNormalizado = normalizarTexto(usuario.getApellido());
+        String dpiString = String.valueOf(usuario.getNumeroDPI());
+
+        // Verificar coincidencia flexible para nombre
+        boolean coincidenciaNombre = esTextoCoincidente(nombreUsuarioNormalizado, criterioBusquedaNormalizado);
         
-        // Comparar DPI como long
-        boolean coincidenciaDPI = false;
-        try {
-            long criterioDPI = Long.parseLong(criterioBusqueda);
-            coincidenciaDPI = usuario.getNumeroDPI() == criterioDPI;
-        } catch (NumberFormatException e) {
-            // Si no es un número válido, no se hace nada
-            coincidenciaDPI = false;
-        }
+        // Verificar coincidencia flexible para apellido
+        boolean coincidenciaApellido = esTextoCoincidente(apellidoUsuarioNormalizado, criterioBusquedaNormalizado);
+        
+        // Verificar coincidencia para DPI
+        boolean coincidenciaDPI = dpiString.contains(criterioBusqueda);
 
         // Comprobar si coincide con nombre, apellido o DPI
-        boolean coincidencia = nombreUsuarioNormalizado.contains(criterioBusquedaNormalizado) ||
-                               apellidoUsuarioNormalizado.contains(criterioBusquedaNormalizado) ||
+        boolean coincidencia = coincidenciaNombre || 
+                               coincidenciaApellido || 
                                coincidenciaDPI;
 
         if (coincidencia) {
@@ -663,9 +681,81 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
 
     // Restablecer el campo de búsqueda
     SwingUtilities.invokeLater(() -> {
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre, Apellido o DPI del Usuario a buscar");
-        txtNombreUsuarioBuscar.setForeground(Color.GRAY);
     });
+}
+
+// Método mejorado para verificar coincidencia de texto, independiente del orden
+private boolean esTextoCoincidente(String textoNormalizado, String criterioBusqueda) {
+    // Eliminar espacios y convertir a minúsculas
+    textoNormalizado = textoNormalizado.replaceAll("\\s", "").toLowerCase();
+    criterioBusqueda = criterioBusqueda.replaceAll("\\s", "").toLowerCase();
+    
+    // Verificar si todos los caracteres del criterio están en el texto
+    for (char c : criterioBusqueda.toCharArray()) {
+        int index = textoNormalizado.indexOf(c);
+        if (index == -1) {
+            return false;
+        }
+        // Remover el carácter encontrado para evitar contar el mismo carácter múltiples veces
+        textoNormalizado = textoNormalizado.substring(0, index) + textoNormalizado.substring(index + 1);
+    }
+    
+    return true;
+}
+    
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+    // Permitir búsqueda si:
+    // - Es un solo dígito
+    // - Son 2-13 dígitos
+    // - Contiene solo dígitos
+
+    return criterioBusqueda.length() == 1 ||
+           (criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13) &&
+           criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloUsuarios.setRowCount(0);
+    int indice = 1;
+    boolean hayCoincidencias = false;
+
+    for (Usuarios usuario : listaUsuariosInactivos) {
+        // Convertir el DPI a String para poder hacer la búsqueda
+        String dpiString = String.valueOf(usuario.getNumeroDPI());
+        
+        // Verificar si el criterio de búsqueda está en cualquier parte del DPI
+        boolean coincidencia = dpiString.contains(criterioBusqueda);
+        
+        // Si hay coincidencia, agregar a la tabla
+        if (coincidencia) {
+            Object[] fila = {
+                indice++,
+                usuario.getNombreUsuario(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getCorreoElectronico(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            };
+            modeloUsuarios.addRow(fila);
+            hayCoincidencias = true;
+        }
+    }
+    
+    // Manejo de resultados
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, 
+            "No se encontraron usuarios con DPI que contengan " + criterioBusqueda);
+        cargarDatos();
+    } else {
+        // Mostrar número de resultados encontrados
+        JOptionPane.showMessageDialog(this, 
+            "Se encontraron " + (indice - 1) + " usuarios con DPI que contienen " + criterioBusqueda);
+    }
     }//GEN-LAST:event_buscarUsuarioActionPerformed
 
     
@@ -874,6 +964,16 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     }
     }//GEN-LAST:event_ActivarUsuarioEliminadoActionPerformed
 
+    private void refrescarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarUsuarioActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        USUARIOSINACTIVOS abrir = new  USUARIOSINACTIVOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_refrescarUsuarioActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -925,6 +1025,7 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
+    private javax.swing.JButton refrescarUsuario;
     private javax.swing.JTable tblRegistroUsuarios;
     private javax.swing.JComboBox<String> txtMenu10;
     private javax.swing.JTextField txtNombreUsuarioBuscar;

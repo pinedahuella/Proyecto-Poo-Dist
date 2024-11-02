@@ -89,7 +89,7 @@ public class CAMIONESINACTIVOS extends javax.swing.JFrame {
         setResizable(false);
         inicializarTabla();
         cargarDatos(); // Añadimos esta llamada que faltaba
-                setupTextField(txtMarcaCamionBuscar, "Ingresa Marca del Camión a buscar");
+                setupTextField(txtMarcaCamionBuscar, "Ingresa Marca, Modelo o Placas del Camión a buscar");
 
         // Configuración de la interfaz
         addWindowListener();
@@ -139,7 +139,7 @@ public class CAMIONESINACTIVOS extends javax.swing.JFrame {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtMarcaCamionBuscar.setText("Ingresa Marca del Camión a buscar");
+        txtMarcaCamionBuscar.setText("Ingresa Marca, Modelo o Placas del Camión a buscar");
         txtMarcaCamionBuscar.setForeground(Color.GRAY);
     }
 
@@ -531,6 +531,7 @@ private void cerrarSesionYRegresarLogin() {
         txtMenu = new javax.swing.JComboBox<>();
         ActivarCamionEliminado = new javax.swing.JButton();
         ActivosCamiones = new javax.swing.JButton();
+        refrescarCamion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -549,9 +550,14 @@ private void cerrarSesionYRegresarLogin() {
         });
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        jLabel4.setText("MARCA");
+        jLabel4.setText("CAMION");
 
         txtMarcaCamionBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtMarcaCamionBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMarcaCamionBuscarActionPerformed(evt);
+            }
+        });
 
         tblRegistroCamiones1.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroCamiones1.setModel(new javax.swing.table.DefaultTableModel(
@@ -627,6 +633,17 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        refrescarCamion.setBackground(new java.awt.Color(85, 111, 169));
+        refrescarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        refrescarCamion.setForeground(new java.awt.Color(255, 255, 255));
+        refrescarCamion.setText("REFRESCAR");
+        refrescarCamion.setBorder(null);
+        refrescarCamion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarCamionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -634,19 +651,23 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1123, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(ActivosCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ActivarCamionEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ActivosCamiones, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ActivarCamionEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(29, 29, 29)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -658,14 +679,17 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ActivosCamiones, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(ActivarCamionEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtMarcaCamionBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(ActivarCamionEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 555, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 540, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
         );
@@ -689,21 +713,12 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void buscarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCamionActionPerformed
-String placeholder = "Ingresa Marca del Camión a buscar";
-    String textoActual = txtMarcaCamionBuscar.getText().trim();
+ String textoActual = txtMarcaCamionBuscar.getText().trim();
     
-    // Verificar si el texto es el placeholder o está vacío
-    if (textoActual.isEmpty() || textoActual.equals(placeholder)) {
-        JOptionPane.showMessageDialog(this,
-            "Por favor, ingresa la marca del camión para buscar.");
-        return;
-    }
-
-    // Primero recargar todos los datos para asegurar que tenemos la lista completa
+    // Recargar datos para asegurar lista completa
     cargarDatos();
-
-    // Obtener el texto de búsqueda y convertirlo a minúsculas
-    String marcaBuscada = textoActual.toLowerCase();
+    // Convertir texto de búsqueda a minúsculas
+    String textoBuscado = textoActual.toLowerCase();
     
     // Filtrar en la tabla completa
     TableModel modelo = tblRegistroCamiones1.getModel();
@@ -713,9 +728,27 @@ String placeholder = "Ingresa Marca del Camión a buscar";
     
     // Recorrer todas las filas de la tabla
     for (int i = 0; i < rowCount; i++) {
-        // La marca está en la columna 1
+        // Obtener valores de marca, modelo y placas
         String marcaEnTabla = String.valueOf(modelo.getValueAt(i, 1)).toLowerCase();
-        if (marcaEnTabla.contains(marcaBuscada)) {
+        String modeloEnTabla = String.valueOf(modelo.getValueAt(i, 2)).toLowerCase();
+        String placasEnTabla = String.valueOf(modelo.getValueAt(i, 3)).toLowerCase();
+        
+        // Combinar todos los campos en un solo texto para búsqueda
+        String textoCompleto = marcaEnTabla + " " + modeloEnTabla + " " + placasEnTabla;
+        
+        // Dividir el texto de búsqueda en palabras individuales
+        String[] palabrasBusqueda = textoBuscado.split("\\s+");
+        boolean coincideTodas = true;
+        
+        // Verificar si todas las palabras de búsqueda están en alguno de los campos
+        for (String palabra : palabrasBusqueda) {
+            if (!textoCompleto.contains(palabra)) {
+                coincideTodas = false;
+                break;
+            }
+        }
+        
+        if (coincideTodas) {
             encontrado = true;
             // Guardar toda la fila
             Object[] fila = new Object[7];
@@ -737,14 +770,13 @@ String placeholder = "Ingresa Marca del Camión a buscar";
         }
     } else {
         JOptionPane.showMessageDialog(this,
-            "No se encontraron camiones con la marca especificada.");
+            "No se encontraron camiones con los criterios especificados.");
         cargarDatos(); // Volver a mostrar todos los camiones
     }
     
-    // Resetear el campo de búsqueda
+    // Resetear el campo de búsqueda si es necesario
     SwingUtilities.invokeLater(() -> {
-        txtMarcaCamionBuscar.setText(placeholder);
-        txtMarcaCamionBuscar.setForeground(Color.GRAY);
+        // Aquí puedes agregar código para resetear el campo si lo deseas
     });
     }//GEN-LAST:event_buscarCamionActionPerformed
 
@@ -993,6 +1025,20 @@ Thread processingThread = new Thread(() -> {
         this.setVisible(false);
     }//GEN-LAST:event_ActivosCamionesActionPerformed
 
+    private void txtMarcaCamionBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMarcaCamionBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMarcaCamionBuscarActionPerformed
+
+    private void refrescarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarCamionActionPerformed
+        String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
+        String role = this.userRole;        // Suponiendo que userRole contiene el rol
+        LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
+
+        CAMIONESINACTIVOS abrir = new CAMIONESINACTIVOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_refrescarCamionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1044,6 +1090,7 @@ Thread processingThread = new Thread(() -> {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
+    private javax.swing.JButton refrescarCamion;
     private javax.swing.JTable tblRegistroCamiones1;
     private javax.swing.JTextField txtMarcaCamionBuscar;
     private javax.swing.JComboBox<String> txtMenu;

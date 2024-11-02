@@ -499,6 +499,7 @@ private void cerrarSesionYRegresarLogin() {
         txtMenu = new javax.swing.JComboBox<>();
         ActivarPilotoEliminado = new javax.swing.JButton();
         ActivosPilotos = new javax.swing.JButton();
+        refrescarPiloto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -600,6 +601,17 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        refrescarPiloto.setBackground(new java.awt.Color(85, 111, 169));
+        refrescarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        refrescarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        refrescarPiloto.setText("REFRESCAR");
+        refrescarPiloto.setBorder(null);
+        refrescarPiloto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarPilotoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -619,6 +631,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ActivarPilotoEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -630,16 +644,20 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ActivosPilotos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(ActivarPilotoEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ActivarPilotoEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
         );
@@ -663,6 +681,7 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
+   
      // Verificar si el campo de búsqueda está vacío o contiene el placeholder
     if (txtNombrePilotoBuscar.getText().trim().isEmpty() || 
         txtNombrePilotoBuscar.getText().equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
@@ -744,9 +763,45 @@ private void cerrarSesionYRegresarLogin() {
     
     // Reseteamos el campo después de la búsqueda
     SwingUtilities.invokeLater(() -> {
-        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
-        txtNombrePilotoBuscar.setForeground(Color.GRAY);
+    
     });
+    }
+    
+    
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+
+    return criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13 && criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloPilotos.setRowCount(0); // Limpiar la tabla
+    int indice = 1;
+    boolean hayCoincidencias = false;
+
+    for (Piloto piloto : listaPilotosInactivos) {
+        String dpiString = String.valueOf(piloto.getNumeroDeDpi());
+        if (dpiString.contains(criterioBusqueda)) {
+            modeloPilotos.addRow(new Object[]{
+                indice++,
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getEstadoPiloto()
+            });
+            hayCoincidencias = true;
+        }
+    }
+
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos con DPI que contengan " + criterioBusqueda);
+        cargarDatos(); // Restaurar la tabla completa si no hay coincidencias
+    } else {
+        JOptionPane.showMessageDialog(this, "Se encontraron " + (indice - 1) + " pilotos con DPI que contienen " + criterioBusqueda);
+    }                                        
     }//GEN-LAST:event_buscarPilotoActionPerformed
 
     // Método para normalizar el texto
@@ -1005,6 +1060,16 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombrePilotoBuscarActionPerformed
 
+    private void refrescarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarPilotoActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        PILOTOSINACTIVOS abrir = new  PILOTOSINACTIVOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_refrescarPilotoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1056,6 +1121,7 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
+    private javax.swing.JButton refrescarPiloto;
     private javax.swing.JTable tblRegistroPilotos;
     private javax.swing.JComboBox<String> txtMenu;
     private javax.swing.JTextField txtNombrePilotoBuscar;

@@ -1401,11 +1401,7 @@ private void cerrarSesionYRegresarLogin() {
             panelf2.setVisible(false);
         }
         
-               
-        
-        // Limpiar Campos
-        limpiarCamposTrabajador();
-        
+              
         panelf1.setVisible(false);
     }//GEN-LAST:event_panelBotonModificarMouseClicked
 
@@ -1454,9 +1450,6 @@ private void cerrarSesionYRegresarLogin() {
                 labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
                        
-        
-        // Limpiar Campos
-        limpiarCamposTrabajador();
         
                 //mostramos los mismos datos de modificado 
                 txtNombreDelTrabajadorModificar.setText(tTrabajador.get(indiceActual).getNombre());
@@ -1519,11 +1512,7 @@ private void cerrarSesionYRegresarLogin() {
                     //llamamos a la funcion de agregar entrada
                     gTrabajadores.setEntrada(indiceActual, newEntrada, newValorEntrada, operacion);
                 }
-                
-                       
-        
-        // Limpiar Campos
-        limpiarCamposTrabajador();
+
         
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
@@ -1581,8 +1570,7 @@ private void cerrarSesionYRegresarLogin() {
         
                
         
-        // Limpiar Campos
-        limpiarCamposTrabajador();
+
         
         //funcion provisional para guardas datos en el excel
         gTrabajadores.guardarTrabajadoresExcel();
@@ -1632,9 +1620,6 @@ private void cerrarSesionYRegresarLogin() {
                     
                            
         
-        // Limpiar Campos
-        limpiarCamposTrabajador();
-        
                     // vaciaremos la tabla totalmente
                 modeloEntradas.setRowCount(0);
                     
@@ -1676,8 +1661,6 @@ private void cerrarSesionYRegresarLogin() {
                 
                        
         
-        // Limpiar Campos
-        limpiarCamposTrabajador();
         
                 // vaciaremos la tabla totalmente
                 modeloEntradas.setRowCount(0);

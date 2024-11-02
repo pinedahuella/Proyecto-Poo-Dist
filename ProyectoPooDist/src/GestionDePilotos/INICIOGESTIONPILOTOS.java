@@ -70,6 +70,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
@@ -167,6 +169,7 @@ public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
             }
         }
     }
+    
     
 private void setupComboBox() {
     txtMenu.removeAllItems();
@@ -402,39 +405,56 @@ private void cerrarSesionYRegresarLogin() {
     }
 
 
-
- // Método para configurar el campo de texto con placeholder
-    private void setupTextField(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);
-
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // Limpia el placeholder al enfocar
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);
-                }
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY);
+    
+    // Agregar un FocusListener para manejar el placeholder
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Solo limpia si el texto actual es igual al placeholder
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
             }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Restablece el placeholder si el campo está vacío
-                if (textField.getText().isEmpty()) {
-                    textField.setForeground(Color.GRAY);
-                    textField.setText(placeholder);
-                }
+        }
+        
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().trim().isEmpty()) {
+                textField.setText(placeholder);
+                textField.setForeground(Color.GRAY);
             }
-        });
-    }
+        }
+    });
+    
+    // Reemplazar el DocumentListener problemático con uno más simple
+    textField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            if (textField.getForeground() == Color.GRAY) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
 
-    // Método para limpiar los campos incluyendo el campo de búsqueda
-    public void limpiarCampos() {
-        // ... otros campos que ya limpias ...
-        txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
-        txtNombrePilotoBuscar.setForeground(Color.GRAY);
-    }
+        @Override
+        public void removeUpdate(DocumentEvent e) {}
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {}
+    });
+}
+
+
+// Método para limpiar los campos incluyendo el campo de búsqueda
+public void limpiarCampos() {
+    // Resto de la limpieza de campos...
+    txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
+    txtNombrePilotoBuscar.setForeground(Color.GRAY);
+}
     
             public void actualizarTabla() {
         gestionPilotos.cargarPilotosDesdeExcel();
@@ -719,13 +739,15 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }//GEN-LAST:event_refrescarPilotoActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-   String criterioBusqueda = txtNombrePilotoBuscar.getText().trim();
+ String criterioBusqueda = txtNombrePilotoBuscar.getText().trim();
+    
     // Validar si el campo está vacío o es el placeholder
-    if (criterioBusqueda.isEmpty() || criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
+    if (criterioBusqueda.isEmpty() || 
+        criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
         JOptionPane.showMessageDialog(this, "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
-    
+
     modeloPilotos.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
     pilotosFiltrados = new Vector<>(); // Reset lista filtrada
     boolean hayCoincidencias = false;
@@ -736,25 +758,26 @@ String username = this.currentUser; // Assuming currentUser holds the username
         String nombrePilotoNormalizado = normalizarTexto(piloto.getNombrePiloto());
         String apellidoPilotoNormalizado = normalizarTexto(piloto.getApellidoPiloto());
         
-        // Comparación de DPI como long
+        // Verificar coincidencia por DPI (usando contains en lugar de igualdad exacta)
         boolean coincidenciaDPI = false;
         try {
+            // Si el criterio es numérico, busca si contiene ese valor
             long criterioDPI = Long.parseLong(criterioBusqueda);
-            coincidenciaDPI = piloto.getNumeroDeDpi() == criterioDPI;
+            String dpiPiloto = String.valueOf(piloto.getNumeroDeDpi());
+            coincidenciaDPI = dpiPiloto.contains(criterioBusqueda);
         } catch (NumberFormatException e) {
-            // Si no es un número válido, no hace nada
             coincidenciaDPI = false;
         }
-        
+
         // Comprobar si coincide con nombre, apellido o DPI
         boolean coincidencia = nombrePilotoNormalizado.contains(criterioBusquedaNormalizado) ||
                                 apellidoPilotoNormalizado.contains(criterioBusquedaNormalizado) ||
                                 coincidenciaDPI;
         
         if (coincidencia) {
-            pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
+            pilotosFiltrados.add(piloto);
             modeloPilotos.addRow(new Object[]{
-                indice++, // Añadimos el índice
+                indice++,
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
                 piloto.getNumeroDeDpi(),
@@ -766,26 +789,50 @@ String username = this.currentUser; // Assuming currentUser holds the username
         }
     }
     
-    // Si no hay coincidencias, mostrar un mensaje y restaurar la tabla completa
     if (!hayCoincidencias) {
-        JOptionPane.showMessageDialog(this, "No se encontraron pilotos que coincidan con el criterio de búsqueda.");
-        cargarPilotosEnTabla(); // Restaurar la tabla completa
-    } else {
-        // Si hay resultados, seleccionar el primer resultado
-        if (tblRegistroPilotos.getRowCount() > 0) {
-            tblRegistroPilotos.setRowSelectionInterval(0, 0);
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos con el criterio especificado.");
+        cargarPilotosEnTabla(); // Restaurar los datos completos
+    }
+
+// Al final, restablecer el placeholder
+    SwingUtilities.invokeLater(() -> {
+    });
+}
+
+
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+
+    return criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13 && criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloPilotos.setRowCount(0); // Limpiar la tabla
+    int indice = 1;
+    boolean hayCoincidencias = false;
+
+    for (Piloto piloto : listaPilotos) {
+        String dpiString = String.valueOf(piloto.getNumeroDeDpi());
+        if (dpiString.contains(criterioBusqueda)) {
+            modeloPilotos.addRow(new Object[]{
+                indice++,
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getEstadoPiloto()
+            });
+            hayCoincidencias = true;
         }
     }
-    
-    // No restaurar el placeholder si hay resultados
-    if (hayCoincidencias) {
-        txtNombrePilotoBuscar.setForeground(Color.BLACK); // Cambiar el color del texto
+
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos con DPI que contengan " + criterioBusqueda);
+        cargarPilotosEnTabla(); // Restaurar la tabla completa si no hay coincidencias
     } else {
-        // Restaurar el placeholder
-        SwingUtilities.invokeLater(() -> {
-            txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
-            txtNombrePilotoBuscar.setForeground(Color.GRAY);
-        });
+        JOptionPane.showMessageDialog(this, "Se encontraron " + (indice - 1) + " pilotos con DPI que contienen " + criterioBusqueda);
     }
     }//GEN-LAST:event_buscarPilotoActionPerformed
 

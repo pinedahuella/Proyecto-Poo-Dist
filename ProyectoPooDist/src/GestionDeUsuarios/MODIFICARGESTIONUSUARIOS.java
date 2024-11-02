@@ -51,7 +51,7 @@ import javax.swing.JLabel;
 public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
 
     public GESTIONUSUARIOS gestionUsuarios;
-    public Vector<Usuarios> listaUsuarios = new Vector<>();
+    public Vector<Usuarios> listaUsuariosActivos = new Vector<>();
     DefaultTableModel modeloUsuarios = new DefaultTableModel();
     private Usuarios usuarioActual;
     private INICIOGESTIONUSUARIOS ventanaPrincipal;
@@ -72,7 +72,7 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
             this.ventanaPrincipal = ventanaPrincipal;
             if (ventanaPrincipal != null) {
                 this.gestionUsuarios = ventanaPrincipal.gestionUsuarios;
-                this.listaUsuarios = gestionUsuarios.getUsuarios();
+                this.listaUsuariosActivos = gestionUsuarios.getUsuarios();
             }
 configurarCamposDeTextoConPlaceholdersUsuarios();
             this.usuarioActual = usuario;
@@ -342,7 +342,7 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
   // En la clase donde tienes el método de modificación:
 private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
     // Recorrer la lista de usuarios y verificar si la contraseña ya existe
-    for (Usuarios usuario : listaUsuarios) {
+    for (Usuarios usuario : listaUsuariosActivos) {
         // Si la contraseña existe en otro usuario (no en el usuario actual)
         if (usuario != usuarioActual && 
             usuario.getContrasenaUsuario() != null && 
@@ -739,7 +739,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
 
         // Verificar duplicados solo si los datos únicos han cambiado
-        for (Usuarios usuarioExistente : listaUsuarios) {
+        for (Usuarios usuarioExistente : listaUsuariosActivos) {
             if (usuarioExistente != usuarioActual) {
                 if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
                     JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");

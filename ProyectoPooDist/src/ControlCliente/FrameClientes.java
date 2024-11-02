@@ -1327,8 +1327,7 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_radioActivoActionPerformed
 
     private void txtAñadirClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtAñadirClienteMouseClicked
-        // TODO add your handling code here:
-                limpiarCamposCliente();
+
 
         //funcion que nos permitira ocultar o mostrar el panel de agregar cliente
         //preguntamos si esta activo o no
@@ -1343,8 +1342,6 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseClicked
         // TODO add your handling code here:
-                limpiarCamposCliente();
-
         //funcion que nos ayudara a crear un nuevo cliente
         //primero leemos la inforacion
         
@@ -1402,7 +1399,6 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel19MouseClicked
         // TODO add your handling code here:
-                limpiarCamposCliente();
 
         //esta funcion nos ayudara a modificar la informacion general del cliente
         //primero pregutnamos si el indice de la tabla es valido
@@ -1448,7 +1444,6 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel16MouseClicked
         // TODO add your handling code here:
-                limpiarCamposCliente();
 
         //estafuncion nos ayudara a cambiar la informacion pertenecientes a los productos y cantidades de un clientes
         //primero pregutnamos si el indice de la tabla es valido
@@ -1526,8 +1521,9 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel20MouseClicked
         // TODO add your handling code here:
-                limpiarCamposCliente();
 
+        //funcion que nos permite modificar un credito
+        //funcion para modificiar un credito
         //funcion que nos permite modificar un credito
         //funcion para modificiar un credito
         try {
@@ -1640,7 +1636,7 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
-                limpiarCamposCliente();
+
 
         //esta funcion nos ayudara a eliminar un cliente
         
