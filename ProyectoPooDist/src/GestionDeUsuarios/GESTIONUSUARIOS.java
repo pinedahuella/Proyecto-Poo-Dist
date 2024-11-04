@@ -115,7 +115,6 @@ public void actualizarUsuario(Usuarios usuarioActualizado) {
 
 
 
-
 public void eliminarUsuario(long dpi) {
     try {
         int usuarioIndex = -1;
@@ -127,19 +126,16 @@ public void eliminarUsuario(long dpi) {
                 break;
             }
         }
-
+        
         if (usuarioIndex == -1) {
             throw new IllegalStateException("No se encontró un usuario válido con el DPI: " + dpi);
         }
-
+        
         Usuarios usuarioADesactivar = usuarios.get(usuarioIndex);
         usuarioADesactivar.setEstado("INACTIVO");
         
-        // Remover el usuario de su posición actual
-        usuarios.remove(usuarioIndex);
-        
-        // Agregar el usuario al final de la lista
-        usuarios.add(usuarioADesactivar);
+        // Reemplazar el usuario en su posición actual
+        usuarios.set(usuarioIndex, usuarioADesactivar);
         
         // Guardar cambios en Excel
         guardarUsuariosEnExcel();
@@ -150,7 +146,6 @@ public void eliminarUsuario(long dpi) {
         throw new RuntimeException("Error al eliminar el usuario: " + e.getMessage(), e);
     }
 }
-
 public void reactivarUsuario(long dpi) {
     try {
         int usuarioIndex = -1;

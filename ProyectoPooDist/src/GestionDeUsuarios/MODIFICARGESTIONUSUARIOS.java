@@ -422,7 +422,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         jLabel20.setText("ESTADO ");
 
         txtEstadoUsuarioModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoUsuarioModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
+        txtEstadoUsuarioModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
         jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel13.setText("CARGO");

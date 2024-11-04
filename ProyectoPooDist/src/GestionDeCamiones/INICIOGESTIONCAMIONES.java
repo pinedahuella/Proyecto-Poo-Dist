@@ -131,27 +131,41 @@ public class INICIOGESTIONCAMIONES extends javax.swing.JFrame {
             this.requestFocusInWindow();
         });
     }
-
-    private void cargarCamionesEnTabla() {
-        modeloCamiones.setRowCount(0);
-        camionesEnTabla.clear(); // Limpiamos el vector de seguimiento
-
-        int indice = 1; // Inicializamos el índice
-        for (Camiones camion : listaCamiones) {
-            modeloCamiones.addRow(new Object[]{
-                indice++,                          // No. (se incrementa automáticamente)
-                camion.getMarca(),                 // Marca
-                camion.getModelo(),                // Modelo
-                camion.getPlacas(),                // Placas
-                camion.getEstado(),                // Estado
-                camion.getTipoCombustible(),       // Tipo Combustible
-                camion.getKilometraje()            // Kilometraje
-            });
-            camionesEnTabla.add(camion); // Agregamos el camión al vector de seguimiento
+private void cargarCamionesEnTabla() {
+    modeloCamiones.setRowCount(0);
+    camionesEnTabla.clear(); // Limpiamos el vector de seguimiento
+    int indice = 1; // Inicializamos el índice
+    for (Camiones camion : listaCamiones) {
+        String estado = "";
+        switch (camion.getEstado()) {
+            case "DESCOMPUESTO":
+                estado = "DESCOMPUESTO";
+                break;
+            case "EN REPARACION":
+                estado = "EN REPARACIÓN";
+                break;
+            case "EN MANTENIMIENTO":
+                estado = "EN MANTENIMIENTO";
+                break;
+            case "FUNCIONAL":
+                estado = "FUNCIONAL";
+                break;
+            default:
+                estado = camion.getEstado();
+                break;
         }
+        modeloCamiones.addRow(new Object[]{
+            indice++,                          // No. (se incrementa automáticamente)
+            camion.getMarca(),                 // Marca
+            camion.getModelo(),                // Modelo
+            camion.getPlacas(),                // Placas
+            estado,                            // Estado
+            camion.getTipoCombustible(),       // Tipo Combustible
+            camion.getKilometraje()            // Kilometraje
+        });
+        camionesEnTabla.add(camion); // Agregamos el camión al vector de seguimiento
     }
-
-
+}
 
     
 // Método para configurar el campo de texto con placeholder

@@ -456,7 +456,7 @@ String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
         jLabel20.setText("ESTADO ");
 
         txtEstadoUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
+        txtEstadoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
         txtContraseñaUsuario.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 

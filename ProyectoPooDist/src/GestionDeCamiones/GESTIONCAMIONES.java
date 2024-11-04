@@ -797,13 +797,11 @@ private void actualizarCamionesEnExcel() {
 }
 
 
-
 public void cargarCamionesDesdeExcel() {
     camiones.clear();
     
     try (FileInputStream fis = new FileInputStream(excelFilePath);
          Workbook workbook = new XSSFWorkbook(fis)) {
-
         Sheet sheet = workbook.getSheetAt(0);
         
         for (Row row : sheet) {
@@ -828,21 +826,49 @@ public void cargarCamionesDesdeExcel() {
             double total = getNumericCellValue(row.getCell(16));
             double costoTotalCombustible = getNumericCellValue(row.getCell(17));
             boolean activo = true;
-
             if (row.getCell(18) != null) {
                 activo = row.getCell(18).getBooleanCellValue();
             }
-
-            // Solo cargamos camiones activos a la lista en memoria
-            if (activo && "FUNCIONAL".equals(estado)) {
-                Camiones camion = new Camiones(
-                    placas, estado, tipoCombustible, kilometraje, capacidadCarga,
-                    añoFabricacion, modelo, marca, activo, costoReparacion,
-                    costoGalon, galones, costoMantenimiento, gastoNoEspecificado,
-                    descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento,
-                    total, costoTotalCombustible
-                );
-                camiones.add(camion);
+            
+            // Cargar camiones según su estado
+            if (activo) {
+                if ("FUNCIONAL".equals(estado)) {
+                    Camiones camion = new Camiones(
+                        placas, estado, tipoCombustible, kilometraje, capacidadCarga,
+                        añoFabricacion, modelo, marca, activo, costoReparacion,
+                        costoGalon, galones, costoMantenimiento, gastoNoEspecificado,
+                        descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento,
+                        total, costoTotalCombustible
+                    );
+                    camiones.add(camion);
+                } else if ("DESCOMPUESTO".equals(estado)) {
+                    Camiones camion = new Camiones(
+                        placas, estado, tipoCombustible, kilometraje, capacidadCarga,
+                        añoFabricacion, modelo, marca, activo, costoReparacion,
+                        costoGalon, galones, costoMantenimiento, gastoNoEspecificado,
+                        descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento,
+                        total, costoTotalCombustible
+                    );
+                    camiones.add(camion);
+                } else if ("EN REPARACION".equals(estado)) {
+                    Camiones camion = new Camiones(
+                        placas, estado, tipoCombustible, kilometraje, capacidadCarga,
+                        añoFabricacion, modelo, marca, activo, costoReparacion,
+                        costoGalon, galones, costoMantenimiento, gastoNoEspecificado,
+                        descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento,
+                        total, costoTotalCombustible
+                    );
+                    camiones.add(camion);
+                } else if ("EN MANTENIMIENTO".equals(estado)) {
+                    Camiones camion = new Camiones(
+                        placas, estado, tipoCombustible, kilometraje, capacidadCarga,
+                        añoFabricacion, modelo, marca, activo, costoReparacion,
+                        costoGalon, galones, costoMantenimiento, gastoNoEspecificado,
+                        descripcionDelGasto, tiempoEnReparacion, fechaDeMantenimiento,
+                        total, costoTotalCombustible
+                    );
+                    camiones.add(camion);
+                }
             }
         }
         
@@ -851,8 +877,6 @@ public void cargarCamionesDesdeExcel() {
         e.printStackTrace();
     }
 }
-
-
 
 
 public void guardarCamionesEnExcel() {
