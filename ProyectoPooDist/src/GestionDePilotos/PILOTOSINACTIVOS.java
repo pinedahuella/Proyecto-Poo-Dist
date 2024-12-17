@@ -31,6 +31,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.Normalizer;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -77,7 +79,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
         
         
         // Configurar el placeholder para el campo de búsqueda
-        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre del Piloto a buscar");
+        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre, Apellido o DPI del Piloto a buscar");
         
         // Configuración de la interfaz
         addWindowListener();
@@ -125,7 +127,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
+        txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
         txtNombrePilotoBuscar.setForeground(Color.GRAY);
     }
 
@@ -150,8 +152,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
 
  }
     
-    
-    private void cargarDatos() {
+ private void cargarDatos() {
     try {
         System.out.println("Loading inactive pilots data...");
         listaPilotosInactivos = new Vector<>();
@@ -160,27 +161,20 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
              Workbook workbook = new XSSFWorkbook(fis)) {
             
             Sheet sheet = workbook.getSheetAt(0);
-            modeloPilotos.setRowCount(0); // Clear existing rows
+            modeloPilotos.setRowCount(0); // Limpiar las filas existentes
             
-            int rowIndex = 1; // Variable para el contador de filas
+            int rowIndex = 1; // Contador de filas
             
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header
+                if (row.getRowNum() == 0) continue; // Saltar la fila de encabezados
                 
-                Cell activoCell = row.getCell(9); // "Activo" column
-                boolean isActive = true;
+                // Obtener la celda de "Estado" (columna 8)
+                Cell estadoCell = row.getCell(8); 
+                String estado = (estadoCell != null) ? getCellValueAsString(estadoCell) : "";
                 
-                if (activoCell != null) {
-                    if (activoCell.getCellType() == CellType.BOOLEAN) {
-                        isActive = activoCell.getBooleanCellValue();
-                    } else if (activoCell.getCellType() == CellType.STRING) {
-                        isActive = Boolean.parseBoolean(activoCell.getStringCellValue());
-                    }
-                }
-                
-                // Only process inactive pilots
-                if (!isActive) {
-                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número
+                // Solo procesar si el estado es "Inactivo"
+                if ("Inactivo".equalsIgnoreCase(estado.trim())) {
+                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número de índice
                     fila[0] = rowIndex++; // Agregar el número de índice
                     fila[1] = getCellValueAsString(row.getCell(0)); // Nombre
                     fila[2] = getCellValueAsString(row.getCell(1)); // Apellido
@@ -188,22 +182,22 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
                     fila[4] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
                     fila[5] = getCellValueAsString(row.getCell(4)); // Correo
                     fila[6] = getCellValueAsString(row.getCell(5)); // Teléfono
-                    fila[7] = getCellValueAsString(row.getCell(8)); // Estado
+                    fila[7] = estado; // Estado (columna 8)
                     
                     modeloPilotos.addRow(fila);
                     
-                    // Create and add Piloto object to listaPilotosInactivos
+                    // Crear y agregar el objeto Piloto a la lista de pilotos inactivos
                     Piloto piloto = new Piloto(
-                        (String) fila[1], // Nombre (ahora en índice 1)
-                        (String) fila[2], // Apellido (ahora en índice 2)
-                        Long.parseLong(fila[3].toString()), // DPI (ahora en índice 3)
+                        (String) fila[1], // Nombre
+                        (String) fila[2], // Apellido
+                        Long.parseLong(fila[3].toString()), // DPI
                         (String) fila[4], // Tipo Licencia
                         (String) fila[5], // Correo
                         Integer.parseInt(fila[6].toString()), // Teléfono
                         "", // género
                         "", // fecha nacimiento
-                        (String) fila[7], // Estado
-                        false // activo
+                        estado, // Estado
+                        false // Activo (ahora fijo como false)
                     );
                     listaPilotosInactivos.add(piloto);
                 }
@@ -220,6 +214,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
             "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
 
     private void actualizarTabla() {
         cargarDatos(); // Reload all inactive pilots
@@ -499,6 +494,7 @@ private void cerrarSesionYRegresarLogin() {
         txtMenu = new javax.swing.JComboBox<>();
         ActivarPilotoEliminado = new javax.swing.JButton();
         ActivosPilotos = new javax.swing.JButton();
+        refrescarPiloto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -517,9 +513,14 @@ private void cerrarSesionYRegresarLogin() {
         });
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        jLabel4.setText("NOMBRE");
+        jLabel4.setText("PILOTO");
 
         txtNombrePilotoBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombrePilotoBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombrePilotoBuscarActionPerformed(evt);
+            }
+        });
 
         tblRegistroPilotos.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         tblRegistroPilotos.setModel(new javax.swing.table.DefaultTableModel(
@@ -595,6 +596,17 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
+        refrescarPiloto.setBackground(new java.awt.Color(85, 111, 169));
+        refrescarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        refrescarPiloto.setForeground(new java.awt.Color(255, 255, 255));
+        refrescarPiloto.setText("REFRESCAR");
+        refrescarPiloto.setBorder(null);
+        refrescarPiloto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarPilotoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -610,9 +622,11 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ActivarPilotoEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
@@ -625,18 +639,22 @@ private void cerrarSesionYRegresarLogin() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ActivosPilotos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(ActivarPilotoEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ActivarPilotoEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -658,21 +676,22 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_jTextField19ActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-    // Verificar si el campo de búsqueda está vacío o contiene el placeholder
+   
+     // Verificar si el campo de búsqueda está vacío o contiene el placeholder
     if (txtNombrePilotoBuscar.getText().trim().isEmpty() || 
-        txtNombrePilotoBuscar.getText().equals("Ingresa Nombre del Piloto a buscar")) {
+        txtNombrePilotoBuscar.getText().equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
         JOptionPane.showMessageDialog(this,
-            "Por favor, ingresa el nombre del piloto para buscar.");
+            "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
-
-    String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
+    
+    String criterioBusqueda = txtNombrePilotoBuscar.getText().trim();
     modeloPilotos.setRowCount(0);
     boolean hayCoincidencias = false;
-
+    
     // Normalizar el texto buscado
-    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
-
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
+    
     try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
          Workbook workbook = new XSSFWorkbook(fis)) {
         
@@ -696,14 +715,23 @@ private void cerrarSesionYRegresarLogin() {
             // Solo procesar pilotos inactivos
             if (!isActive) {
                 String nombrePiloto = getCellValueAsString(row.getCell(0));
-                String nombrePilotoNormalizado = normalizarTexto(nombrePiloto);
+                String apellidoPiloto = getCellValueAsString(row.getCell(1));
+                String dpiPiloto = getCellValueAsString(row.getCell(2));
                 
-                if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
-                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número de índice
-                    fila[0] = rowIndex++; // Agregar el número de índice
-                    fila[1] = getCellValueAsString(row.getCell(0)); // Nombre
-                    fila[2] = getCellValueAsString(row.getCell(1)); // Apellido
-                    fila[3] = getCellValueAsString(row.getCell(2)); // DPI
+                String nombrePilotoNormalizado = normalizarTexto(nombrePiloto);
+                String apellidoPilotoNormalizado = normalizarTexto(apellidoPiloto);
+                
+                // Buscar por nombre, apellido o DPI
+                boolean coincidencia = nombrePilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                       apellidoPilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                       dpiPiloto.contains(criterioBusqueda);
+                
+                if (coincidencia) {
+                    Object[] fila = new Object[8]; // 8 columnas
+                    fila[0] = rowIndex++; // Número de índice
+                    fila[1] = nombrePiloto; // Nombre
+                    fila[2] = apellidoPiloto; // Apellido
+                    fila[3] = dpiPiloto; // DPI
                     fila[4] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
                     fila[5] = getCellValueAsString(row.getCell(4)); // Correo
                     fila[6] = getCellValueAsString(row.getCell(5)); // Teléfono
@@ -721,18 +749,54 @@ private void cerrarSesionYRegresarLogin() {
             "Error al buscar pilotos: " + e.getMessage(),
             "Error", JOptionPane.ERROR_MESSAGE);
     }
-
+    
     if (!hayCoincidencias) {
         JOptionPane.showMessageDialog(this,
-            "No se encontraron pilotos inactivos con el nombre especificado.");
+            "No se encontraron pilotos inactivos que coincidan con el criterio de búsqueda.");
         cargarDatos(); // Recargar todos los pilotos inactivos
     }
-
+    
     // Reseteamos el campo después de la búsqueda
     SwingUtilities.invokeLater(() -> {
-        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
-        txtNombrePilotoBuscar.setForeground(Color.GRAY);
+    
     });
+    }
+    
+    
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+
+    return criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13 && criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloPilotos.setRowCount(0); // Limpiar la tabla
+    int indice = 1;
+    boolean hayCoincidencias = false;
+
+    for (Piloto piloto : listaPilotosInactivos) {
+        String dpiString = String.valueOf(piloto.getNumeroDeDpi());
+        if (dpiString.contains(criterioBusqueda)) {
+            modeloPilotos.addRow(new Object[]{
+                indice++,
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getEstadoPiloto()
+            });
+            hayCoincidencias = true;
+        }
+    }
+
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos con DPI que contengan " + criterioBusqueda);
+        cargarDatos(); // Restaurar la tabla completa si no hay coincidencias
+    } else {
+        JOptionPane.showMessageDialog(this, "Se encontraron " + (indice - 1) + " pilotos con DPI que contienen " + criterioBusqueda);
+    }                                        
     }//GEN-LAST:event_buscarPilotoActionPerformed
 
     // Método para normalizar el texto
@@ -755,6 +819,14 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     if (destinatario == null || destinatario.trim().isEmpty() || !destinatario.contains("@")) {
         throw new IOException("Correo electrónico inválido: " + destinatario);
     }
+
+    
+            // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
 
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
@@ -785,7 +857,7 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         Multipart multipart = new MimeMultipart("related");
         BodyPart messageBodyPart = new MimeBodyPart();
 
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+      String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
     "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
     "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
     "<p style='color: #1e88e5;'>Estimado(a) " + piloto.getNombrePiloto() + " " + piloto.getApellidoPiloto() + ",</p>" +
@@ -793,10 +865,10 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Información del Piloto:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + piloto.getNombrePiloto() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Nombre:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getNombrePiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Apellido:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getApellidoPiloto() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>DPI:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getNumeroDeDpi() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff; width: 70%;'>" + piloto.getCorreoElectronicoPiloto() + "</td></tr>" +
     "</table></div>" +
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
@@ -809,6 +881,7 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     "</div>" +
     "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
     "</div></body></html>";
+
         
 
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
@@ -834,6 +907,24 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         System.err.println("Error detallado al enviar correo: ");
         e.printStackTrace();
         throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
     }
 }
 
@@ -932,11 +1023,24 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
                                 SwingUtilities.invokeLater(() -> {
                                     dialogoProceso.dispose();
                                     cargarDatos();
-                                    JOptionPane.showMessageDialog(this,
-                                        "Piloto reactivado correctamente y correo enviado.",
-                                        "Éxito",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                                });
+if (verificarConexionInternet()) {
+                // Si hay conexión a Internet, mostrar mensaje de éxito con correo enviado
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Piloto reactivado correctamente y correo enviado.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                // Si no hay conexión a Internet, mostrar mensaje sin mencionar el correo
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Piloto reactivado correctamente. \nEl correo no se enviará, pero el registro se ha guardado.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });  
                             } catch (IOException e) {
                                 SwingUtilities.invokeLater(() -> {
                                     dialogoProceso.dispose();
@@ -985,6 +1089,20 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         abrir.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_ActivosPilotosActionPerformed
+
+    private void txtNombrePilotoBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombrePilotoBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombrePilotoBuscarActionPerformed
+
+    private void refrescarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarPilotoActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        PILOTOSINACTIVOS abrir = new  PILOTOSINACTIVOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_refrescarPilotoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1037,6 +1155,7 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
+    private javax.swing.JButton refrescarPiloto;
     private javax.swing.JTable tblRegistroPilotos;
     private javax.swing.JComboBox<String> txtMenu;
     private javax.swing.JTextField txtNombrePilotoBuscar;

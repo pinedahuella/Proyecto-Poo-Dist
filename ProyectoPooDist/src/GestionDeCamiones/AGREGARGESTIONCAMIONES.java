@@ -1,6 +1,7 @@
 package GestionDeCamiones;
 
 // Importación de clases necesarias para el funcionamiento de la aplicación
+import GestionDePilotos.INICIOGESTIONPILOTOS;
 import GestionDePilotos.Piloto;
 import GestionDeUsuarios.GESTIONUSUARIOS;
 import GestionDeUsuarios.Usuarios;
@@ -16,6 +17,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat; // Importa la clase SimpleDateFormat para formatear fechas
 import java.util.ArrayList;
 import java.util.Date; // Importa la clase Date para manejar fechas y horas
@@ -286,6 +289,13 @@ public void limpiarCamposCamiones() {
     
 
 private void enviarCorreoActualizacion(String destinatario, Camiones camion) throws IOException {
+    
+      // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -313,26 +323,26 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-        String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
-            "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-            "<h2 style='color: #155724; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" + // Verde fuerte
-            "<p style='color: #155724;'>Se ha agregado un nuevo camión al sistema.</p>" + // Verde fuerte
-            "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" + // Fondo verde claro
-            "<h3 style='color: #155724; margin-top: 0;'>Detalles del Camión:</h3>" + // Verde fuerte
-            "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Marca:</strong></td><td>" + camion.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Modelo:</strong></td><td>" + camion.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Placas:</strong></td><td>" + camion.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + camion.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Tipo de Combustible:</strong></td><td>" + camion.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Capacidad de Carga:</strong></td><td>" + camion.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Año de Fabricación:</strong></td><td>" + camion.getAñoFabricacion() + "</td></tr>" +
-            "</table></div>" +
-            "<div style='margin-top: 20px; text-align: center;'>" +
-            "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +  // Referencia a la imagen
-            "</div>" +
-            "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
-            "</div></body></html>";
+       String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+        "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+        "<h2 style='color: #155724; text-align: center;'><strong>¡Nuevo Camión Agregado en PINEED!</strong></h2>" + // Verde fuerte
+        "<p style='color: #155724;'>Se ha agregado un nuevo camión al sistema.</p>" + // Verde fuerte
+        "<div style='background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;'>" + // Fondo verde claro
+        "<h3 style='color: #155724; margin-top: 0;'>Detalles del Camión:</h3>" + // Verde fuerte
+        "<table style='width: 100%; border-collapse: collapse;'>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Marca:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getMarca() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Modelo:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getModelo() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Placas:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getPlacas() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Estado:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getEstado() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Tipo de Combustible:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getTipoCombustible() + "</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Capacidad de Carga:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getCapacidadCarga() + " kg</td></tr>" +
+        "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Año de Fabricación:</strong></td><td style='padding: 8px 0; width: 30%;'>" + camion.getAñoFabricacion() + "</td></tr>" +
+        "</table></div>" +
+        "<div style='margin-top: 20px; text-align: center;'>" +
+        "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +  // Referencia a la imagen
+        "</div>" +
+        "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
+        "</div></body></html>";
 
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
@@ -361,6 +371,40 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
 }
 
     
+
+
+
+// Nueva variable de estado para conexión
+private boolean conexionValidada = false; // Indica si ya se verificó la conexión
+private boolean hayInternet = true;      // Resultado de la validación
+
+// Método para verificar la conexión a Internet una sola vez
+private boolean verificarConexionUnaVez() {
+    if (!conexionValidada) {
+        conexionValidada = true; // Se marca como validado
+        hayInternet = verificarConexionInternet(); // Realiza la verificación
+        if (!hayInternet) {
+            JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    return hayInternet;
+}
+
+// Método original para verificar la conexión
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -573,7 +617,7 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
      * @param evt Evento del botón.
      */
     private void btnAgregarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCamionesSistemaActionPerformed
-    try {
+     try {
         // Obtención de datos desde el formulario
         String marca = txtMarcaCamiones.getText().trim();
         String placas = txtPlacasCamiones.getText().trim();
@@ -581,59 +625,30 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
         String estado = txtEstadoCamiones.getSelectedItem().toString().trim();
         String tipoCombustible = txtTipoCombustibleCamiones.getSelectedItem().toString().trim();
 
-        // Validación de campos (mantener las validaciones existentes...)
+        // Validación de campos
         if (marca.isEmpty() || modelo.isEmpty() || placas.isEmpty() || estado.isEmpty() || tipoCombustible.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos correctamente.");
             return;
         }
-
-        // Validar la marca primero
-        if (marca.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "La marca no puede estar vacía.");
-            return;
-        }
-
-        // Validar placas
-        if (!validarPlacas(placas)) {
-            JOptionPane.showMessageDialog(this, "Las placas deben contener al menos una letra y un número.");
-            return;
-        }
+        
+        
+        // Validación: Placas deben contener solo letras mayúsculas y números
+if (!placas.matches("^[A-Z0-9]+$")) {
+    JOptionPane.showMessageDialog(this, 
+        "Las placas deben contener únicamente letras mayúsculas y números.", 
+        "Error de Validación", JOptionPane.ERROR_MESSAGE);
+    return; // Detener el flujo si no se cumple la validación
+}
 
         // Validar kilometraje
         String kilometrajeStr = txtKilometrajeCamiones.getText().trim();
-        if (kilometrajeStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el kilometraje del camión.");
-            return;
-        }
-        double kilometraje;
-        try {
-            kilometraje = Double.parseDouble(kilometrajeStr);
-            if (!validarKilometraje(kilometraje)) {
-                JOptionPane.showMessageDialog(this, "El kilometraje debe ser un valor positivo y realista (0 - 1,000,000 km).");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error en el formato de número para el kilometraje: " + e.getMessage());
-            return;
-        }
+        double kilometraje = validarDoubleConMensaje(kilometrajeStr, "kilometraje", 0, 1000000);
+        if (kilometraje == -1) return;
 
         // Validar capacidad de carga
         String capacidadCargaStr = txtCapacidadDeCargaCamiones.getText().trim();
-        if (capacidadCargaStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese la capacidad de carga del camión.");
-            return;
-        }
-        double capacidadCarga;
-        try {
-            capacidadCarga = Double.parseDouble(capacidadCargaStr);
-            if (!validarCapacidadCarga(capacidadCarga)) {
-                JOptionPane.showMessageDialog(this, "La capacidad de carga debe ser un valor positivo y realista (100 - 30,000 kg).");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error en el formato de número para la capacidad de carga: " + e.getMessage());
-            return;
-        }
+        double capacidadCarga = validarDoubleConMensaje(capacidadCargaStr, "capacidad de carga", 100, 30000);
+        if (capacidadCarga == -1) return;
 
         // Validar año de fabricación
         Date añoFabricacionDate = txtAñoDeFabricacionCamiones.getDate();
@@ -644,7 +659,7 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         String añoFabricacion = sdf.format(añoFabricacionDate);
 
-        // Verifica si hay un camión con las mismas placas en la lista existente
+        // Verificar si el camión ya existe
         for (Camiones camionExistente : listaCamiones) {
             if (camionExistente.getPlacas().equals(placas)) {
                 JOptionPane.showMessageDialog(this, "Ya existe un camión con esas placas.");
@@ -652,126 +667,115 @@ private void enviarCorreoActualizacion(String destinatario, Camiones camion) thr
             }
         }
 
-        // Crear nuevo camión
-            Camiones nuevoCamion = new Camiones(
-                placas,
-                estado,
-                tipoCombustible,
-                kilometraje,
-                capacidadCarga,
-                añoFabricacion,
-                modelo,
-                marca,
-                true,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                "",
-                "",
-                "",
-                0.0,
-                0.0
-            );
+        // Crear el nuevo camión
+        Camiones nuevoCamion = new Camiones(
+            placas, estado, tipoCombustible, kilometraje, capacidadCarga,
+            añoFabricacion, modelo, marca, true, 0.0, 0.0, 0.0, 0.0, 0.0, 
+            "", "", "", 0.0, 0.0
+        );
 
-            // Agregar el nuevo camión
-            gestionCamiones.agregarCamion(nuevoCamion);
+        gestionCamiones.agregarCamion(nuevoCamion);
 
-            // Crear y mostrar el diálogo de progreso
-            JDialog dialogoProceso = new JDialog(this, "Procesando", true);
-            dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-            
-            // Configurar el panel de progreso
-            JPanel panel = new JPanel(new BorderLayout(10, 10));
-            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-            
-            JProgressBar progressBar = new JProgressBar();
-            progressBar.setIndeterminate(true);
-            progressBar.setStringPainted(true);
-            progressBar.setString("Enviando notificaciones...");
-            
-            JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
-            mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
-            
-            panel.add(mensajeLabel, BorderLayout.NORTH);
-            panel.add(progressBar, BorderLayout.CENTER);
-            
-            dialogoProceso.add(panel);
-            dialogoProceso.setSize(400, 150);
-            dialogoProceso.setLocationRelativeTo(this);
+        // Mostrar diálogo de progreso
+        JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+        dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-            // Crear y ejecutar el hilo para enviar correos
-            Thread processingThread = new Thread(() -> {
-                try {
-      Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
-                boolean correosEnviados = false;
-                
-                // Enviar correos tanto a administradores como a secretarias
-                for (Usuarios usuario : usuarios) {
-                    // Verificar si el usuario es ADMINISTRADOR o SECRETARIA
-                    if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
-                         "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) && 
-                        usuario.getCorreoElectronico() != null && 
-                        !usuario.getCorreoElectronico().isEmpty()) {
-                        
-                        enviarCorreoActualizacion(usuario.getCorreoElectronico(), nuevoCamion);
-                        correosEnviados = true;
-                    }
-                }   
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-                    final boolean exito = correosEnviados;
-                    SwingUtilities.invokeLater(() -> {
-                        dialogoProceso.dispose();
-                        if (exito) {
-                            JOptionPane.showMessageDialog(
-                                this,
-                                "Camión agregado exitosamente y se han enviado las notificaciones al personal administrativo.",
-                                "Operación exitosa",
-                                JOptionPane.INFORMATION_MESSAGE
-                            );
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        progressBar.setStringPainted(true);
+        progressBar.setString("Enviando notificaciones...");
+
+        JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
+        mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+
+        panel.add(mensajeLabel, BorderLayout.NORTH);
+        panel.add(progressBar, BorderLayout.CENTER);
+
+        dialogoProceso.add(panel);
+        dialogoProceso.setSize(400, 150);
+        dialogoProceso.setLocationRelativeTo(this);
+
+        // Hilo para enviar correos
+        Thread processingThread = new Thread(() -> {
+            boolean correosEnviados = false;
+            try {
+                Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+                if (verificarConexionUnaVez()) {
+                    for (Usuarios usuario : usuarios) {
+                        if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                             "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) && 
+                            usuario.getCorreoElectronico() != null && 
+                            !usuario.getCorreoElectronico().isEmpty()) {
                             
-                            
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                this,
-                                "Camión agregado exitosamente pero no se el personal administrativo para notificar.",
-                                "Advertencia",
-                                JOptionPane.WARNING_MESSAGE
-                            );
+                            enviarCorreoActualizacion(usuario.getCorreoElectronico(), nuevoCamion);
+                            correosEnviados = true;
                         }
- cargarCamionesEnTabla();
-            
-            // Abrir nueva ventana de gestión
-            INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
-            abrir.setVisible(true);
-            this.setVisible(false); // Ocultar la ventana actual
+                    }
+                }
+            } catch (Exception e) {
+                correosEnviados = false;
+            }
+
+            boolean finalExito = correosEnviados;
+            SwingUtilities.invokeLater(() -> {
+                dialogoProceso.dispose();
+                if (finalExito) {
+                       JOptionPane.showMessageDialog(
+                                        this,
+                                        "Camión registrado exitosamente.\n" +
+                                        "Se han enviado las notificaciones al personal administrativo.", 
+                                        "Registro exitoso", 
+                                        JOptionPane.INFORMATION_MESSAGE
+                                    );
+                                } else if (!hayInternet) {
+                                    JOptionPane.showMessageDialog(
+                                        this,
+                                        "Camión registrado exitosamente.\n" +
+                                        "El correo no se enviará, pero el registro se ha guardado.", 
+                                        "Registro exitoso", 
+                                        JOptionPane.WARNING_MESSAGE
+               );
+                                }
+                cargarCamionesEnTabla();
+   
+                    // Abrir nueva ventana de gestión
+                    INICIOGESTIONCAMIONES abrir = new INICIOGESTIONCAMIONES(currentUser, userRole, loginFrame);
+                    abrir.setVisible(true);
+                    this.setVisible(false);
+                });
+               
         });
 
+        processingThread.start();
+        dialogoProceso.setVisible(true);
+
     } catch (Exception e) {
-        SwingUtilities.invokeLater(() -> {
-            dialogoProceso.dispose(); // Cerrar diálogo en caso de error
-            JOptionPane.showMessageDialog(
-                this,
-                "Error al enviar las notificaciones: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-                    });
-                }
-            });
+        JOptionPane.showMessageDialog(this, 
+            "Error inesperado: " + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 
-            processingThread.start();
-            dialogoProceso.setVisible(true);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Error inesperado: " + e.getMessage() + "\nPor favor, contacte al administrador del sistema.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+// Método auxiliar para validar campos numéricos con mensajes personalizados
+private double validarDoubleConMensaje(String valorStr, String campo, double min, double max) {
+    try {
+        double valor = Double.parseDouble(valorStr);
+        if (valor < min || valor > max) {
+            JOptionPane.showMessageDialog(this, 
+                "El " + campo + " debe estar entre " + min + " y " + max + ".", 
+                "Error de validación", JOptionPane.WARNING_MESSAGE);
+            return -1;
         }
+        return valor;
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, 
+            "Formato numérico incorrecto para " + campo + ".", 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        return -1;
+    }
     }//GEN-LAST:event_btnAgregarCamionesSistemaActionPerformed
 
     private void txtEstadoCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoCamionesActionPerformed

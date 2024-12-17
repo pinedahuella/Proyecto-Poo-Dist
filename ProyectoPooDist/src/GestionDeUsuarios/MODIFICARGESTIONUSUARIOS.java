@@ -35,6 +35,8 @@ import javax.activation.FileDataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -51,7 +53,7 @@ import javax.swing.JLabel;
 public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
 
     public GESTIONUSUARIOS gestionUsuarios;
-    public Vector<Usuarios> listaUsuarios = new Vector<>();
+    public Vector<Usuarios> listaUsuariosActivos = new Vector<>();
     DefaultTableModel modeloUsuarios = new DefaultTableModel();
     private Usuarios usuarioActual;
     private INICIOGESTIONUSUARIOS ventanaPrincipal;
@@ -72,7 +74,7 @@ public class MODIFICARGESTIONUSUARIOS extends javax.swing.JFrame {
             this.ventanaPrincipal = ventanaPrincipal;
             if (ventanaPrincipal != null) {
                 this.gestionUsuarios = ventanaPrincipal.gestionUsuarios;
-                this.listaUsuarios = gestionUsuarios.getUsuarios();
+                this.listaUsuariosActivos = gestionUsuarios.getUsuarios();
             }
 configurarCamposDeTextoConPlaceholdersUsuarios();
             this.usuarioActual = usuario;
@@ -220,6 +222,15 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
     }
 // Método para enviar correo de actualización
 private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) throws IOException {
+
+    
+    // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+    
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -259,22 +270,33 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
             "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
             "<h3 style='color: #2c3e50; margin-top: 0;'>Información Actualizada:</h3>" +
             "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Nombre:</strong></td><td>" + usuario.getNombre() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Apellido:</strong></td><td>" + usuario.getApellido() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>DPI:</strong></td><td>" + usuario.getNumeroDPI() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Cargo:</strong></td><td>" + usuario.getCargo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Correo Electrónico:</strong></td><td>" + usuario.getCorreoElectronico() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Teléfono:</strong></td><td>" + usuario.getNumeroTelefono() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Género:</strong></td><td>" + usuario.getGenero() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Fecha de Nacimiento:</strong></td><td>" + usuario.getFechaNacimiento() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Estado:</strong></td><td>" + usuario.getEstado() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Nombre:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNombre() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Apellido:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getApellido() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>DPI:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNumeroDPI() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Cargo:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getCargo() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Correo Electrónico:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Teléfono:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getNumeroTelefono() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Género:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getGenero() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Fecha de Nacimiento:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getFechaNacimiento() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Estado:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getEstado() + "</td></tr>" +
             "</table></div>" +
 
             "<div style='background-color: #e0f7fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
             "<h3 style='color: #2c3e50; margin-top: 0;'>Información de Acceso al Sistema:</h3>" +
             "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong>Nombre de Usuario:</strong></td><td>" + nombreUsuario + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong>Contraseña:</strong></td><td>" + usuario.getContrasenaUsuario() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Nombre de Usuario:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + nombreUsuario + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong>Contraseña:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word;'>" + usuario.getContrasenaUsuario() + "</td></tr>" +
             "</table></div>" +
 
             "<div style='text-align: center; margin-top: 20px;'>" +
@@ -311,6 +333,23 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
     }
 }
 
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
+
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
             loginFrame.cerrarSesion(currentUser, userRole);
@@ -331,7 +370,7 @@ private void enviarCorreoActualizacion(String destinatario, Usuarios usuario) th
   // En la clase donde tienes el método de modificación:
 private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
     // Recorrer la lista de usuarios y verificar si la contraseña ya existe
-    for (Usuarios usuario : listaUsuarios) {
+    for (Usuarios usuario : listaUsuariosActivos) {
         // Si la contraseña existe en otro usuario (no en el usuario actual)
         if (usuario != usuarioActual && 
             usuario.getContrasenaUsuario() != null && 
@@ -370,7 +409,6 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         txtNumeroDeDpiUsuarioModificarModificar = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         txtCorreoElectronicoUsuarioModificarModificar = new javax.swing.JTextField();
-        btnMostrarContraseña = new javax.swing.JButton();
         txtContraseñaUsuarioModificarModificar = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -412,7 +450,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         jLabel20.setText("ESTADO ");
 
         txtEstadoUsuarioModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-        txtEstadoUsuarioModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "BLOQUEADO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
+        txtEstadoUsuarioModificarModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "ENFERMO", "EN VACACIONES", "JUBILADO" }));
 
         jLabel13.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel13.setText("CARGO");
@@ -446,17 +484,6 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         jLabel14.setText("CORREO ELECTRONICO");
 
         txtCorreoElectronicoUsuarioModificarModificar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
-
-        btnMostrarContraseña.setBackground(new java.awt.Color(153, 153, 255));
-        btnMostrarContraseña.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        btnMostrarContraseña.setForeground(new java.awt.Color(255, 255, 255));
-        btnMostrarContraseña.setText("MOSTRAR");
-        btnMostrarContraseña.setBorder(null);
-        btnMostrarContraseña.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMostrarContraseñaActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -514,9 +541,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
                                 .addComponent(jLabel10)
                                 .addGap(54, 54, 54)
                                 .addComponent(txtContraseñaUsuarioModificarModificar)))
-                        .addGap(14, 14, 14)
-                        .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(202, 202, 202))))
+                        .addGap(295, 295, 295))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnModificarUsuariosSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -540,9 +565,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
                             .addComponent(txtNombreDeUsuarioUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtContraseñaUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnMostrarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtContraseñaUsuarioModificarModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -744,7 +767,7 @@ private boolean existeContrasena(String contrasena, Usuarios usuarioActual) {
         boolean correoCambiado = !correoElectronicoUsuario.equals(usuarioActual.getCorreoElectronico());
 
         // Verificar duplicados solo si los datos únicos han cambiado
-        for (Usuarios usuarioExistente : listaUsuarios) {
+        for (Usuarios usuarioExistente : listaUsuariosActivos) {
             if (usuarioExistente != usuarioActual) {
                 if (dpiCambiado && usuarioExistente.getNumeroDPI() == numeroDeDpiUsuario) {
                     JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese número de DPI.");
@@ -890,16 +913,27 @@ if (edad < 18) {
                         // Cerrar el diálogo de progreso
                         dialogoProceso.dispose();
                         
-                        // Mostrar mensaje de éxito
-                        JOptionPane.showMessageDialog(
-                            this,
-                            "¡Usuario modificado exitosamente!\n\n" +
-                            "Se ha enviado un correo electrónico a:\n" + 
-                            finalCorreoElectronicoUsuario + "\n" +
-                            "con los datos actualizados.",
-                            "Modificación exitosa",
-                            JOptionPane.INFORMATION_MESSAGE
-                        );
+                  if (verificarConexionInternet()) {
+    // Si hay conexión a Internet, mostrar mensaje de éxito con correo enviado
+    JOptionPane.showMessageDialog(
+        this,
+        "¡Usuario modificado exitosamente!\n\n" +
+        "Se ha enviado un correo electrónico a:\n" + 
+        finalCorreoElectronicoUsuario + "\n" +
+        "con los datos actualizados.",
+        "Modificación exitosa",
+        JOptionPane.INFORMATION_MESSAGE
+    );
+} else {
+    // Si no hay conexión a Internet, mostrar mensaje sin mencionar el correo
+    JOptionPane.showMessageDialog(
+        this,
+        "¡Usuario modificado exitosamente!\n" +
+        "El correo no se enviará, pero el registro se ha guardado.",
+        "Modificación exitosa",
+        JOptionPane.WARNING_MESSAGE
+    );
+}
 
                         // Cerrar la ventana actual y mostrar la principal
                         ventanaPrincipal.setVisible(true);
@@ -957,24 +991,7 @@ private String removeTildes(String input) {
                .replace('Ñ', 'n');
 }
 
-
-
-    private boolean isPasswordVisible = false;
-
     
-    private void btnMostrarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarContraseñaActionPerformed
-    if (!isPasswordVisible) {
-        // Mostrar contraseña
-        txtContraseñaUsuarioModificarModificar.setEchoChar((char)0);
-        btnMostrarContraseña.setText("OCULTAR");
-    } else {
-        // Ocultar contraseña
-        txtContraseñaUsuarioModificarModificar.setEchoChar('*');
-        btnMostrarContraseña.setText("MOSTRAR");
-    }
-    isPasswordVisible = !isPasswordVisible;
-    }//GEN-LAST:event_btnMostrarContraseñaActionPerformed
-
     
     private boolean validarContrasena(String contrasena) {
     // Verificar longitud mínima
@@ -1047,7 +1064,6 @@ private String removeTildes(String input) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnModificarUsuariosSistema;
-    private javax.swing.JButton btnMostrarContraseña;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;

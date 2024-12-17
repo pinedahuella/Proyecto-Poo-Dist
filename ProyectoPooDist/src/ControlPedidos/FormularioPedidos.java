@@ -184,10 +184,9 @@ public class FormularioPedidos extends javax.swing.JFrame {
         });
     }
    
-    private void setupDateChooserWithPlaceholder(JDateChooser dateChooser, String placeholder) {
+private void setupDateChooserWithPlaceholder(JDateChooser dateChooser, String placeholder) {
     dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
     dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
-
     // Obtener el editor de fecha como JTextField
     JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
     
@@ -205,7 +204,6 @@ public class FormularioPedidos extends javax.swing.JFrame {
                 editor.setForeground(Color.BLACK); // Cambia el color a negro
             }
         }
-
         @Override
         public void focusLost(FocusEvent e) {
             // Si no hay fecha seleccionada, restablecer el placeholder
@@ -225,13 +223,20 @@ private void configurarDateChoosersConPlaceholders() {
     setupDateChooserWithPlaceholder(txtFechaDeDescargaModificar, "dd/MM/yyyy");
 }
 
-// Método para limpiar y restablecer los placeholders de los JDateChooser
+// Método mejorado para limpiar y restablecer los placeholders de los JDateChooser
 public void limpiarDateChoosers() {
-    
-        ((JTextField) txtFechaDeCargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
-        ((JTextField) txtFechaDeCargaModificar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
-        ((JTextField) txtFechaDeDescargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
-        ((JTextField) txtFechaDeDescargaModificar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+    resetDateChooser(txtFechaDeCargaAgregar);
+    resetDateChooser(txtFechaDeCargaModificar);
+    resetDateChooser(txtFechaDeDescargaAgregar);
+    resetDateChooser(txtFechaDeDescargaModificar);
+}
+
+// Método auxiliar para resetear un JDateChooser individual
+private void resetDateChooser(JDateChooser dateChooser) {
+    dateChooser.setDate(null);
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    editor.setText("dd/MM/yyyy");
+    editor.setForeground(Color.GRAY);
 }
 
     private void setupComboBox() {

@@ -66,10 +66,14 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
@@ -89,7 +93,7 @@ public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
         // Set frame properties 
         setResizable(false);
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre del Piloto a buscar");
+        setupTextField(txtNombrePilotoBuscar, "Ingresa Nombre/Apellido/DPI del Piloto a buscar");
 
         // Initialize instance variables 
         this.currentUser = username;
@@ -167,6 +171,7 @@ public class INICIOGESTIONPILOTOS extends javax.swing.JFrame {
             }
         }
     }
+    
     
 private void setupComboBox() {
     txtMenu.removeAllItems();
@@ -402,39 +407,56 @@ private void cerrarSesionYRegresarLogin() {
     }
 
 
-
- // Método para configurar el campo de texto con placeholder
-    private void setupTextField(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);
-
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // Limpia el placeholder al enfocar
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);
-                }
+private void setupTextField(JTextField textField, String placeholder) {
+    textField.setText(placeholder);
+    textField.setForeground(Color.GRAY);
+    
+    // Agregar un FocusListener para manejar el placeholder
+    textField.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            // Solo limpia si el texto actual es igual al placeholder
+            if (textField.getText().equals(placeholder)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
             }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Restablece el placeholder si el campo está vacío
-                if (textField.getText().isEmpty()) {
-                    textField.setForeground(Color.GRAY);
-                    textField.setText(placeholder);
-                }
+        }
+        
+        @Override
+        public void focusLost(FocusEvent e) {
+            // Restablece el placeholder si el campo está vacío
+            if (textField.getText().trim().isEmpty()) {
+                textField.setText(placeholder);
+                textField.setForeground(Color.GRAY);
             }
-        });
-    }
+        }
+    });
+    
+    // Reemplazar el DocumentListener problemático con uno más simple
+    textField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            if (textField.getForeground() == Color.GRAY) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
+        }
 
-    // Método para limpiar los campos incluyendo el campo de búsqueda
-    public void limpiarCampos() {
-        // ... otros campos que ya limpias ...
-        txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
-        txtNombrePilotoBuscar.setForeground(Color.GRAY);
-    }
+        @Override
+        public void removeUpdate(DocumentEvent e) {}
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {}
+    });
+}
+
+
+// Método para limpiar los campos incluyendo el campo de búsqueda
+public void limpiarCampos() {
+    // Resto de la limpieza de campos...
+    txtNombrePilotoBuscar.setText("Ingresa Nombre, Apellido o DPI del Piloto a buscar");
+    txtNombrePilotoBuscar.setForeground(Color.GRAY);
+}
     
             public void actualizarTabla() {
         gestionPilotos.cargarPilotosDesdeExcel();
@@ -497,7 +519,7 @@ private void cerrarSesionYRegresarLogin() {
         txtNombrePilotoBuscar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        jLabel4.setText("NOMBRE");
+        jLabel4.setText("PILOTO");
 
         editarPiloto.setBackground(new java.awt.Color(85, 111, 169));
         editarPiloto.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
@@ -618,8 +640,8 @@ private void cerrarSesionYRegresarLogin() {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(220, 220, 220)
+                            .addComponent(txtNombrePilotoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(169, 169, 169)
                             .addComponent(buscarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(refrescarPiloto, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -719,29 +741,84 @@ String username = this.currentUser; // Assuming currentUser holds the username
     }//GEN-LAST:event_refrescarPilotoActionPerformed
 
     private void buscarPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPilotoActionPerformed
-String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
-
+ String criterioBusqueda = txtNombrePilotoBuscar.getText().trim();
+    
     // Validar si el campo está vacío o es el placeholder
-    if (nombreBuscado.isEmpty() || nombreBuscado.equals("Ingresa Nombre del Piloto a buscar")) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre para buscar.");
+    if (criterioBusqueda.isEmpty() || 
+        criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Piloto a buscar")) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
 
     modeloPilotos.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
     pilotosFiltrados = new Vector<>(); // Reset lista filtrada
     boolean hayCoincidencias = false;
-
-    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
     int indice = 1; // Inicializamos el índice para la numeración
-
+    
     for (Piloto piloto : listaPilotos) {
         String nombrePilotoNormalizado = normalizarTexto(piloto.getNombrePiloto());
+        String apellidoPilotoNormalizado = normalizarTexto(piloto.getApellidoPiloto());
+        
+        // Verificar coincidencia por DPI (usando contains en lugar de igualdad exacta)
+        boolean coincidenciaDPI = false;
+        try {
+            // Si el criterio es numérico, busca si contiene ese valor
+            long criterioDPI = Long.parseLong(criterioBusqueda);
+            String dpiPiloto = String.valueOf(piloto.getNumeroDeDpi());
+            coincidenciaDPI = dpiPiloto.contains(criterioBusqueda);
+        } catch (NumberFormatException e) {
+            coincidenciaDPI = false;
+        }
 
-        // Comprobar si el nombre del piloto contiene el texto buscado
-        if (nombrePilotoNormalizado.contains(nombreBuscadoNormalizado)) {
-            pilotosFiltrados.add(piloto); // Agregar a la lista filtrada
+        // Comprobar si coincide con nombre, apellido o DPI
+        boolean coincidencia = nombrePilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                apellidoPilotoNormalizado.contains(criterioBusquedaNormalizado) ||
+                                coincidenciaDPI;
+        
+        if (coincidencia) {
+            pilotosFiltrados.add(piloto);
             modeloPilotos.addRow(new Object[]{
-                indice++, // Añadimos el índice
+                indice++,
+                piloto.getNombrePiloto(),
+                piloto.getApellidoPiloto(),
+                piloto.getNumeroDeDpi(),
+                piloto.getTipoLicencia(),
+                piloto.getNumeroTelefonicoPiloto(),
+                piloto.getEstadoPiloto()
+            });
+            hayCoincidencias = true;
+        }
+    }
+    
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos con el criterio especificado.");
+        cargarPilotosEnTabla(); // Restaurar los datos completos
+    }
+
+// Al final, restablecer el placeholder
+    SwingUtilities.invokeLater(() -> {
+    });
+}
+
+
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+
+    return criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13 && criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloPilotos.setRowCount(0); // Limpiar la tabla
+    int indice = 1;
+    boolean hayCoincidencias = false;
+
+    for (Piloto piloto : listaPilotos) {
+        String dpiString = String.valueOf(piloto.getNumeroDeDpi());
+        if (dpiString.contains(criterioBusqueda)) {
+            modeloPilotos.addRow(new Object[]{
+                indice++,
                 piloto.getNombrePiloto(),
                 piloto.getApellidoPiloto(),
                 piloto.getNumeroDeDpi(),
@@ -753,26 +830,11 @@ String nombreBuscado = txtNombrePilotoBuscar.getText().trim();
         }
     }
 
-    // Si no hay coincidencias, mostrar un mensaje y restaurar la tabla completa
     if (!hayCoincidencias) {
-        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-        cargarPilotosEnTabla(); // Restaurar la tabla completa
+        JOptionPane.showMessageDialog(this, "No se encontraron pilotos con DPI que contengan " + criterioBusqueda);
+        cargarPilotosEnTabla(); // Restaurar la tabla completa si no hay coincidencias
     } else {
-        // Si hay resultados, seleccionar el primer resultado
-        if (tblRegistroPilotos.getRowCount() > 0) {
-            tblRegistroPilotos.setRowSelectionInterval(0, 0);
-        }
-    }
-
-    // No restaurar el placeholder si hay resultados
-    if (hayCoincidencias) {
-        txtNombrePilotoBuscar.setForeground(Color.BLACK); // Cambiar el color del texto
-    } else {
-        // Restaurar el placeholder
-        SwingUtilities.invokeLater(() -> {
-            txtNombrePilotoBuscar.setText("Ingresa Nombre del Piloto a buscar");
-            txtNombrePilotoBuscar.setForeground(Color.GRAY);
-        });
+        JOptionPane.showMessageDialog(this, "Se encontraron " + (indice - 1) + " pilotos con DPI que contienen " + criterioBusqueda);
     }
     }//GEN-LAST:event_buscarPilotoActionPerformed
 
@@ -792,6 +854,17 @@ private void enviarCorreoDesactivacion(String destinatario, Piloto piloto) throw
     if (destinatario == null || destinatario.trim().isEmpty() || !destinatario.contains("@")) {
         throw new IOException("Correo electrónico inválido: " + destinatario);
     }
+
+    
+    
+            // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+
+
 
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
@@ -872,6 +945,25 @@ private void enviarCorreoDesactivacion(String destinatario, Piloto piloto) throw
         System.err.println("Error detallado al enviar correo: ");
         e.printStackTrace();
         throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+
+
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
     }
 }
 
@@ -962,11 +1054,24 @@ String nombrePiloto = tblRegistroPilotos.getValueAt(filaSeleccionada, 1).toStrin
                             SwingUtilities.invokeLater(() -> {
                                 dialogoProceso.dispose();
                                 actualizarTabla();
-                                JOptionPane.showMessageDialog(this,
+                              if (verificarConexionInternet()) {
+                                // Si hay conexión a Internet, mostrar mensaje de éxito con notificación enviada
+                                JOptionPane.showMessageDialog(
+                                    this,
                                     "Piloto eliminado correctamente y notificación enviada.",
                                     "Éxito",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            });
+                                    JOptionPane.INFORMATION_MESSAGE
+                                );
+                            } else {
+                                // Si no hay conexión a Internet, mostrar mensaje sin mencionar la notificación
+                                JOptionPane.showMessageDialog(
+                                    this,
+                                    "Piloto eliminado correctamente. \nLa notificación no se enviará, pero el registro se ha actualizado.",
+                                    "Éxito",
+                                    JOptionPane.INFORMATION_MESSAGE
+                                );
+                            }
+                        });
                         } catch (IOException e) {
                             SwingUtilities.invokeLater(() -> {
                                 dialogoProceso.dispose();

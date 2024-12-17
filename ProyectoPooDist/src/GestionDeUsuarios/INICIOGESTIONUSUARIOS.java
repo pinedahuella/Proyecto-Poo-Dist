@@ -74,6 +74,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -141,33 +143,29 @@ public class INICIOGESTIONUSUARIOS extends javax.swing.JFrame {
     
     
      private void cargarUsuariosEnTabla() {
-        modeloUsuarios.setRowCount(0);
-        listaUsuariosFiltrados = new Vector<>(); // Inicializar como nuevo vector
-        
-        Set<String> estadosValidos = new HashSet<>(Arrays.asList(
-            "ACTIVO",
-            "ENFERMO",
-            "EN VACACIONES",
-            "BLOQUEADO",
-            "JUBILADO"
-        ));
-        
-        int indice = 1;
-        for (Usuarios usuario : listaUsuarios) {
-            if (estadosValidos.contains(usuario.getEstado())) {
-                listaUsuariosFiltrados.add(usuario);
-                modeloUsuarios.addRow(new Object[]{
-                    indice++,
-                    usuario.getNombre(),
-                    usuario.getApellido(),
-                    usuario.getNumeroDPI(),
-                    usuario.getCargo(),
-                    usuario.getNumeroTelefono(),
-                    usuario.getEstado()
-                });
-            }
+    // Limpiar la tabla
+    modeloUsuarios.setRowCount(0);
+    listaUsuariosFiltrados = new Vector<>(); // Inicializar como nuevo vector
+    
+    // Solo considerar estado ACTIVO
+    String estadoValido = "ACTIVO";
+    
+    int indice = 1;
+    for (Usuarios usuario : listaUsuarios) {
+        if (estadoValido.equals(usuario.getEstado())) {
+            listaUsuariosFiltrados.add(usuario);
+            modeloUsuarios.addRow(new Object[]{
+                indice++,
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            });
         }
     }
+}
 
 public void actualizarTabla() {
         gestionUsuarios.cargarUsuariosDesdeExcel();
@@ -652,7 +650,7 @@ private void abrirVentanaMostrar(Usuarios usuario) {
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -726,6 +724,14 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
     if (destinatario == null || destinatario.trim().isEmpty() || !destinatario.contains("@")) {
         throw new IOException("Correo electrónico inválido: " + destinatario);
     }
+
+    
+        // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
 
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
@@ -809,6 +815,23 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
 }
 
 
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
+
     private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
          int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
         if (filaSeleccionada >= 0) {
@@ -861,11 +884,24 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
                                 dialogoProceso.dispose();
                                 // En lugar de solo remover la fila, actualizamos toda la tabla
                                 actualizarTabla();
-                                JOptionPane.showMessageDialog(this,
+                              if (verificarConexionInternet()) {
+                                // Si hay conexión a Internet, mostrar mensaje de éxito con notificación enviada
+                                JOptionPane.showMessageDialog(
+                                    this,
                                     "Usuario eliminado correctamente y notificación enviada.",
                                     "Éxito",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            });
+                                    JOptionPane.INFORMATION_MESSAGE
+                                );
+                            } else {
+                                // Si no hay conexión a Internet, mostrar mensaje sin mencionar la notificación
+                                JOptionPane.showMessageDialog(
+                                    this,
+                                    "Usuario eliminado correctamente. \nLa notificación no se enviará, pero el registro se ha actualizado.",
+                                    "Éxito",
+                                    JOptionPane.INFORMATION_MESSAGE
+                                );
+                            }
+                        });
                         } catch (IOException e) {
                             SwingUtilities.invokeLater(() -> {
                                 dialogoProceso.dispose();
@@ -901,23 +937,42 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
     }//GEN-LAST:event_eliminarUsuarioActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-    if (txtNombreUsuarioBuscar.getText().trim().isEmpty() || 
-            txtNombreUsuarioBuscar.getText().equals("Ingresa Nombre del Usuario a buscar")) {
+ String criterioBusqueda = txtNombreUsuarioBuscar.getText().trim();
+
+    // Validar si el campo está vacío o es el placeholder
+    if (criterioBusqueda.isEmpty() || 
+            criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Usuario a buscar")) {
         JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos de búsqueda.");
         return;
     }
     
-    String nombreBuscado = normalizarTexto(txtNombreUsuarioBuscar.getText().trim());
+    // Limpiar modelo y lista de usuarios filtrados
     modeloUsuarios.setRowCount(0);
-    listaUsuariosFiltrados.clear(); // Limpiamos la lista filtrada
+    listaUsuariosFiltrados.clear();
+    
     boolean hayCoincidencias = false;
-    int indice = 1; // Inicializamos el contador para el índice
+    int indice = 1;
+    String estadoValido = "ACTIVO";
     
     for (Usuarios usuario : listaUsuarios) {
+        // Normalizar texto para búsqueda de nombre y apellido
         String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
-        if (nombreUsuarioNormalizado.contains(nombreBuscado)) {
+        String apellidoUsuarioNormalizado = normalizarTexto(usuario.getApellido());
+        String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
+        
+        // Convertir DPI a String para búsqueda parcial
+        String dpiString = String.valueOf(usuario.getNumeroDPI());
+        
+        // Verificar coincidencias en nombre, apellido o DPI y si el estado es ACTIVO
+        boolean coincidenciaNombre = nombreUsuarioNormalizado.contains(criterioBusquedaNormalizado);
+        boolean coincidenciaApellido = apellidoUsuarioNormalizado.contains(criterioBusquedaNormalizado);
+        boolean coincidenciaDPI = dpiString.contains(criterioBusqueda);
+        
+        // Solo agregar si coincide con el criterio y el estado es ACTIVO
+        if ((coincidenciaNombre || coincidenciaApellido || coincidenciaDPI) && 
+            estadoValido.equals(usuario.getEstado())) {
             modeloUsuarios.addRow(new Object[]{
-                indice, // Añadimos el índice como primera columna
+                indice++, 
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getNumeroDPI(),
@@ -925,32 +980,82 @@ private void enviarCorreoEliminacionUsuario(String destinatario, Usuarios usuari
                 usuario.getNumeroTelefono(),
                 usuario.getEstado()
             });
-            listaUsuariosFiltrados.add(usuario); // Añadimos el usuario encontrado a la lista filtrada
+            listaUsuariosFiltrados.add(usuario);
             hayCoincidencias = true;
-            indice++; // Incrementamos el índice para la siguiente coincidencia
         }
     }
     
+    // Manejo de resultados
     if (!hayCoincidencias) {
         JOptionPane.showMessageDialog(this, "No se encontraron coincidencias para la búsqueda.");
-        cargarUsuariosEnTabla(); // Volver a cargar todos los usuarios
+        cargarUsuariosEnTabla(); // Volver a cargar solo usuarios activos
+    } else {
+        // Mostrar número de resultados encontrados
+        JOptionPane.showMessageDialog(this, 
+            "Se encontraron " + (indice - 1) + " usuarios activos que coinciden con la búsqueda.");
+    }
+
+    // Restablecer campo de búsqueda
+    SwingUtilities.invokeLater(() -> {
+        txtNombreUsuarioBuscar.setText(""); // Opcional: Restablecer el campo de búsqueda
+    });
     }
     
-    // Aseguramos que las columnas mantengan sus anchos preferidos
-    SwingUtilities.invokeLater(() -> {
-        tblRegistroUsuarios.getColumnModel().getColumn(0).setPreferredWidth(30);  // Ancho para columna "No."
-        tblRegistroUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150); // Ancho para columna "Nombre"
-        tblRegistroUsuarios.getColumnModel().getColumn(2).setPreferredWidth(150); // Ancho para columna "Apellido"
-        tblRegistroUsuarios.getColumnModel().getColumn(3).setPreferredWidth(100); // Ancho para columna "DPI"
-        tblRegistroUsuarios.getColumnModel().getColumn(4).setPreferredWidth(100); // Ancho para columna "Cargo"
-        tblRegistroUsuarios.getColumnModel().getColumn(5).setPreferredWidth(100); // Ancho para columna "Teléfono"
-        tblRegistroUsuarios.getColumnModel().getColumn(6).setPreferredWidth(100); // Ancho para columna "Estado"
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+    // Permitir búsqueda si:
+    // - Es un solo dígito
+    // - Son 2-13 dígitos
+    // - Contiene solo dígitos
+    return criterioBusqueda.length() == 1 ||
+           (criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13) &&
+           criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloUsuarios.setRowCount(0);
+    listaUsuariosFiltrados.clear();
+    int indice = 1;
+    boolean hayCoincidencias = false;
+    for (Usuarios usuario : listaUsuarios) {
+        // Convertir el DPI a String para poder hacer la búsqueda
+        String dpiString = String.valueOf(usuario.getNumeroDPI());
         
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
-        txtNombreUsuarioBuscar.setForeground(Color.GRAY);
-    });
+        // Verificar si el criterio de búsqueda está en cualquier parte del DPI
+        boolean coincidencia = dpiString.contains(criterioBusqueda);
+        
+        // Si hay coincidencia, agregar a la tabla
+        if (coincidencia) {
+            modeloUsuarios.addRow(new Object[]{
+                indice++,
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            });
+            listaUsuariosFiltrados.add(usuario);
+            hayCoincidencias = true;
+        }
+    }
+    
+    // Manejo de resultados
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, 
+            "No se encontraron usuarios con DPI que contengan " + criterioBusqueda);
+        cargarUsuariosEnTabla();
+    } else {
+        // Mostrar número de resultados encontrados
+        JOptionPane.showMessageDialog(this, 
+            "Se encontraron " + (indice - 1) + " usuarios con DPI que contienen " + criterioBusqueda);
+    }
     }//GEN-LAST:event_buscarUsuarioActionPerformed
 
+
+        
+        
     // Método para normalizar texto eliminando tildes y convirtiendo a minúsculas
 private String normalizarTexto(String texto) {
     String textoNormalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);

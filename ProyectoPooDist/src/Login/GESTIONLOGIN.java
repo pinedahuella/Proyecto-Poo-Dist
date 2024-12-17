@@ -128,46 +128,49 @@ public class GESTIONLOGIN {
 
     // Método para guardar los registros de inicio de sesión en el archivo Excel
     public void guardarLoginsEnExcel() {
-        try (Workbook workbook = new XSSFWorkbook();
-             FileOutputStream fos = new FileOutputStream(excelFilePath)) { // Crea un nuevo libro de trabajo
+    try (Workbook workbook = new XSSFWorkbook();
+         FileOutputStream fos = new FileOutputStream(excelFilePath)) { // Crea un nuevo libro de trabajo
 
-            Sheet sheet = workbook.createSheet("Logins"); // Crea una nueva hoja
-            CreationHelper createHelper = workbook.getCreationHelper(); // Ayudante para crear datos
-            CellStyle dateCellStyle = workbook.createCellStyle(); // Estilo para celdas de fecha
-            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy HH:mm:ss")); // Formato de fecha
+        Sheet sheet = workbook.createSheet("Logins"); // Crea una nueva hoja
+        CreationHelper createHelper = workbook.getCreationHelper(); // Ayudante para crear datos
+        CellStyle dateCellStyle = workbook.createCellStyle(); // Estilo para celdas de fecha
+        dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy HH:mm:ss")); // Formato de fecha
 
-            // Crea la fila de encabezado
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Tiempo Entrada");
-            headerRow.createCell(1).setCellValue("Tiempo Salida");
-            headerRow.createCell(2).setCellValue("Personal");
-            headerRow.createCell(3).setCellValue("Rol");
+        // Crea la fila de encabezado
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Tiempo Entrada");
+        headerRow.createCell(1).setCellValue("Tiempo Salida"); // Encabezado de la columna que se ocultará
+        headerRow.createCell(2).setCellValue("Personal");
+        headerRow.createCell(3).setCellValue("Rol");
 
-            int rowCount = 1; // Contador de filas para los datos
-            for (Login login : logins) {
-                Row row = sheet.createRow(rowCount++); // Crea una nueva fila
-                
-                // Manejar Tiempo Entrada
-                Cell cellEntrada = row.createCell(0);
-                cellEntrada.setCellValue(login.getTiempoEntrada()); // Establece el tiempo de entrada
-                cellEntrada.setCellStyle(dateCellStyle); // Aplica el estilo de fecha
-                
-                // Manejar Tiempo Salida
-                Cell cellSalida = row.createCell(1);
-                if (!login.getTiempoSalida().isEmpty()) {
-                    cellSalida.setCellValue(login.getTiempoSalida()); // Establece el tiempo de salida
-                    cellSalida.setCellStyle(dateCellStyle); // Aplica el estilo de fecha
-                } else {
-                    cellSalida.setCellValue(""); // Deja vacío si no hay tiempo de salida
-                }
-                
-                row.createCell(2).setCellValue(login.getPersonal()); // Establece el nombre del personal
-                row.createCell(3).setCellValue(login.getRol()); // Establece el rol del personal
+        int rowCount = 1; // Contador de filas para los datos
+        for (Login login : logins) {
+            Row row = sheet.createRow(rowCount++); // Crea una nueva fila
+
+            // Manejar Tiempo Entrada
+            Cell cellEntrada = row.createCell(0);
+            cellEntrada.setCellValue(login.getTiempoEntrada()); // Establece el tiempo de entrada
+            cellEntrada.setCellStyle(dateCellStyle); // Aplica el estilo de fecha
+
+            // Manejar Tiempo Salida
+            Cell cellSalida = row.createCell(1);
+            if (!login.getTiempoSalida().isEmpty()) {
+                cellSalida.setCellValue(login.getTiempoSalida()); // Establece el tiempo de salida
+                cellSalida.setCellStyle(dateCellStyle); // Aplica el estilo de fecha
+            } else {
+                cellSalida.setCellValue(""); // Deja vacío si no hay tiempo de salida
             }
 
-            workbook.write(fos); // Escribe los datos en el archivo Excel
-        } catch (IOException e) {
-            e.printStackTrace(); // Maneja excepciones de entrada/salida
+            row.createCell(2).setCellValue(login.getPersonal()); // Establece el nombre del personal
+            row.createCell(3).setCellValue(login.getRol()); // Establece el rol del personal
         }
+
+        // Ocultar la columna "Tiempo Salida"
+        sheet.setColumnHidden(1, true);
+
+        workbook.write(fos); // Escribe los datos en el archivo Excel
+    } catch (IOException e) {
+        e.printStackTrace(); // Maneja excepciones de entrada/salida
     }
+}
 }

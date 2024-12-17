@@ -328,12 +328,10 @@ private void ocultarComponentesParaPiloto() {
         parentContainer = parentContainer.getParent();
     }
 }
-
 // Método para configurar el placeholder en JDateChooser
 private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
     dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato de fecha deseado
     dateChooser.setDate(null); // Asegúrate de que esté vacío al inicio
-
     // Obtener el editor de fecha como JTextField
     JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
     
@@ -351,7 +349,6 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
                 editor.setForeground(Color.BLACK); // Cambia el color a negro
             }
         }
-
         @Override
         public void focusLost(FocusEvent e) {
             // Si no hay fecha seleccionada, restablecer el placeholder
@@ -371,26 +368,21 @@ private void configurarCamposConPlaceholders() {
     setupDateChooser(txtFechaDeDescargaViaje, "dd/MM/yyyy");
 }
 
-
-// Método para limpiar y restablecer los placeholders de los JDateChooser
-public void limpiarDateChoosers() {
-    txtFechaDeCargaAgregar.setDate(null);
-    txtFechaDeCargaAgregar.getDateEditor().getUiComponent().setForeground(Color.GRAY);
-    ((JTextField) txtFechaDeCargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
-
-    txtFechaDeCargaViaje.setDate(null);
-    txtFechaDeCargaViaje.getDateEditor().getUiComponent().setForeground(Color.GRAY);
-    ((JTextField) txtFechaDeCargaViaje.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
-
-    txtFechaDeDescargaAgregar.setDate(null);
-    txtFechaDeDescargaAgregar.getDateEditor().getUiComponent().setForeground(Color.GRAY);
-    ((JTextField) txtFechaDeDescargaAgregar.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
-
-    txtFechaDeDescargaViaje.setDate(null);
-    txtFechaDeDescargaViaje.getDateEditor().getUiComponent().setForeground(Color.GRAY);
-    ((JTextField) txtFechaDeDescargaViaje.getDateEditor().getUiComponent()).setText("dd/MM/yyyy");
+// Método auxiliar para resetear un JDateChooser individual
+private void resetDateChooser(JDateChooser dateChooser) {
+    dateChooser.setDate(null);
+    JTextField editor = (JTextField) dateChooser.getDateEditor().getUiComponent();
+    editor.setText("dd/MM/yyyy");
+    editor.setForeground(Color.GRAY);
 }
 
+// Método mejorado para limpiar y restablecer los placeholders de los JDateChooser
+public void limpiarDateChoosers() {
+    resetDateChooser(txtFechaDeCargaAgregar);
+    resetDateChooser(txtFechaDeCargaViaje);
+    resetDateChooser(txtFechaDeDescargaAgregar);
+    resetDateChooser(txtFechaDeDescargaViaje);
+}
 
 private void setupComboBox() {
     txtMenu.removeAllItems();
@@ -2107,6 +2099,8 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
                 //actualizamos el combo box
                 ActualizarComboListaPedidos();
                 
+                // Limpiamos las fechas
+                limpiarDateChoosers();
                 //reiniciamos todos los elemento necesario
                 ActualizarTablaB();
                 
@@ -2190,6 +2184,9 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
  
         Date nuevaFechaB = new Date();
         
+        // Limpiamos las fechas
+                limpiarDateChoosers();
+                
         // Crear una instancia de Calendar y establecer la fechaAntigua
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(newFechaCarga);
@@ -2390,6 +2387,8 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
         }
         
         
+        // Limpiamos las fechas
+                limpiarDateChoosers();
         ActualizarCalendario();
         
         //preguntamos si el indice anterior es superior de -1
@@ -2420,7 +2419,8 @@ private String buildCancelledTripEmailContent(Date oldFechaCarga, Date oldFechaD
                    gespedidos.actualizarIndiceCalendario(indiceActual);              
                    gespedidos.GuardarEnExcel();
                    
-                   
+                   // Limpiamos las fechas
+                limpiarDateChoosers();
                    
                     //mostramos mesaje para acetar que este bien
                 JOptionPane.showMessageDialog(null, "viaje eliminado correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE); 

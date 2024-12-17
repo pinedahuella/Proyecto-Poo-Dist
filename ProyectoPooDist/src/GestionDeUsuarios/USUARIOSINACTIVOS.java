@@ -49,6 +49,9 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
 import javax.swing.JPanel;
 
 public class USUARIOSINACTIVOS extends javax.swing.JFrame {
@@ -123,7 +126,7 @@ public class USUARIOSINACTIVOS extends javax.swing.JFrame {
     // Método para limpiar los campos incluyendo el campo de búsqueda
     public void limpiarCampos() {
         // ... otros campos que ya limpias ...
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
+        txtNombreUsuarioBuscar.setText("Ingresa Nombre, Apellido o DPI del Usuario a buscar");
         txtNombreUsuarioBuscar.setForeground(java.awt.Color.GRAY);
     }
 
@@ -435,6 +438,7 @@ private void cerrarSesionYRegresarLogin() {
         ActivosUsuarios = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         txtMenu10 = new javax.swing.JComboBox<>();
+        refrescarUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -531,6 +535,17 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        refrescarUsuario.setBackground(new java.awt.Color(85, 111, 169));
+        refrescarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        refrescarUsuario.setForeground(new java.awt.Color(255, 255, 255));
+        refrescarUsuario.setText("REFRESCAR");
+        refrescarUsuario.setBorder(null);
+        refrescarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refrescarUsuarioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -541,9 +556,11 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ActivarUsuarioEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -566,7 +583,8 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(txtNombreUsuarioBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(buscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ActivarUsuarioEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ActivarUsuarioEliminado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refrescarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
@@ -606,26 +624,42 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     }//GEN-LAST:event_ActivosUsuariosActionPerformed
 
     private void buscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarUsuarioActionPerformed
-   if (txtNombreUsuarioBuscar.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this,
-            "Por favor, ingrese el nombre del usuario para buscar.");
+String criterioBusqueda = txtNombreUsuarioBuscar.getText().trim();
+    
+    // Validar si el campo está vacío
+    if (criterioBusqueda.isEmpty() || criterioBusqueda.equals("Ingresa Nombre, Apellido o DPI del Usuario a buscar")) {
+        JOptionPane.showMessageDialog(this, "Por favor, ingresa un criterio de búsqueda (Nombre, Apellido o DPI).");
         return;
     }
 
-    String nombreBuscado = txtNombreUsuarioBuscar.getText().trim();
-    modeloUsuarios.setRowCount(0);
+    modeloUsuarios.setRowCount(0); // Limpiar la tabla antes de cargar los resultados
     boolean encontrado = false;
     int numeroFila = 1; // Contador para la numeración
 
-    String nombreBuscadoNormalizado = normalizarTexto(nombreBuscado);
+    // Normalizar el criterio de búsqueda
+    String criterioBusquedaNormalizado = normalizarTexto(criterioBusqueda);
 
     for (Usuarios usuario : listaUsuariosInactivos) {
+        // Normalizar nombre, apellido y DPI
         String nombreUsuarioNormalizado = normalizarTexto(usuario.getNombre());
-        String nombreUsuarioLoginNormalizado = normalizarTexto(usuario.getNombreUsuario());
+        String apellidoUsuarioNormalizado = normalizarTexto(usuario.getApellido());
+        String dpiString = String.valueOf(usuario.getNumeroDPI());
 
-        if (nombreUsuarioNormalizado.contains(nombreBuscadoNormalizado) ||
-            nombreUsuarioLoginNormalizado.contains(nombreBuscadoNormalizado)) {
+        // Verificar coincidencia flexible para nombre
+        boolean coincidenciaNombre = esTextoCoincidente(nombreUsuarioNormalizado, criterioBusquedaNormalizado);
+        
+        // Verificar coincidencia flexible para apellido
+        boolean coincidenciaApellido = esTextoCoincidente(apellidoUsuarioNormalizado, criterioBusquedaNormalizado);
+        
+        // Verificar coincidencia para DPI
+        boolean coincidenciaDPI = dpiString.contains(criterioBusqueda);
 
+        // Comprobar si coincide con nombre, apellido o DPI
+        boolean coincidencia = coincidenciaNombre || 
+                               coincidenciaApellido || 
+                               coincidenciaDPI;
+
+        if (coincidencia) {
             Object[] fila = {
                 numeroFila++, // Agregar el número de fila
                 usuario.getNombreUsuario(),
@@ -643,15 +677,87 @@ String username = this.currentUser; // Suponiendo que currentUser contiene el no
     }
 
     if (!encontrado) {
-        JOptionPane.showMessageDialog(this,
-            "No se encontraron usuarios inactivos con el nombre especificado.");
-        cargarDatos();
+        JOptionPane.showMessageDialog(this, "No se encontraron usuarios inactivos con el criterio especificado.");
+        cargarDatos(); // Restaurar los datos completos
     }
 
+    // Restablecer el campo de búsqueda
     SwingUtilities.invokeLater(() -> {
-        txtNombreUsuarioBuscar.setText("Ingresa Nombre del Usuario a buscar");
-        txtNombreUsuarioBuscar.setForeground(Color.GRAY);
     });
+}
+
+// Método mejorado para verificar coincidencia de texto, independiente del orden
+private boolean esTextoCoincidente(String textoNormalizado, String criterioBusqueda) {
+    // Eliminar espacios y convertir a minúsculas
+    textoNormalizado = textoNormalizado.replaceAll("\\s", "").toLowerCase();
+    criterioBusqueda = criterioBusqueda.replaceAll("\\s", "").toLowerCase();
+    
+    // Verificar si todos los caracteres del criterio están en el texto
+    for (char c : criterioBusqueda.toCharArray()) {
+        int index = textoNormalizado.indexOf(c);
+        if (index == -1) {
+            return false;
+        }
+        // Remover el carácter encontrado para evitar contar el mismo carácter múltiples veces
+        textoNormalizado = textoNormalizado.substring(0, index) + textoNormalizado.substring(index + 1);
+    }
+    
+    return true;
+}
+    
+// Método para verificar si el criterio de búsqueda parece ser un DPI
+private boolean esCriterioDPI(String criterioBusqueda) {
+    // Permitir búsqueda si:
+    // - Es un solo dígito
+    // - Son 2-13 dígitos
+    // - Contiene solo dígitos
+
+    return criterioBusqueda.length() == 1 ||
+           (criterioBusqueda.length() >= 2 && criterioBusqueda.length() <= 13) &&
+           criterioBusqueda.matches("\\d+");
+}
+
+// Método para mostrar sugerencias de DPI
+private void mostrarSugerenciasDPI(String criterioBusqueda) {
+    modeloUsuarios.setRowCount(0);
+    int indice = 1;
+    boolean hayCoincidencias = false;
+
+    for (Usuarios usuario : listaUsuariosInactivos) {
+        // Convertir el DPI a String para poder hacer la búsqueda
+        String dpiString = String.valueOf(usuario.getNumeroDPI());
+        
+        // Verificar si el criterio de búsqueda está en cualquier parte del DPI
+        boolean coincidencia = dpiString.contains(criterioBusqueda);
+        
+        // Si hay coincidencia, agregar a la tabla
+        if (coincidencia) {
+            Object[] fila = {
+                indice++,
+                usuario.getNombreUsuario(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNumeroDPI(),
+                usuario.getCargo(),
+                usuario.getCorreoElectronico(),
+                usuario.getNumeroTelefono(),
+                usuario.getEstado()
+            };
+            modeloUsuarios.addRow(fila);
+            hayCoincidencias = true;
+        }
+    }
+    
+    // Manejo de resultados
+    if (!hayCoincidencias) {
+        JOptionPane.showMessageDialog(this, 
+            "No se encontraron usuarios con DPI que contengan " + criterioBusqueda);
+        cargarDatos();
+    } else {
+        // Mostrar número de resultados encontrados
+        JOptionPane.showMessageDialog(this, 
+            "Se encontraron " + (indice - 1) + " usuarios con DPI que contienen " + criterioBusqueda);
+    }
     }//GEN-LAST:event_buscarUsuarioActionPerformed
 
     
@@ -667,6 +773,12 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
         throw new IOException("Correo electrónico inválido: " + destinatario);
     }
 
+    
+        // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -696,7 +808,7 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
         Multipart multipart = new MimeMultipart("related");
         BodyPart messageBodyPart = new MimeBodyPart();
         
-    String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+   String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
     "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
     "<h2 style='color: #1e88e5; text-align: center;'><strong>¡Bienvenido nuevamente a PINEED!</strong></h2>" +
     "<p style='color: #1e88e5;'>Nos complace informarle que su cuenta de usuario ha sido reactivada en nuestro sistema.</p>" +
@@ -704,18 +816,18 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Información del Usuario:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Nombre:</strong></td><td style='color: #ffffff;'>" + usuario.getNombre() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Apellido:</strong></td><td style='color: #ffffff;'>" + usuario.getApellido() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>DPI:</strong></td><td style='color: #ffffff;'>" + usuario.getNumeroDPI() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Cargo:</strong></td><td style='color: #ffffff;'>" + usuario.getCargo() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff; word-break: break-all;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Nombre:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getNombre() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Apellido:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getApellido() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>DPI:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getNumeroDPI() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Cargo:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getCargo() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Correo Electrónico:</strong></td><td style='color: #ffffff; word-break: break-all; width: 70%;'>" + usuario.getCorreoElectronico() + "</td></tr>" +
     "</table></div>" +
     
     "<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
     "<h3 style='color: #1e88e5; margin-top: 0;'>Sus Credenciales de Acceso:</h3>" +
     "<table style='width: 100%; border-collapse: collapse;'>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Usuario:</strong></td><td style='color: #ffffff;'>" + usuario.getNombreUsuario() + "</td></tr>" +
-    "<tr><td style='padding: 8px 0; color: #1e88e5;'><strong>Contraseña:</strong></td><td style='color: #ffffff;'>" + usuario.getContrasenaUsuario() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Usuario:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getNombreUsuario() + "</td></tr>" +
+    "<tr><td style='padding: 8px 0; color: #1e88e5; width: 30%; vertical-align: top;'><strong>Contraseña:</strong></td><td style='color: #ffffff; width: 70%;'>" + usuario.getContrasenaUsuario() + "</td></tr>" +
     "</table>" +
     "</div>" +
     
@@ -724,7 +836,6 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     "</div>" +
     "<p style='color: #7f8c8d; font-size: 0.9em; text-align: center;'>Este es un mensaje automático, por favor no responder.</p>" +
     "</div></body></html>";
-
             
         messageBodyPart.setContent(contenido, "text/html; charset=utf-8");
         multipart.addBodyPart(messageBodyPart);
@@ -756,6 +867,22 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
 }
 
 
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
 
     private void ActivarUsuarioEliminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarUsuarioEliminadoActionPerformed
     int filaSeleccionada = tblRegistroUsuarios.getSelectedRow();
@@ -818,12 +945,27 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
                                 enviarCorreoActivacionUsuario(correo, usuarioActivado);
                                 SwingUtilities.invokeLater(() -> {
                                     dialogoProceso.dispose();
-                                    cargarDatos();
-                                    JOptionPane.showMessageDialog(this,
-                                        "Usuario reactivado correctamente y correo enviado.",
-                                        "Éxito",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                                });
+                                    cargarDatos();  
+                                
+                                 if (verificarConexionInternet()) {
+                // Si hay conexión a Internet, mostrar mensaje de éxito con correo enviado
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Usuario reactivado correctamente y correo enviado.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                // Si no hay conexión a Internet, mostrar mensaje sin mencionar el correo
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Usuario reactivado correctamente. \nEl correo no se enviará, pero el registro se ha guardado.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });  
+                                                
                             } catch (IOException e) {
                                 SwingUtilities.invokeLater(() -> {
                                     dialogoProceso.dispose();
@@ -860,6 +1002,16 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
             "Por favor, seleccione un usuario para reactivar.");
     }
     }//GEN-LAST:event_ActivarUsuarioEliminadoActionPerformed
+
+    private void refrescarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refrescarUsuarioActionPerformed
+        String username = this.currentUser; // Assuming currentUser holds the username
+        String role = this.userRole;        // Assuming userRole holds the role
+        LOGINPINEED loginFrame = this.loginFrame; // Assuming loginFrame is already available
+
+        USUARIOSINACTIVOS abrir = new  USUARIOSINACTIVOS(username, role, loginFrame);
+        abrir.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_refrescarUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -912,6 +1064,7 @@ private void enviarCorreoActivacionUsuario(String destinatario, Usuarios usuario
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField19;
+    private javax.swing.JButton refrescarUsuario;
     private javax.swing.JTable tblRegistroUsuarios;
     private javax.swing.JComboBox<String> txtMenu10;
     private javax.swing.JTextField txtNombreUsuarioBuscar;

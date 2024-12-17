@@ -184,7 +184,6 @@ if (role.equalsIgnoreCase("ADMINISTRADOR")) {
         
         //iniciamos el bucle infinito
        iniciarBucleEnHilo();
-           configurarCamposCliente(); // Configura los campos con placeholders
         this.currentUser = username;
         this.userRole = role;
         this.loginFrame = loginFrame;
@@ -197,97 +196,24 @@ if (role.equalsIgnoreCase("ADMINISTRADOR")) {
         });
     }
    
-    
-    // Método para configurar el placeholder en campos de texto
-private void setupTextFieldCliente(JTextField textField, String placeholder) {
-    textField.setText(placeholder);
-    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
-
-    textField.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            // Limpia el placeholder al enfocar
-            if (textField.getText().equals(placeholder)) {
-                textField.setText("");
-                textField.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            // Restablece el placeholder si el campo está vacío
-            if (textField.getText().isEmpty()) {
-                textField.setForeground(Color.GRAY);
-                textField.setText(placeholder);
-            }
-        }
-    });
-}
-
-// Método para configurar el placeholder en campos de texto de área
-private void setupTextAreaCliente(JTextArea textArea, String placeholder) {
-    textArea.setText(placeholder);
-    textArea.setForeground(Color.GRAY); // Establece el color del texto del placeholder
-
-    textArea.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            // Limpia el placeholder al enfocar
-            if (textArea.getText().equals(placeholder)) {
-                textArea.setText("");
-                textArea.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            // Restablece el placeholder si el campo está vacío
-            if (textArea.getText().isEmpty()) {
-                textArea.setForeground(Color.GRAY);
-                textArea.setText(placeholder);
-            }
-        }
-    });
-}
-
-
-
-// Método para configurar todos los campos de cliente con placeholders
-private void configurarCamposCliente() {
-    setupTextFieldCliente(txtNombreDelClienteAñadir, "Ingrese el nombre del cliente");
-    setupTextFieldCliente(txtNombreDelClienteModificar, "Ingrese el nombre del cliente");
-    setupTextAreaCliente(txtDescripcionDelClienteAñadir, "Ingrese la descripción del cliente");
-    setupTextAreaCliente(txtDescripcionDelClienteModificar, "Ingrese la descripción del cliente");
-    setupTextFieldCliente(txtFleteModificarCredito, "Ingrese precio");
-    setupTextFieldCliente(txtPrecioCostoModificarCredito, "Ingrese precio");
-    setupTextFieldCliente(txtPrecioModificarCredito, "Ingrese precio");
-}
-
 
 
 
 // Método para limpiar y restablecer los placeholders de los campos de cliente
 public void limpiarCamposCliente() {
-    txtNombreDelClienteAñadir.setText("Ingrese el nombre del cliente");
-    txtNombreDelClienteAñadir.setForeground(Color.GRAY);
+    txtNombreDelClienteAñadir.setText("");
 
-    txtNombreDelClienteModificar.setText("Ingrese el nombre del cliente");
-    txtNombreDelClienteModificar.setForeground(Color.GRAY);
+    txtNombreDelClienteModificar.setText("");
 
-    txtDescripcionDelClienteAñadir.setText("Ingrese la descripción del cliente");
-    txtDescripcionDelClienteAñadir.setForeground(Color.GRAY);
+    txtDescripcionDelClienteAñadir.setText("");
 
-    txtDescripcionDelClienteModificar.setText("Ingrese la descripción del cliente");
-    txtDescripcionDelClienteModificar.setForeground(Color.GRAY);
+    txtDescripcionDelClienteModificar.setText("");
 
-    txtFleteModificarCredito.setText("Ingrese precio");
-    txtFleteModificarCredito.setForeground(Color.GRAY);
+    txtFleteModificarCredito.setText("");
 
-    txtPrecioCostoModificarCredito.setText("Ingrese precio");
-    txtPrecioCostoModificarCredito.setForeground(Color.GRAY);
+    txtPrecioCostoModificarCredito.setText("");
 
-    txtPrecioModificarCredito.setText("Ingrese precio");
-    txtPrecioModificarCredito.setForeground(Color.GRAY);
+    txtPrecioModificarCredito.setText("");
 }
 
 
@@ -1401,8 +1327,8 @@ private void cerrarSesionYRegresarLogin() {
     }//GEN-LAST:event_radioActivoActionPerformed
 
     private void txtAñadirClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtAñadirClienteMouseClicked
-        // TODO add your handling code here:
-        
+
+
         //funcion que nos permitira ocultar o mostrar el panel de agregar cliente
         //preguntamos si esta activo o no
         if (panelAgregarCliente.isVisible()) {
@@ -1416,7 +1342,6 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseClicked
         // TODO add your handling code here:
-        
         //funcion que nos ayudara a crear un nuevo cliente
         //primero leemos la inforacion
         
@@ -1474,7 +1399,7 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel19MouseClicked
         // TODO add your handling code here:
-        
+
         //esta funcion nos ayudara a modificar la informacion general del cliente
         //primero pregutnamos si el indice de la tabla es valido
         
@@ -1519,7 +1444,7 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel16MouseClicked
         // TODO add your handling code here:
-        
+
         //estafuncion nos ayudara a cambiar la informacion pertenecientes a los productos y cantidades de un clientes
         //primero pregutnamos si el indice de la tabla es valido
         
@@ -1596,7 +1521,9 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel20MouseClicked
         // TODO add your handling code here:
-        
+
+        //funcion que nos permite modificar un credito
+        //funcion para modificiar un credito
         //funcion que nos permite modificar un credito
         //funcion para modificiar un credito
         try {
@@ -1709,7 +1636,8 @@ private void cerrarSesionYRegresarLogin() {
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
-        
+
+
         //esta funcion nos ayudara a eliminar un cliente
         
          // Mostrar popup de advertencia        
@@ -1766,8 +1694,7 @@ private void cerrarSesionYRegresarLogin() {
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
         FrameHistorialClientes abrir = new FrameHistorialClientes(currentUser, userRole, loginFrame);
-        abrir.setVisible(true);
-        this.dispose();
+     abrir.setVisible(true);
     }//GEN-LAST:event_txtHistorialClientesEliminadosActionPerformed
 
     //creamos el bucle infinito

@@ -182,6 +182,28 @@ private void setupTextField(JTextField textField, String placeholder) {
             }
         }
     });
+   textField.addFocusListener(new FocusAdapter() {
+    @Override
+    public void focusLost(FocusEvent e) {
+        // Solo restablece el placeholder si el campo está vacío
+        if (textField.getText().isEmpty()) {
+            textField.setForeground(Color.GRAY);
+            textField.setText(placeholder);
+        }
+    }
+});
+    
+   textField.addFocusListener(new FocusAdapter() {
+    @Override
+    public void focusLost(FocusEvent e) {
+        // Solo restablece el placeholder si el campo está vacío
+        if (textField.getText().isEmpty()) {
+            textField.setForeground(Color.GRAY);
+            textField.setText(placeholder);
+        }
+    }
+});
+    
 }
 
 
@@ -1238,6 +1260,7 @@ private void cerrarSesionYRegresarLogin() {
         PanelB2.setBackground(colorazuloscurlo);
         PanelB3.setBackground(colorazuloscurlo);
         
+        limpiarCamposProducto();
         panelp1.setVisible(true);
         panelp2.setVisible(false);
         panelp3.setVisible(false);
@@ -1252,7 +1275,8 @@ private void cerrarSesionYRegresarLogin() {
         panelB1.setBackground(colorazuloscurlo);
         PanelB2.setBackground(colorazulclaro);
         PanelB3.setBackground(colorazuloscurlo);
-        
+                limpiarCamposProducto();
+
         panelp1.setVisible(false);
         panelp2.setVisible(true);
         panelp3.setVisible(false);
@@ -1267,7 +1291,8 @@ private void cerrarSesionYRegresarLogin() {
         panelB1.setBackground(colorazuloscurlo);
         PanelB2.setBackground(colorazuloscurlo);
         PanelB3.setBackground(colorazulclaro);
-        
+                limpiarCamposProducto();
+
         panelp1.setVisible(false);
         panelp2.setVisible(false);
         panelp3.setVisible(true);
@@ -1277,6 +1302,8 @@ private void cerrarSesionYRegresarLogin() {
 
     private void PanelB4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelB4MouseClicked
         // TODO add your handling code here:
+                limpiarCamposProducto();
+
 panelp4.setVisible(true);
                 limpiarCamposProducto();
     }//GEN-LAST:event_PanelB4MouseClicked
@@ -1305,7 +1332,8 @@ panelp4.setVisible(true);
         
         //actualizamo la tabla
         cargarInvetrioTabla();
-        
+                limpiarCamposProducto();
+
         //agregamos el quintal al comobo box de modifica y de cantidades.
         txtProductoModificar.addItem(newnombre);
         comoboProductoC2.addItem(newnombre);
@@ -1364,7 +1392,8 @@ panelp4.setVisible(true);
                 
                 // Restaurar placeholders después de modificar
                 configurarCamposProducto();
-                
+                        limpiarCamposProducto();
+
                 JOptionPane.showMessageDialog(null, "producto modificado correctamente", 
                     "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
             } else {
@@ -1418,6 +1447,8 @@ panelp4.setVisible(true);
             //funcion para guardar todos los quintales actuales
             Tproductos.getCargarInvetarioExcel();
             
+                    limpiarCamposProducto();
+
             //mostramos mesaje 
             JOptionPane.showMessageDialog(null, "cantidad actualizada correctamente", "Confirmación", JOptionPane.INFORMATION_MESSAGE);     
        
@@ -1440,6 +1471,8 @@ panelp4.setVisible(true);
     private void botonParaActualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonParaActualizarMouseClicked
         // TODO add your handling code here:
         
+                limpiarCamposProducto();
+
         //funcion para guardar todos los quintales actuales
         Tproductos.getCargarInvetarioExcel();
         System.out.println("se ha cargado correctamente");

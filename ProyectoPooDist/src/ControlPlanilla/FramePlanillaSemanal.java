@@ -114,7 +114,6 @@ if (role.equalsIgnoreCase("ADMINISTRADOR")) {
         
         //llamamos a un bucle infinito
         iniciarBucleEnHilo();
-        configurarCamposTrabajador();
         actualizarTablaTrabajadores();
     cargarInvetrioTabla(); // This will refresh 
           this.currentUser = username;
@@ -133,99 +132,28 @@ if (role.equalsIgnoreCase("ADMINISTRADOR")) {
     cargarInvetrioTabla(); // This will refresh the table
 }
  
-    // Método para configurar el placeholder en campos de texto
-private void setupTextFieldTrabajador(JTextField textField, String placeholder) {
-    textField.setText(placeholder);
-    textField.setForeground(Color.GRAY); // Establece el color del texto del placeholder
-
-    textField.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            // Limpia el placeholder al enfocar
-            if (textField.getText().equals(placeholder)) {
-                textField.setText("");
-                textField.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            // Restablece el placeholder si el campo está vacío
-            if (textField.getText().isEmpty()) {
-                textField.setForeground(Color.GRAY);
-                textField.setText(placeholder);
-            }
-        }
-    });
-}
-
-// Método para configurar el placeholder en campos de texto de área
-private void setupTextAreaTrabajador(JTextArea textArea, String placeholder) {
-    textArea.setText(placeholder);
-    textArea.setForeground(Color.GRAY); // Establece el color del texto del placeholder
-
-    textArea.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            // Limpia el placeholder al enfocar
-            if (textArea.getText().equals(placeholder)) {
-                textArea.setText("");
-                textArea.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            // Restablece el placeholder si el campo está vacío
-            if (textArea.getText().isEmpty()) {
-                textArea.setForeground(Color.GRAY);
-                textArea.setText(placeholder);
-            }
-        }
-    });
-}
-
-// Método para configurar todos los campos de trabajador con placeholders
-private void configurarCamposTrabajador() {
-    setupTextFieldTrabajador(txtNombreDelTrabajadorAgregar, "Ingrese nombre del trabajador");
-    setupTextFieldTrabajador(txtNombreDelTrabajadorModificar, "Ingrese ombre del trabajador");
-    setupTextAreaTrabajador(txtPequeñaDescripcionAgregar, "Ingrese una pequeña descripción");
-    setupTextAreaTrabajador(txtPequeñaDescripcionModificar, "Ingrese una pequeña descripción");
-    setupTextFieldTrabajador(txtRazon, "Ingrese la razón");
-    setupTextFieldTrabajador(txtSalarioSemanalAgregar, "Ingrese salario semanal");
-    setupTextFieldTrabajador(txtSalarioSemanalModificado, "Ingrese salario semanal");
-    setupTextFieldTrabajador(txtValorDeLaEntrada, "Ingrese el valor de la entrada");
-    setupTextAreaTrabajador(txtDescripcionNuevaEntrada, "Ingrese la descripción nueva entrada"); // Placeholder para la descripción nueva entrada
-}
+    
+    
 
 // Método para limpiar y restablecer los placeholders de los campos de trabajador
 public void limpiarCamposTrabajador() {
-    txtNombreDelTrabajadorAgregar.setText("Ingrese nombre del trabajador");
-    txtNombreDelTrabajadorAgregar.setForeground(Color.GRAY);
+    txtNombreDelTrabajadorAgregar.setText("");
 
-    txtNombreDelTrabajadorModificar.setText("Ingrese nombre del trabajador");
-    txtNombreDelTrabajadorModificar.setForeground(Color.GRAY);
+    txtNombreDelTrabajadorModificar.setText("");
 
-    txtPequeñaDescripcionAgregar.setText("Ingrese una pequeña descripción");
-    txtPequeñaDescripcionAgregar.setForeground(Color.GRAY);
+    txtPequeñaDescripcionAgregar.setText("");
 
-    txtPequeñaDescripcionModificar.setText("Ingrese una pequeña descripción");
-    txtPequeñaDescripcionModificar.setForeground(Color.GRAY);
+    txtPequeñaDescripcionModificar.setText("");
 
-    txtRazon.setText("Ingrese la razón");
-    txtRazon.setForeground(Color.GRAY);
+    txtRazon.setText("");
 
-    txtSalarioSemanalAgregar.setText("Ingrese salario semanal");
-    txtSalarioSemanalAgregar.setForeground(Color.GRAY);
+    txtSalarioSemanalAgregar.setText("");
 
-    txtSalarioSemanalModificado.setText("Ingrese salario semanal");
-    txtSalarioSemanalModificado.setForeground(Color.GRAY);
+    txtSalarioSemanalModificado.setText("");
 
-    txtValorDeLaEntrada.setText("Ingrese el valor de la entrada");
-    txtValorDeLaEntrada.setForeground(Color.GRAY);
+    txtValorDeLaEntrada.setText("");
 
-    txtDescripcionNuevaEntrada.setText("Ingrese la descripción nueva entrada"); // Limpiar el campo de descripción
-    txtDescripcionNuevaEntrada.setForeground(Color.GRAY);
+    txtDescripcionNuevaEntrada.setText(""); // Limpiar el campo de descripción
 }
 
 private void setupComboBox() {
@@ -525,6 +453,7 @@ private void cerrarSesionYRegresarLogin() {
         txtPequeñaDescripcionModificar = new javax.swing.JTextArea();
         jLabel13 = new javax.swing.JLabel();
         txtSalarioSemanalModificado = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
@@ -537,6 +466,7 @@ private void cerrarSesionYRegresarLogin() {
         jLabel17 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         labelSemanaInfo = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         labelSalirioSemanal = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -720,6 +650,11 @@ private void cerrarSesionYRegresarLogin() {
         jLabel1.setText("Nombre Del Trabajador");
 
         txtNombreDelTrabajadorAgregar.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
+        txtNombreDelTrabajadorAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombreDelTrabajadorAgregarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
         jLabel2.setText("Pequeña Descripción");
@@ -742,6 +677,12 @@ private void cerrarSesionYRegresarLogin() {
             .addGroup(panelf1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
+                        .addGap(0, 394, Short.MAX_VALUE)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelSemanas, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12))
                     .addGroup(panelf1Layout.createSequentialGroup()
                         .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelf1Layout.createSequentialGroup()
@@ -753,22 +694,17 @@ private void cerrarSesionYRegresarLogin() {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(txtSalarioSemanalAgregar))
                                     .addComponent(txtNombreDelTrabajadorAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                        .addGap(0, 125, Short.MAX_VALUE)
-                        .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labelSemanas, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())))))
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(panelf1Layout.createSequentialGroup()
+                                .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelf1Layout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane2))
+                                .addGap(18, 18, 18)
+                                .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
         );
         panelf1Layout.setVerticalGroup(
             panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -790,17 +726,14 @@ private void cerrarSesionYRegresarLogin() {
                     .addGroup(panelf1Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(18, 18, 18)
+                .addGroup(panelf1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelf1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
                         .addComponent(jLabel2)
-                        .addGap(5, 5, 5)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelf2.setBackground(new java.awt.Color(128, 179, 220));
@@ -848,26 +781,31 @@ private void cerrarSesionYRegresarLogin() {
 
         txtSalarioSemanalModificado.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
 
+        jLabel21.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel21.setText("Pequeña Descripción");
+
         javax.swing.GroupLayout panelf2Layout = new javax.swing.GroupLayout(panelf2);
         panelf2.setLayout(panelf2Layout);
         panelf2Layout.setHorizontalGroup(
             panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
+            .addGroup(panelf2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtNombreDelTrabajadorModificar, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelf2Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panelf2Layout.createSequentialGroup()
+                .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNombreDelTrabajadorModificar)
+                    .addComponent(jScrollPane4)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelf2Layout.createSequentialGroup()
                         .addGap(0, 76, Short.MAX_VALUE)
                         .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(panelf2Layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtSalarioSemanalModificado, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(panelBoton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(panelBoton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelf2Layout.createSequentialGroup()
+                        .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelf2Layout.setVerticalGroup(
@@ -877,8 +815,10 @@ private void cerrarSesionYRegresarLogin() {
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNombreDelTrabajadorModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addComponent(jLabel21)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelf2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -981,6 +921,9 @@ private void cerrarSesionYRegresarLogin() {
 
         labelSemanaInfo.setText("0");
 
+        jLabel22.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        jLabel22.setText("Pequeña Descripción");
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -995,7 +938,9 @@ private void cerrarSesionYRegresarLogin() {
                         .addComponent(labelSemanaInfo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelBotonModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1006,20 +951,20 @@ private void cerrarSesionYRegresarLogin() {
                 .addContainerGap(19, Short.MAX_VALUE)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(8, 8, 8)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelBotonModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(panelBotonModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
-                            .addGap(16, 16, 16)
-                            .addComponent(labelNombre)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel16)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(labelSemanaInfo))))
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(labelNombre)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelSemanaInfo)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1378,6 +1323,9 @@ private void cerrarSesionYRegresarLogin() {
             panelf1.setVisible(false);
         }
         
+        
+        // Limpiar Campos
+        limpiarCamposTrabajador();
         panelf2.setVisible(false);
     }//GEN-LAST:event_jPanel3MouseClicked
 
@@ -1399,6 +1347,11 @@ private void cerrarSesionYRegresarLogin() {
         
         //agregamos este trabajador al vector de gestion trabajador
         gTrabajadores.agregarTrabajador(newTrabajador);
+        
+               
+        
+        // Limpiar Campos
+        limpiarCamposTrabajador();
         
         //actualizamos la tabla
         cargarInvetrioTabla();
@@ -1448,6 +1401,7 @@ private void cerrarSesionYRegresarLogin() {
             panelf2.setVisible(false);
         }
         
+              
         panelf1.setVisible(false);
     }//GEN-LAST:event_panelBotonModificarMouseClicked
 
@@ -1495,6 +1449,8 @@ private void cerrarSesionYRegresarLogin() {
                 //ahora vamos a llamar a la funcion de calcular el sueldo total
                 labelSalioTotal.setText(gTrabajadores.getSalariTotal(indiceActual));
                 
+                       
+        
                 //mostramos los mismos datos de modificado 
                 txtNombreDelTrabajadorModificar.setText(tTrabajador.get(indiceActual).getNombre());
                 txtPequeñaDescripcionModificar.setText(tTrabajador.get(indiceActual).getDescripcion());
@@ -1556,7 +1512,8 @@ private void cerrarSesionYRegresarLogin() {
                     //llamamos a la funcion de agregar entrada
                     gTrabajadores.setEntrada(indiceActual, newEntrada, newValorEntrada, operacion);
                 }
-                
+
+        
                 //mostramos los datos de la tabla 
                 labelNombre.setText(tTrabajador.get(indiceActual).getNombre());
                 labelSemanaInfo.setText("" + tTrabajador.get(indiceActual).getSemanasDeTrabajo());
@@ -1611,6 +1568,10 @@ private void cerrarSesionYRegresarLogin() {
     private void botonguardarDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonguardarDatosMouseClicked
         // TODO add your handling code here:
         
+               
+        
+
+        
         //funcion provisional para guardas datos en el excel
         gTrabajadores.guardarTrabajadoresExcel();
         System.out.println("se ha guardado correctamente");
@@ -1656,6 +1617,9 @@ private void cerrarSesionYRegresarLogin() {
             tablaTrabajadores.setRowSelectionInterval(indiceActualTabla, indiceActualTabla);
         }
                     
+                    
+                           
+        
                     // vaciaremos la tabla totalmente
                 modeloEntradas.setRowCount(0);
                     
@@ -1695,6 +1659,9 @@ private void cerrarSesionYRegresarLogin() {
                 //actualizamos la tabla
                 cargarInvetrioTabla();
                 
+                       
+        
+        
                 // vaciaremos la tabla totalmente
                 modeloEntradas.setRowCount(0);
                 
@@ -1723,9 +1690,12 @@ private void cerrarSesionYRegresarLogin() {
         LOGINPINEED loginFrame = this.loginFrame; // Suponiendo que loginFrame ya está disponible
 
         FrameHistorialTrabajadores abrir = new FrameHistorialTrabajadores(currentUser, userRole, loginFrame);
-        abrir.setVisible(true);
-        this.dispose();
+ abrir.setVisible(true);
     }//GEN-LAST:event_txtReactivarTrabajadorEliminadoActionPerformed
+
+    private void txtNombreDelTrabajadorAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreDelTrabajadorAgregarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreDelTrabajadorAgregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1870,6 +1840,8 @@ private void cerrarSesionYRegresarLogin() {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

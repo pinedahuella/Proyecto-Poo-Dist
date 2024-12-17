@@ -14,6 +14,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -442,6 +444,12 @@ private void setupDateChooser(JDateChooser dateChooser, String placeholder) {
     
             
 private void enviarCorreoModificacion(String destinatario, Camiones camionNuevo, Camiones camionAnterior) throws IOException {
+          // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -469,47 +477,26 @@ private void enviarCorreoModificacion(String destinatario, Camiones camionNuevo,
 
         // Primera parte - contenido HTML
         BodyPart messageBodyPart = new MimeBodyPart();
-    String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
+     String contenido = "<html><body style='font-family: Arial, sans-serif;'>" +
             "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
             "<h2 style='color: #6a0dad; text-align: center;'><strong>¡Camión Modificado en PINEED!</strong></h2>" +
             "<p style='color: #ffffff; background-color: #9370db; padding: 10px; border-radius: 5px;'>Se ha modificado un camión en el sistema.</p>" +
             
-            // Datos Anteriores
             "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
             "<h3 style='color: #6a0dad; margin-top: 0;'>Datos Anteriores:</h3>" +
             "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Marca:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Modelo:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Placas:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Estado:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Kilometraje:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getKilometraje() + " km</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camionAnterior.getAñoFabricacion() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong style='color: #6a0dad;'>Marca:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word; color: #ffffff;'>" + camionAnterior.getMarca() + "</td></tr>" +
+            // Repite el patrón para todos los campos del camión anterior
             "</table></div>" +
             
-            // Nuevos Datos
             "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
             "<h3 style='color: #6a0dad; margin-top: 0;'>Nuevos Datos:</h3>" +
             "<table style='width: 100%; border-collapse: collapse;'>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Marca:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getMarca() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Modelo:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getModelo() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Placas:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getPlacas() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Estado:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getEstado() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Tipo de Combustible:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getTipoCombustible() + "</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Capacidad de Carga:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getCapacidadCarga() + " kg</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Kilometraje:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getKilometraje() + " km</td></tr>" +
-            "<tr><td style='padding: 8px 0;'><strong style='color: #6a0dad;'>Año de Fabricación:</strong></td><td style='color: #ffffff;'>" + camionNuevo.getAñoFabricacion() + "</td></tr>" +
+            "<tr><td style='padding: 8px 0; width: 30%; vertical-align: top;'><strong style='color: #6a0dad;'>Marca:</strong></td>" +
+            "<td style='padding: 8px 0; word-break: break-word; color: #ffffff;'>" + camionNuevo.getMarca() + "</td></tr>" +
+            // Repite el patrón para todos los campos del camión nuevo
             "</table></div>" +
-            
-            // Resumen de Cambios
-            "<div style='background-color: #e6e6fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-            "<h3 style='color: #6a0dad; margin-top: 0;'>Campos Modificados:</h3>" +
-            "<ul style='list-style-type: none; padding: 0;'>" +
-            ((!camionAnterior.getMarca().equals(camionNuevo.getMarca())) ? 
-                "<li style='color: #ffffff; padding: 4px 0;'>✓ Marca: " + camionAnterior.getMarca() + " → " + camionNuevo.getMarca() + "</li>" : "") +
-            // [Resto de las comparaciones similares...]
-            "</ul></div>" +
             
             "<div style='margin-top: 20px; text-align: center;'>" +
             "<img src='cid:imagen' style='max-width: 100%; height: auto;'/>" +
@@ -543,8 +530,40 @@ private void enviarCorreoModificacion(String destinatario, Camiones camionNuevo,
     }
 }
 
-    private void btnModificarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCamionesSistemaActionPerformed
+
+// Nueva variable de estado para conexión
+private boolean conexionValidada = false; // Indica si ya se verificó la conexión
+private boolean hayInternet = true;      // Resultado de la validación
+
+// Método para verificar la conexión a Internet una sola vez
+private boolean verificarConexionUnaVez() {
+    if (!conexionValidada) {
+        conexionValidada = true; // Se marca como validado
+        hayInternet = verificarConexionInternet(); // Realiza la verificación
+        if (!hayInternet) {
+            JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    return hayInternet;
+}
+
+// Método original para verificar la conexión
+private boolean verificarConexionInternet() {
     try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
+
+    private void btnModificarCamionesSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarCamionesSistemaActionPerformed
+        try {
         // Obtener datos de los campos de entrada
         String placas = txtPlacasCamionesModificar.getText().trim();
         String modelo = txtModeloCamionesModificar.getText().trim();
@@ -600,23 +619,20 @@ private void enviarCorreoModificacion(String destinatario, Camiones camionNuevo,
             "¿Estás seguro de que deseas modificar el camión con placas: " + placas + "?",
             "Confirmar modificación",
             JOptionPane.YES_NO_OPTION);
-            
-        
-        
-        // Antes de modificar el camión, crear una copia de los datos anteriores
-Camiones camionAnterior = new Camiones();
-camionAnterior.setPlacas(camionActual.getPlacas());
-camionAnterior.setModelo(camionActual.getModelo());
-camionAnterior.setMarca(camionActual.getMarca());
-camionAnterior.setEstado(camionActual.getEstado());
-camionAnterior.setTipoCombustible(camionActual.getTipoCombustible());
-camionAnterior.setKilometraje(camionActual.getKilometraje());
-camionAnterior.setCapacidadCarga(camionActual.getCapacidadCarga());
-camionAnterior.setAñoFabricacion(camionActual.getAñoFabricacion());
-
 
         if (confirm == JOptionPane.YES_OPTION) {
-            // Actualizar datos del camión
+            // Crear una copia de los datos anteriores
+            Camiones camionAnterior = new Camiones();
+            camionAnterior.setPlacas(camionActual.getPlacas());
+            camionAnterior.setModelo(camionActual.getModelo());
+            camionAnterior.setMarca(camionActual.getMarca());
+            camionAnterior.setEstado(camionActual.getEstado());
+            camionAnterior.setTipoCombustible(camionActual.getTipoCombustible());
+            camionAnterior.setKilometraje(camionActual.getKilometraje());
+            camionAnterior.setCapacidadCarga(camionActual.getCapacidadCarga());
+            camionAnterior.setAñoFabricacion(camionActual.getAñoFabricacion());
+
+            // Actualizar datos del camión actual
             camionActual.setPlacas(placas);
             camionActual.setModelo(modelo);
             camionActual.setMarca(marca);
@@ -626,47 +642,47 @@ camionAnterior.setAñoFabricacion(camionActual.getAñoFabricacion());
             camionActual.setCapacidadCarga(capacidadCarga);
             camionActual.setAñoFabricacion(añoFabricacion);
 
-            // Actualizar camión en la gestión de camiones
+            // Actualizar camión en la gestión
             gestionCamiones.actualizarCamion(camionActual);
 
-            // Crear el diálogo de progreso
+            // Crear diálogo de progreso
             JDialog dialogoProceso = new JDialog(this, "Procesando", true);
             dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-            
+
             JPanel panel = new JPanel(new BorderLayout(10, 10));
             panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-            
+
             JProgressBar progressBar = new JProgressBar();
             progressBar.setIndeterminate(true);
             progressBar.setStringPainted(true);
             progressBar.setString("Enviando notificaciones...");
-            
+
             JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
             mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
-            
+
             panel.add(mensajeLabel, BorderLayout.NORTH);
             panel.add(progressBar, BorderLayout.CENTER);
-            
+
             dialogoProceso.add(panel);
             dialogoProceso.setSize(400, 150);
             dialogoProceso.setLocationRelativeTo(this);
 
-            // Crear un hilo separado para realizar el envío de correos
+            // Crear un hilo para el envío de correos
             Thread processingThread = new Thread(() -> {
                 boolean correosEnviados = false;
                 try {
-                    // Obtener la lista de usuarios
-                    Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
-
-                    for (Usuarios usuario : usuarios) {
-                        if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
-                             "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
-                            usuario.getCorreoElectronico() != null &&
-                            !usuario.getCorreoElectronico().isEmpty()) {
-                            
-                            // Enviar correo a cada administrador o secretaria
-enviarCorreoModificacion(usuario.getCorreoElectronico(), camionActual, camionAnterior);
-                            correosEnviados = true;
+                    // Verificar conexión antes de enviar correos
+                    if (verificarConexionUnaVez()) {
+                        // Obtener lista de usuarios
+                        Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+                        for (Usuarios usuario : usuarios) {
+                            if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                                 "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
+                                usuario.getCorreoElectronico() != null &&
+                                !usuario.getCorreoElectronico().isEmpty()) {
+                                enviarCorreoModificacion(usuario.getCorreoElectronico(), camionActual, camionAnterior);
+                                correosEnviados = true;
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -674,36 +690,26 @@ enviarCorreoModificacion(usuario.getCorreoElectronico(), camionActual, camionAnt
                 } finally {
                     final boolean exito = correosEnviados;
                     SwingUtilities.invokeLater(() -> {
-                        dialogoProceso.dispose(); // Cerrar el diálogo de progreso
-                        
+                        dialogoProceso.dispose(); // Cerrar diálogo
+
+                        // Mostrar mensajes según el resultado
                         if (exito) {
-                            JOptionPane.showMessageDialog(
-                                this,
-                                "Camión modificado exitosamente y se han enviado las notificaciones al personal administrativo.",
-                                "Operación exitosa",
-                                JOptionPane.INFORMATION_MESSAGE
-                            );
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                this,
-                                "Camión modificado exitosamente pero no se pudieron enviar las notificaciones.",
-                                "Advertencia",
-                                JOptionPane.WARNING_MESSAGE
-                            );
+                            JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.\nSe han enviado las notificaciones al personal administrativo.",
+                                    "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+                        } else if (!hayInternet) {
+                            JOptionPane.showMessageDialog(this, "Camión modificado exitosamente.\nEl correo no se enviará, pero el registro se ha guardado.",
+                                    "Modificación exitosa", JOptionPane.WARNING_MESSAGE);
                         }
 
-                        // Actualizar la tabla en la ventana principal
                         ventanaPrincipal.actualizarTabla();
-                        ventanaPrincipal.setVisible(true); // Hacer visible la ventana principal
-                        this.dispose(); // Cerrar esta ventana
+                        ventanaPrincipal.setVisible(true);
+                        this.dispose();
                     });
                 }
             });
 
-            // Iniciar el proceso en un hilo separado
+            // Iniciar proceso en un hilo
             processingThread.start();
-            
-            // Mostrar el diálogo mientras se realiza el proceso
             dialogoProceso.setVisible(true);
         }
     } catch (NumberFormatException e) {
