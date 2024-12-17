@@ -35,6 +35,8 @@ import javax.activation.FileDataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -225,6 +227,13 @@ public void limpiarCampos() {
     }
     
 private void enviarCorreoActualizacionPiloto(String destinatario, Piloto piloto) throws IOException {
+      // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -332,6 +341,29 @@ private void enviarCorreoActualizacionPiloto(String destinatario, Piloto piloto)
         throw new IOException("Error al enviar el correo: " + e.getMessage());
     }
 }
+
+
+
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
+
+
+
+
 
     private void cerrarSesionYSalir() {
         if (loginFrame != null) {
@@ -772,17 +804,37 @@ if (edad < 18) {
                 SwingUtilities.invokeLater(() -> {
                     dialogoProceso.dispose();
                     
-                    // Mostrar mensaje de éxito
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "¡Piloto modificado exitosamente!\n\n" +
-                        "Se ha enviado un correo electrónico a:\n" + 
-                        correoElectronicoPiloto + "\n" +
-                        "con los datos actualizados.",
-                        "Modificación exitosa",
-                        JOptionPane.INFORMATION_MESSAGE
-                    );
-
+  
+                    
+                    
+                    
+                    
+                                 if (verificarConexionInternet()) {
+    // Si hay conexión a Internet, mostrar mensaje de éxito con correo enviado
+    JOptionPane.showMessageDialog(
+        this,
+        "¡Piloto modificado exitosamente!\n\n" +
+        "Se ha enviado un correo electrónico a:\n" + 
+        correoElectronicoPiloto + "\n" +
+        "con los datos actualizados.",
+        "Modificación exitosa",
+        JOptionPane.INFORMATION_MESSAGE
+    );
+} else {
+    // Si no hay conexión a Internet, mostrar mensaje sin mencionar el correo
+    JOptionPane.showMessageDialog(
+        this,
+        "¡Piloto modificado exitosamente!\n" +
+        "El correo no se enviará, pero el registro se ha guardado.",
+        "Modificación exitosa",
+        JOptionPane.WARNING_MESSAGE
+    );
+}
+                                 
+                                 
+                                 
+                                 
+                                 
                     // Actualizar la tabla principal y cerrar ventana
                     ventanaPrincipal.actualizarTabla();
                     ventanaPrincipal.setVisible(true);

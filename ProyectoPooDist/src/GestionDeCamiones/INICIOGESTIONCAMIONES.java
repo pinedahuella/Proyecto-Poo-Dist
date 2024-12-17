@@ -27,6 +27,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.util.Properties;
@@ -454,7 +456,7 @@ private void cerrarSesionYRegresarLogin() {
         mostrarCamion = new javax.swing.JButton();
         editarCamion = new javax.swing.JButton();
         garageCamiones = new javax.swing.JButton();
-        eliminarUsuario = new javax.swing.JButton();
+        eliminarCamion = new javax.swing.JButton();
         ActivarCamiones = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         txtMenu = new javax.swing.JComboBox<>();
@@ -564,14 +566,14 @@ private void cerrarSesionYRegresarLogin() {
             }
         });
 
-        eliminarUsuario.setBackground(new java.awt.Color(85, 111, 169));
-        eliminarUsuario.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
-        eliminarUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        eliminarUsuario.setText("ELIMINAR");
-        eliminarUsuario.setBorder(null);
-        eliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
+        eliminarCamion.setBackground(new java.awt.Color(85, 111, 169));
+        eliminarCamion.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
+        eliminarCamion.setForeground(new java.awt.Color(255, 255, 255));
+        eliminarCamion.setText("ELIMINAR");
+        eliminarCamion.setBorder(null);
+        eliminarCamion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eliminarUsuarioActionPerformed(evt);
+                eliminarCamionActionPerformed(evt);
             }
         });
 
@@ -634,7 +636,7 @@ private void cerrarSesionYRegresarLogin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -662,7 +664,7 @@ private void cerrarSesionYRegresarLogin() {
                     .addComponent(editarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(agregarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(mostrarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eliminarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(refrescarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buscarCamion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -869,7 +871,17 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
     
     
     private void enviarCorreoEliminacion(String destinatario, Camiones camionEliminado) throws IOException {
-    Properties props = new Properties();
+  
+        
+                    // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+
+
+Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
     props.put("mail.smtp.host", "smtp.gmail.com");
@@ -949,101 +961,203 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
 }
     
     
-    private void eliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarUsuarioActionPerformed
+// Variable global para evitar mensajes repetidos
+private boolean conexionNotificada = false;
+
+// Método para verificar si hay conexión a Internet (sin cambios)
+private boolean verificarConexionInternet() {
+    try {
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
+
+// Método para enviar notificaciones con control de conexión
+private boolean enviarNotificacionesEliminacion(Vector<Usuarios> usuarios, Camiones camionEliminado) {
+    boolean correosEnviados = false;
+
+    // Verificar conexión a Internet antes de iterar
+    if (!verificarConexionInternet()) {
+        if (!conexionNotificada) {
+                    // Verificar conexión a Internet
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            conexionNotificada = true;
+        }
+        return false; // No intentamos enviar correos si no hay conexión
+    }
+
+    try {
+        for (Usuarios usuario : usuarios) {
+            if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                 "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
+                usuario.getCorreoElectronico() != null &&
+                !usuario.getCorreoElectronico().isEmpty()) {
+
+                // Enviar correo individual
+                enviarCorreoEliminacion(usuario.getCorreoElectronico(), camionEliminado);
+                correosEnviados = true;
+            }
+        }
+    } catch (Exception e) {
+        System.err.println("Error al enviar notificaciones: " + e.getMessage());
+        e.printStackTrace();
+        correosEnviados = false;
+    }
+
+    return correosEnviados;
+}
+
+
+    private void eliminarCamionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCamionActionPerformed
 int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+    conexionNotificada = false; // Reset connection notification flag
+
     if (filaSeleccionada >= 0) {
-        Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
-        String placasSeleccionadas = camionSeleccionado.getPlacas();
-        
-        int confirm = JOptionPane.showConfirmDialog(this,
-            "¿Estás seguro de que deseas eliminar el camión con placas: " + placasSeleccionadas + "?",
-            "Confirmar eliminación",
-            JOptionPane.YES_NO_OPTION);
+        try {
+            Camiones camionSeleccionado = camionesEnTabla.get(filaSeleccionada);
+            String placasSeleccionadas = camionSeleccionado.getPlacas();
             
-        if (confirm == JOptionPane.YES_OPTION) {
-            // Crear el diálogo de progreso
-            JDialog dialogoProceso = new JDialog(this, "Procesando", true);
-            dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de que deseas eliminar el camión con placas: " + placasSeleccionadas + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION
+            );
             
-            JPanel panel = new JPanel(new BorderLayout(10, 10));
-            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-            
-            JProgressBar progressBar = new JProgressBar();
-            progressBar.setIndeterminate(true);
-            progressBar.setStringPainted(true);
-            progressBar.setString("Enviando notificaciones...");
-            
-            JLabel mensajeLabel = new JLabel("Enviando correos al personal administrativo...");
-            mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
-            
-            panel.add(mensajeLabel, BorderLayout.NORTH);
-            panel.add(progressBar, BorderLayout.CENTER);
-            
-            dialogoProceso.add(panel);
-            dialogoProceso.setSize(400, 150);
-            dialogoProceso.setLocationRelativeTo(this);
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Create progress dialog first - ALWAYS show it
+                JDialog dialogoProceso = new JDialog(this, "Procesando", true);
+                dialogoProceso.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                
+                JPanel panel = new JPanel(new BorderLayout(10, 10));
+                panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+                
+                JProgressBar progressBar = new JProgressBar();
+                progressBar.setIndeterminate(true);
+                progressBar.setStringPainted(true);
+                progressBar.setString("Procesando eliminación...");
+                
+                JLabel mensajeLabel = new JLabel("Eliminando camión y notificando al personal...");
+                mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+                
+                panel.add(mensajeLabel, BorderLayout.NORTH);
+                panel.add(progressBar, BorderLayout.CENTER);
+                
+                dialogoProceso.add(panel);
+                dialogoProceso.setSize(400, 150);
+                dialogoProceso.setLocationRelativeTo(this);
 
-            // Crear un hilo separado para realizar el envío de correos
-            Thread processingThread = new Thread(() -> {
-                boolean correosEnviados = false;
-                try {
-                    // Obtener la lista de usuarios
-                    Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+                // Processing thread
+                Thread processingThread = new Thread(() -> {
+                    boolean procesoExitoso = false;
+                    boolean hayConexion = verificarConexionInternet();
 
-                    for (Usuarios usuario : usuarios) {
-                        if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
-                             "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
-                            usuario.getCorreoElectronico() != null &&
-                            !usuario.getCorreoElectronico().isEmpty()) {
-                            
-                            // Enviar correo a cada administrador o secretaria
-                            enviarCorreoEliminacion(usuario.getCorreoElectronico(), camionSeleccionado);
-                            correosEnviados = true;
-                        }
-                    }
-                    
-                    // Eliminar el camión después de enviar los correos
-                    gestionCamiones.eliminarCamion(placasSeleccionadas);
-                    
-                } catch (Exception e) {
-                    correosEnviados = false;
-                } finally {
-                    final boolean exito = correosEnviados;
-                    SwingUtilities.invokeLater(() -> {
-                        dialogoProceso.dispose(); // Cerrar el diálogo de progreso
+                    try {
+                        // Reload trucks to ensure consistency
+                        gestionCamiones.cargarCamionesDesdeExcel();
                         
-                        if (exito) {
-                            JOptionPane.showMessageDialog(
-                                this,
-                                "Camión eliminado exitosamente y se han enviado las notificaciones al personal administrativo.",
-                                "Operación exitosa",
-                                JOptionPane.INFORMATION_MESSAGE
-                            );
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                this,
-                                "Camión eliminado exitosamente pero no se pudieron enviar las notificaciones.",
-                                "Advertencia",
-                                JOptionPane.WARNING_MESSAGE
-                            );
+                        // Eliminate truck first
+                        gestionCamiones.eliminarCamion(placasSeleccionadas);
+
+                        // Only attempt to send notifications if there's internet
+                        boolean correosEnviados = false;
+                        if (hayConexion) {
+                            Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+                            correosEnviados = enviarNotificacionesEliminacion(usuarios, camionSeleccionado);
                         }
+                        
+                        procesoExitoso = true;
+                        
+                    } catch (Exception e) {
+                        procesoExitoso = false;
+                        System.err.println("Error en eliminación de camión: " + e.getMessage());
+                        e.printStackTrace();
+                    } finally {
+                        final boolean exito = procesoExitoso;
+                        final boolean conexion = hayConexion;
+                        
+                        // Update UI in Event Dispatch Thread
+                        SwingUtilities.invokeLater(() -> {
+                            // Always close progress dialog first
+                            dialogoProceso.dispose();
+                            
+                            // Show connection error first if no internet
+                            if (!conexion) {
+                                JOptionPane.showMessageDialog(
+                                    this,
+                                    "No hay conexión a Internet.",
+                                    "Advertencia",
+                                    JOptionPane.WARNING_MESSAGE
+                                );
+                            }
+                            
+                   // Then show truck elimination message
+if (exito) {
+    if (verificarConexionInternet()) {
+        JOptionPane.showMessageDialog(
+            this,
+            "Camión eliminado exitosamente.\n" +
+            "Se han enviado las notificaciones al personal administrativo.", 
+            "Eliminación exitosa", 
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    } else {
+        JOptionPane.showMessageDialog(
+            this,
+            "Camión eliminado exitosamente.\n" +
+            "El correo no se enviará, pero el registro se ha guardado.", 
+            "Eliminación exitosa", 
+            JOptionPane.WARNING_MESSAGE
+        );
+    }
 
-                        // Actualizar la tabla
-                        actualizarTabla();
-                    });
-                }
-            });
+                                
+                                // Update table
+                                actualizarTabla();
+                            } else {
+                                JOptionPane.showMessageDialog(
+                                    this,
+                                    "Error al eliminar el camión. Por favor, intente nuevamente.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                        });
+                    }
+                });
 
-            // Iniciar el proceso en un hilo separado
-            processingThread.start();
-            
-            // Mostrar el diálogo mientras se realiza el proceso
-            dialogoProceso.setVisible(true);
+                // Start process
+                processingThread.start();
+                
+                // Show progress dialog
+                dialogoProceso.setVisible(true);
+            }
+        } catch (Exception e) {
+            // General error handling
+            JOptionPane.showMessageDialog(
+                this, 
+                "Error inesperado: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     } else {
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona un camión para eliminar.");
+        // No truck selected
+        JOptionPane.showMessageDialog(
+            this, 
+            "Por favor, selecciona un camión para eliminar.", 
+            "Selección Requerida", 
+            JOptionPane.WARNING_MESSAGE
+        );
     }
-    }//GEN-LAST:event_eliminarUsuarioActionPerformed
+    }//GEN-LAST:event_eliminarCamionActionPerformed
 
     private void ActivarCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarCamionesActionPerformed
         String username = this.currentUser; // Suponiendo que currentUser contiene el nombre de usuario
@@ -1140,7 +1254,7 @@ int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
     private javax.swing.JButton agregarCamion;
     private javax.swing.JButton buscarCamion;
     private javax.swing.JButton editarCamion;
-    private javax.swing.JButton eliminarUsuario;
+    private javax.swing.JButton eliminarCamion;
     private javax.swing.JButton garageCamiones;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;

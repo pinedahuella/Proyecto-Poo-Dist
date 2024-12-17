@@ -31,6 +31,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.Normalizer;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -150,8 +152,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
 
  }
     
-    
-    private void cargarDatos() {
+ private void cargarDatos() {
     try {
         System.out.println("Loading inactive pilots data...");
         listaPilotosInactivos = new Vector<>();
@@ -160,27 +161,20 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
              Workbook workbook = new XSSFWorkbook(fis)) {
             
             Sheet sheet = workbook.getSheetAt(0);
-            modeloPilotos.setRowCount(0); // Clear existing rows
+            modeloPilotos.setRowCount(0); // Limpiar las filas existentes
             
-            int rowIndex = 1; // Variable para el contador de filas
+            int rowIndex = 1; // Contador de filas
             
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header
+                if (row.getRowNum() == 0) continue; // Saltar la fila de encabezados
                 
-                Cell activoCell = row.getCell(9); // "Activo" column
-                boolean isActive = true;
+                // Obtener la celda de "Estado" (columna 8)
+                Cell estadoCell = row.getCell(8); 
+                String estado = (estadoCell != null) ? getCellValueAsString(estadoCell) : "";
                 
-                if (activoCell != null) {
-                    if (activoCell.getCellType() == CellType.BOOLEAN) {
-                        isActive = activoCell.getBooleanCellValue();
-                    } else if (activoCell.getCellType() == CellType.STRING) {
-                        isActive = Boolean.parseBoolean(activoCell.getStringCellValue());
-                    }
-                }
-                
-                // Only process inactive pilots
-                if (!isActive) {
-                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número
+                // Solo procesar si el estado es "Inactivo"
+                if ("Inactivo".equalsIgnoreCase(estado.trim())) {
+                    Object[] fila = new Object[8]; // Aumentado a 8 para incluir el número de índice
                     fila[0] = rowIndex++; // Agregar el número de índice
                     fila[1] = getCellValueAsString(row.getCell(0)); // Nombre
                     fila[2] = getCellValueAsString(row.getCell(1)); // Apellido
@@ -188,22 +182,22 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
                     fila[4] = getCellValueAsString(row.getCell(3)); // Tipo Licencia
                     fila[5] = getCellValueAsString(row.getCell(4)); // Correo
                     fila[6] = getCellValueAsString(row.getCell(5)); // Teléfono
-                    fila[7] = getCellValueAsString(row.getCell(8)); // Estado
+                    fila[7] = estado; // Estado (columna 8)
                     
                     modeloPilotos.addRow(fila);
                     
-                    // Create and add Piloto object to listaPilotosInactivos
+                    // Crear y agregar el objeto Piloto a la lista de pilotos inactivos
                     Piloto piloto = new Piloto(
-                        (String) fila[1], // Nombre (ahora en índice 1)
-                        (String) fila[2], // Apellido (ahora en índice 2)
-                        Long.parseLong(fila[3].toString()), // DPI (ahora en índice 3)
+                        (String) fila[1], // Nombre
+                        (String) fila[2], // Apellido
+                        Long.parseLong(fila[3].toString()), // DPI
                         (String) fila[4], // Tipo Licencia
                         (String) fila[5], // Correo
                         Integer.parseInt(fila[6].toString()), // Teléfono
                         "", // género
                         "", // fecha nacimiento
-                        (String) fila[7], // Estado
-                        false // activo
+                        estado, // Estado
+                        false // Activo (ahora fijo como false)
                     );
                     listaPilotosInactivos.add(piloto);
                 }
@@ -220,6 +214,7 @@ public class PILOTOSINACTIVOS extends javax.swing.JFrame {
             "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
 
     private void actualizarTabla() {
         cargarDatos(); // Reload all inactive pilots
@@ -825,6 +820,14 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         throw new IOException("Correo electrónico inválido: " + destinatario);
     }
 
+    
+            // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -904,6 +907,24 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
         System.err.println("Error detallado al enviar correo: ");
         e.printStackTrace();
         throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
     }
 }
 
@@ -1002,11 +1023,24 @@ private void enviarCorreoActivacion(String destinatario, Piloto piloto) throws I
                                 SwingUtilities.invokeLater(() -> {
                                     dialogoProceso.dispose();
                                     cargarDatos();
-                                    JOptionPane.showMessageDialog(this,
-                                        "Piloto reactivado correctamente y correo enviado.",
-                                        "Éxito",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                                });
+if (verificarConexionInternet()) {
+                // Si hay conexión a Internet, mostrar mensaje de éxito con correo enviado
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Piloto reactivado correctamente y correo enviado.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                // Si no hay conexión a Internet, mostrar mensaje sin mencionar el correo
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Piloto reactivado correctamente. \nEl correo no se enviará, pero el registro se ha guardado.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });  
                             } catch (IOException e) {
                                 SwingUtilities.invokeLater(() -> {
                                     dialogoProceso.dispose();

@@ -66,6 +66,8 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -853,6 +855,17 @@ private void enviarCorreoDesactivacion(String destinatario, Piloto piloto) throw
         throw new IOException("Correo electrónico inválido: " + destinatario);
     }
 
+    
+    
+            // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+
+
+
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
@@ -932,6 +945,25 @@ private void enviarCorreoDesactivacion(String destinatario, Piloto piloto) throw
         System.err.println("Error detallado al enviar correo: ");
         e.printStackTrace();
         throw new IOException("Error al enviar el correo: " + e.getMessage());
+    }
+}
+
+
+
+
+// Método para verificar si hay conexión a Internet
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
     }
 }
 
@@ -1022,11 +1054,24 @@ String nombrePiloto = tblRegistroPilotos.getValueAt(filaSeleccionada, 1).toStrin
                             SwingUtilities.invokeLater(() -> {
                                 dialogoProceso.dispose();
                                 actualizarTabla();
-                                JOptionPane.showMessageDialog(this,
+                              if (verificarConexionInternet()) {
+                                // Si hay conexión a Internet, mostrar mensaje de éxito con notificación enviada
+                                JOptionPane.showMessageDialog(
+                                    this,
                                     "Piloto eliminado correctamente y notificación enviada.",
                                     "Éxito",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            });
+                                    JOptionPane.INFORMATION_MESSAGE
+                                );
+                            } else {
+                                // Si no hay conexión a Internet, mostrar mensaje sin mencionar la notificación
+                                JOptionPane.showMessageDialog(
+                                    this,
+                                    "Piloto eliminado correctamente. \nLa notificación no se enviará, pero el registro se ha actualizado.",
+                                    "Éxito",
+                                    JOptionPane.INFORMATION_MESSAGE
+                                );
+                            }
+                        });
                         } catch (IOException e) {
                             SwingUtilities.invokeLater(() -> {
                                 dialogoProceso.dispose();

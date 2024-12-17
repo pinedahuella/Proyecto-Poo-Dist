@@ -104,7 +104,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="refrescarCamion" min="-2" pref="95" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="eliminarUsuario" min="-2" pref="95" max="-2" attributes="0"/>
+                                  <Component id="eliminarCamion" min="-2" pref="95" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="agregarCamion" min="-2" pref="95" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -137,7 +137,7 @@
                               <Component id="editarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="agregarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="mostrarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="eliminarUsuario" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="eliminarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="refrescarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="buscarCamion" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
@@ -328,7 +328,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="garageCamionesActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="eliminarUsuario">
+                <Component class="javax.swing.JButton" name="eliminarCamion">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="a9" green="6f" red="55" type="rgb"/>
@@ -345,7 +345,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eliminarUsuarioActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eliminarCamionActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="ActivarCamiones">

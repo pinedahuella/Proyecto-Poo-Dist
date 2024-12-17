@@ -34,6 +34,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.Transport;
@@ -825,7 +827,17 @@ private void cerrarSesionYRegresarLogin() {
     
     
 private void enviarCorreoReactivacion(String destinatario, Camiones camion) throws IOException {
-    Properties props = new Properties();
+   
+    
+    
+            // Verificar conexión a Internet
+if (!verificarConexionInternet()) {
+    JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+
+Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
     props.put("mail.smtp.host", "smtp.gmail.com");
@@ -902,9 +914,41 @@ private void enviarCorreoReactivacion(String destinatario, Camiones camion) thro
 }
 
 
+
+
+// Nueva variable de estado para conexión
+private boolean conexionValidada = false; // Indica si ya se verificó la conexión
+private boolean hayInternet = true;      // Resultado de la validación
+
+// Método para verificar la conexión a Internet una sola vez
+private boolean verificarConexionUnaVez() {
+    if (!conexionValidada) {
+        conexionValidada = true; // Se marca como validado
+        hayInternet = verificarConexionInternet(); // Realiza la verificación
+        if (!hayInternet) {
+            JOptionPane.showMessageDialog(this, "No hay conexión a Internet.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    return hayInternet;
+}
+
+// Método original para verificar la conexión
+private boolean verificarConexionInternet() {
+    try {
+        // Intenta conectarse a Google
+        URL url = new URL("https://www.google.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        int code = connection.getResponseCode();
+        return (code == 200); // Retorna true si la conexión fue exitosa
+    } catch (Exception e) {
+        return false; // Retorna false si no hay conexión
+    }
+}
     
     private void ActivarCamionEliminadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivarCamionEliminadoActionPerformed
- int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
+int filaSeleccionada = tblRegistroCamiones1.getSelectedRow();
     if (filaSeleccionada >= 0) {
         try {
             String placasSeleccionadas = (String) tblRegistroCamiones1.getValueAt(filaSeleccionada, 3);
@@ -947,46 +991,46 @@ private void enviarCorreoReactivacion(String destinatario, Camiones camion) thro
                     dialogoProceso.setLocationRelativeTo(this);
 
                     // Crear un hilo separado para realizar el envío de correos
-                    // Crear un hilo separado para realizar el envío de correos
-                    // Crear un hilo separado para realizar el envío de correos
-Thread processingThread = new Thread(() -> {
-    boolean correosEnviados = false;
-    try {
-        // Obtener la lista de usuarios
-        Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
-
-        for (Usuarios usuario : usuarios) {
-            if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
-                 "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
-                usuario.getCorreoElectronico() != null &&
-                !usuario.getCorreoElectronico().isEmpty()) {
-                
-                // Enviar correo a cada administrador o secretaria
-                enviarCorreoReactivacion(usuario.getCorreoElectronico(), camion);
-                correosEnviados = true;
-            }
-        }
-    } catch (Exception e) {
-        correosEnviados = false;
-    } finally {
-        final boolean exito = correosEnviados;
-                            // Cerrar el diálogo y mostrar los resultados en el hilo de la interfaz
-                            // Cerrar el diálogo y mostrar los resultados en el hilo de la interfaz
+                    Thread processingThread = new Thread(() -> {
+                        boolean correosEnviados = false;
+                        try {
+                            // Verificar conexión antes de enviar correos
+                            if (verificarConexionUnaVez()) {
+                                // Obtener la lista de usuarios
+                                Vector<Usuarios> usuarios = gestionUsuarios.getUsuarios();
+                                for (Usuarios usuario : usuarios) {
+                                    if (("ADMINISTRADOR".equalsIgnoreCase(usuario.getCargo()) || 
+                                         "SECRETARIA".equalsIgnoreCase(usuario.getCargo())) &&
+                                        usuario.getCorreoElectronico() != null &&
+                                        !usuario.getCorreoElectronico().isEmpty()) {
+                                        
+                                        // Enviar correo a cada administrador o secretaria
+                                        enviarCorreoReactivacion(usuario.getCorreoElectronico(), camion);
+                                        correosEnviados = true;
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            correosEnviados = false;
+                        } finally {
+                            final boolean exito = correosEnviados;
                             SwingUtilities.invokeLater(() -> {
                                 dialogoProceso.dispose(); // Cerrar el diálogo de progreso
                                 
                                 if (exito) {
                                     JOptionPane.showMessageDialog(
                                         this,
-                                        "Camión reactivado exitosamente y se han enviado las notificaciones al personal administrativo.",
-                                        "Operación exitosa",
+                                        "Camión reactivado exitosamente.\n" +
+                                        "Se han enviado las notificaciones al personal administrativo.", 
+                                        "Reactivación exitosa", 
                                         JOptionPane.INFORMATION_MESSAGE
                                     );
-                                } else {
+                                } else if (!hayInternet) {
                                     JOptionPane.showMessageDialog(
                                         this,
-                                        "Camión reactivado exitosamente pero no se pudieron enviar las notificaciones.",
-                                        "Advertencia",
+                                        "Camión reactivado exitosamente.\n" +
+                                        "El correo no se enviará, pero el registro se ha guardado.", 
+                                        "Reactivación exitosa", 
                                         JOptionPane.WARNING_MESSAGE
                                     );
                                 }
@@ -1012,7 +1056,9 @@ Thread processingThread = new Thread(() -> {
                 JOptionPane.ERROR_MESSAGE
             );
         }
-    }                          
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona un camión para reactivar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    }                      
     }//GEN-LAST:event_ActivarCamionEliminadoActionPerformed
 
     private void ActivosCamionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActivosCamionesActionPerformed

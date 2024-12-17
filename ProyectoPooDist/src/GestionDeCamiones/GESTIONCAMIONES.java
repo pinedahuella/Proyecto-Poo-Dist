@@ -642,31 +642,41 @@ public void desactivarCamion(String placas) {
     try {
         int camionIndex = -1;
         for (int i = 0; i < camiones.size(); i++) {
-            if (camiones.get(i).getPlacas().equals(placas) && "FUNCIONAL".equals(camiones.get(i).getEstado())) {
+            if (camiones.get(i).getPlacas().equals(placas) && camiones.get(i).isActivo()) {
                 camionIndex = i;
                 break;
             }
         }
 
         if (camionIndex == -1) {
-            throw new IllegalStateException("No se encontró un camión activo con las placas: " + placas);
+            // Try loading from Excel again to ensure synchronization
+            cargarCamionesDesdeExcel();
+            
+            // Re-check after reloading
+            for (int i = 0; i < camiones.size(); i++) {
+                if (camiones.get(i).getPlacas().equals(placas) && camiones.get(i).isActivo()) {
+                    camionIndex = i;
+                    break;
+                }
+            }
+            
+            if (camionIndex == -1) {
+                throw new IllegalStateException("No se encontró un camión activo con las placas: " + placas);
+            }
         }
 
         Camiones camionADesactivar = camiones.get(camionIndex);
         camionADesactivar.setActivo(false);
         camionADesactivar.setEstado("INACTIVO");
         
-        // Guardamos en Excel antes de modificar la lista en memoria
         guardarCamionesEnExcel();
         
-        // Actualizamos la lista en memoria
         camiones.remove(camionIndex);
-        
-        // Recargamos todos los camiones para mantener la sincronización
         cargarCamionesDesdeExcel();
     } catch (Exception e) {
         System.err.println("Error al desactivar el camión: " + e.getMessage());
         e.printStackTrace();
+        throw new RuntimeException("Error al desactivar el camión", e);
     }
 }
 
